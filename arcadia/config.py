@@ -66,6 +66,8 @@ class Config:
     savestate_dir: str = ""  # empty = <data_dir>/savestates
     show_empty_systems: bool = False  # hide systems with no games unless every system is empty
     sort: str = "title"  # title | recent | played | favorites
+    inbox_dir: str = ""  # folder ROMs are downloaded into (e.g. ~/Downloads); empty = sorting off
+    auto_import: bool = True  # move ROMs whose header confirms their system without asking
     systems: list[SystemConfig] = field(default_factory=default_systems)
 
     @property
@@ -83,6 +85,14 @@ class Config:
     @property
     def media_path(self) -> Path:
         return Path(self.media_dir).expanduser() if self.media_dir else self.data_path / "media"
+
+    @property
+    def inbox_path(self) -> Path | None:
+        return Path(self.inbox_dir).expanduser() if self.inbox_dir.strip() else None
+
+    @property
+    def journal_path(self) -> Path:
+        return self.data_path / "imports.json"
 
     @property
     def savestate_path(self) -> Path:

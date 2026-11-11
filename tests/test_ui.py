@@ -156,3 +156,189 @@ def test_shorten_trims_at_word_boundary():
     assert _shorten("short", 20) == "short"
     out = _shorten("one two three four five", 12)
     assert out == "one two…" and len(out) <= 12
+
+
+# ---------- ROM inbox sorting ----------
+
+import time  # noqa: E402
+from pathlib import Path  # noqa: E402
+
+from PySide6.QtWidgets import QMessageBox  # noqa: E402
+
+from arcadia.import_dialog import ImportDialog  # noqa: E402
+from arcadia.sorter import Confidence, build_plan  # noqa: E402
+from arcadia.ui import SettingsDialog  # noqa: E402
+
+
+def _nes_bytes():
+    return b"NES\x1a" + bytes(0x4000)
+
+
+def _gb_bytes():
+    data = bytearray(0x200)
+    data[0x104:0x10C] = bytes.fromhex("CEED6666CC0D000B")
+    return bytes(data)
+
+
+def _put(path: Path, data: bytes):
+    path.write_bytes(data)
+    old = time.time() - 3600
+    import os
+
+    os.utime(path, (old, old))
+
+
+def _make_inbox_window(tmp_path, auto_import=True):
+    inbox = tmp_path / "inbox"
+    inbox.mkdir()
+    _put(inbox / "Contra.nes", _nes_bytes())  # header confirms: certain
+    _put(inbox / "Mislabelled.gbc", _gb_bytes())  # DMG header in a .gbc file: unsure
+    cfg = Config(
+        rom_root=str(tmp_path / "roms"),
+        data_dir=str(tmp_path / "data"),
+        inbox_dir=str(inbox),
+        auto_import=auto_import,
+    )
+    for s in cfg.systems:
+        s.command = "echo {rom}"
+    win = MainWindow(cfg, tmp_path / "config.json", Library(cfg.db_path))
+    return win, inbox
+
+
+@pytest.fixture
+def asked(monkeypatch):
+    """Record what the user would be asked instead of opening a modal dialog."""
+    calls = []
+
+    def fake(self, plan, inbox):
+        calls.append(sorted(i.source.name for i in plan.items))
+
+    monkeypatch.setattr(MainWindow, "_show_import_dialog", fake)
+    return calls
+
+
+def test_certain_roms_move_automatically_and_unsure_ones_ask(qapp, tmp_path, asked):
+    win, inbox = _make_inbox_window(tmp_path)
+    try:
+        win.check_inbox()
+        assert (tmp_path / "roms" / "nes" / "Contra.nes").exists()
+        assert not (inbox / "Contra.nes").exists()
+        assert (inbox / "Mislabelled.gbc").exists()  # never moved without confirmation
+        assert asked == [["Mislabelled.gbc"]]
+        assert "nes" in [win.systems_list.item(i).data(Qt.ItemDataRole.UserRole) for i in range(win.systems_list.count())]
+    finally:
+        win.close()
+
+
+def test_with_auto_import_off_everything_is_confirmed_first(qapp, tmp_path, asked):
+    win, inbox = _make_inbox_window(tmp_path, auto_import=False)
+    try:
+        win.check_inbox()
+        assert (inbox / "Contra.nes").exists() and not (tmp_path / "roms" / "nes").exists()
+        assert asked == [["Contra.nes", "Mislabelled.gbc"]]
+    finally:
+        win.close()
+
+
+def test_each_file_is_only_asked_about_once(qapp, tmp_path, asked):
+    win, inbox = _make_inbox_window(tmp_path)
+    try:
+        win.check_inbox()
+        win.check_inbox()
+        assert len(asked) == 1
+        _put(inbox / "Weird.nes", b"junk")  # a new file triggers a new question
+        win.check_inbox()
+        assert len(asked) == 2 and "Weird.nes" in asked[1]
+    finally:
+        win.close()
+
+
+def test_a_running_game_is_never_interrupted_by_the_dialog(qapp, tmp_path, asked):
+    win, inbox = _make_inbox_window(tmp_path)
+    try:
+        win.process = object()  # pretend a game is running
+        win.check_inbox(rescan_after=False)
+        assert asked == []  # no dialog while playing...
+        assert (tmp_path / "roms" / "nes" / "Contra.nes").exists()  # ...but sure matches still move quietly
+        win.process = None
+        win.check_inbox()
+        assert asked == [["Mislabelled.gbc"]]  # and it asks once the game is over
+    finally:
+        win.process = None
+        win.close()
+
+
+def test_undo_import_moves_files_back(qapp, tmp_path, asked, monkeypatch):
+    win, inbox = _make_inbox_window(tmp_path)
+    try:
+        win.check_inbox()
+        assert not (inbox / "Contra.nes").exists()
+        monkeypatch.setattr(QMessageBox, "question", lambda *a, **k: QMessageBox.StandardButton.Yes)
+        win._update_undo_action()
+        assert win.undo_import_action.isEnabled() and "1 file" in win.undo_import_action.text()
+        win.undo_import()
+        assert (inbox / "Contra.nes").exists()
+        assert not (tmp_path / "roms" / "nes" / "Contra.nes").exists()
+        win._update_undo_action()
+        assert not win.undo_import_action.isEnabled()
+    finally:
+        win.close()
+
+
+def test_no_inbox_configured_does_nothing(qapp, tmp_path, asked):
+    win, inbox = _make_inbox_window(tmp_path)
+    try:
+        win.config.inbox_dir = ""
+        win.check_inbox()
+        assert asked == [] and (inbox / "Contra.nes").exists()
+    finally:
+        win.close()
+
+
+def test_import_dialog_defaults_and_user_confirmation(qapp, tmp_path):
+    inbox = tmp_path / "inbox"
+    inbox.mkdir()
+    _put(inbox / "Contra.nes", _nes_bytes())
+    _put(inbox / "Mislabelled.gbc", _gb_bytes())
+    _put(inbox / "Weird.nes", b"junk")  # extension only: likely
+    _put(inbox / "Dupe.nes", _nes_bytes())
+    (tmp_path / "roms" / "nes").mkdir(parents=True)
+    (tmp_path / "roms" / "nes" / "Dupe.nes").write_bytes(b"already here")
+    cfg = Config(rom_root=str(tmp_path / "roms"), data_dir=str(tmp_path / "data"))
+    plan = build_plan(inbox, cfg)
+
+    dialog = ImportDialog(cfg, plan)
+    names = lambda: sorted(i.source.name for i in dialog.selected_items())
+    # Sure and likely matches are pre-ticked; the unsure one and the duplicate are not.
+    assert names() == ["Contra.nes", "Weird.nes"]
+    assert dialog.move_btn.text() == "Move 2 ROMs" and dialog.move_btn.isEnabled()
+    assert dialog.items[0].confidence is Confidence.UNSURE  # questions are listed first
+
+    # Choosing a system for the unsure row is the user's confirmation.
+    row = next(r for r, i in enumerate(dialog.items) if i.source.name == "Mislabelled.gbc")
+    dialog.combos[row].setCurrentIndex(dialog.combos[row].findData("gbc"))
+    assert names() == ["Contra.nes", "Mislabelled.gbc", "Weird.nes"]
+    chosen = next(i for i in dialog.selected_items() if i.source.name == "Mislabelled.gbc")
+    assert chosen.system_id == "gbc" and chosen.manual and chosen.destination.parent.name == "gbc"
+    assert dialog.move_btn.text() == "Move 3 ROMs"
+    assert dialog.keep_both() is False
+
+
+def test_import_dialog_with_nothing_ticked_cannot_move(qapp, tmp_path):
+    inbox = tmp_path / "inbox"
+    inbox.mkdir()
+    _put(inbox / "Mislabelled.gbc", _gb_bytes())
+    cfg = Config(rom_root=str(tmp_path / "roms"), data_dir=str(tmp_path / "data"))
+    dialog = ImportDialog(cfg, build_plan(inbox, cfg))
+    assert dialog.selected_items() == []
+    assert dialog.move_btn.isEnabled() is False
+
+
+def test_settings_dialog_saves_inbox_options(qapp, tmp_path):
+    cfg = Config(data_dir=str(tmp_path / "data"))
+    dialog = SettingsDialog(cfg)
+    dialog.inbox_dir.setText("~/Downloads")
+    dialog.auto_import.setChecked(False)
+    dialog.apply(cfg)
+    assert cfg.inbox_dir == "~/Downloads" and cfg.auto_import is False
+    assert cfg.inbox_path == Path("~/Downloads").expanduser()

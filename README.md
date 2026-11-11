@@ -21,12 +21,49 @@ written in Python with PySide6 (Qt).
 - Toast messages instead of dialogs, a live play timer on the Launch button, and a
   fullscreen mode for the couch (`python -m arcadia --fullscreen` or F11)
 - Covers load lazily, so large libraries stay fast
+- **ROM sorting**: point Arcadia at your downloads folder and it moves each ROM into the
+  right system folder, asking you whenever it isn't sure (see below)
 - Presets for Nintendo (NES, SNES, Game Boy, Game Boy Color, GBA, N64), Sega (Genesis,
   Master System, Game Gear), and PlayStation / PSP, using standalone Flatpak emulators
   where they exist and RetroArch otherwise
 - "Surprise me" picks a random game from the current system
 - Controller-friendly: keyboard navigation works, and Steam Input maps a Steam Deck to it.
   A gamepad can also be read directly through evdev if the `evdev` package is installed.
+
+## Sorting ROMs from your downloads folder
+
+Set **Downloads folder (ROM inbox)** in File → Settings (or just choose File → Import ROMs…,
+which asks for it). Arcadia then watches that folder and decides which system each file belongs to
+using, strongest first:
+
+1. **The file's header**: iNES (NES), the Game Boy / Game Boy Color / GBA logos, N64 byte-order
+   markers, Sega Mega Drive / Master System / Game Gear headers, the SNES header checksum, PSP and
+   PlayStation disc markers, and what's inside a PBP. Zip files are opened and the ROM inside is checked.
+2. **The extension** (`.sfc`, `.gba`, `.cso`, ...).
+3. **The name**, used only as a hint (`(GBC)`, `Super Nintendo`, `Mega Drive`, ...).
+
+Each file gets a confidence:
+
+| Confidence | Meaning | What happens |
+|------------|---------|--------------|
+| ✓ certain  | The header confirms the extension | Moved automatically (turn this off in Settings to always ask) |
+| ~ likely   | The extension is clear but the header couldn't be verified | Listed, pre-ticked, for you to confirm |
+| ? unsure   | Ambiguous or contradictory: a `.gbc` with a Game Boy header, a `.chd` that could be PlayStation or PSP, a zip holding several ROMs, a `.7z` | Listed, **not** ticked. Pick the system and tick it to move it |
+
+Safety rules:
+
+- Nothing is ever overwritten. If a file with that name is already in the library it is skipped
+  (or, if you tick "keep both", the new one is renamed `Name (2).ext`).
+- Files still being downloaded (`.crdownload`, `.part`, or modified in the last few seconds) are left alone.
+- Files that don't look like ROMs are never touched.
+- A game that's running is never interrupted by the dialog; Arcadia asks once it's over.
+- Every move is recorded: **File → Undo last import** puts the files back where they came from.
+- Moves across drives are copied, size-checked, and only then removed from the downloads folder.
+- Cue sheets move together with the `.bin` tracks they list.
+
+Limits: `.7z` and `.rar` archives can't be inspected (they're only offered if the name mentions a
+system), `.chd` and `.cue` images can't be fully verified, multi-disc `.m3u` playlists aren't handled, and
+a zip is moved as one file rather than extracted, so a zip of 50 ROMs is treated as one game.
 
 ## Presets and Flatpak access
 
@@ -116,6 +153,8 @@ building, save-state snapshots, metadata, config round trips, and the window its
 arcadia/
   config.py      settings and default systems
   scanner.py     ROM discovery and title cleanup
+  sorter.py      identify ROMs in the downloads folder and move them safely, with undo
+  import_dialog.py  the confirm-before-moving dialog
   library.py     SQLite store (games, favorites, sessions)
   launcher.py    launch template -> argument list
   savestates.py  snapshot / restore of per-game saves
@@ -128,5 +167,6 @@ arcadia/
   main.py        entry point
 tests/
   test_core.py   scanning, library, launching, save states, config
-  test_ui.py     window and cover-flow smoke tests (skipped where Qt can't load)
+  test_sorter.py ROM identification, plans, safe moves, and undo
+  test_ui.py     window, cover flow, and import dialog tests (skipped where Qt can't load)
 ```

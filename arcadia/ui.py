@@ -12,10 +12,11 @@ import time
 import zlib
 from pathlib import Path
 
-from PySide6.QtCore import QEvent, QProcess, QPropertyAnimation, QSize, Qt, QTimer
+from PySide6.QtCore import QEvent, QFileSystemWatcher, QProcess, QPropertyAnimation, QSize, Qt, QTimer
 from PySide6.QtGui import QAction, QColor, QFont, QIcon, QKeyEvent, QKeySequence, QPainter, QPixmap, QShortcut
 from PySide6.QtWidgets import (
     QApplication,
+    QCheckBox,
     QComboBox,
     QDialog,
     QDialogButtonBox,
@@ -42,12 +43,14 @@ from PySide6.QtWidgets import (
 from arcadia.config import Config, SystemConfig
 from arcadia.coverflow import COVER_H, COVER_W, CoverFlow
 from arcadia.gamepad import ControllerReader
+from arcadia.import_dialog import ImportDialog
 from arcadia.launcher import LaunchError, build_command
 from arcadia.library import Library
 from arcadia.metadata import load_metadata
 from arcadia.presets import PRESETS, accent_for
 from arcadia.savestates import SaveStateError, create_snapshot, list_snapshots, restore_snapshot
 from arcadia.scanner import scan_system
+from arcadia.sorter import Confidence, Journal, Plan, apply_plan, build_plan
 from arcadia.theme import DEFAULT_ACCENT, Backdrop, Toast, build_stylesheet
 from arcadia.util import fmt_clock, fmt_duration, fmt_timestamp, snapshot_label
 
@@ -147,8 +150,20 @@ class SettingsDialog(QDialog):
         self.savestate_dir = QLineEdit(config.savestate_dir)
         self.savestate_dir.setPlaceholderText(str(config.savestate_path))
 
+        self.inbox_dir = QLineEdit(config.inbox_dir)
+        self.inbox_dir.setPlaceholderText("e.g. ~/Downloads  (leave empty to turn ROM sorting off)")
+        inbox_browse = QPushButton("Browse…")
+        inbox_browse.clicked.connect(self._browse_inbox)
+        inbox_row = QHBoxLayout()
+        inbox_row.addWidget(self.inbox_dir)
+        inbox_row.addWidget(inbox_browse)
+        self.auto_import = QCheckBox("Move ROMs automatically when their file header confirms the system (otherwise always ask)")
+        self.auto_import.setChecked(config.auto_import)
+
         form = QFormLayout()
         form.addRow("ROM root folder:", rom_row)
+        form.addRow("Downloads folder (ROM inbox):", inbox_row)
+        form.addRow("", self.auto_import)
         form.addRow("Media folder (covers, metadata):", self.media_dir)
         form.addRow("Save-state folder:", self.savestate_dir)
 
@@ -202,8 +217,16 @@ class SettingsDialog(QDialog):
         if folder:
             self.rom_root.setText(folder)
 
+    def _browse_inbox(self) -> None:
+        start = self.inbox_dir.text().strip() or str(Path.home() / "Downloads")
+        folder = QFileDialog.getExistingDirectory(self, "Downloads folder (ROM inbox)", start)
+        if folder:
+            self.inbox_dir.setText(folder)
+
     def apply(self, config: Config) -> None:
         config.rom_root = self.rom_root.text().strip() or config.rom_root
+        config.inbox_dir = self.inbox_dir.text().strip()
+        config.auto_import = self.auto_import.isChecked()
         config.media_dir = self.media_dir.text().strip()
         config.savestate_dir = self.savestate_dir.text().strip()
 
@@ -242,6 +265,10 @@ class MainWindow(QMainWindow):
         self.session_start = 0.0
         self._accent_hex = ""
         self._last_view: str | None = None
+        self._closed = False
+        self._importing = False  # an import dialog is open
+        self._asked: set[str] = set()  # inbox files the user has already been asked about
+        self.journal = Journal(config.journal_path)
 
         self.setWindowTitle("Arcadia")
         self.resize(1360, 860)
@@ -386,14 +413,31 @@ class MainWindow(QMainWindow):
         self.controller.action.connect(self.handle_action)
         self.controller.start()
 
-        self.rescan(initial=True)
+        # Watch the downloads folder: new files trigger a check after they've settled, and a
+        # slow poll catches files that finished downloading without a directory change.
+        self.inbox_watcher = QFileSystemWatcher(self)
+        self.inbox_watcher.directoryChanged.connect(lambda _p: self.inbox_debounce.start())
+        self.inbox_debounce = QTimer(self)
+        self.inbox_debounce.setSingleShot(True)
+        self.inbox_debounce.setInterval(6000)
+        self.inbox_debounce.timeout.connect(self.check_inbox)
+        self.inbox_poll = QTimer(self)
+        self.inbox_poll.setInterval(45000)
+        self.inbox_poll.timeout.connect(self.check_inbox)
+        self._setup_inbox()
+
+        self._scan_library(initial=True)
         QTimer.singleShot(0, self.coverflow.setFocus)
+        QTimer.singleShot(800, self.check_inbox)
 
     # ----- menu, fullscreen, persistence -----
 
     def _build_menu(self) -> None:
         file_menu = self.menuBar().addMenu("&File")
         file_menu.addAction("Rescan library", self.rescan, "Ctrl+R")
+        file_menu.addAction("Import ROMs…", self.import_roms, "Ctrl+I")
+        self.undo_import_action = file_menu.addAction("Undo last import", self.undo_import)
+        file_menu.aboutToShow.connect(self._update_undo_action)
         file_menu.addAction("Settings…", self.open_settings)
         file_menu.addSeparator()
         file_menu.addAction("Quit", self.close, "Ctrl+Q")
@@ -454,6 +498,12 @@ class MainWindow(QMainWindow):
     # ----- library & views -----
 
     def rescan(self, initial: bool = False) -> None:
+        """Sort anything waiting in the downloads folder, then rescan the library."""
+        if not initial:
+            self.check_inbox(rescan_after=False)
+        self._scan_library(initial)
+
+    def _scan_library(self, initial: bool = False) -> None:
         total = 0
         for system in self.config.systems:
             games = scan_system(self.config.rom_root_path, system)
@@ -783,6 +833,107 @@ class MainWindow(QMainWindow):
             focus = self.coverflow
         QApplication.sendEvent(focus, QKeyEvent(QEvent.Type.KeyPress, key, Qt.KeyboardModifier.NoModifier))
 
+    # ----- sorting ROMs from the downloads folder -----
+
+    def _setup_inbox(self) -> None:
+        for path in self.inbox_watcher.directories():
+            self.inbox_watcher.removePath(path)
+        inbox = self.config.inbox_path
+        if inbox is not None and inbox.is_dir():
+            self.inbox_watcher.addPath(str(inbox))
+            self.inbox_poll.start()
+        else:
+            self.inbox_poll.stop()
+
+    def check_inbox(self, rescan_after: bool = True) -> None:
+        """Look at the downloads folder. ROMs whose header confirms their system are moved
+        automatically (if enabled); anything else is put in front of the user once."""
+        inbox = self.config.inbox_path
+        if self._closed or self._importing or inbox is None or not inbox.is_dir():
+            return
+        plan = build_plan(inbox, self.config)
+        if not plan.items:
+            return
+
+        pending = plan.items
+        if self.config.auto_import:
+            auto = [i for i in plan.items if i.confidence is Confidence.CERTAIN and not i.exists]
+            if auto:
+                result = apply_plan(auto, self.journal)
+                if result.moved:
+                    n = len(result.moved)
+                    self.toast.show_message(f"Sorted {n} ROM{'s' if n != 1 else ''} into your library")
+                    if rescan_after:
+                        self._scan_library()
+                moved_ids = {id(i) for i in result.moved}
+                pending = [i for i in plan.items if id(i) not in moved_ids]
+
+        fresh = [i for i in pending if str(i.source) not in self._asked]
+        if fresh and self.process is None:  # don't interrupt a game with a dialog
+            self._asked.update(str(i.source) for i in pending)
+            self._show_import_dialog(Plan(items=pending, waiting=plan.waiting, ignored=plan.ignored), inbox)
+
+    def _show_import_dialog(self, plan: Plan, inbox) -> None:
+        self._importing = True
+        try:
+            dialog = ImportDialog(self.config, plan, self, inbox_label=str(inbox))
+            if dialog.exec() == QDialog.DialogCode.Accepted:
+                result = apply_plan(dialog.selected_items(), self.journal, keep_both=dialog.keep_both())
+                self._report_import(result)
+        finally:
+            self._importing = False
+
+    def _report_import(self, result) -> None:
+        if result.moved:
+            n = len(result.moved)
+            self.toast.show_message(f"Moved {n} ROM{'s' if n != 1 else ''} into your library")
+            self._scan_library()
+        if result.skipped:
+            lines = "\n".join(f"• {item.source.name}: {why}" for item, why in result.skipped)
+            QMessageBox.warning(self, "Some ROMs were not moved", lines)
+
+    def import_roms(self) -> None:
+        """File > Import ROMs: review everything in the downloads folder, including sure matches."""
+        inbox = self.config.inbox_path
+        if inbox is None or not inbox.is_dir():
+            start = str(inbox) if inbox else str(Path.home() / "Downloads")
+            folder = QFileDialog.getExistingDirectory(self, "Choose your downloads folder", start)
+            if not folder:
+                return
+            self.config.inbox_dir = folder
+            self._save_config()
+            self._setup_inbox()
+            inbox = self.config.inbox_path
+        plan = build_plan(inbox, self.config)
+        if not plan.items:
+            extra = f" ({len(plan.waiting)} still downloading)" if plan.waiting else ""
+            self.toast.show_message(f"No ROMs to import in {inbox}{extra}")
+            return
+        self._asked.update(str(i.source) for i in plan.items)
+        self._show_import_dialog(plan, inbox)
+
+    def _update_undo_action(self) -> None:
+        n = self.journal.last_count()
+        self.undo_import_action.setEnabled(n > 0)
+        self.undo_import_action.setText(f"Undo last import ({n} file{'s' if n != 1 else ''})" if n else "Undo last import")
+
+    def undo_import(self) -> None:
+        n = self.journal.last_count()
+        if not n:
+            return
+        answer = QMessageBox.question(
+            self, "Undo last import", f"Move the {n} file{'s' if n != 1 else ''} from the last import back to where they came from?"
+        )
+        if answer != QMessageBox.StandardButton.Yes:
+            return
+        restored, problems = self.journal.undo_last()
+        if restored:
+            self.toast.show_message(f"Moved {restored} file{'s' if restored != 1 else ''} back")
+            self._asked.clear()  # they're back in the inbox, so they may be offered again
+            self._scan_library()
+        if problems:
+            QMessageBox.warning(self, "Some files were not moved back", "\n".join(f"• {p}" for p in problems))
+
     # ----- settings & shutdown -----
 
     def open_settings(self) -> None:
@@ -790,9 +941,14 @@ class MainWindow(QMainWindow):
         if dialog.exec() == QDialog.DialogCode.Accepted:
             dialog.apply(self.config)
             self._save_config()
+            self.journal = Journal(self.config.journal_path)
+            self._setup_inbox()
             self.rescan()
 
     def closeEvent(self, event) -> None:
+        self._closed = True
+        self.inbox_debounce.stop()
+        self.inbox_poll.stop()
         self.controller.stop()
         if self.process is not None:
             self.process.terminate()
