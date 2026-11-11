@@ -11,8 +11,8 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
-from PySide6.QtCore import QEasingCurve, QPointF, QRectF, QSize, Qt, QTimer, QVariantAnimation, Signal
-from PySide6.QtGui import QColor, QFont, QKeyEvent, QPainter, QPen, QRadialGradient
+from PySide6.QtCore import QEasingCurve, QPointF, QRectF, Qt, QTimer, QVariantAnimation, Signal
+from PySide6.QtGui import QColor, QFont, QKeyEvent, QPainter, QRadialGradient
 from PySide6.QtWidgets import QWidget
 
 from arcadia import pixelart

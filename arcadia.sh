@@ -51,4 +51,6 @@ if [ "${ARCADIA_DRY_RUN:-}" = 1 ]; then
   exit 0
 fi
 mkdir -p "$(dirname "$LOG")"
+# keep the log from growing forever: start over once it passes 1 MB
+[ -f "$LOG" ] && [ "$(stat -c %s "$LOG" 2>/dev/null || echo 0)" -gt 1048576 ] && mv -f "$LOG" "$LOG.old"
 exec "${command[@]}" 2>>"$LOG"

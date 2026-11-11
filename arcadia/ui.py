@@ -15,7 +15,7 @@ import zlib
 from pathlib import Path
 
 from PySide6.QtCore import QEvent, QFileSystemWatcher, QProcess, QProcessEnvironment, QPropertyAnimation, QSize, Qt, QTimer, QUrl
-from PySide6.QtGui import QAction, QActionGroup, QColor, QDesktopServices, QFont, QIcon, QKeyEvent, QKeySequence, QPainter, QPixmap, QShortcut
+from PySide6.QtGui import QAction, QActionGroup, QColor, QDesktopServices, QFont, QKeyEvent, QKeySequence, QPainter, QPixmap, QShortcut
 from PySide6.QtWidgets import (
     QAbstractButton,
     QAbstractItemView,
@@ -39,9 +39,7 @@ from PySide6.QtWidgets import (
     QHeaderView,
     QLabel,
     QLineEdit,
-    QListView,
     QListWidget,
-    QListWidgetItem,
     QMainWindow,
     QMenu,
     QMessageBox,
