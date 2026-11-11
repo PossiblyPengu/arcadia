@@ -13,6 +13,7 @@ CONFIG_HOME = Path(os.environ.get("XDG_CONFIG_HOME") or Path.home() / ".config")
 DATA_HOME = Path(os.environ.get("XDG_DATA_HOME") or Path.home() / ".local" / "share") / "arcadia"
 CONFIG_PATH = CONFIG_HOME / "config.json"
 DEFAULT_HOME = Path.home() / "Arcadia"
+DEFAULT_REMOTE = "gdrive:Arcadia"  # the name `rclone config` suggests for Google Drive
 
 # (id, display name, ROM folder under rom_root, accepted extensions)
 _DEFAULT_SYSTEM_ROWS = [
@@ -115,7 +116,7 @@ class Config:
     ra_integer_scale: bool = False
     ra_auto_save_state: bool = False  # save on exit and load on start
     ra_saves_in_home: bool = False  # keep RetroArch's in-game saves in Arcadia's saves/ folder (existing saves aren't moved)
-    sync_remote: str = ""  # an rclone remote and folder, e.g. "gdrive:Arcadia"; used instead of sync_dir when set
+    sync_remote: str = DEFAULT_REMOTE  # an rclone remote and folder (Google Drive by default); used instead of sync_dir when set
     sync_dir: str = ""  # a folder (Syncthing, cloud drive, SD card) saves are kept in step with; empty = off
     systems: list[SystemConfig] = field(default_factory=default_systems)
 
@@ -229,6 +230,8 @@ class Config:
         kwargs = {k: v for k, v in raw.items() if k in known}
         if home is not None:
             kwargs["home_dir"] = str(home)
+        if "sync_remote" not in raw and raw.get("sync_dir"):
+            kwargs["sync_remote"] = ""  # a config that chose a plain folder before rclone existed keeps using it
         systems = []
         for raw_system in systems_raw:
             system = SystemConfig(**raw_system)

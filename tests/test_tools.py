@@ -205,6 +205,7 @@ def test_grant_access_reports_failure_and_missing_flatpak():
 
 def sync_config(tmp_path) -> Config:
     config = make_config(tmp_path)
+    config.sync_remote = ""
     config.sync_dir = str(tmp_path / "cloud")
     return config
 
@@ -416,7 +417,19 @@ def test_listing_remotes_and_choosing_the_target(tmp_path):
     with pytest.raises(savesync.SyncError):
         savesync.rclone_remotes(which=lambda _: None)
     config = make_config(tmp_path)
+    config.sync_remote = ""
     config.sync_dir = str(tmp_path / "folder")
     (config.saves_path / "g.srm").write_bytes(b"x")
     savesync.run_sync(config, retroarch_saves=tmp_path / "x")  # no remote set: uses the folder
     assert (tmp_path / "folder" / "Arcadia" / "saves" / "g.srm").is_file()
+
+
+def test_google_drive_via_rclone_is_the_default_but_old_folder_configs_keep_working(tmp_path):
+    assert Config.new_install(tmp_path).sync_remote == "gdrive:Arcadia"
+    import json
+    path = tmp_path / "old.json"
+    path.write_text(json.dumps({"sync_dir": "/mnt/sd"}))
+    old = Config.load(path)
+    assert old.sync_remote == "" and old.sync_dir == "/mnt/sd"
+    path.write_text(json.dumps({"rom_root": "/r"}))
+    assert Config.load(path).sync_remote == "gdrive:Arcadia"

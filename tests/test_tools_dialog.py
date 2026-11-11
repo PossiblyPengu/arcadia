@@ -75,6 +75,7 @@ def test_cores_button_installs_and_refreshes(dialog, monkeypatch, tmp_path):
 
 def test_sync_buttons_preview_then_copy(dialog, tmp_path):
     (dialog.config.saves_path / "a.srm").write_bytes(b"x")
+    dialog.remote_edit.setText("")
     dialog.sync_edit.setText(str(tmp_path / "cloud"))
     dialog.run_sync(dry_run=True)
     assert "Would copy 1" in dialog.sync_result.text() and not (tmp_path / "cloud").exists()
@@ -84,6 +85,7 @@ def test_sync_buttons_preview_then_copy(dialog, tmp_path):
 
 
 def test_sync_errors_are_shown(dialog):
+    dialog.remote_edit.setText("")
     dialog.sync_edit.setText("")
     dialog.run_sync(dry_run=False)
     assert "Choose a sync folder" in dialog.sync_result.text()

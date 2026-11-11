@@ -310,10 +310,13 @@ large. It does **not** hold ROMs, emulator programs, or anything a Flatpak emula
   here goes to `backups/savesync/` first. "Preview" shows what would happen.
   - **Google Drive** (or any cloud rclone supports): install [rclone](https://rclone.org/install/), run `rclone config`
     once and add a remote of type `drive` (it opens a browser to log in to Google; do this in Desktop Mode on a Deck),
-    then enter e.g. `gdrive:Arcadia` in the "rclone" box ("Find remotes" lists yours). Arcadia keeps a local mirror in
+    then `gdrive:Arcadia` is already filled in as the default (change it to match your remote's name) ("Find remotes" lists yours). Arcadia keeps a local mirror in
     `data/sync-cache`, pulls the Drive folder into it, runs the same sync as above, and pushes back, using only
     `rclone copy` (which never deletes). Arcadia never sees your Google login; rclone stores it. Use the same remote
-    folder on every device. A plain folder is used when the rclone box is empty.
+    folder on every device. A plain folder is used only when the rclone box is empty.
+  - **Delta (iOS) can't be synced this way.** Delta stores its Google Drive sync in Drive's hidden *app data* area,
+    which only Delta's own Google login can read (read from Harmony-Drive, the library Delta uses). rclone and Arcadia
+    can't see or write it, and guessing at its format could corrupt your Delta sync.
 - `saves/` is also part of backups now.
 
 ### Not done yet
