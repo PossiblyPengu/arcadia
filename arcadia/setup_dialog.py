@@ -104,7 +104,7 @@ class BringInDialog(QDialog, _Busy):
         self._had_source = False  # a ROM folder was looked at (as opposed to only Downloads)
         self._task = None
         self.setWindowTitle("Bring my ROMs in")
-        self.resize(940, 800)
+        self.resize(940, 700)
 
         intro = QLabel(
             "Pick your existing ROM folder (the one that holds nes/, psx/, snes/ and so on), your Downloads folder, "

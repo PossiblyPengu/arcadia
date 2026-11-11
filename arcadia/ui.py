@@ -17,7 +17,15 @@ from pathlib import Path
 from PySide6.QtCore import QEvent, QFileSystemWatcher, QProcess, QProcessEnvironment, QPropertyAnimation, QSize, Qt, QTimer, QUrl
 from PySide6.QtGui import QAction, QActionGroup, QColor, QDesktopServices, QFont, QIcon, QKeyEvent, QKeySequence, QPainter, QPixmap, QShortcut
 from PySide6.QtWidgets import (
+    QAbstractButton,
+    QAbstractItemView,
+    QAbstractSlider,
+    QAbstractSpinBox,
+    QPlainTextEdit,
+    QTabBar,
+    QTextEdit,
     QProgressDialog,
+    QTabWidget,
     QStackedWidget,
     QApplication,
     QCheckBox,
@@ -49,7 +57,7 @@ from arcadia.consoles_view import ConsoleCarousel, Entry
 from arcadia.coverflow import COVER_H, COVER_W, CoverFlow
 from arcadia.empty_state import EmptyState
 from arcadia.welcome_dialog import WelcomeDialog
-from arcadia import logos, pixelart
+from arcadia import logos, pixelart, screenfit
 from arcadia.sounds import Sounds
 from arcadia.transitions import ZoomOverlay
 from arcadia.bundles import parse_switch
@@ -302,6 +310,7 @@ class MainWindow(QMainWindow):
         self._db_path = config.db_path
 
         self._configure_art()  # your own pictures, your downloaded logos, and which style to show
+        screenfit.install()  # dialogs shrink to the screen (a Steam Deck's is small)
         self.setWindowTitle("Arcadia")
         self.resize(1360, 860)
         self.setStyleSheet(build_stylesheet(DEFAULT_ACCENT))
@@ -1155,6 +1164,8 @@ class MainWindow(QMainWindow):
     def handle_action(self, name: str) -> None:
         """Controller buttons. On the console screen the D-pad moves between tiles and A opens one;
         on the game screen it browses games, A launches, B goes back, and the bumpers change console."""
+        if self._pad_in_dialog(name):  # a dialog is open: the controller drives it, not the window behind
+            return
         if name == "favorite":
             if self.on_games_page():
                 self.toggle_favorite()
@@ -1178,6 +1189,50 @@ class MainWindow(QMainWindow):
         if self.on_games_page() and name in ("up", "down"):
             return  # nothing above or below the shelf
         QApplication.sendEvent(target, QKeyEvent(QEvent.Type.KeyPress, key, Qt.KeyboardModifier.NoModifier))
+
+    def _pad_in_dialog(self, name: str) -> bool:
+        """Controller input while a dialog (or a drop-down list) is open. Returns True if one was, and handled it.
+        D-pad moves between controls, A presses the focused one, B closes, the bumpers change tab."""
+        popup, modal = QApplication.activePopupWidget(), QApplication.activeModalWidget()
+        target = popup or modal
+        if target is None:
+            return False
+        focus = QApplication.focusWidget()
+        if name == "back":
+            QApplication.sendEvent(target, QKeyEvent(QEvent.Type.KeyPress, Qt.Key.Key_Escape, Qt.KeyboardModifier.NoModifier))
+        elif name == "confirm":
+            if popup is not None:
+                QApplication.sendEvent(popup, QKeyEvent(QEvent.Type.KeyPress, Qt.Key.Key_Return, Qt.KeyboardModifier.NoModifier))
+            elif isinstance(focus, QAbstractButton):
+                focus.click()
+            elif isinstance(focus, QComboBox):
+                focus.showPopup()
+            elif focus is None or focus is modal:
+                default = next((b for b in modal.findChildren(QPushButton) if b.isDefault() and b.isEnabled()), None)
+                if default is not None:
+                    default.click()
+            else:
+                QApplication.sendEvent(focus, QKeyEvent(QEvent.Type.KeyPress, Qt.Key.Key_Return, Qt.KeyboardModifier.NoModifier))
+        elif name in ("up", "down", "left", "right"):
+            forward = name in ("down", "right")
+            key = QKeyEvent(QEvent.Type.KeyPress, ACTION_KEYS[name], Qt.KeyboardModifier.NoModifier)
+            if popup is not None:
+                QApplication.sendEvent(popup, key)  # moves within the open drop-down list
+            elif isinstance(focus, QAbstractItemView):  # a list or table: the arrows move its selection...
+                before = focus.currentIndex()
+                QApplication.sendEvent(focus, key)
+                if focus.currentIndex() == before:  # ...and at its end they move on to the next control
+                    modal.focusNextPrevChild(forward)
+            elif isinstance(focus, (QAbstractSlider, QAbstractSpinBox, QLineEdit, QTextEdit, QPlainTextEdit, QTabBar)):
+                QApplication.sendEvent(focus, key)
+            else:  # buttons, checkboxes, drop-downs: step through the dialog's controls in order
+                modal.focusNextPrevChild(forward)
+        elif name in ("prev_system", "next_system"):
+            tabs = modal.findChild(QTabWidget)
+            if tabs is not None:
+                step = -1 if name == "prev_system" else 1
+                tabs.setCurrentIndex(max(0, min(tabs.count() - 1, tabs.currentIndex() + step)))
+        return True
 
     # ----- sorting ROMs from the downloads folder -----
 

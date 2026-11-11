@@ -32,9 +32,8 @@ written in Python with PySide6 (Qt).
     label the console, so they aren't shipped with Arcadia; it asks first and keeps the originals in
     `media/logos/source`). Each is then redrawn in its era's style: the NES logo a few chunky pixels in a handful of
     colours, the SNES's finer, the N64's sharper with more colours, the HD-era ones smooth, each on a light or dark
-    plaque so black and white logos both show. A console with no logo shows its drawing: that's the arcade cabinet
-    (there isn't one logo for "arcade") and the Wii U (no logo file is on Wikipedia or Commons). Of the 33 consoles
-    with a listed logo, 32 were downloaded and checked; the list is `arcadia/assets/logo_sources.json`.
+    plaque so black and white logos both show. A console with no logo shows its drawing: that's the arcade cabinet, as it has no single logo. All 33 consoles with a listed logo were
+    downloaded and checked; the list is `arcadia/assets/logo_sources.json`.
   - **Console drawings**: original pixel-art drawings of each console (modelled in real centimetres with details
     placed from reference photographs, then drawn at its era's size and colour depth; `tools/make_console_art.py`,
     needs Pillow, numpy and PySide6; Arcadia itself only loads the finished PNGs).
@@ -520,6 +519,11 @@ media/snes/Super Mario World.png    cover art (png, jpg, jpeg, webp)
 | Search (all games, from the console screen) | Ctrl+F | — |
 | Fullscreen | F11 | — |
 | Rescan | Ctrl+R | — |
+
+**In dialogs** (Settings, Setup, Emulators, the checklist and so on) the controller drives the dialog instead of the
+window behind it: the D-pad steps through the controls (or moves within a list, table or drop-down), A presses the
+focused control, B closes the dialog (or just an open drop-down), and the bumpers change tab. The focused control is
+outlined in the accent colour. Every dialog fits a Steam Deck's screen and shrinks to any smaller one.
 
 ## Tests
 

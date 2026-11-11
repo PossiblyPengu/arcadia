@@ -79,6 +79,10 @@ def build_stylesheet(accent: str) -> str:
     QTabBar::tab:selected {{ background: {accent}; color: white; font-weight: 600; }}
     QCheckBox {{ background: transparent; spacing: 8px; }}
     QCheckBox::indicator {{ width: 16px; height: 16px; border-radius: 5px; border: 1px solid {_white(35)}; background: {_white(6)}; }}
+    QCheckBox:focus {{ color: white; }}
+    QCheckBox::indicator:focus {{ border: 2px solid {accent}; }}
+    QTabBar::tab:focus {{ border: 2px solid {accent}; }}
+    QTableWidget:focus, QListWidget:focus {{ border: 1px solid {accent}; }}
     QCheckBox::indicator:checked {{ background: {accent}; border: 1px solid {accent}; }}
     QScrollBar:vertical {{ background: transparent; width: 12px; margin: 0; }}
     QScrollBar::handle:vertical {{ background: {_white(22)}; border-radius: 5px; min-height: 28px; }}
