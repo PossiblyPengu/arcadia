@@ -19,7 +19,11 @@ written in Python with PySide6 (Qt).
   sides, and the ring wraps around (after the last comes the first). Hover any console and it glows. Consoles with no
   games are hidden; **Recently played**, **Favorites** and **All games** are on the ring too. Open the middle one to
   get that console's cover-flow shelf, and go back with Esc / B / the "Consoles" button. Ctrl+F from the console
-  screen searches every game.
+  screen searches every game. Moving between the two screens is a short zoom (the screen you leave swells or
+  shrinks away over the new one).
+- **Sound effects** (View → Sound effects, on by default): a soft tick as the console ring turns, a chime on opening
+  a console, a falling tone on going back. They are tiny generated tones (`assets/sounds`, made by
+  `tools/make_sounds.py`); with no audio device, or with the setting off, nothing plays and nothing breaks.
 - **The console pictures are pixel art made from real photographs** of each console (33 of them), so they look like
   the real hardware. The photos are from Wikimedia Commons (public domain, CC0 or CC BY-SA 3.0); every source,
   author and licence is in `arcadia/assets/consoles/ATTRIBUTION.md`. The arcade cabinet, the Recently played /
@@ -547,6 +551,8 @@ arcadia/
   coverflow.py   animated cover-flow carousel with lazy cover loading
   consoles_view.py  the rotating console carousel (the first screen)
   pixelart.py    picks each console's picture (yours, the bundled pixel art, or a generic cartridge) and draws the glow
+  transitions.py the zoom between the two screens
+  sounds.py      the small sound effects (assets/sounds/*.wav)
   assets/consoles/  the bundled pixel-art console pictures and their credits
   ../tools/      scripts that rebuild those pictures from the source photographs
   gamepad.py     optional evdev controller input

@@ -49,6 +49,8 @@ from arcadia.coverflow import COVER_H, COVER_W, CoverFlow
 from arcadia.empty_state import EmptyState
 from arcadia.welcome_dialog import WelcomeDialog
 from arcadia import pixelart
+from arcadia.sounds import Sounds
+from arcadia.transitions import ZoomOverlay
 from arcadia.bundles import parse_switch
 from arcadia.emulators import Installer
 from arcadia.emulators_dialog import EmulatorsDialog
@@ -307,8 +309,10 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.backdrop)
         outer = QVBoxLayout(self.backdrop)
         outer.setContentsMargins(0, 0, 0, 0)
+        self.sounds = Sounds(config.sounds)
         self.stack = QStackedWidget()  # page 0: choose a console; page 1: choose a game
         outer.addWidget(self.stack)
+        self.zoom = ZoomOverlay(self.backdrop)  # the zoom between the two screens
         self.games_page = QWidget()
         root = QVBoxLayout(self.games_page)
         root.setContentsMargins(32, 14, 32, 10)
@@ -367,6 +371,7 @@ class MainWindow(QMainWindow):
         cp.addWidget(self.choose_lbl)
         self.carousel = ConsoleCarousel()
         self.carousel.currentChanged.connect(self._on_system_changed)
+        self.carousel.currentChanged.connect(lambda _i: self.sounds.play("tick"))
         self.carousel.activated.connect(lambda _i: self.show_games())
         cp.addWidget(self.carousel, 1)
         self.console_empty = EmptyState()
@@ -512,6 +517,10 @@ class MainWindow(QMainWindow):
         file_menu.addAction("Quit", self.close, "Ctrl+Q")
 
         view_menu = self.menuBar().addMenu("&View")
+        self.sounds_action = QAction("Sound effects", self, checkable=True)
+        self.sounds_action.setChecked(self.config.sounds)
+        self.sounds_action.toggled.connect(self._on_sounds_toggled)
+        view_menu.addAction(self.sounds_action)
         view_menu.addAction("Use my own console pictures…", self.open_console_art)
         view_menu.addSeparator()
         self.fullscreen_action = QAction("Fullscreen", self, checkable=True)
@@ -554,6 +563,13 @@ class MainWindow(QMainWindow):
         self.config.sort = self.sort_combo.currentData()
         self._save_config()
         self.populate_games()
+
+    def _on_sounds_toggled(self, checked: bool) -> None:
+        self.config.sounds = checked
+        self.sounds.enabled = checked
+        self._save_config()
+        if checked:
+            self.sounds.play("open")
 
     def _on_show_empty_toggled(self, checked: bool) -> None:
         self.config.show_empty_systems = checked
@@ -648,7 +664,9 @@ class MainWindow(QMainWindow):
         if self.current_system_id() is None:
             return
         self.populate_games()
-        self.stack.setCurrentIndex(1)
+        if not self.on_games_page():
+            self.sounds.play("open")
+            self._switch_page(1, grow=True)
         (self.coverflow if self.coverflow.isVisible() else self.back_btn).setFocus()
 
     def show_consoles(self) -> None:
@@ -656,8 +674,18 @@ class MainWindow(QMainWindow):
         self.search.clear()  # a search belongs to the console you were in
         self.search.blockSignals(False)
         self.populate_games()
-        self.stack.setCurrentIndex(0)
+        if self.on_games_page():
+            self.sounds.play("back")
+            self._switch_page(0, grow=False)
         self.carousel.setFocus()
+
+    def _switch_page(self, index: int, grow: bool) -> None:
+        """Change screens with the zoom (just a cut when the window isn't on screen)."""
+        snapshot = self.stack.grab() if self.isVisible() and self.stack.width() > 100 else None
+        self.zoom.finish()
+        self.stack.setCurrentIndex(index)
+        if snapshot is not None:
+            self.zoom.start(snapshot, grow)
 
     def on_games_page(self) -> bool:
         return self.stack.currentIndex() == 1

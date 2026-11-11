@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageEnhance
+from PIL import Image, ImageDraw, ImageEnhance, ImageFilter
 
 MAX_W, MAX_H = 104, 78  # the pixel size of the biggest side of a finished picture
 COLORS = 28
@@ -26,7 +26,7 @@ HERE = Path(__file__).resolve().parent
 OUT = HERE.parent / "arcadia" / "assets" / "consoles"
 
 
-def cut_out(image: Image.Image) -> Image.Image:
+def cut_out(image: Image.Image, pocket: int = 253) -> Image.Image:
     """Make the (white) background transparent: only white connected to the picture's edge goes."""
     im = image.convert("RGBA")
     flat = Image.new("RGB", im.size, (255, 255, 255))
@@ -41,16 +41,16 @@ def cut_out(image: Image.Image) -> Image.Image:
             ImageDraw.floodfill(work, xy, sentinel, thresh=16)
     arr = np.array(work)
     background = (arr[:, :, 0] == 255) & (arr[:, :, 1] == 0) & (arr[:, :, 2] == 255)
-    background |= _white_pockets(np.array(flat), background)
+    background |= _white_pockets(np.array(flat), background, pocket)
     out = np.array(flat.convert("RGBA"))
     out[:, :, 3] = np.where(background, 0, 255)
     return Image.fromarray(out)
 
 
-def _white_pockets(rgb: np.ndarray, background: np.ndarray) -> np.ndarray:
+def _white_pockets(rgb: np.ndarray, background: np.ndarray, level: int = 253) -> np.ndarray:
     """Pure white areas the edge fill couldn't reach (the gap inside a loop of cable, say). A console's own
     whites are never quite pure, so a sizeable patch of pure white is background."""
-    white = (rgb.min(axis=2) >= 253) & ~background
+    white = (rgb.min(axis=2) >= level) & ~background
     h, w = white.shape
     seen = np.zeros_like(white)
     pockets = np.zeros_like(white)
@@ -72,7 +72,28 @@ def _white_pockets(rgb: np.ndarray, background: np.ndarray) -> np.ndarray:
     return pockets
 
 
-def pixelate(image: Image.Image) -> Image.Image:
+def remove_cables(image: Image.Image, radius: int) -> Image.Image:
+    """Take off thin things (controller cables, stray wires): shrink the shape, then grow it back, which
+    drops anything narrower than the radius and leaves the console itself as it was."""
+    alpha = image.split()[3]
+    size = radius * 2 + 1
+    opened = alpha.filter(ImageFilter.MinFilter(size)).filter(ImageFilter.MaxFilter(size))
+    image = image.copy()
+    image.putalpha(Image.fromarray(np.minimum(np.array(alpha), np.array(opened))))
+    return image
+
+
+def erase_regions(image: Image.Image, boxes: list[list[float]]) -> Image.Image:
+    """Make rectangles (as fractions of the picture) transparent: for a controller that overlaps the console."""
+    image = image.copy()
+    draw = ImageDraw.Draw(image)
+    w, h = image.size
+    for left, top, right, bottom in boxes:
+        draw.rectangle((int(left * w), int(top * h), int(right * w), int(bottom * h)), fill=(0, 0, 0, 0))
+    return image
+
+
+def pixelate(image: Image.Image, lift: float = 1.0) -> Image.Image:
     box = image.getbbox()
     image = image.crop(box)
     w, h = image.size
@@ -81,6 +102,8 @@ def pixelate(image: Image.Image) -> Image.Image:
     small = image.resize(size, Image.BOX)
     alpha = np.array(small.split()[3]) >= 150
     rgb = small.convert("RGB")
+    if lift != 1.0:  # dark consoles are brightened so they read against a dark screen
+        rgb = ImageEnhance.Brightness(rgb).enhance(lift)
     rgb = ImageEnhance.Color(rgb).enhance(1.12)
     rgb = ImageEnhance.Contrast(rgb).enhance(1.08)
     quant = np.array(rgb.quantize(colors=COLORS, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE).convert("RGB"))
@@ -111,10 +134,17 @@ def main(argv: list[str]) -> int:
             print(f"{cid}: no photo, skipped")
             continue
         image = Image.open(found)
-        left, top, right, bottom = crops.get(cid, [0, 0, 1, 1])
+        spec = crops.get(cid, [0, 0, 1, 1])
+        spec = {"crop": spec} if isinstance(spec, list) else spec
+        left, top, right, bottom = spec.get("crop", [0, 0, 1, 1])
         w, h = image.size
         image = image.crop((int(left * w), int(top * h), int(right * w), int(bottom * h)))
-        pixelate(cut_out(image)).save(OUT / f"{cid}.png", optimize=True)
+        cut = cut_out(image, spec.get("pocket", 253))
+        if spec.get("cables"):
+            cut = remove_cables(cut, spec["cables"])
+        if spec.get("erase"):
+            cut = erase_regions(cut, spec["erase"])
+        pixelate(cut, spec.get("lift", 1.0)).save(OUT / f"{cid}.png", optimize=True)
         print(f"{cid}: done")
     return 0
 

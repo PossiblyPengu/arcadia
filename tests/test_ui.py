@@ -1474,3 +1474,60 @@ def test_every_bundled_picture_is_credited(qapp):
     text = (pixelart.ASSETS / "ATTRIBUTION.md").read_text(encoding="utf-8")
     for f in sorted(pixelart.ASSETS.glob("*.png")):
         assert f"`{f.stem}`" in text, f"{f.stem} is missing from ATTRIBUTION.md"
+
+
+# ---------- transition and sound ----------
+
+def test_opening_and_leaving_a_console_zooms_and_clears_itself(window, qapp):
+    window.resize(1000, 700)
+    qapp.processEvents()
+    assert not window.zoom.running()
+    window.show_games()
+    assert window.on_games_page() and window.zoom.running()  # the old screen is zooming away over the new one
+    for _ in range(40):
+        QTest.qWait(16)
+    assert not window.zoom.running() and not window.zoom.isVisible()
+    window.show_consoles()
+    assert not window.on_games_page() and window.zoom.running()
+    window.show_games()  # a quick second press never leaves a stale overlay behind
+    for _ in range(40):
+        QTest.qWait(16)
+    assert not window.zoom.running() and window.on_games_page()
+
+
+def test_the_zoom_does_not_block_clicks(window, qapp):
+    from PySide6.QtCore import Qt
+
+    window.show_games()
+    assert window.zoom.testAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+    window.zoom.finish()
+
+
+def test_sounds_play_only_when_on_and_never_fail_without_audio(tmp_path):
+    from arcadia.sounds import ASSETS, NAMES, Sounds
+
+    for name in NAMES:
+        assert (ASSETS / f"{name}.wav").stat().st_size > 1000
+    s = Sounds(enabled=False)
+    assert s.play("tick") is False
+    s.enabled = True
+    assert s.play("nonsense") is False
+    s.play("tick")  # whether or not this machine has speakers, it must not raise
+    s.play("open")
+    assert Sounds(enabled=True, folder=tmp_path).play("tick") is False  # missing files: silent
+
+
+def test_the_ring_ticks_and_screens_chime_and_the_menu_toggles_it(window, monkeypatch):
+    played = []
+    monkeypatch.setattr(window.sounds, "play", lambda name: played.append(name) or True)
+    window.carousel.rotate(1)
+    window.show_games()
+    window.zoom.finish()
+    window.show_consoles()
+    window.zoom.finish()
+    assert played == ["tick", "open", "back"]
+    window.show_consoles()  # already there: no second chime
+    assert played == ["tick", "open", "back"]
+    window.sounds_action.setChecked(False)
+    assert window.config.sounds is False and window.sounds.enabled is False
+    assert '"sounds": false' in window.config_path.read_text()
