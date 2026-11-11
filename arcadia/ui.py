@@ -1,4 +1,9 @@
-"""Qt user interface: system rail, cover-flow shelf, details panel, and settings."""
+"""Qt user interface.
+
+Layout, top to bottom: wordmark with search and sort, a bar of system pills, the
+current system's banner, the cover-flow shelf, then the selected game's info and
+actions, and a line of key hints. Messages appear as toasts.
+"""
 
 from __future__ import annotations
 
@@ -7,11 +12,10 @@ import time
 import zlib
 from pathlib import Path
 
-from PySide6.QtCore import QEvent, QPropertyAnimation, QProcess, QSize, Qt, QTimer
-from PySide6.QtGui import QColor, QFont, QIcon, QKeyEvent, QKeySequence, QPainter, QPalette, QPixmap, QShortcut
+from PySide6.QtCore import QEvent, QProcess, QPropertyAnimation, QSize, Qt, QTimer
+from PySide6.QtGui import QAction, QColor, QFont, QIcon, QKeyEvent, QKeySequence, QPainter, QPixmap, QShortcut
 from PySide6.QtWidgets import (
     QApplication,
-    QCheckBox,
     QComboBox,
     QDialog,
     QDialogButtonBox,
@@ -22,12 +26,13 @@ from PySide6.QtWidgets import (
     QHeaderView,
     QLabel,
     QLineEdit,
+    QListView,
     QListWidget,
     QListWidgetItem,
     QMainWindow,
+    QMenu,
     QMessageBox,
     QPushButton,
-    QSplitter,
     QTableWidget,
     QTableWidgetItem,
     QVBoxLayout,
@@ -43,10 +48,22 @@ from arcadia.metadata import load_metadata
 from arcadia.presets import PRESETS, accent_for
 from arcadia.savestates import SaveStateError, create_snapshot, list_snapshots, restore_snapshot
 from arcadia.scanner import scan_system
-from arcadia.util import fmt_duration, fmt_timestamp
+from arcadia.theme import DEFAULT_ACCENT, Backdrop, Toast, build_stylesheet
+from arcadia.util import fmt_clock, fmt_duration, fmt_timestamp, snapshot_label
 
 COVER_SIZE = QSize(COVER_W, COVER_H)
-DETAIL_COVER = QSize(220, 300)
+
+VIEW_RECENT = "__recent__"
+VIEW_FAVORITES = "__favorites__"
+VIEW_ACCENTS = {VIEW_RECENT: "#f2a33a", VIEW_FAVORITES: "#ff5a7a"}
+VIEW_NAMES = {VIEW_RECENT: "Recently played", VIEW_FAVORITES: "Favorites"}
+
+SORT_CHOICES = [
+    ("A – Z", "title"),
+    ("Recently played", "recent"),
+    ("Most played", "played"),
+    ("Favorites first", "favorites"),
+]
 
 ACTION_KEYS = {
     "up": Qt.Key.Key_Up,
@@ -57,22 +74,35 @@ ACTION_KEYS = {
     "back": Qt.Key.Key_Escape,
 }
 
+HINTS = "←  →  browse     A–Z  jump to letter     Enter  launch     ↑  systems     Ctrl+D  favorite     Ctrl+F  search     F11  fullscreen"
+
+
+def _shorten(text: str, limit: int) -> str:
+    """Trim to limit characters at a word boundary, adding an ellipsis."""
+    if len(text) <= limit:
+        return text
+    cut = text[:limit].rsplit(" ", 1)[0].rstrip(",.;:- ")
+    return cut + "…"
+
+
+def view_accent(view_id: str) -> str:
+    return VIEW_ACCENTS.get(view_id) or accent_for(view_id)
+
 
 def placeholder_pixmap(title: str, size: QSize, base: str | None = None) -> QPixmap:
     """Colored tile with the title, used when a game has no cover art."""
-    hue = zlib.crc32(title.encode("utf-8")) % 360
-    color = QColor(base) if base else QColor.fromHsv(hue, 140, 110)
-    if base:
-        color = color.darker(120)
+    color = QColor(base) if base else QColor.fromHsv(zlib.crc32(title.encode("utf-8")) % 360, 140, 110)
+    color = color.darker(125)
     pix = QPixmap(size)
     pix.fill(color)
     painter = QPainter(pix)
     painter.setPen(QColor("white"))
     font = painter.font()
     font.setBold(True)
+    font.setPointSize(font.pointSize() + 5)
     painter.setFont(font)
     painter.drawText(
-        pix.rect().adjusted(10, 10, -10, -10),
+        pix.rect().adjusted(16, 16, -16, -16),
         int(Qt.AlignmentFlag.AlignCenter | Qt.TextFlag.TextWordWrap),
         title,
     )
@@ -80,7 +110,7 @@ def placeholder_pixmap(title: str, size: QSize, base: str | None = None) -> QPix
     return pix
 
 
-def dot_icon(color: str) -> QIcon:
+def _dot(color: str) -> QPixmap:
     pix = QPixmap(14, 14)
     pix.fill(Qt.GlobalColor.transparent)
     painter = QPainter(pix)
@@ -89,7 +119,14 @@ def dot_icon(color: str) -> QIcon:
     painter.setPen(Qt.PenStyle.NoPen)
     painter.drawEllipse(1, 1, 12, 12)
     painter.end()
-    return QIcon(pix)
+    return pix
+
+
+def dot_icon(color: str) -> QIcon:
+    """Colored dot for a system pill; turns white when the pill is selected (the pill takes the color)."""
+    icon = QIcon(_dot(color))
+    icon.addPixmap(_dot("#ffffff"), QIcon.Mode.Selected)
+    return icon
 
 
 class SettingsDialog(QDialog):
@@ -155,8 +192,7 @@ class SettingsDialog(QDialog):
 
     def _reset_presets(self) -> None:
         for row in range(self.table.rowCount()):
-            sid = self.table.item(row, 0).text()
-            preset = PRESETS.get(sid)
+            preset = PRESETS.get(self.table.item(row, 0).text())
             if preset:
                 self.table.item(row, 4).setText(preset.command)
                 self.table.item(row, 5).setText(preset.save_dir)
@@ -204,135 +240,156 @@ class MainWindow(QMainWindow):
         self.process: QProcess | None = None
         self.running_key: str | None = None
         self.session_start = 0.0
-        self._cover_cache: dict[str, QPixmap] = {}
+        self._accent_hex = ""
+        self._last_view: str | None = None
 
         self.setWindowTitle("Arcadia")
-        self.resize(1320, 820)
+        self.resize(1360, 860)
+        self.setStyleSheet(build_stylesheet(DEFAULT_ACCENT))
 
-        # Left rail: systems, each with its own color
+        self.backdrop = Backdrop()
+        self.setCentralWidget(self.backdrop)
+        root = QVBoxLayout(self.backdrop)
+        root.setContentsMargins(32, 14, 32, 10)
+        root.setSpacing(6)
+
+        # --- top row: wordmark, search, sort ---
+        self.wordmark = QLabel("ARCADIA")
+        self.wordmark.setObjectName("wordmark")
+        wm_font = self.wordmark.font()
+        wm_font.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, 6.0)
+        self.wordmark.setFont(wm_font)
+
+        self.search = QLineEdit()
+        self.search.setPlaceholderText("Search  (Ctrl+F)")
+        self.search.setFixedWidth(260)
+        self.search.setClearButtonEnabled(True)
+        self.search.textChanged.connect(lambda _t: self.populate_games())
+        self.search.returnPressed.connect(lambda: self.coverflow.setFocus())
+
+        self.sort_combo = QComboBox()
+        for label, value in SORT_CHOICES:
+            self.sort_combo.addItem(label, value)
+        index = self.sort_combo.findData(config.sort)
+        self.sort_combo.setCurrentIndex(max(0, index))
+        self.sort_combo.currentIndexChanged.connect(self._on_sort_changed)
+
+        top = QHBoxLayout()
+        top.addWidget(self.wordmark)
+        top.addStretch(1)
+        top.addWidget(self.search)
+        top.addWidget(self.sort_combo)
+        root.addLayout(top)
+
+        # --- system pills ---
         self.systems_list = QListWidget()
-        self.systems_list.setMaximumWidth(300)
-        self.systems_list.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.systems_list.setObjectName("systems")
+        self.systems_list.setViewMode(QListView.ViewMode.ListMode)
+        self.systems_list.setFlow(QListView.Flow.LeftToRight)
+        self.systems_list.setWrapping(False)
+        self.systems_list.setFixedHeight(58)
         self.systems_list.setIconSize(QSize(14, 14))
+        self.systems_list.setHorizontalScrollMode(QListWidget.ScrollMode.ScrollPerPixel)
+        self.systems_list.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.systems_list.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.systems_list.currentRowChanged.connect(self._on_system_changed)
         self.systems_list.itemActivated.connect(lambda _item: self.coverflow.setFocus())
+        root.addWidget(self.systems_list)
 
-        # Center: banner, cover flow, search
+        # --- banner ---
         self.banner = QLabel()
+        self.banner.setObjectName("banner")
         self.banner.setAlignment(Qt.AlignmentFlag.AlignCenter)
         banner_font = self.banner.font()
-        banner_font.setPointSize(banner_font.pointSize() + 10)
-        banner_font.setBold(True)
-        banner_font.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, 3.0)
+        banner_font.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, 4.0)
         self.banner.setFont(banner_font)
-        self._banner_fx = QGraphicsOpacityEffect(self.banner)
-        self.banner.setGraphicsEffect(self._banner_fx)
+        self.banner_sub = QLabel()
+        self.banner_sub.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.banner_sub.setStyleSheet("color: rgba(236, 238, 244, 65%);")
+        banner_box = QWidget()
+        banner_layout = QVBoxLayout(banner_box)
+        banner_layout.setContentsMargins(0, 0, 0, 0)
+        banner_layout.setSpacing(0)
+        banner_layout.addWidget(self.banner)
+        banner_layout.addWidget(self.banner_sub)
+        self._banner_fx = QGraphicsOpacityEffect(banner_box)
+        banner_box.setGraphicsEffect(self._banner_fx)
         self._banner_anim = QPropertyAnimation(self._banner_fx, b"opacity", self)
-        self._banner_anim.setDuration(380)
+        self._banner_anim.setDuration(420)
         self._banner_anim.setStartValue(0.0)
         self._banner_anim.setEndValue(1.0)
+        root.addWidget(banner_box)
 
+        # --- cover flow ---
         self.coverflow = CoverFlow()
         self.coverflow.currentChanged.connect(lambda _i: self._on_game_changed())
         self.coverflow.activated.connect(lambda _i: self.launch())
+        root.addWidget(self.coverflow, 1)
 
-        self.search = QLineEdit()
-        self.search.setPlaceholderText("Search games (Ctrl+F)")
-        self.search.textChanged.connect(lambda _t: self.populate_games())
-        self.fav_only = QCheckBox("Favorites only")
-        self.fav_only.toggled.connect(lambda _c: self.populate_games())
-        search_row = QHBoxLayout()
-        search_row.addWidget(self.search, 1)
-        search_row.addWidget(self.fav_only)
-
-        center = QWidget()
-        center_layout = QVBoxLayout(center)
-        center_layout.addWidget(self.banner)
-        center_layout.addWidget(self.coverflow, 1)
-        center_layout.addLayout(search_row)
-
-        # Right: details
-        self.cover = QLabel()
-        self.cover.setFixedSize(DETAIL_COVER)
-        self.cover.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        # --- game info ---
         self.title_lbl = QLabel()
-        self.title_lbl.setWordWrap(True)
-        title_font = self.title_lbl.font()
-        title_font.setPointSize(title_font.pointSize() + 5)
-        title_font.setBold(True)
-        self.title_lbl.setFont(title_font)
-        self.info_lbl = QLabel()
-        self.info_lbl.setTextFormat(Qt.TextFormat.RichText)
-        self.info_lbl.setWordWrap(True)
+        self.title_lbl.setObjectName("gameTitle")
+        self.title_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.meta_lbl = QLabel()
+        self.meta_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.meta_lbl.setStyleSheet("color: rgba(236, 238, 244, 70%);")
         self.desc_lbl = QLabel()
+        self.desc_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.desc_lbl.setWordWrap(True)
+        self.desc_lbl.setMinimumWidth(680)
+        self.desc_lbl.setMaximumWidth(900)
+        self.desc_lbl.setFixedHeight(48)  # two lines at the stylesheet's 14px font
+        self.desc_lbl.setStyleSheet("color: rgba(236, 238, 244, 55%);")
+        root.addWidget(self.title_lbl)
+        root.addWidget(self.meta_lbl)
+        root.addWidget(self.desc_lbl, alignment=Qt.AlignmentFlag.AlignHCenter)
 
+        # --- actions ---
         self.launch_btn = QPushButton("▶  Launch")
+        self.launch_btn.setObjectName("primary")
         self.launch_btn.clicked.connect(self.launch)
         self.stop_btn = QPushButton("■  Stop")
         self.stop_btn.clicked.connect(self.stop)
         self.fav_btn = QPushButton("★  Favorite")
         self.fav_btn.clicked.connect(self.toggle_favorite)
+        self.states_btn = QPushButton("Save states  ▾")
+        self.states_menu = QMenu(self)
+        self.states_menu.aboutToShow.connect(self._build_states_menu)
+        self.states_btn.setMenu(self.states_menu)
         self.surprise_btn = QPushButton("🎲  Surprise me")
         self.surprise_btn.clicked.connect(self.surprise)
 
-        self.snap_combo = QComboBox()
-        self.save_btn = QPushButton("Save state")
-        self.save_btn.clicked.connect(self.save_state)
-        self.restore_btn = QPushButton("Restore selected")
-        self.restore_btn.clicked.connect(self.restore_state)
+        actions = QHBoxLayout()
+        actions.addStretch(1)
+        for button in (self.launch_btn, self.stop_btn, self.fav_btn, self.states_btn, self.surprise_btn):
+            actions.addWidget(button)
+        actions.addStretch(1)
+        root.addLayout(actions)
 
-        row1 = QHBoxLayout()
-        row1.addWidget(self.launch_btn)
-        row1.addWidget(self.stop_btn)
-        row2 = QHBoxLayout()
-        row2.addWidget(self.fav_btn)
-        row2.addWidget(self.surprise_btn)
-        state_row = QHBoxLayout()
-        state_row.addWidget(self.save_btn)
-        state_row.addWidget(self.restore_btn)
+        self.hint_lbl = QLabel(HINTS)
+        self.hint_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.hint_lbl.setStyleSheet("color: rgba(236, 238, 244, 38%); font-size: 12px;")
+        root.addWidget(self.hint_lbl)
 
-        right = QWidget()
-        right_layout = QVBoxLayout(right)
-        right_layout.addWidget(self.cover, alignment=Qt.AlignmentFlag.AlignHCenter)
-        right_layout.addWidget(self.title_lbl)
-        right_layout.addWidget(self.info_lbl)
-        right_layout.addWidget(self.desc_lbl)
-        right_layout.addStretch(1)
-        right_layout.addLayout(row1)
-        right_layout.addLayout(row2)
-        right_layout.addWidget(QLabel("Save states:"))
-        right_layout.addWidget(self.snap_combo)
-        right_layout.addLayout(state_row)
-
-        splitter = QSplitter(Qt.Orientation.Horizontal)
-        splitter.addWidget(self.systems_list)
-        splitter.addWidget(center)
-        splitter.addWidget(right)
-        splitter.setStretchFactor(1, 1)
-        self.setCentralWidget(splitter)
-
-        self.setStyleSheet(
-            "QPushButton { padding: 8px 14px; border-radius: 8px; }"
-            "QPushButton:disabled { opacity: 0.5; }"
-            "QLineEdit, QComboBox { padding: 6px; border-radius: 6px; }"
-            "QListWidget { border: none; padding: 6px; font-size: 14px; }"
-            "QListWidget::item { padding: 8px 6px; border-radius: 6px; }"
-        )
+        self.toast = Toast(self)
+        self.play_timer = QTimer(self)
+        self.play_timer.setInterval(1000)
+        self.play_timer.timeout.connect(self._update_play_label)
 
         self._build_menu()
         QShortcut(QKeySequence("Ctrl+F"), self).activated.connect(self.search.setFocus)
         QShortcut(QKeySequence("Ctrl+D"), self).activated.connect(self.toggle_favorite)
         QShortcut(QKeySequence("Ctrl+R"), self).activated.connect(self.rescan)
+        QShortcut(QKeySequence("F11"), self).activated.connect(self.toggle_fullscreen)
 
         self.controller = ControllerReader(self)
         self.controller.action.connect(self.handle_action)
         self.controller.start()
 
         self.rescan(initial=True)
-        self._update_running_state()
+        QTimer.singleShot(0, self.coverflow.setFocus)
 
-    # ----- setup -----
+    # ----- menu, fullscreen, persistence -----
 
     def _build_menu(self) -> None:
         file_menu = self.menuBar().addMenu("&File")
@@ -341,26 +398,60 @@ class MainWindow(QMainWindow):
         file_menu.addSeparator()
         file_menu.addAction("Quit", self.close, "Ctrl+Q")
 
+        view_menu = self.menuBar().addMenu("&View")
+        self.fullscreen_action = QAction("Fullscreen", self, checkable=True)
+        self.fullscreen_action.triggered.connect(lambda _c: self.toggle_fullscreen())
+        view_menu.addAction(self.fullscreen_action)
+        self.empty_action = QAction("Show systems with no games", self, checkable=True)
+        self.empty_action.setChecked(self.config.show_empty_systems)
+        self.empty_action.toggled.connect(self._on_show_empty_toggled)
+        view_menu.addAction(self.empty_action)
+
+    def toggle_fullscreen(self) -> None:
+        if self.isFullScreen():
+            self.showNormal()
+            self.menuBar().show()
+        else:
+            self.showFullScreen()
+            self.menuBar().hide()
+        self.fullscreen_action.setChecked(self.isFullScreen())
+
+    def _save_config(self) -> None:
+        try:
+            self.config.save(self.config_path)
+        except OSError as exc:
+            self.toast.show_message(f"Could not save settings: {exc}")
+
+    def _on_sort_changed(self, _index: int) -> None:
+        self.config.sort = self.sort_combo.currentData()
+        self._save_config()
+        self.populate_games()
+
+    def _on_show_empty_toggled(self, checked: bool) -> None:
+        self.config.show_empty_systems = checked
+        self._save_config()
+        self.refresh_systems()
+
     # ----- theme -----
 
     def _apply_accent(self, hex_color: str) -> None:
-        accent = QColor(hex_color)
-        palette = self.palette()
-        window = QColor(accent)
-        window = window.darker(420)  # deep, dark tint of the system color
-        palette.setColor(QPalette.ColorRole.Window, window)
-        palette.setColor(QPalette.ColorRole.Highlight, accent)
-        palette.setColor(QPalette.ColorRole.HighlightedText, QColor("white"))
-        palette.setColor(QPalette.ColorRole.Button, window.lighter(140))
-        self.setPalette(palette)
-        self.coverflow.set_accent(accent)
+        if hex_color == self._accent_hex:
+            return
+        self._accent_hex = hex_color
+        self.setStyleSheet(build_stylesheet(hex_color))
+        self.backdrop.set_accent(QColor(hex_color))
+        self.coverflow.set_accent(QColor(hex_color))
 
     def _play_banner(self, text: str) -> None:
         self.banner.setText(text.upper())
         self._banner_anim.stop()
         self._banner_anim.start()
 
-    # ----- library -----
+    def resizeEvent(self, event) -> None:
+        super().resizeEvent(event)
+        self.toast.reposition()
+
+    # ----- library & views -----
 
     def rescan(self, initial: bool = False) -> None:
         total = 0
@@ -368,27 +459,41 @@ class MainWindow(QMainWindow):
             games = scan_system(self.config.rom_root_path, system)
             self.library.sync(system.id, games)
             total += len(games)
-        self._cover_cache.clear()
         self.refresh_systems()
-        self.populate_games()
         if not self.config.rom_root_path.is_dir():
-            self.statusBar().showMessage(f"ROM folder not found: {self.config.rom_root_path}. Set it in Settings.")
-        else:
-            self.statusBar().showMessage(f"Found {total} games in {self.config.rom_root_path}")
-        if initial and self.systems_list.count():
-            self.systems_list.setCurrentRow(0)
+            self.toast.show_message(f"ROM folder not found: {self.config.rom_root_path}. Set it in File → Settings.", 6000)
+        elif not initial:
+            self.toast.show_message(f"Found {total} games")
 
     def refresh_systems(self) -> None:
+        """Rebuild the pill bar. Systems with no games are hidden unless they are all empty."""
+        summary = self.library.summary()
         current = self.current_system_id()
+        entries: list[tuple[str, str, int]] = []
+        if summary["played"]:
+            entries.append((VIEW_RECENT, VIEW_NAMES[VIEW_RECENT], summary["played"]))
+        if summary["favorites"]:
+            entries.append((VIEW_FAVORITES, VIEW_NAMES[VIEW_FAVORITES], summary["favorites"]))
+        systems = [(s.id, s.name, summary["systems"].get(s.id, 0)) for s in self.config.systems]
+        if not self.config.show_empty_systems and any(count for _i, _n, count in systems):
+            systems = [e for e in systems if e[2]]
+        entries += systems
+
         self.systems_list.blockSignals(True)
         self.systems_list.clear()
-        for system in self.config.systems:
-            item = QListWidgetItem(dot_icon(accent_for(system.id)), f"{system.name}  ({self.library.count(system.id)})")
-            item.setData(Qt.ItemDataRole.UserRole, system.id)
+        selected = None
+        for view_id, name, count in entries:
+            item = QListWidgetItem(dot_icon(view_accent(view_id)), f"{name}   {count}")
+            item.setData(Qt.ItemDataRole.UserRole, view_id)
             self.systems_list.addItem(item)
-            if system.id == current:
-                self.systems_list.setCurrentItem(item)
+            if view_id == current:
+                selected = item
+        if selected is None and self.systems_list.count():
+            selected = self.systems_list.item(0)
+        if selected is not None:
+            self.systems_list.setCurrentItem(selected)
         self.systems_list.blockSignals(False)
+        self._on_system_changed(0)
 
     def current_system_id(self) -> str | None:
         item = self.systems_list.currentItem()
@@ -403,87 +508,98 @@ class MainWindow(QMainWindow):
         except KeyError:
             return system_id
 
-    def _cover(self, key: str, system_id: str, title: str, rom: Path) -> QPixmap:
-        if key not in self._cover_cache:
-            meta = load_metadata(self.config.media_path, system_id, rom)
-            if meta.cover:
-                pix = QPixmap(str(meta.cover)).scaled(
-                    COVER_SIZE, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation
-                )
-            else:
-                pix = placeholder_pixmap(meta.title or title, COVER_SIZE, accent_for(system_id))
-            self._cover_cache[key] = pix
-        return self._cover_cache[key]
+    def _view_name(self, view_id: str) -> str:
+        return VIEW_NAMES.get(view_id) or self._system_name(view_id)
 
     def _on_system_changed(self, _row: int) -> None:
-        sid = self.current_system_id()
+        view = self.current_system_id()
+        changed = view != self._last_view
+        self._last_view = view
         self.populate_games()
-        if sid is not None:
-            self._apply_accent(accent_for(sid))
-            self._play_banner(self._system_name(sid))
+        if view is None:
+            self.banner.setText("")
+            return
+        self._apply_accent(view_accent(view))
+        if changed:
+            self._play_banner(self._view_name(view))
+
+    def _query_rows(self, view: str | None) -> list:
+        search = self.search.text().strip()
+        sort = self.config.sort
+        if view is None:
+            return []
+        if view == VIEW_RECENT:
+            return self.library.games(None, search=search, played_only=True, sort="recent")
+        if view == VIEW_FAVORITES:
+            return self.library.games(None, search=search, favorites_only=True, sort=sort)
+        return self.library.games(view, search=search, sort=sort)
+
+    def _load_cover(self, system_id: str, title: str, rom: Path) -> QPixmap:
+        meta = load_metadata(self.config.media_path, system_id, rom)
+        if meta.cover:
+            pix = QPixmap(str(meta.cover))
+            if not pix.isNull():
+                return pix.scaled(
+                    COVER_SIZE, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation
+                )
+        return placeholder_pixmap(meta.title or title, COVER_SIZE, accent_for(system_id))
 
     def populate_games(self) -> None:
-        system_id = self.current_system_id()
+        view = self.current_system_id()
         previous = self.current_game_key()
+        rows = self._query_rows(view)
         items = []
-        if system_id is not None:
-            rows = self.library.games(
-                system_id, search=self.search.text().strip(), favorites_only=self.fav_only.isChecked()
-            )
-            for row in rows:
-                key = row["key"]
-                title = ("★ " if row["favorite"] else "") + row["title"]
-                items.append((key, title, self._cover(key, system_id, row["title"], Path(row["path"]))))
+        for row in rows:
+            title = ("★ " if row["favorite"] else "") + row["title"]
+            loader = lambda sid=row["system_id"], t=row["title"], p=Path(row["path"]): self._load_cover(sid, t, p)
+            items.append((row["key"], title, loader))
         self.coverflow.set_items(items, select_key=previous)
+
+        played = sum(r["total_seconds"] for r in rows)
+        noun = "game" if len(rows) == 1 else "games"
+        sub = f"{len(rows)} {noun}"
+        if played:
+            sub += f"   ·   {fmt_duration(played)} played"
+        self.banner_sub.setText(sub)
         self._on_game_changed()
 
     def _on_game_changed(self) -> None:
         key = self.current_game_key()
         if key is None:
-            self.cover.clear()
             self.title_lbl.setText("")
-            self.info_lbl.setText("No game selected.")
+            self.meta_lbl.setText("")
             self.desc_lbl.setText("")
-            self.snap_combo.clear()
         else:
-            self.show_details(key)
+            self._show_details(key)
         self._update_running_state()
 
-    def show_details(self, key: str) -> None:
+    def _show_details(self, key: str) -> None:
         row = self.library.get(key)
         if row is None:
             return
         rom = Path(row["path"])
         meta = load_metadata(self.config.media_path, row["system_id"], rom)
-        self.cover.setPixmap(
-            self._cover(key, row["system_id"], row["title"], rom).scaled(
-                DETAIL_COVER, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation
-            )
-        )
         self.title_lbl.setText(("★ " if row["favorite"] else "") + (meta.title or row["title"]))
-        extra = []
+        parts = [self._system_name(row["system_id"])]
         if meta.year:
-            extra.append(f"<b>Year:</b> {meta.year}")
+            parts.append(meta.year)
         if meta.genre:
-            extra.append(f"<b>Genre:</b> {meta.genre}")
-        info = [
-            f"<b>System:</b> {self._system_name(row['system_id'])}",
-            f"<b>File:</b> {rom.name}",
-            f"<b>Played:</b> {row['play_count']} time(s), {fmt_duration(row['total_seconds'])}",
-            f"<b>Last played:</b> {fmt_timestamp(row['last_played'])}",
-        ] + extra
-        self.info_lbl.setText("<br>".join(info))
-        self.desc_lbl.setText(meta.description)
-        self._refresh_snapshots(row)
-
-    def _refresh_snapshots(self, row) -> None:
-        self.snap_combo.clear()
-        for snap in list_snapshots(self.config.savestate_path, Path(row["path"])):
-            self.snap_combo.addItem(snap.name, str(snap))
+            parts.append(meta.genre)
+        if row["play_count"]:
+            plays = "play" if row["play_count"] == 1 else "plays"
+            parts.append(f"{row['play_count']} {plays}, {fmt_duration(row['total_seconds'])}")
+            parts.append(f"last played {fmt_timestamp(row['last_played'])}")
+        else:
+            parts.append("never played")
+        self.meta_lbl.setText("   ·   ".join(parts))
+        self.desc_lbl.setText(_shorten(meta.description, 200))
+        self.desc_lbl.setToolTip(meta.description)
 
     def surprise(self) -> None:
-        if self.coverflow.count():
-            self.coverflow.set_index(random.randrange(self.coverflow.count()))
+        count = self.coverflow.count()
+        if count:
+            self.coverflow.set_index(random.randrange(count))
+            self.toast.show_message(f"🎲  {self.coverflow.current_title()}")
 
     # ----- launching -----
 
@@ -492,7 +608,7 @@ class MainWindow(QMainWindow):
         if key is None:
             return
         if self.process is not None:
-            QMessageBox.information(self, "Already running", "A game is already running. Stop it first.")
+            self.toast.show_message("A game is already running.")
             return
         row = self.library.get(key)
         system = self.config.system(row["system_id"])
@@ -511,33 +627,33 @@ class MainWindow(QMainWindow):
         self.running_key = key
         self.session_start = time.time()
         proc.start()
-        self.statusBar().showMessage(f"Launching {row['title']}…")
+        self.play_timer.start()
+        self.toast.show_message(f"Launching {row['title']}…")
         self._update_running_state()
 
     def _on_process_error(self, error) -> None:
         if error == QProcess.ProcessError.FailedToStart and self.process is not None:
             cmd = " ".join([self.process.program()] + self.process.arguments())
-            QMessageBox.warning(self, "Cannot launch", f"Could not start: {cmd}\n\nCheck the launch command in Settings.")
+            QMessageBox.warning(self, "Cannot launch", f"Could not start:\n{cmd}\n\nCheck the launch command in Settings.")
             self._end_session(record=False)
 
     def _on_finished(self, _exit_code, _exit_status) -> None:
-        if self.process is None:
-            return
-        self._end_session(record=True)
+        if self.process is not None:
+            self._end_session(record=True)
 
     def _end_session(self, record: bool) -> None:
         key = self.running_key
         seconds = int(time.time() - self.session_start)
+        self.play_timer.stop()
         if record and key:
             self.library.record_session(key, self.session_start, seconds)
         if self.process is not None:
             self.process.deleteLater()
         self.process = None
         self.running_key = None
-        self.statusBar().showMessage(f"Session ended after {fmt_duration(seconds)}" if record else "")
+        if record:
+            self.toast.show_message(f"Played for {fmt_duration(seconds)}")
         self.refresh_systems()
-        self.populate_games()
-        self._update_running_state()
 
     def stop(self) -> None:
         if self.process is None:
@@ -549,14 +665,21 @@ class MainWindow(QMainWindow):
         if self.process is not None and self.process.state() != QProcess.ProcessState.NotRunning:
             self.process.kill()
 
+    def _update_play_label(self) -> None:
+        if self.process is not None:
+            self.launch_btn.setText(f"Playing…  {fmt_clock(time.time() - self.session_start)}")
+
     def _update_running_state(self) -> None:
         running = self.process is not None
         has_game = self.current_game_key() is not None
         self.launch_btn.setEnabled(has_game and not running)
-        self.stop_btn.setEnabled(running)
-        self.restore_btn.setEnabled(has_game and not running)
-        self.save_btn.setEnabled(has_game)
+        if running:
+            self._update_play_label()
+        else:
+            self.launch_btn.setText("▶  Launch")
+        self.stop_btn.setVisible(running)
         self.fav_btn.setEnabled(has_game)
+        self.states_btn.setEnabled(has_game)
         self.surprise_btn.setEnabled(self.coverflow.count() > 0)
 
     # ----- favorites & save states -----
@@ -566,13 +689,33 @@ class MainWindow(QMainWindow):
         if key is None:
             return
         row = self.library.get(key)
-        self.library.set_favorite(key, not bool(row["favorite"]))
-        self.populate_games()
+        now_fav = not bool(row["favorite"])
+        self.library.set_favorite(key, now_fav)
+        self.toast.show_message("★  Added to favorites" if now_fav else "Removed from favorites")
+        self.refresh_systems()
+
+    def _build_states_menu(self) -> None:
+        menu = self.states_menu
+        menu.clear()
+        key = self.current_game_key()
+        if key is None:
+            menu.addAction("No game selected").setEnabled(False)
+            return
+        row = self.library.get(key)
+        menu.addAction("Save snapshot now", self.save_state)
+        snaps = list_snapshots(self.config.savestate_path, Path(row["path"]))
+        sub = menu.addMenu("Restore snapshot")
+        sub.setEnabled(bool(snaps) and self.process is None)
+        for snap in snaps:
+            action = sub.addAction(snapshot_label(snap.name))
+            action.triggered.connect(lambda _checked=False, p=snap: self.restore_state(p))
 
     def _save_dir_for(self, row) -> Path | None:
         system = self.config.system(row["system_id"])
         if not system.save_dir:
-            QMessageBox.warning(self, "No save folder", "Set this system's emulator save folder in Settings first.")
+            QMessageBox.warning(
+                self, "No save folder", "Set this system's emulator save folder in File → Settings first."
+            )
             return None
         return Path(system.save_dir).expanduser()
 
@@ -585,37 +728,33 @@ class MainWindow(QMainWindow):
         if save_dir is None:
             return
         try:
-            dest = create_snapshot(save_dir, Path(row["path"]), self.config.savestate_path)
+            create_snapshot(save_dir, Path(row["path"]), self.config.savestate_path)
         except SaveStateError as exc:
             QMessageBox.warning(self, "Save state failed", str(exc))
             return
-        self.statusBar().showMessage(f"Saved snapshot {dest.name}")
-        self._refresh_snapshots(row)
+        self.toast.show_message("Snapshot saved")
 
-    def restore_state(self) -> None:
+    def restore_state(self, snapshot: Path) -> None:
         key = self.current_game_key()
         if key is None or self.process is not None:
-            return
-        snap = self.snap_combo.currentData()
-        if not snap:
-            QMessageBox.information(self, "No snapshot", "There are no save states for this game yet.")
             return
         row = self.library.get(key)
         save_dir = self._save_dir_for(row)
         if save_dir is None:
             return
         answer = QMessageBox.question(
-            self, "Restore save state", "Restore this snapshot? Current saves are backed up first."
+            self,
+            "Restore snapshot",
+            f"Restore snapshot from {snapshot_label(snapshot.name)}?\nCurrent saves are backed up first.",
         )
         if answer != QMessageBox.StandardButton.Yes:
             return
         try:
-            restore_snapshot(Path(snap), save_dir, Path(row["path"]), self.config.savestate_path)
+            restore_snapshot(snapshot, save_dir, Path(row["path"]), self.config.savestate_path)
         except SaveStateError as exc:
             QMessageBox.warning(self, "Restore failed", str(exc))
             return
-        self.statusBar().showMessage("Save state restored")
-        self._refresh_snapshots(row)
+        self.toast.show_message("Snapshot restored")
 
     # ----- controller & keyboard -----
 
@@ -633,17 +772,11 @@ class MainWindow(QMainWindow):
             return
 
         focus = QApplication.focusWidget()
-        if name == "up" and focus is self.coverflow:
+        if name in ("up", "back") and focus is self.coverflow:
             self.systems_list.setFocus()
             return
         if name == "down" and focus is self.systems_list:
             self.coverflow.setFocus()
-            return
-        if name == "right" and focus is self.systems_list:
-            self.coverflow.setFocus()
-            return
-        if name == "back" and focus is self.coverflow:
-            self.systems_list.setFocus()
             return
         if focus is not self.systems_list and focus is not self.coverflow:
             self.coverflow.setFocus()
@@ -656,7 +789,7 @@ class MainWindow(QMainWindow):
         dialog = SettingsDialog(self.config, self)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             dialog.apply(self.config)
-            self.config.save(self.config_path)
+            self._save_config()
             self.rescan()
 
     def closeEvent(self, event) -> None:

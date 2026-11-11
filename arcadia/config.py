@@ -64,6 +64,8 @@ class Config:
     data_dir: str = str(DATA_HOME)
     media_dir: str = ""  # empty = <data_dir>/media
     savestate_dir: str = ""  # empty = <data_dir>/savestates
+    show_empty_systems: bool = False  # hide systems with no games unless every system is empty
+    sort: str = "title"  # title | recent | played | favorites
     systems: list[SystemConfig] = field(default_factory=default_systems)
 
     @property

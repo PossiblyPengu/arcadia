@@ -59,7 +59,21 @@ class Library:
                 if row["key"] not in present:
                     self.conn.execute("UPDATE games SET missing = 1 WHERE key = ?", (row["key"],))
 
-    def games(self, system_id: str | None = None, search: str = "", favorites_only: bool = False) -> list[sqlite3.Row]:
+    SORTS = {
+        "title": "title COLLATE NOCASE",
+        "recent": "last_played DESC, title COLLATE NOCASE",
+        "played": "total_seconds DESC, title COLLATE NOCASE",
+        "favorites": "favorite DESC, title COLLATE NOCASE",
+    }
+
+    def games(
+        self,
+        system_id: str | None = None,
+        search: str = "",
+        favorites_only: bool = False,
+        played_only: bool = False,
+        sort: str = "title",
+    ) -> list[sqlite3.Row]:
         sql = "SELECT * FROM games WHERE missing = 0"
         args: list = []
         if system_id is not None:
@@ -70,8 +84,26 @@ class Library:
             args.append(f"%{search}%")
         if favorites_only:
             sql += " AND favorite = 1"
-        sql += " ORDER BY title COLLATE NOCASE"
+        if played_only:
+            sql += " AND play_count > 0"
+        sql += " ORDER BY " + self.SORTS.get(sort, self.SORTS["title"])
         return self.conn.execute(sql, args).fetchall()
+
+    def summary(self) -> dict:
+        """Counts for the system bar: games per system, favorites, and played games."""
+        systems = {
+            r["system_id"]: int(r["n"])
+            for r in self.conn.execute(
+                "SELECT system_id, COUNT(*) AS n FROM games WHERE missing = 0 GROUP BY system_id"
+            )
+        }
+        favorites = self.conn.execute(
+            "SELECT COUNT(*) AS n FROM games WHERE missing = 0 AND favorite = 1"
+        ).fetchone()["n"]
+        played = self.conn.execute(
+            "SELECT COUNT(*) AS n FROM games WHERE missing = 0 AND play_count > 0"
+        ).fetchone()["n"]
+        return {"systems": systems, "favorites": int(favorites), "played": int(played)}
 
     def count(self, system_id: str) -> int:
         row = self.conn.execute(

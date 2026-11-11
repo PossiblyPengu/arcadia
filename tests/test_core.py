@@ -8,7 +8,7 @@ from arcadia.library import Library
 from arcadia.metadata import load_metadata
 from arcadia.savestates import SaveStateError, create_snapshot, list_snapshots, restore_snapshot
 from arcadia.scanner import clean_title, scan_system
-from arcadia.util import fmt_duration
+from arcadia.util import fmt_clock, fmt_duration, snapshot_label
 
 
 # ---------- titles ----------
@@ -219,3 +219,58 @@ def test_build_command_expands_home_in_arguments():
 @pytest.mark.parametrize("seconds, expected", [(5, "5s"), (125, "2m"), (3725, "1h 02m")])
 def test_fmt_duration(seconds, expected):
     assert fmt_duration(seconds) == expected
+
+
+# ---------- library views ----------
+
+def test_library_sort_and_played_filter(tmp_path):
+    root, system = _games(tmp_path)
+    lib = Library(tmp_path / "lib.db")
+    lib.sync(system.id, scan_system(root, system))
+    one = str(root / "nes" / "One (USA).nes")
+    two = str(root / "nes" / "Two.nes")
+    lib.record_session(one, 100.0, 60)
+    lib.record_session(two, 500.0, 600)
+    lib.set_favorite(one, True)
+
+    assert [r["title"] for r in lib.games("nes", sort="title")] == ["One", "Two"]
+    assert [r["title"] for r in lib.games("nes", sort="recent")] == ["Two", "One"]
+    assert [r["title"] for r in lib.games("nes", sort="played")] == ["Two", "One"]
+    assert [r["title"] for r in lib.games("nes", sort="favorites")] == ["One", "Two"]
+    assert [r["title"] for r in lib.games("nes", sort="bogus")] == ["One", "Two"]  # falls back to A-Z
+    assert len(lib.games(played_only=True)) == 2
+    lib.close()
+
+
+def test_library_played_only_and_summary_exclude_unplayed(tmp_path):
+    root, system = _games(tmp_path)
+    lib = Library(tmp_path / "lib.db")
+    lib.sync(system.id, scan_system(root, system))
+    assert lib.summary() == {"systems": {"nes": 2}, "favorites": 0, "played": 0}
+    assert lib.games(played_only=True) == []
+    lib.set_favorite(str(root / "nes" / "Two.nes"), True)
+    lib.record_session(str(root / "nes" / "Two.nes"), 1.0, 5)
+    assert lib.summary() == {"systems": {"nes": 2}, "favorites": 1, "played": 1}
+    lib.close()
+
+
+# ---------- formatting ----------
+
+@pytest.mark.parametrize("seconds, expected", [(0, "00:00"), (187, "03:07"), (3723, "1:02:03"), (-5, "00:00")])
+def test_fmt_clock(seconds, expected):
+    assert fmt_clock(seconds) == expected
+
+
+def test_snapshot_label():
+    assert snapshot_label("20260102-130455-123456") == "2026-01-02 13:04:55"
+    assert snapshot_label("20260102-130455-123456-auto-before-restore") == "2026-01-02 13:04:55 (auto-before-restore)"
+    assert snapshot_label("not-a-snapshot") == "not-a-snapshot"
+
+
+def test_ui_settings_round_trip(tmp_path):
+    path = tmp_path / "config.json"
+    cfg = Config(show_empty_systems=True, sort="played")
+    cfg.save(path)
+    loaded = Config.load(path)
+    assert loaded.show_empty_systems is True and loaded.sort == "played"
+    assert Config().show_empty_systems is False and Config().sort == "title"

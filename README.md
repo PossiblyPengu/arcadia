@@ -12,8 +12,15 @@ written in Python with PySide6 (Qt).
 - Save-state snapshots: copy a game's saves into a snapshot, restore any snapshot later
   (the current saves are backed up automatically before a restore)
 - Covers and metadata from an optional media folder (sidecar files, see below)
-- Cover-flow shelf: the selected game sits large with its neighbors tilted back, the
-  whole window takes on the current system's color, and each system name animates in
+- Cover-flow shelf with reflections: the selected game sits large in a glowing ring, its
+  neighbors shrink and fade, and the whole window takes on the current system's color
+- System pills across the top (systems with no games are hidden), plus virtual
+  **Recently played** and **Favorites** views that span every system
+- Sort by A–Z, recently played, most played, or favorites first (remembered between runs)
+- Type a letter to jump to the next title starting with it; search with Ctrl+F
+- Toast messages instead of dialogs, a live play timer on the Launch button, and a
+  fullscreen mode for the couch (`python -m arcadia --fullscreen` or F11)
+- Covers load lazily, so large libraries stay fast
 - Presets for Nintendo (NES, SNES, Game Boy, Game Boy Color, GBA, N64), Sega (Genesis,
   Master System, Game Gear), and PlayStation / PSP, using standalone Flatpak emulators
   where they exist and RetroArch otherwise
@@ -81,7 +88,10 @@ media/snes/Super Mario World.png    cover art (png, jpg, jpeg, webp)
 
 | Action         | Keyboard         | Controller (evdev / Steam Input) |
 |----------------|------------------|----------------------------------|
-| Move           | Arrow keys       | D-pad                            |
+| Browse         | Left / Right     | D-pad left / right               |
+| Jump to system bar | Up           | D-pad up (down returns to the shelf) |
+| Jump to letter | Type a letter    | —                                |
+| Fullscreen     | F11              | —                                |
 | Launch         | Enter            | A                                |
 | Back           | Esc              | B                                |
 | Favorite       | Ctrl+D           | Y                                |
@@ -97,7 +107,8 @@ pytest
 ```
 
 The tests cover scanning, title cleanup, the library database, launch command
-building, save-state snapshots, metadata, and config round trips. They do not need a display.
+building, save-state snapshots, metadata, config round trips, and the window itself
+(run headlessly with Qt's offscreen platform, so no display is needed).
 
 ## Layout
 
@@ -110,10 +121,12 @@ arcadia/
   savestates.py  snapshot / restore of per-game saves
   metadata.py    sidecar JSON and cover art
   presets.py     launch presets and system accent colors
-  coverflow.py   animated cover-flow carousel widget
+  theme.py       stylesheet, animated backdrop, toast messages
+  coverflow.py   animated cover-flow carousel with lazy cover loading
   gamepad.py     optional evdev controller input
   ui.py          Qt windows and dialogs
   main.py        entry point
 tests/
-  test_core.py
+  test_core.py   scanning, library, launching, save states, config
+  test_ui.py     window and cover-flow smoke tests (skipped where Qt can't load)
 ```
