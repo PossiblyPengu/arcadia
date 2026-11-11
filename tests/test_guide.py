@@ -118,7 +118,7 @@ def window(qapp, tmp_path):
 
 
 def test_an_empty_library_welcomes_and_offers_the_checklist(window):
-    assert window.console_empty.isVisible() and not window.grid_holder.isVisible()
+    assert window.console_empty.isVisible() and not window.carousel.isVisible()
     assert window.console_empty.title.text() == "Welcome to Arcadia"
     assert [b.text() for b in window.console_empty.buttons] == ["Get started", "Import ROMs…"]
 

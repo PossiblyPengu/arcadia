@@ -95,7 +95,7 @@ def window(qapp, tmp_path):
 
 
 def _pills(win):
-    return [win.systems_list.item(i).data(Qt.ItemDataRole.UserRole) for i in range(win.systems_list.count())]
+    return win.carousel.ids()
 
 
 def test_empty_systems_are_hidden_by_default(window):
@@ -106,7 +106,7 @@ def test_empty_systems_are_hidden_by_default(window):
 
 
 def test_browse_favorite_and_virtual_views(window):
-    window.systems_list.setCurrentRow(_pills(window).index("snes"))
+    window.carousel.set_index(_pills(window).index("snes"))
     assert window.coverflow.count() == 2
     assert window.coverflow.current_title() == "Mario"  # sorted A-Z, article moved to the front
 
@@ -118,12 +118,12 @@ def test_browse_favorite_and_virtual_views(window):
     assert VIEW_FAVORITES in _pills(window)
     assert window.coverflow.current_title() == "★ The Zelda"  # selection survives the rebuild
 
-    window.systems_list.setCurrentRow(_pills(window).index(VIEW_FAVORITES))
+    window.carousel.set_index(_pills(window).index(VIEW_FAVORITES))
     assert window.coverflow.count() == 1
 
 
 def test_sort_by_most_played_persists(window):
-    window.systems_list.setCurrentRow(_pills(window).index("snes"))
+    window.carousel.set_index(_pills(window).index("snes"))
     zelda = next(r["key"] for r in window.library.games("snes") if r["title"] == "The Zelda")
     window.library.record_session(zelda, 1000.0, 600)
     window.refresh_systems()
@@ -135,7 +135,7 @@ def test_sort_by_most_played_persists(window):
 
 
 def test_launch_records_session_and_recent_view(window, qapp):
-    window.systems_list.setCurrentRow(_pills(window).index("nes"))
+    window.carousel.set_index(_pills(window).index("nes"))
     window.launch()
     assert window.process is not None
     for _ in range(300):
@@ -150,7 +150,7 @@ def test_launch_records_session_and_recent_view(window, qapp):
 
 
 def test_controller_actions_move_focus_and_selection(window):
-    window.systems_list.setCurrentRow(_pills(window).index("snes"))
+    window.carousel.set_index(_pills(window).index("snes"))
     window.show_games()
     window.handle_action("right")
     assert window.coverflow.index() == 1
@@ -235,7 +235,7 @@ def test_certain_roms_move_automatically_and_unsure_ones_ask(qapp, tmp_path, ask
         assert not (inbox / "Contra.nes").exists()
         assert (inbox / "Mislabelled.gbc").exists()  # never moved without confirmation
         assert asked == [["Mislabelled.gbc"]]
-        assert "nes" in [win.systems_list.item(i).data(Qt.ItemDataRole.UserRole) for i in range(win.systems_list.count())]
+        assert "nes" in win.carousel.ids()
     finally:
         win.close()
 
@@ -388,8 +388,8 @@ def _library_window(tmp_path, template="echo {rom}"):
 
 
 def _select_view(win, view):
-    ids = [win.systems_list.item(i).data(Qt.ItemDataRole.UserRole) for i in range(win.systems_list.count())]
-    win.systems_list.setCurrentRow(ids.index(view))
+    ids = win.carousel.ids()
+    win.carousel.set_index(ids.index(view))
 
 
 def test_discs_and_updates_are_hidden_inside_their_game(qapp, tmp_path):
@@ -512,26 +512,28 @@ def test_discs_in_the_downloads_folder_are_joined_automatically(qapp, tmp_path, 
         win.close()
 
 
-def test_every_console_fits_in_a_scrolling_grid(qapp, tmp_path):
+def test_every_console_is_on_the_ring_and_it_wraps_around(qapp, tmp_path):
     from arcadia.config import default_systems
 
     roms = tmp_path / "roms"
-    for s in default_systems():  # a game in every system, so every tile shows
+    for s in default_systems():  # a game in every system, so every console shows
         (roms / s.folder).mkdir(parents=True)
         (roms / s.folder / f"G{s.extensions[0]}").write_text("x")
     cfg = Config(rom_root=str(roms), data_dir=str(tmp_path / "data"))
     win = MainWindow(cfg, tmp_path / "config.json", Library(cfg.db_path))
-    win.resize(900, 700)
+    win.resize(1280, 800)
     win.show()
     try:
         qapp.processEvents()
-        grid = win.systems_list
-        assert grid.count() == len(default_systems()) + 1  # every console, and "All games"
-        assert grid.columns() >= 2
-        assert grid.verticalScrollBar().maximum() > 0  # more tiles than fit: it scrolls
-        grid.setCurrentRow(grid.count() - 1)
-        qapp.processEvents()
-        assert grid.verticalScrollBar().value() > 0  # the chosen tile is scrolled into view
+        ring = win.carousel
+        assert ring.count() == len(default_systems()) + 1  # every console, and "All games"
+        ring.set_index(ring.count() - 1, animate=False)
+        last = ring.current_id()
+        ring.rotate(1)  # past the last one comes the first
+        assert ring.index() == 0 and ring.current_id() != last
+        ring.rotate(-1)  # and back before the first comes the last
+        assert ring.current_id() == last
+        assert win.carousel.grab().toImage().pixelColor(win.carousel.width() // 2, 100).alpha() >= 0
     finally:
         win.close()
 
@@ -540,15 +542,15 @@ def test_every_console_fits_in_a_scrolling_grid(qapp, tmp_path):
 
 def test_starts_on_the_console_screen_and_opens_a_console(window):
     assert window.stack.currentIndex() == 0 and not window.on_games_page()
-    window.systems_list.setCurrentRow(_pills(window).index("snes"))
+    window.carousel.set_index(_pills(window).index("snes"))
     assert window.stack.currentIndex() == 0  # moving between tiles doesn't leave the screen
-    window.systems_list.itemActivated.emit(window.systems_list.currentItem())  # Enter
+    window.carousel.activated.emit(window.carousel.index())  # Enter
     assert window.on_games_page() and window.coverflow.count() == 2
     assert window.banner.text() == "SUPER NINTENDO"
 
 
 def test_back_returns_to_the_consoles_and_forgets_the_search(window):
-    window.systems_list.setCurrentRow(_pills(window).index("snes"))
+    window.carousel.set_index(_pills(window).index("snes"))
     window.show_games()
     window.search.setText("zel")
     assert window.coverflow.titles() == ["The Zelda"]
@@ -574,7 +576,7 @@ def test_ctrl_f_on_the_console_screen_searches_every_game(window):
 
 
 def test_controller_flow_between_the_screens(window):
-    window.systems_list.setCurrentRow(_pills(window).index("nes"))
+    window.carousel.set_index(_pills(window).index("nes"))
     window.handle_action("favorite")  # nothing to favorite on the console screen
     assert window.library.summary()["favorites"] == 0
     window.handle_action("confirm")  # A opens the console
@@ -589,15 +591,10 @@ def test_controller_flow_between_the_screens(window):
     assert not window.on_games_page()
 
 
-def test_console_tiles_carry_their_name_count_and_accent(window):
-    from arcadia.consoles_view import ROLE_ACCENT, ROLE_COUNT, ROLE_NAME
-
-    item = window.systems_list.item(_pills(window).index("snes"))
-    assert item.data(ROLE_NAME) == "Super Nintendo" and item.data(ROLE_COUNT) == 2
-    assert item.data(ROLE_ACCENT) == "#7b4fd6"
-    assert "3 consoles" not in window.library_lbl.text() and "2 consoles  ·  3 games" == window.library_lbl.text()
-    pixmap = window.systems_list.viewport().grab()
-    assert not pixmap.isNull()  # the tiles paint
+def test_each_console_carries_its_name_count_and_accent(window):
+    entry = window.carousel.entries()[_pills(window).index("snes")]
+    assert (entry.name, entry.count, entry.accent) == ("Super Nintendo", 2, "#7b4fd6")
+    assert window.library_lbl.text() == "2 consoles  ·  3 games"
 
 
 # ---------- emulators kept in Arcadia's own folder ----------
@@ -1330,3 +1327,80 @@ def test_launch_waits_while_saves_are_syncing(window, monkeypatch):
     window.launch()
     assert window.process is None
     window._sync_task = None
+
+
+# ---------- the carousel and the pixel art ----------
+
+def test_carousel_keys_rotate_open_and_jump_by_letter(window):
+    ring = window.carousel
+    ring.setFocus()
+    assert ring.ids() == [VIEW_ALL, "nes", "snes"] and ring.current_id() == "nes"
+    QTest.keyClick(ring, Qt.Key.Key_Right)
+    assert ring.current_id() == "snes"
+    QTest.keyClick(ring, Qt.Key.Key_Right)  # wraps round to the first
+    assert ring.current_id() == VIEW_ALL
+    QTest.keyClick(ring, Qt.Key.Key_Left)
+    assert ring.current_id() == "snes"
+    assert ring.jump_to_letter("n") is True and ring.current_id() == "nes"
+    assert ring.jump_to_letter("z") is False
+    QTest.keyClick(ring, Qt.Key.Key_Return)
+    assert window.on_games_page() and window.coverflow.count() == 1
+
+
+def test_clicking_a_side_console_rotates_to_it_and_the_middle_one_opens(window, qapp):
+    from PySide6.QtCore import QPoint
+
+    ring = window.carousel
+    window.resize(1280, 800)
+    qapp.processEvents()
+    side = next(i for i in range(ring.count()) if i != ring.index())
+    place = ring._place(side)
+    QTest.mouseClick(ring, Qt.MouseButton.LeftButton, pos=QPoint(int(place[0]), int(place[1])))
+    assert ring.index() == side and not window.on_games_page()
+    mid = ring._place(ring.index())
+    QTest.mouseClick(ring, Qt.MouseButton.LeftButton, pos=QPoint(int(mid[0]), int(mid[1])))
+    assert window.on_games_page()
+
+
+def hover(widget, pos):
+    """Move the pointer over a widget by delivering the event directly (offscreen cursors are unreliable)."""
+    from PySide6.QtCore import QPointF
+    from PySide6.QtGui import QMouseEvent
+
+    event = QMouseEvent(QMouseEvent.Type.MouseMove, QPointF(pos), widget.mapToGlobal(QPointF(pos)), Qt.MouseButton.NoButton, Qt.MouseButton.NoButton, Qt.KeyboardModifier.NoModifier)
+    widget.mouseMoveEvent(event)
+
+
+def test_hovering_a_console_makes_it_glow_and_leaving_fades_it(window, qapp):
+    from PySide6.QtCore import QPoint
+
+    ring = window.carousel
+    window.resize(1280, 800)
+    qapp.processEvents()
+    side = next(i for i in range(ring.count()) if i != ring.index())
+    place = ring._place(side)
+    hover(ring, QPoint(int(place[0]), int(place[1])))
+    for _ in range(60):
+        QTest.qWait(16)
+    assert ring._hover == side and ring._glow.get(side, 0) > 0.9
+    assert 0.4 < ring._glow.get(ring.index(), 0) < 0.6  # the chosen one glows softly by itself
+    hover(ring, QPoint(2, 2))
+    ring.leaveEvent(None)
+    for _ in range(80):
+        QTest.qWait(16)
+    assert side not in ring._glow
+
+
+def test_every_console_has_pixel_art_and_a_glow(qapp):
+    from arcadia import pixelart
+    from arcadia.config import default_systems
+
+    for system in default_systems():
+        assert system.id in pixelart.SPRITES, f"no pixel art for {system.id}"
+    for view_id in [*pixelart.SPRITES, "something-the-user-added"]:
+        image = pixelart.sprite_image(view_id)
+        assert (image.width(), image.height()) == (pixelart.W, pixelart.H)
+        opaque = sum(image.pixelColor(x, y).alpha() > 0 for x in range(image.width()) for y in range(image.height()))
+        assert opaque > 80  # something is actually drawn
+        assert pixelart.glow(view_id, 128, "#ff0000").width() > 128
+    assert pixelart.scaled("nes", 128).width() == 128

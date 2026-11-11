@@ -44,7 +44,7 @@ from PySide6.QtWidgets import (
 )
 
 from arcadia.config import Config, SystemConfig
-from arcadia.consoles_view import ROLE_ACCENT, ROLE_COUNT, ROLE_ID, ROLE_NAME, ConsoleGrid, CenteredGrid
+from arcadia.consoles_view import ConsoleCarousel, Entry
 from arcadia.coverflow import COVER_H, COVER_W, CoverFlow
 from arcadia.empty_state import EmptyState
 from arcadia.welcome_dialog import WelcomeDialog
@@ -356,18 +356,17 @@ class MainWindow(QMainWindow):
         console_top.addWidget(self.library_lbl)
         cp.addLayout(console_top)
         self.choose_lbl = QLabel("CHOOSE A CONSOLE")
-        self.choose_lbl.setObjectName("banner")
         self.choose_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
         choose_font = self.choose_lbl.font()
-        choose_font.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, 4.0)
+        choose_font.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, 7.0)
+        choose_font.setWeight(QFont.Weight.DemiBold)
         self.choose_lbl.setFont(choose_font)
+        self.choose_lbl.setStyleSheet("color: rgba(236, 238, 244, 55%); font-size: 14px;")
         cp.addWidget(self.choose_lbl)
-        self.systems_list = ConsoleGrid()
-        self.systems_list.currentRowChanged.connect(self._on_system_changed)
-        self.systems_list.itemActivated.connect(lambda _item: self.show_games())
-        self.systems_list.itemClicked.connect(lambda _item: self.show_games())
-        self.grid_holder = CenteredGrid(self.systems_list)
-        cp.addWidget(self.grid_holder, 1)
+        self.carousel = ConsoleCarousel()
+        self.carousel.currentChanged.connect(self._on_system_changed)
+        self.carousel.activated.connect(lambda _i: self.show_games())
+        cp.addWidget(self.carousel, 1)
         self.console_empty = EmptyState()
         self.console_empty.hide()
         cp.addWidget(self.console_empty, 1)
@@ -488,7 +487,7 @@ class MainWindow(QMainWindow):
         self._setup_inbox()
 
         self._scan_library(initial=True)
-        QTimer.singleShot(0, self.systems_list.setFocus)
+        QTimer.singleShot(0, self.carousel.setFocus)
         QTimer.singleShot(800, self.check_inbox)
         QTimer.singleShot(5000, self._startup_update_check)
         QTimer.singleShot(3000, self._auto_sync)
@@ -603,31 +602,16 @@ class MainWindow(QMainWindow):
         if not total and not self.config.show_empty_systems:
             entries = []
 
-        self.systems_list.blockSignals(True)
-        self.systems_list.clear()
-        selected = None
-        first_console = None
-        for view_id, name, count in entries:
-            item = QListWidgetItem(name)
-            item.setData(ROLE_ID, view_id)
-            item.setData(ROLE_NAME, name)
-            item.setData(ROLE_COUNT, count)
-            item.setData(ROLE_ACCENT, view_accent(view_id))
-            self.systems_list.addItem(item)
-            if view_id == current:
-                selected = item
-            if first_console is None and not view_id.startswith("__"):
-                first_console = item
-        if selected is None:
-            selected = first_console or (self.systems_list.item(0) if self.systems_list.count() else None)
-        if selected is not None:
-            self.systems_list.setCurrentItem(selected)
-        self.systems_list.blockSignals(False)
+        shown = [Entry(view_id, name, count, view_accent(view_id)) for view_id, name, count in entries]
+        keep = current if any(e.view_id == current for e in shown) else next((e.view_id for e in shown if not e.view_id.startswith("__")), shown[0].view_id if shown else None)
+        self.carousel.blockSignals(True)
+        self.carousel.set_entries(shown, select_id=keep)
+        self.carousel.blockSignals(False)
 
         consoles = sum(1 for e in systems if e[2])
         self.library_lbl.setText(f"{consoles} console{'s' if consoles != 1 else ''}  ·  {total} game{'s' if total != 1 else ''}" if total else "")
         welcome = not entries
-        self.grid_holder.setVisible(not welcome)
+        self.carousel.setVisible(not welcome)
         self.choose_lbl.setVisible(not welcome)
         self.console_empty.setVisible(welcome)
         if welcome:
@@ -655,7 +639,7 @@ class MainWindow(QMainWindow):
         self.search.blockSignals(False)
         self.populate_games()
         self.stack.setCurrentIndex(0)
-        self.systems_list.setFocus()
+        self.carousel.setFocus()
 
     def on_games_page(self) -> bool:
         return self.stack.currentIndex() == 1
@@ -663,10 +647,7 @@ class MainWindow(QMainWindow):
     def focus_search(self) -> None:
         """Ctrl+F: from the console screen this searches every game."""
         if not self.on_games_page():
-            for row in range(self.systems_list.count()):
-                if self.systems_list.item(row).data(ROLE_ID) == VIEW_ALL:
-                    self.systems_list.setCurrentRow(row)
-                    break
+            self.carousel.set_current_id(VIEW_ALL)
             self.show_games()
         self.search.setFocus()
         self.search.selectAll()
@@ -678,8 +659,7 @@ class MainWindow(QMainWindow):
         super().keyPressEvent(event)
 
     def current_system_id(self) -> str | None:
-        item = self.systems_list.currentItem()
-        return item.data(ROLE_ID) if item else None
+        return self.carousel.current_id()
 
     def current_game_key(self) -> str | None:
         return self.coverflow.current_key()
@@ -1072,9 +1052,7 @@ class MainWindow(QMainWindow):
                 self.toggle_favorite()
             return
         if name in ("prev_system", "next_system"):
-            step = -1 if name == "prev_system" else 1
-            row = max(0, min(self.systems_list.count() - 1, self.systems_list.currentRow() + step))
-            self.systems_list.setCurrentRow(row)
+            self.carousel.rotate(-1 if name == "prev_system" else 1)
             return
         if name == "back":
             if self.on_games_page():
@@ -1083,7 +1061,7 @@ class MainWindow(QMainWindow):
         key = ACTION_KEYS.get(name)
         if key is None:
             return
-        target = self.coverflow if self.on_games_page() and self.coverflow.isVisible() else self.systems_list
+        target = self.coverflow if self.on_games_page() and self.coverflow.isVisible() else self.carousel
         if not self.on_games_page() and name == "confirm":
             self.show_games()
             return
