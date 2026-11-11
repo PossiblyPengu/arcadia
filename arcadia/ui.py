@@ -55,7 +55,7 @@ from arcadia.consoles_view import ConsoleCarousel, Entry
 from arcadia.coverflow import COVER_H, COVER_W, CoverFlow
 from arcadia.empty_state import EmptyState
 from arcadia.welcome_dialog import WelcomeDialog
-from arcadia import logos, pixelart, screenfit
+from arcadia import appupdate, logos, pixelart, screenfit
 from arcadia.sounds import Sounds
 from arcadia.transitions import ZoomOverlay
 from arcadia.bundles import parse_switch
@@ -181,12 +181,16 @@ class SettingsDialog(QDialog):
         self.check_updates = QCheckBox("Check for emulator updates when Arcadia starts (contacts GitHub, and Eden's own server)")
         self.check_updates.setChecked(config.check_updates)
 
+        self.check_app_updates = QCheckBox("Check for a newer Arcadia when it starts (contacts GitHub; nothing installs without asking)")
+        self.check_app_updates.setChecked(config.check_app_updates)
+
         form = QFormLayout()
         form.addRow("Arcadia folder (everything in one place):", home_row)
         form.addRow("ROM root folder:", rom_row)
         form.addRow("Downloads folder (ROM inbox):", inbox_row)
         form.addRow("", self.auto_import)
         form.addRow("", self.check_updates)
+        form.addRow("", self.check_app_updates)
         form.addRow("Media folder (covers, metadata):", self.media_dir)
         form.addRow("Save-state folder:", self.savestate_dir)
 
@@ -261,6 +265,7 @@ class SettingsDialog(QDialog):
         config.inbox_dir = self.inbox_dir.text().strip()
         config.auto_import = self.auto_import.isChecked()
         config.check_updates = self.check_updates.isChecked()
+        config.check_app_updates = self.check_app_updates.isChecked()
         config.media_dir = self.media_dir.text().strip()
         config.savestate_dir = self.savestate_dir.text().strip()
 
@@ -505,6 +510,7 @@ class MainWindow(QMainWindow):
         QTimer.singleShot(0, self.carousel.setFocus)
         QTimer.singleShot(800, self.check_inbox)
         QTimer.singleShot(5000, self._startup_update_check)
+        QTimer.singleShot(7000, lambda: self.check_app_update(quiet=True))
         QTimer.singleShot(3000, self._auto_sync)
 
     # ----- menu, fullscreen, persistence -----
@@ -521,6 +527,7 @@ class MainWindow(QMainWindow):
         file_menu.addAction("Arcadia folder and setup…", self.open_setup, "Ctrl+Shift+S")
         file_menu.addAction("BIOS, emulator settings and sync…", lambda: self.open_tools(0), "Ctrl+Shift+B")
         file_menu.addAction("Settings…", self.open_settings)
+        file_menu.addAction("Check for Arcadia updates…", lambda: self.check_app_update(quiet=False))
         file_menu.addSeparator()
         file_menu.addAction("Quit", self.close, "Ctrl+Q")
 
@@ -1440,6 +1447,88 @@ class MainWindow(QMainWindow):
             self.toast.show_message(
                 f"{waiting} emulator update{'s' if waiting != 1 else ''} available: File → Emulators… → Update all", 7000
             )
+
+    # ----- updating Arcadia itself -----
+
+    def check_app_update(self, quiet: bool = True) -> None:
+        """Ask GitHub whether there's a newer Arcadia. At startup (quiet) only a short note appears, and only if
+        the user turned the check on; from the File menu a result is always shown."""
+        if self._closed or getattr(self, "_app_update_task", None) is not None:
+            return
+        if quiet and not self.config.check_app_updates:
+            return
+        root = appupdate.app_root()
+        branch = self.config.app_update_branch
+        self._app_update_quiet = quiet
+        self._app_update_task = DaemonTask(lambda: appupdate.check(root, branch), self)
+        self._app_update_task.done.connect(self._on_app_update_checked)
+        self._app_update_task.start()
+        if not quiet:
+            self.toast.show_message("Looking for a newer Arcadia…", 2500)
+
+    def _on_app_update_checked(self, status, error) -> None:
+        self._app_update_task = None
+        if self._closed:
+            return
+        quiet = self._app_update_quiet
+        if error is not None:
+            if not quiet:
+                QMessageBox.warning(self, "Arcadia updates", f"Couldn't check for updates: {error}")
+            return
+        if not status.available:
+            if not quiet:
+                QMessageBox.information(self, "Arcadia updates", f"Arcadia is up to date ({status.short}, branch {status.branch}).")
+            return
+        if quiet:
+            self.toast.show_message("A newer Arcadia is available: File → Check for Arcadia updates…", 7000)
+            return
+        lines = "\n".join("• " + c for c in status.changes[:12]) or "(GitHub didn't list the changes)"
+        extra = f"\n\n{status.note}" if status.note else ""
+        box = QMessageBox(self)
+        box.setWindowTitle("Arcadia update available")
+        box.setText(f"A newer Arcadia is available on branch {status.branch} ({status.short}).")
+        box.setInformativeText(f"What's new:\n{lines}{extra}\n\nYour games, saves and settings aren't touched.")
+        update = box.addButton("Update now", QMessageBox.ButtonRole.AcceptRole)
+        box.addButton("Not now", QMessageBox.ButtonRole.RejectRole)
+        box.exec()
+        if box.clickedButton() is update:
+            self._install_app_update(status)
+
+    def _install_app_update(self, status) -> None:
+        root = appupdate.app_root()
+        progress = QProgressDialog("Updating Arcadia…", "", 0, 0, self)
+        progress.setCancelButton(None)
+        progress.setWindowTitle("Updating Arcadia")
+        progress.setWindowModality(Qt.WindowModality.WindowModal)
+        progress.show()
+        task = Task(lambda report: appupdate.apply(root, status, progress=report), self)
+        self._app_update_apply = task
+
+        def finished(result, err) -> None:
+            progress.close()
+            self._app_update_apply = None
+            if err is not None:
+                QMessageBox.warning(self, "Update failed", f"Arcadia wasn't updated: {err}\n\nNothing was changed.")
+                return
+            note = "\n\nThis update changes Arcadia's requirements: run ./install.sh once after restarting." if result.requirements_changed else ""
+            answer = QMessageBox.question(
+                self, "Arcadia updated", f"Arcadia is now at {result.version}. Restart to use it?{note}",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            )
+            if answer == QMessageBox.StandardButton.Yes:
+                self.restart_app()
+
+        task.done.connect(finished)
+        task.start()
+
+    def restart_app(self) -> None:
+        """Start a fresh Arcadia with the same options, then close this one."""
+        import sys
+
+        from PySide6.QtCore import QProcess
+
+        QProcess.startDetached(sys.executable, ["-m", "arcadia", *sys.argv[1:]], str(appupdate.app_root()))
+        self.close()
 
     def open_emulators(self) -> None:
         dialog = EmulatorsDialog(self.config, parent=self)

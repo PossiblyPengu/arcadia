@@ -473,6 +473,15 @@ controller-friendly: a "Jump to…" list (Home, Downloads, plugged-in memory car
 folder opens it. View > Check my console pictures tells you what's wrong with pictures in `media/consoles`. Installing
 an emulator shows speed and time left and has a Cancel button.
 
+## Updating Arcadia
+
+File > Check for Arcadia updates… asks GitHub whether the branch you follow has newer commits, lists what changed,
+and updates when you say so, then offers to restart. A copy installed with `git clone` is fast-forwarded with git
+(it refuses if you've edited files); a copy without git is replaced from GitHub's zip, with the old files kept in
+`.previous`. Your games, saves and settings live in your Arcadia folder and are never touched. Turn on
+"Check for a newer Arcadia when it starts" in Settings for a quiet note at startup. The repository must be public
+for this to work. If an update changes `requirements.txt`, run `./install.sh` once afterwards.
+
 ## Install and run on a Steam Deck (or any Linux PC)
 
 In Desktop Mode, open a terminal in the Arcadia folder and run:

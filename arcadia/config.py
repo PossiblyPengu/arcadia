@@ -109,6 +109,8 @@ class Config:
     inbox_dir: str = ""  # folder ROMs are downloaded into (e.g. ~/Downloads); empty = sorting off
     auto_import: bool = True  # move ROMs whose header confirms their system without asking
     check_updates: bool = False  # look for emulator updates when Arcadia starts (contacts GitHub / Eden's server)
+    check_app_updates: bool = False  # look for a newer Arcadia on GitHub when it starts (the File menu can always check)
+    app_update_branch: str = ""  # which branch to follow; empty = the one this copy is on
     # RetroArch settings Arcadia applies on top of the user's own (see retroarch.py).
     manage_retroarch: bool = True  # point RetroArch at Arcadia's BIOS folder and apply the options below
     ra_fullscreen: bool = True
