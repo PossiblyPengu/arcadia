@@ -14,13 +14,14 @@ written in Python with PySide6 (Qt).
 - Covers and metadata from an optional media folder (sidecar files, see below)
 - Cover-flow shelf with reflections: the selected game sits large in a glowing ring, its
   neighbors shrink and fade, and the whole window takes on the current system's color
-- **Two screens: choose a console, then choose a game.** The first screen is a **rotating carousel of pixel-art
+- **Two screens: choose a console, then choose a game.** The first screen is a **rotating carousel of 2.5D pixel-art
   consoles**: the selected one sits large in the middle with its name and game count, the others curve away on both
   sides, and the ring wraps around (after the last comes the first). Hover any console and it glows. Consoles with no
   games are hidden; **Recently played**, **Favorites** and **All games** are on the ring too. Open the middle one to
   get that console's cover-flow shelf, and go back with Esc / B / the "Consoles" button. Ctrl+F from the console
-  screen searches every game. The pixel art is drawn in code (small original sprites, not official artwork) in
-  `pixelart.py`; a console you add yourself gets a generic cartridge.
+  screen searches every game. The consoles are small voxel models rendered isometrically in code (`pixelart.py`: front, top and side
+  shaded differently, with a pixel outline, scaled up with hard edges). They're stylised originals, not official
+  artwork; a console you add yourself gets a generic cartridge.
 - Sort by A–Z, recently played, most played, or favorites first (remembered between runs)
 - Type a letter to jump to the next title starting with it; search with Ctrl+F
 - Toast messages instead of dialogs, a live play timer on the Launch button, and a

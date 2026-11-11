@@ -334,6 +334,16 @@ class ConsoleCarousel(QWidget):
         super().showEvent(event)
         self._offset = float(self._index)  # no spin on first show
         self._glow_changed()
+        self._warm = [e.view_id for e in self._entries]
+        QTimer.singleShot(0, self._warm_next)
+
+    def _warm_next(self) -> None:
+        """Draw the 3D renders ahead of time, one per tick, so spinning the ring never waits on one."""
+        while getattr(self, "_warm", None):
+            view_id = self._warm.pop(0)
+            pixelart.sprite_image(view_id)  # cached after the first time
+            QTimer.singleShot(8, self._warm_next)
+            return
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         key = event.key()

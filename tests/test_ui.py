@@ -1399,8 +1399,13 @@ def test_every_console_has_pixel_art_and_a_glow(qapp):
         assert system.id in pixelart.SPRITES, f"no pixel art for {system.id}"
     for view_id in [*pixelart.SPRITES, "something-the-user-added"]:
         image = pixelart.sprite_image(view_id)
-        assert (image.width(), image.height()) == (pixelart.W, pixelart.H)
+        assert 20 < image.width() <= 160 and 20 < image.height() <= 160  # a tight render of the model
         opaque = sum(image.pixelColor(x, y).alpha() > 0 for x in range(image.width()) for y in range(image.height()))
-        assert opaque > 80  # something is actually drawn
+        assert opaque > 300  # a solid, filled-in shape
+        fitted = pixelart.scaled(view_id, 240)
+        assert (fitted.width(), fitted.height()) == (240, 180)  # every console is fitted into the same box
         assert pixelart.glow(view_id, 128, "#ff0000").width() > 128
-    assert pixelart.scaled("nes", 128).width() == 128
+    # 2.5D: the front, top and side of a console are shaded differently
+    img = pixelart.sprite_image("gc")
+    shades = {img.pixelColor(x, y).name() for x in range(img.width()) for y in range(img.height()) if img.pixelColor(x, y).alpha()}
+    assert len(shades) >= 6
