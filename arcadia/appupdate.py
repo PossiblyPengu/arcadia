@@ -21,7 +21,7 @@ from pathlib import Path
 from arcadia.emulators import GITHUB_HOSTS, EmulatorError, Fetcher, _extract_zip
 
 REPO = "PossiblyPengu/arcadia-esde"
-DEFAULT_BRANCH = "steamdeck-main"
+DEFAULT_BRANCH = "main"
 MARKER = ".arcadia-commit"  # records which commit a non-git copy was made from
 KEEP_OUT = {".git", ".previous", "__pycache__", MARKER}
 
