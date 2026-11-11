@@ -1,5 +1,6 @@
 """Installing emulators into their own folders, against a real local HTTP server."""
 
+import dataclasses
 import hashlib
 import io
 import json
@@ -555,3 +556,118 @@ def test_a_launched_emulator_really_keeps_its_settings_in_its_own_folder(tmp_pat
     folder = tmp_path / "Arcadia" / "emulators" / "pcsx2"
     assert out.read_text().startswith(f"{folder / 'config'}|{folder / 'data'}|-batch -- /roms/ps2/Game.iso")
     assert (folder / "config" / "PCSX2" / "PCSX2.ini").read_text() == "cfg\n"  # written inside the emulator's folder
+
+
+# ======================= Eden: a project hosted on its own server =======================
+
+# The file names in Eden's real v0.2.1 release (fetched from its own release API), as published.
+EDEN_ASSET_NAMES = """
+Eden-Android-v0.2.1-chromeos.apk Eden-Android-v0.2.1-legacy.apk Eden-Android-v0.2.1-optimized.apk
+Eden-Android-v0.2.1-standard.apk
+Eden-Linux-aarch64-clang-pgo.AppImage.zsync Eden-Linux-aarch64-gcc-standard.AppImage.zsync
+Eden-Linux-amd64-clang-pgo.AppImage.zsync Eden-Linux-amd64-gcc-standard.AppImage.zsync
+Eden-Linux-legacy-clang-pgo.AppImage.zsync Eden-Linux-legacy-gcc-standard.AppImage.zsync
+Eden-Linux-rog-ally-clang-pgo.AppImage.zsync Eden-Linux-rog-ally-gcc-standard.AppImage.zsync
+Eden-Linux-steamdeck-clang-pgo.AppImage.zsync Eden-Linux-steamdeck-gcc-standard.AppImage.zsync
+Eden-Linux-v0.2.1-aarch64-clang-pgo.AppImage Eden-Linux-v0.2.1-aarch64-gcc-standard.AppImage
+Eden-Linux-v0.2.1-amd64-clang-pgo.AppImage Eden-Linux-v0.2.1-amd64-gcc-standard.AppImage
+Eden-Linux-v0.2.1-legacy-clang-pgo.AppImage Eden-Linux-v0.2.1-legacy-gcc-standard.AppImage
+Eden-Linux-v0.2.1-rog-ally-clang-pgo.AppImage Eden-Linux-v0.2.1-rog-ally-gcc-standard.AppImage
+Eden-Linux-v0.2.1-steamdeck-clang-pgo.AppImage Eden-Linux-v0.2.1-steamdeck-gcc-standard.AppImage
+Eden-Windows-v0.2.1-amd64-clang-pgo.zip Eden-Windows-v0.2.1-amd64-gcc-standard.zip Eden-Windows-v0.2.1-amd64-msvc-standard.zip
+Eden-Windows-v0.2.1-arm64-clang-pgo.zip Eden-Windows-v0.2.1-arm64-clang-standard.zip
+Eden-Windows-v0.2.1-rog-ally-clang-pgo.zip Eden-Windows-v0.2.1-rog-ally-gcc-standard.zip
+Eden-macOS-v0.2.1.dmg Eden-v0.2.1.torrent eden-room-aarch64-unknown-linux-musl eden-room-x86_64-unknown-linux-musl
+""".split()
+
+EDEN = CATALOG["eden"]
+
+
+def test_eden_is_offered_from_its_own_server_not_github():
+    assert EDEN.systems == ("switch",) and EDEN.repo == "eden-emu/eden" and EDEN.args == "-g {rom}"
+    assert EDEN.api.format(repo=EDEN.repo) == "https://git.eden-emu.dev/api/v1/repos/eden-emu/eden/releases/latest"
+    assert set(EDEN.hosts) == {"git.eden-emu.dev", "stable.eden-emu.dev"}  # where the release and its files really are
+
+
+def test_the_real_eden_release_offers_only_the_x86_64_linux_appimages():
+    release = Release("v0.2.1", tuple(Asset(n, f"https://stable.eden-emu.dev/v0.2.1/{n}", 200_000_000) for n in EDEN_ASSET_NAMES))
+    found = candidate_assets(EDEN, release)
+    names = [a.name for a in found.assets]
+    assert len(names) == 8 and all(n.startswith("Eden-Linux-v0.2.1-") and n.endswith(".AppImage") for n in names)
+    assert not any("aarch64" in n for n in names)  # ARM builds are not for this machine
+    assert not any(n.endswith((".zsync", ".apk", ".zip", ".dmg", ".torrent")) or n.startswith("eden-room") for n in names)
+    for variant in ("amd64", "legacy", "rog-ally", "steamdeck"):  # the hardware-specific builds stay available to choose
+        assert any(f"-{variant}-" in n for n in names)
+    assert found.preselected.name == "Eden-Linux-v0.2.1-amd64-gcc-standard.AppImage"
+
+
+def test_a_gitea_style_release_is_read_like_a_github_one():
+    release = parse_release(
+        {
+            "tag_name": "v0.2.1",
+            "html_url": "https://git.eden-emu.dev/eden-emu/eden/releases/tag/v0.2.1",
+            "assets": [{"id": 1, "name": "Eden-Linux-v0.2.1-amd64-gcc-standard.AppImage", "size": 123,
+                        "browser_download_url": "https://stable.eden-emu.dev/v0.2.1/Eden-Linux-v0.2.1-amd64-gcc-standard.AppImage",
+                        "uuid": "x", "type": "attachment"}],
+        },
+        "eden-emu/eden",
+    )
+    assert release.tag == "v0.2.1" and release.page == "https://git.eden-emu.dev/eden-emu/eden/releases/tag/v0.2.1"
+    assert release.assets[0].digest == "" and release.assets[0].size == 123  # no checksum is published
+
+
+def test_equally_good_matches_are_never_picked_for_the_user():
+    spec = dataclasses.replace(EDEN, prefer=(r"amd64",))
+    found = candidate_assets(spec, _release("Eden-Linux-amd64-clang-pgo.AppImage", "Eden-Linux-amd64-gcc-standard.AppImage"))
+    assert len(found.assets) == 2 and found.preselected is None  # two equally good files: the user chooses
+
+
+def _eden_on_local_servers(base: str, routes: dict, host_for_files: str):
+    """Eden's shape, served locally: the API on one host name and the files on another."""
+    port = base.rsplit(":", 1)[1]
+    name = "Eden-Linux-v1-amd64-gcc-standard.AppImage"
+    routes[f"/dl/{name}"] = (200, {}, APPIMAGE)
+    routes["/api/v1/repos/eden-emu/eden/releases/latest"] = (
+        200,
+        {},
+        json.dumps({"tag_name": "v1", "assets": [{"name": name, "size": len(APPIMAGE), "browser_download_url": f"http://{host_for_files}:{port}/dl/{name}"}]}).encode(),
+    )
+    return dataclasses.replace(EDEN, api=f"{base}/api/v1/repos/{{repo}}/releases/latest", hosts=(host_for_files,))
+
+
+def test_an_emulator_may_download_from_its_own_second_host(installer, server, tmp_path):
+    base, routes = server
+    spec = _eden_on_local_servers(base, routes, "localhost")  # files are served from a different host than the API
+    release = installer.latest_release(spec)
+    inst = installer.install(spec, release, release.assets[0])
+    assert inst.id == "eden" and inst.verified is False  # no checksum published, so it is honestly marked unverified
+    assert installer.exe_path(inst).read_bytes() == APPIMAGE
+    assert (tmp_path / "emulators" / "eden" / "app" / inst.exe).exists()
+
+
+def test_another_emulators_hosts_are_not_trusted_for_this_one(installer, server):
+    base, routes = server
+    spec = _eden_on_local_servers(base, routes, "localhost")
+    release = installer.latest_release(spec)
+    stranger = dataclasses.replace(spec, hosts=())  # the same files, but this emulator doesn't list that host
+    with pytest.raises(EmulatorError, match="refusing to download from localhost"):
+        installer.install(stranger, release, release.assets[0])
+    with pytest.raises(EmulatorError, match="refusing to download from localhost"):
+        installer.install(SPEC, release, release.assets[0])  # PCSX2 can't be fed from Eden's server either
+    assert installer.get("eden") is None and installer.get("pcsx2") is None
+
+
+def test_the_per_emulator_fetcher_keeps_its_settings():
+    base = Fetcher(api_base="http://127.0.0.1:9", hosts=frozenset({"a.example"}), allow_http=True, timeout=7)
+    wider = base.allowing("b.example")
+    assert wider.allow_http and wider.timeout == 7 and wider.api_base == base.api_base
+    assert {"a.example", "b.example", "127.0.0.1"} <= wider.hosts and "b.example" not in base.hosts  # the original is unchanged
+
+
+def test_a_local_eden_is_what_the_switch_system_launches(tmp_path):
+    config = _config(tmp_path)
+    assert config.system("switch").emulator == "eden" and "dev.eden_emu.eden" in config.system("switch").command
+    installer, exe = _install_fake(config, "eden")
+    plan = resolve_launch(config, config.system("switch"), Path("/roms/switch/Game [0100ABCD00012000].nsp"))
+    assert plan.via == "local:eden" and plan.args == [str(exe), "-g", "/roms/switch/Game [0100ABCD00012000].nsp"]
+    assert plan.env == installer.launch_env("eden")

@@ -808,3 +808,24 @@ def test_clearing_the_arcadia_folder_returns_to_the_old_layout(qapp, tmp_path):
     dialog.home_dir.setText("")
     dialog.apply(config)
     assert config.home_dir == "" and config.rom_root == "/games"
+
+
+def test_the_confirmation_names_the_real_download_host_and_shows_the_hardware_note(qapp, tmp_path):
+    eden = CATALOG["eden"]
+    amd64 = Asset("Eden-Linux-v1-amd64-gcc-standard.AppImage", "https://stable.eden-emu.dev/v1/amd64.AppImage", 200 * 1024 * 1024, "")
+    deck = Asset("Eden-Linux-v1-steamdeck-gcc-standard.AppImage", "https://stable.eden-emu.dev/v1/deck.AppImage", 200 * 1024 * 1024, "")
+    dialog = InstallConfirmDialog(eden, Release("v1", (amd64, deck)), Candidates((amd64, deck), amd64), tmp_path / "eden")
+    assert "stable.eden-emu.dev" in dialog.source.text() and "eden-emu/eden" in dialog.source.text()
+    assert "github.com" not in dialog.source.text()  # it says where the file really comes from
+    assert not dialog.notes.isHidden() and "steamdeck" in dialog.notes.text() and "Steam Deck" in dialog.notes.text()
+    assert "can't be verified" in dialog.checksum.text()  # Eden publishes no checksums, and it says so
+    dialog.combo.setCurrentIndex(1)
+    assert dialog.chosen_asset() is deck
+
+    plain = InstallConfirmDialog(CATALOG["pcsx2"], Release("v2", (amd64,)), Candidates((amd64,), amd64), tmp_path / "pcsx2")
+    assert plain.notes.isHidden()  # no note for an emulator that has none
+
+
+def test_eden_appears_in_the_emulator_list_for_the_switch(emu_dialog):
+    name, runs, here, latest, uses = _row(emu_dialog, "eden")
+    assert (name, runs, here, uses) == ("Eden", "Nintendo Switch", "—", "Flatpak")

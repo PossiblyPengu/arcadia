@@ -7,9 +7,9 @@ What was checked, and what wasn't:
 * Every Flatpak app ID exists on Flathub, and every libretro core file exists on the
   libretro build server.
 * The command-line options were read from each project's source for Dolphin (-b -e),
-  PCSX2 (-batch --), Cemu (-g), RPCS3 (a path argument), melonDS (a ROM argument), xemu
+  PCSX2 (-batch --), Cemu (-g), Eden (-g), RPCS3 (a path argument), melonDS (a ROM argument), xemu
   (-dvd_path), RMG (a ROM argument) and MAME (-rompath). They were NOT confirmed for
-  Azahar, Flycast, FS-UAE, openMSX, DuckStation, PPSSPP, mGBA, Snes9x or Ryujinx, which
+  Azahar, Flycast, FS-UAE, openMSX, DuckStation, PPSSPP, mGBA or Snes9x, which
   are the usual "emulator <file>" forms; check them on your machine.
 * Save folders are only set for RetroArch. Settings lets you change anything, and
   "Reset launch commands to presets" restores these values.
@@ -56,7 +56,7 @@ PRESETS: dict[str, Preset] = {
     "gc": Preset("Dolphin (Flatpak)", "flatpak run org.DolphinEmu.dolphin-emu -b -e {rom}", "", "#6a5acd"),
     "wii": Preset("Dolphin (Flatpak)", "flatpak run org.DolphinEmu.dolphin-emu -b -e {rom}", "", "#35b6e8"),
     "wiiu": Preset("Cemu (Flatpak)", "flatpak run info.cemu.Cemu -g {rom}", "", "#009ac7", emulator="cemu"),
-    "switch": Preset("Ryujinx · Ryubing (Flatpak)", "flatpak run io.github.ryubing.Ryujinx {rom}", "", "#00c3e3"),
+    "switch": Preset("Eden (Flatpak)", "flatpak run dev.eden_emu.eden -g {rom}", "", "#00c3e3", emulator="eden"),
     # --- Nintendo, handhelds ---
     "gb": Preset("mGBA (Flatpak)", "flatpak run io.mgba.mGBA {rom}", "", "#8bac0f", emulator="mgba"),
     "gbc": Preset("mGBA (Flatpak)", "flatpak run io.mgba.mGBA {rom}", "", "#4fa6c9", emulator="mgba"),

@@ -111,9 +111,9 @@ to attach updates and DLC to their base game, so the library shows **one game**,
   arriving for a game that isn't in your library yet is flagged so you can decide.
 - Files are stored side by side in the `switch` folder, as most emulators expect.
 
-**What Arcadia does not do:** it can't make an emulator apply an update. Ryujinx and similar emulators
+**What Arcadia does not do:** it can't make an emulator apply an update. Eden, Ryujinx and similar emulators
 install updates and DLC through their own menus, and I haven't verified a command-line way to pass them,
-so the Ryujinx preset launches the base game only. If your emulator does take them on the command line,
+so the Switch preset launches the base game only. If your emulator does take them on the command line,
 use the placeholders in the launch command (Settings): `{rom}` the game, `{updates}` update files,
 `{dlc}` DLC files, `{discs}` a multi-disc game's discs, e.g. `myemu --update {updates} --dlc {dlc} {rom}`.
 `{stem}` is the file name without its extension and `{dir}` its folder (MAME wants both:
@@ -151,7 +151,8 @@ Copy the folder to an SD card or another machine and point Arcadia at it.
 
 ### Installing emulators into that folder (File → Emulators…)
 
-Ten emulators can be installed here: PCSX2, RPCS3, Cemu, DuckStation, Flycast, melonDS, Azahar, RMG, mGBA and xemu.
+Eleven emulators can be installed here: PCSX2, RPCS3, Cemu, DuckStation, Flycast, melonDS, Azahar, RMG, mGBA, xemu
+and Eden (for the Switch).
 Pick one and Arcadia looks up the project's latest release **on your machine** and shows you exactly what it would
 download (the file, its size, where it comes from, and whether a checksum will be checked) before anything is
 fetched. Once installed, that system launches your copy; until then it uses the Flatpak, as before. You can switch
@@ -181,8 +182,21 @@ Flatpak. The installer itself was tested end to end against a local server, incl
 against the real downloads.
 
 **Not installable here:** Dolphin, PPSSPP, Snes9x, MAME, openMSX and FS-UAE publish no portable Linux build Arcadia
-can install, RetroArch's is a `.7z`, and I couldn't confirm a download source for Ryujinx or Eden, so these stay on
+can install, RetroArch's is a `.7z`, and I couldn't confirm a download source for Ryujinx, so these stay on
 Flatpak. AppImages need FUSE (SteamOS has it).
+
+**Eden** is the one emulator here that isn't hosted on GitHub: its own server (`git.eden-emu.dev`) holds the
+releases and a second host (`stable.eden-emu.dev`) serves the files, which is where Flathub's own metadata points
+(GitHub only has its Flathub packaging). Arcadia asks that server directly, and **Eden may only be downloaded from
+those two hosts**, nothing else, and no other emulator may use them. This one I checked against the live release
+(v0.2.1): the list below was Eden's real file list and the download opens as a real AppImage.
+- Eden publishes **no checksums**, so its installs are always marked "no checksum" and the confirmation says so.
+- It publishes **eight Linux builds**: `amd64`, `legacy` (older CPUs), `rog-ally` and `steamdeck`, each as
+  `gcc-standard` or `clang-pgo`. Arcadia preselects `amd64-gcc-standard`, but **on a Steam Deck choose the `steamdeck`
+  build**; the confirmation lists all eight and says which suits which hardware.
+
+When several downloads match a project's known pattern equally well, Arcadia no longer preselects any of them
+and asks you to choose, since picking one would be arbitrary.
 
 ## Supported systems
 
@@ -196,7 +210,7 @@ bar, so only the ones you use show up. Folder names are under your ROM root.
 | Nintendo 64 | `n64` | RMG `com.github.Rosalie241.RMG` |
 | GameCube / Wii | `gamecube` / `wii` | Dolphin `org.DolphinEmu.dolphin-emu` |
 | Wii U | `wiiu` | Cemu `info.cemu.Cemu` |
-| Switch | `switch` | Ryujinx (Ryubing) `io.github.ryubing.Ryujinx` |
+| Switch | `switch` | Eden `dev.eden_emu.eden` |
 | Game Boy / Color / Advance | `gb` / `gbc` / `gba` | mGBA `io.mgba.mGBA` |
 | Nintendo DS | `nds` | melonDS `net.kuribo64.melonDS` |
 | Nintendo 3DS | `3ds` | Azahar `org.azahar_emu.Azahar` |
@@ -217,9 +231,9 @@ bar, so only the ones you use show up. Folder names are under your ROM root.
 
 **What was checked.** Every Flatpak ID exists on Flathub and every RetroArch core file exists on the libretro
 build server. The command-line options were read from each project's own source for Dolphin (`-b -e`), PCSX2
-(`-batch --`), Cemu (`-g`), RPCS3 (a path argument), melonDS (a ROM argument), xemu (`-dvd_path`), RMG and MAME
-(`-rompath`). **They were not confirmed** for Azahar, Flycast, FS-UAE, openMSX, DuckStation, PPSSPP, mGBA, Snes9x
-or Ryujinx: those use the usual "emulator file" form, but run each once and fix the command in Settings if it
+(`-batch --`), Cemu (`-g`), Eden (`-g`), RPCS3 (a path argument), melonDS (a ROM argument), xemu (`-dvd_path`),
+RMG and MAME (`-rompath`). **They were not confirmed** for Azahar, Flycast, FS-UAE, openMSX, DuckStation, PPSSPP,
+mGBA or Snes9x: those use the usual "emulator file" form, but run each once and fix the command in Settings if it
 isn't right. Save folders are only preset for RetroArch.
 
 **What each needs from you.** Arcadia launches emulators; it doesn't set them up.
@@ -264,8 +278,10 @@ real dumps, so an unusual real file may land in "unsure". That is the safe direc
 
 ## Presets and Flatpak access (the fallback)
 
-Launch commands default to the presets in `arcadia/presets.py` (Switch uses Ryujinx from the Ryubing
-fork, Flathub `io.github.ryubing.Ryujinx`; Eden, `dev.eden_emu.eden`, is the other Flathub option). Their Flatpak IDs were
+Launch commands default to the presets in `arcadia/presets.py`. The Switch now defaults to Eden
+(`dev.eden_emu.eden`). Ryujinx from the Ryubing fork (`io.github.ryubing.Ryujinx`) also has a Flathub build: to use it, set
+the Switch launch command to `flatpak run io.github.ryubing.Ryujinx {rom}` in Settings and clear its *Installed
+emulator*. An existing setup that already uses Ryujinx is left as it is. Their Flatpak IDs were
 checked on Flathub. The command-line options and save folders are the usual defaults and
 should be checked on your machine. Settings → "Reset launch commands to presets" restores them.
 
@@ -273,7 +289,7 @@ Flatpak apps can only read folders they've been granted, so grant your ROM folde
 
 ```bash
 # run once per emulator you use
-for app in org.libretro.RetroArch io.mgba.mGBA com.snes9x.Snes9x org.duckstation.DuckStation org.ppsspp.PPSSPP io.github.ryubing.Ryujinx org.DolphinEmu.dolphin-emu info.cemu.Cemu net.kuribo64.melonDS org.azahar_emu.Azahar net.pcsx2.PCSX2 net.rpcs3.RPCS3 app.xemu.xemu org.flycast.Flycast com.github.Rosalie241.RMG org.mamedev.MAME org.openmsx.openMSX net.fsuae.FS-UAE; do
+for app in org.libretro.RetroArch io.mgba.mGBA com.snes9x.Snes9x org.duckstation.DuckStation org.ppsspp.PPSSPP dev.eden_emu.eden org.DolphinEmu.dolphin-emu info.cemu.Cemu net.kuribo64.melonDS org.azahar_emu.Azahar net.pcsx2.PCSX2 net.rpcs3.RPCS3 app.xemu.xemu org.flycast.Flycast com.github.Rosalie241.RMG org.mamedev.MAME org.openmsx.openMSX net.fsuae.FS-UAE; do
   flatpak override --user --filesystem=/path/to/ROMs "$app"
 done
 ```

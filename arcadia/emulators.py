@@ -61,11 +61,17 @@ class EmulatorSpec:
     args: str  # launch arguments after the program, in launch-command syntax: {rom}, {dir}, {stem}, ...
     flatpak: str = ""  # the Flatpak it replaces, used while no local copy is installed
     exe: str = ""  # regex for the program inside an extracted archive (default: guess)
-    notes: str = ""
+    notes: str = ""  # shown in the install confirmation
+    # Projects not hosted on GitHub: where to ask for the latest release (a GitHub- or Gitea-shaped
+    # JSON answer, with {repo} filled in) and the only extra hosts its downloads may come from.
+    # Empty means GitHub.
+    api: str = ""
+    hosts: tuple[str, ...] = ()
 
 
-# Only emulators that publish portable Linux builds on GitHub are listed. Dolphin, PPSSPP, Snes9x,
-# MAME, openMSX and FS-UAE don't, and RetroArch's portable build is a .7z, so those stay on Flatpak.
+# Only emulators that publish portable Linux builds are listed. Dolphin, PPSSPP, Snes9x, MAME, openMSX
+# and FS-UAE don't, RetroArch's portable build is a .7z, and Ryujinx's source couldn't be confirmed, so
+# those stay on Flatpak.
 CATALOG: dict[str, EmulatorSpec] = {
     spec.id: spec
     for spec in [
@@ -79,6 +85,19 @@ CATALOG: dict[str, EmulatorSpec] = {
         EmulatorSpec("rmg", "RMG", ("n64",), "Rosalie241/RMG", (r"linux64.*\.appimage$", r"portable.*linux64", r"linux64"), "{rom}", "com.github.Rosalie241.RMG"),
         EmulatorSpec("mgba", "mGBA", ("gb", "gbc", "gba"), "mgba-emu/mgba", (r"appimage-x64\.appimage$", r"appimage"), "{rom}", "io.mgba.mGBA"),
         EmulatorSpec("xemu", "xemu", ("xbox",), "xemu-project/xemu", (r"x86_64.*\.appimage$", r"\.appimage$"), "-dvd_path {rom}", "app.xemu.xemu"),
+        # Eden's own server hosts its releases. Checked against the live release: a Gitea-style API
+        # whose downloads come from a second host, with eight Linux variants and no checksums, so
+        # installs are marked unverified.
+        EmulatorSpec(
+            "eden", "Eden", ("switch",), "eden-emu/eden", (r"amd64-gcc-standard\.appimage$",), "-g {rom}", "dev.eden_emu.eden",
+            notes=(
+                "Eden publishes separate Linux builds for the Steam Deck (steamdeck), the ROG Ally (rog-ally), "
+                "older CPUs (legacy) and everything else (amd64), each as gcc-standard or clang-pgo. "
+                "Pick the one for your hardware."
+            ),
+            api="https://git.eden-emu.dev/api/v1/repos/{repo}/releases/latest",
+            hosts=("git.eden-emu.dev", "stable.eden-emu.dev"),
+        ),
     ]
 }
 
@@ -126,7 +145,7 @@ def parse_release(data: dict, repo: str = "") -> Release:
         digest = str(raw.get("digest") or "")
         digest = digest.split(":", 1)[1].lower() if digest.lower().startswith("sha256:") else ""
         assets.append(Asset(str(name), str(url), int(raw.get("size") or 0), digest))
-    page = f"https://github.com/{repo}/releases/tag/{tag}" if repo else ""
+    page = str(data.get("html_url") or "") or (f"https://github.com/{repo}/releases/tag/{tag}" if repo else "")
     return Release(tag, tuple(assets), page)
 
 
@@ -153,7 +172,13 @@ def candidate_assets(spec: EmulatorSpec, release: Release) -> Candidates:
         return (len(spec.prefer), asset.name.lower())
 
     usable.sort(key=rank)
-    best = usable[0] if usable and rank(usable[0])[0] < len(spec.prefer) else None
+    best = None
+    if usable and rank(usable[0])[0] < len(spec.prefer):
+        top = rank(usable[0])[0]
+        # Several files matching equally well would make a pick arbitrary, so nothing is preselected
+        # and the user chooses.
+        if sum(1 for a in usable if rank(a)[0] == top) == 1:
+            best = usable[0]
     return Candidates(tuple(usable), best)
 
 
@@ -182,6 +207,10 @@ class Fetcher:
         self.allow_http = allow_http
         self.timeout = timeout
         self.hosts = frozenset(hosts) | {urlparse(self.api_base).hostname or ""}
+
+    def allowing(self, *extra_hosts: str) -> "Fetcher":
+        """The same fetcher, also allowed to use these hosts (one emulator's own servers)."""
+        return Fetcher(self.api_base, self.hosts | frozenset(extra_hosts), self.allow_http, self.timeout)
 
     def check_url(self, url: str) -> None:
         parsed = urlparse(url)
@@ -409,9 +438,16 @@ class Installer:
 
     # ----- installing -----
 
+    def _fetcher_for(self, spec: EmulatorSpec) -> Fetcher:
+        """An emulator may only be fetched from its own hosts, never from another emulator's."""
+        return self.fetcher.allowing(*spec.hosts) if spec.hosts else self.fetcher
+
     def latest_release(self, spec: EmulatorSpec) -> Release:
-        data = self.fetcher.get_json(f"{self.fetcher.api_base}/repos/{spec.repo}/releases/latest")
-        return parse_release(data, spec.repo)
+        if spec.api:
+            url = spec.api.format(repo=spec.repo)
+        else:
+            url = f"{self.fetcher.api_base}/repos/{spec.repo}/releases/latest"
+        return parse_release(self._fetcher_for(spec).get_json(url), spec.repo)
 
     def update_available(self, spec: EmulatorSpec, release: Release) -> bool:
         current = self.get(spec.id)
@@ -432,7 +468,7 @@ class Installer:
         try:
             filename = Path(asset.name.replace("\\", "/")).name
             archive = staging / "download" / filename
-            sha = self.fetcher.download(asset.url, archive, progress)
+            sha = self._fetcher_for(spec).download(asset.url, archive, progress)
             if asset.digest and sha != asset.digest:
                 raise EmulatorError(
                     f"the download doesn't match the checksum GitHub published for it, so it was thrown away\n"

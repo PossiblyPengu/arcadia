@@ -176,3 +176,16 @@ def test_the_environment_variable_works_like_the_flag(tmp_path):
     running = _run_arcadia([], {"ARCADIA_HOME": str(home), "XDG_CONFIG_HOME": str(tmp_path / "xc")}, tmp_path, home / "config.json")
     assert running, "Arcadia exited during startup"
     assert (home / "config.json").is_file() and (home / "emulators").is_dir()
+
+
+def test_a_switch_setup_that_still_uses_ryujinx_is_not_switched_to_eden(tmp_path):
+    path = tmp_path / "c.json"
+    ryujinx = "flatpak run io.github.ryubing.Ryujinx {rom}"
+    path.write_text(json.dumps({"systems": [{"id": "switch", "name": "Switch", "folder": "switch", "extensions": [".nsp"], "command": ryujinx, "save_dir": ""}]}))
+    switch = Config.load(path).system("switch")
+    assert switch.command == ryujinx and switch.emulator == ""  # the user's choice of emulator stands
+
+
+def test_a_fresh_install_defaults_the_switch_to_eden():
+    switch = Config.new_install().system("switch")
+    assert switch.emulator == "eden" and switch.command == "flatpak run dev.eden_emu.eden -g {rom}"

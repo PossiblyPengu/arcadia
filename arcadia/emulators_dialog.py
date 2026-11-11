@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from urllib.parse import urlparse
 
 from PySide6.QtCore import QThread, QUrl, Qt, Signal
 from PySide6.QtGui import QDesktopServices
@@ -63,11 +64,16 @@ class InstallConfirmDialog(QDialog):
     def __init__(self, spec: EmulatorSpec, release: Release, found: Candidates, destination: Path, parent=None):
         super().__init__(parent)
         self.setWindowTitle(f"Install {spec.name}")
-        self.resize(640, 260)
+        self.resize(680, 300)
         self.found = found
 
-        source = QLabel(f"From <b>github.com/{spec.repo}</b>, release <b>{release.tag}</b>.")
-        source.setTextFormat(Qt.TextFormat.RichText)
+        self.spec, self.release = spec, release
+        self.source = QLabel()
+        self.source.setTextFormat(Qt.TextFormat.RichText)
+        self.source.setWordWrap(True)
+        self.notes = QLabel(spec.notes)  # e.g. which of several builds suits which hardware
+        self.notes.setWordWrap(True)
+        self.notes.setVisible(bool(spec.notes))
         where = QLabel(f"It will be installed in <b>{destination}</b>, together with its own settings and saves.")
         where.setTextFormat(Qt.TextFormat.RichText)
         where.setWordWrap(True)
@@ -88,6 +94,8 @@ class InstallConfirmDialog(QDialog):
         self.checksum.setWordWrap(True)
         self.combo.currentIndexChanged.connect(self._update_checksum)
         self._update_checksum()
+        self._update_source()
+        self.combo.currentIndexChanged.connect(self._update_source)
 
         self.buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Cancel)
         install = QPushButton("Download and install")
@@ -97,9 +105,10 @@ class InstallConfirmDialog(QDialog):
         self.buttons.rejected.connect(self.reject)
 
         layout = QVBoxLayout(self)
-        layout.addWidget(source)
+        layout.addWidget(self.source)
         layout.addWidget(where)
         layout.addWidget(self.combo)
+        layout.addWidget(self.notes)
         layout.addWidget(self.hint)
         layout.addWidget(self.checksum)
         layout.addStretch(1)
@@ -107,6 +116,14 @@ class InstallConfirmDialog(QDialog):
 
     def chosen_asset(self) -> Asset:
         return self.combo.currentData()
+
+    def _update_source(self) -> None:
+        """Say where the chosen file really comes from: the host in its address, not an assumption."""
+        asset = self.chosen_asset()
+        host = urlparse(asset.url).hostname if asset is not None else ""
+        self.source.setText(
+            f"Release <b>{self.release.tag}</b> of <b>{self.spec.repo}</b>, downloaded from <b>{host}</b>."
+        )
 
     def _update_checksum(self) -> None:
         asset = self.chosen_asset()
@@ -169,7 +186,8 @@ class EmulatorsDialog(QDialog):
         self.status.setStyleSheet("color: rgba(236, 238, 244, 65%);")
         note = QLabel(
             "Not listed: Dolphin, PPSSPP, Snes9x, MAME, openMSX, FS-UAE and RetroArch don't publish a portable "
-            "Linux build Arcadia can install, so they stay on Flatpak."
+            "Linux build Arcadia can install, and I couldn't confirm a download source for Ryujinx, so they "
+            "stay on Flatpak."
         )
         note.setWordWrap(True)
         note.setStyleSheet("color: rgba(236, 238, 244, 45%);")
