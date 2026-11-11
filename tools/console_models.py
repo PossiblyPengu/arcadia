@@ -65,19 +65,19 @@ def snes(s: Scene) -> None:
 
 def genesis(s: Scene) -> None:
     body = s.box(0, 0, 0, 28.0, 21.0, 5.6, "#222228", r=0.7)
-    back = s.box(0, 0, 5.6, 28.0, 8.5, 1.3, "#25252b", r=0.4)
+    back = s.box(1.4, 0, 5.6, 12.0, 9.0, 1.3, "#25252b", r=0.4)
     for i in range(8):  # the ribbed grille at the back left
-        s.ft(back, 0.03 + i * 0.026, 0.12, 0.03 + i * 0.026 + 0.012, 0.92, "#101014")
-    ring = s.disc(19.0, 8.6, 5.6, 6.6, 1.7, "#2a2a30", taper=0.97, top="#303038")  # the cartridge ring
-    rb = (19.0 - 6.6, 8.6 - 6.6, 5.6, 13.2, 13.2, 1.7)
-    s.c_top(rb, 6.6, 6.6, 5.8, "#18181d")
-    s.d_top(rb, 2.0, 1.2, 11.2, 2.4, "#0c0c10")  # the cartridge slot
-    s.d_top(rb, 4.0, 5.2, 9.2, 10.0, "#17171b")  # the label
-    s.d_top(rb, 4.6, 6.4, 8.6, 8.2, "#d9b04a")  # 16-BIT
-    s.d_top(rb, 3.0, 10.2, 10.2, 11.5, "#9b2a68")  # the magenta strip
-    s.d_top(body, 5.6, 9.0, 6.6, 16.0, "#101014")  # the power and volume sliders
-    s.d_top(body, 7.4, 9.0, 8.4, 14.0, "#101014")
-    s.d_top(body, 9.4, 14.0, 12.0, 15.6, "#2f6fd6")  # reset
+        s.ft(back, 0.04 + i * 0.11, 0.10, 0.04 + i * 0.11 + 0.05, 0.92, "#101014")
+    ring = s.disc(16.2, 10.0, 5.6, 5.9, 1.7, "#2a2a30", taper=0.97, top="#303038")  # the cartridge ring
+    rb = (16.2 - 5.9, 10.0 - 5.9, 5.6, 11.8, 11.8, 1.7)
+    s.c_top(rb, 5.9, 5.9, 5.1, "#18181d")
+    s.d_top(rb, 1.8, 1.0, 10.0, 2.1, "#0c0c10")  # the cartridge slot
+    s.d_top(rb, 3.6, 4.6, 8.2, 9.0, "#17171b")  # the label
+    s.d_top(rb, 4.2, 5.8, 7.6, 7.4, "#d9b04a")  # 16-BIT
+    s.d_top(rb, 2.6, 9.2, 9.2, 10.4, "#9b2a68")  # the magenta strip
+    s.d_top(body, 6.2, 11.0, 7.2, 16.2, "#101014")  # the power and volume sliders
+    s.d_top(body, 8.0, 11.0, 9.0, 14.4, "#101014")
+    s.d_top(body, 6.0, 16.6, 9.4, 18.0, "#2f6fd6")  # reset
     s.ff(body, 0.10, 0.45, 0.14, 0.65, "#0c0c10")  # headphone socket
     s.ff(body, 0.60, 0.25, 0.80, 0.40, "#c8c8d0")  # the maker's name
     s.ff(body, 0.83, 0.30, 0.93, 0.62, "#0c0c10")  # the extra port
@@ -101,38 +101,38 @@ def psx(s: Scene) -> None:
 
 def saturn(s: Scene) -> None:
     body = s.box(0, 0, 0, 26.0, 23.5, 7.4, "#1c1c21", r=1.2, top="#222228")
-    s.ft(body, 0.15, 0.03, 0.85, 0.09, "#26262c")
-    s.disc(10.6, 11.8, 7.4, 8.6, 0.8, "#17171b", taper=0.98, top="#1c1c21")  # the disc cover
-    cb = (2.0, 3.2, 7.4, 17.2, 17.2, 0.8)
-    s.c_top(cb, 8.6, 3.2, 1.0, "#2a2a31")  # the little bump at the back of it
+    s.box(3.0, 0.5, 7.4, 20.0, 3.4, 0.5, "#202026", r=0.4)  # the raised cartridge cover along the back
+    s.disc(10.8, 11.4, 7.4, 7.3, 0.8, "#17171b", taper=0.98, top="#1c1c21")  # the disc cover
+    cb = (3.5, 4.1, 7.4, 14.6, 14.6, 0.8)
+    s.c_top(cb, 7.3, 2.2, 0.9, "#2a2a31")  # the little bump at the back of it
     s.ff(body, 0.07, 0.30, 0.15, 0.46, "#d0d0d8")  # the maker's name
     s.ff(body, 0.22, 0.38, 0.27, 0.46, "#33333a")  # power, reset, open
     s.ff(body, 0.30, 0.38, 0.35, 0.46, "#33333a")
     s.ff(body, 0.38, 0.38, 0.43, 0.46, "#33333a")
     s.ff(body, 0.58, 0.12, 0.76, 0.26, "#2c2c33")  # the cartridge slot
-    for j in range(4):  # the vent grille on the right
-        for i in range(8):
-            s.fs(body, 0.45 + i * 0.05, 0.30 + j * 0.15, 0.45 + i * 0.05 + 0.03, 0.30 + j * 0.15 + 0.10, "#0e0e12")
+    for j in range(2):  # the vent slots on the right
+        for i in range(7):
+            s.fs(body, 0.46 + i * 0.07, 0.34 + j * 0.28, 0.46 + i * 0.07 + 0.035, 0.34 + j * 0.28 + 0.22, "#0e0e12")
 
 
 # ---------------------------------------------------------------- 64-bit
 
 def n64(s: Scene) -> None:
-    s.disc(16.0, 12.2, 0, 4.3, 2.4, "#17171b", taper=0.95)  # the round foot
-    body = s.box(0, 0, 2.2, 26.0, 19.0, 4.6, "#4a4a52", r=3.8, top="#54545c")
-    hump = s.box(5.2, 0.6, 6.8, 15.6, 8.6, 1.7, "#4a4a52", r=1.8, top="#54545c")  # the raised cartridge housing
-    s.ft(hump, 0.10, 0.10, 0.90, 0.52, "#2a2a31")
-    for i in range(9):  # ribs on the slot
-        s.ft(hump, 0.16 + i * 0.075, 0.16, 0.16 + i * 0.075 + 0.03, 0.48, "#43434b")
-    s.ft(hump, 0.12, 0.62, 0.88, 0.80, "#0c0c10")
-    s.ft(body, 0.14, 0.58, 0.28, 0.84, "#2a2a31")  # the power switch
-    s.ft(body, 0.36, 0.58, 0.57, 0.86, "#42424a")  # the expansion flap
-    s.ft(body, 0.72, 0.64, 0.81, 0.82, "#33333a")  # reset
-    s.ff(body, 0.05, 0.12, 0.95, 0.86, "#17171b")  # the dark front panel
-    for x in (0.17, 0.31, 0.69, 0.83):  # two ports each side of the logo window
-        s.fcf(body, x, 0.46, 1.15, "#b9b9c1")
-        s.fcf(body, x, 0.46, 0.75, "#0b0b0e")
-    s.ff(body, 0.41, 0.26, 0.59, 0.74, "#0b0b0e")  # the logo window
+    s.disc(21.0, 15.0, 0, 4.4, 2.7, "#1d1d21", taper=0.93, top="#2a2a30")  # the round foot at the front right
+    body = s.box(0, 0, 1.6, 26.0, 19.0, 5.4, "#3d3d43", r=3.8, top="#494950")
+    hump = s.box(5.2, 0.6, 7.0, 15.6, 8.6, 1.5, "#3d3d43", r=1.8, top="#494950")  # the raised cartridge housing
+    s.ft(hump, 0.10, 0.12, 0.90, 0.30, "#c4c4cb")  # the light slit of the cartridge slot
+    s.ft(hump, 0.10, 0.30, 0.90, 0.40, "#17171b")
+    for i in range(11):  # the ribbed vent in front of it
+        s.ft(hump, 0.12 + i * 0.07, 0.52, 0.12 + i * 0.07 + 0.035, 0.86, "#18181c")
+    s.ft(body, 0.12, 0.50, 0.27, 0.78, "#26262c")  # the power switch
+    s.ft(body, 0.34, 0.52, 0.56, 0.84, "#34343b")  # the expansion flap
+    s.ft(body, 0.72, 0.60, 0.81, 0.80, "#2c2c33")  # reset
+    s.ff(body, 0.05, 0.10, 0.95, 0.82, "#16161a")  # the dark front panel
+    for x in (0.17, 0.32, 0.69, 0.82):  # two ports each side of the logo window
+        s.fcf(body, x, 0.44, 1.2, "#b9b9c1")
+        s.fcf(body, x, 0.44, 0.78, "#0b0b0e")
+    s.ff(body, 0.41, 0.26, 0.60, 0.76, "#0b0b0e")  # the logo window
     s.ff(body, 0.45, 0.38, 0.51, 0.62, "#3e8f5a")
     s.ff(body, 0.51, 0.38, 0.55, 0.62, "#d6322c")
 
@@ -141,23 +141,25 @@ def n64(s: Scene) -> None:
 
 def gc(s: Scene) -> None:
     body = s.box(0, 0, 0, 15.0, 16.0, 10.4, "#4e3fa6", r=0.7, top="#5b4bb5")
-    s.box(6.6, 0.0, 10.4, 7.2, 1.4, 1.1, "#17171c", r=0.5)  # the handle, seen behind
-    s.disc(9.2, 8.9, 10.4, 4.9, 0.2, "#17171c", top="#0f0f13")  # the black disc lid
-    s.ft(body, 0.70, 0.06, 0.93, 0.15, "#2f2f3a")  # the logo window
-    s.fct(body, 0.17, 0.12, 0.9, "#ececf2")  # the open button
-    s.ff(body, 0.04, 0.12, 0.82, 0.60, "#ebebf3")  # the white front panel
+    s.disc(10.4, -0.2, 10.0, 3.6, 1.5, "#17171c", top="#202026")  # the black handle, seen behind the cube
+    s.box(1.0, 0.8, 10.4, 13.0, 14.4, 0.25, "#5545b3", r=1.2)  # the slightly raised lid surround
+    s.disc(9.0, 8.7, 10.65, 4.8, 0.2, "#17171c", top="#0f0f13")  # the black disc lid
+    s.ft(body, 0.72, 0.07, 0.94, 0.15, "#2f2f3a")  # the logo window
+    s.fct(body, 0.16, 0.12, 0.9, "#ececf2")  # the open button
+    s.ff(body, 0.04, 0.20, 0.82, 0.72, "#ebebf3")  # the white front panel
     for x in (0.16, 0.34, 0.52):  # three controller ports
-        s.fcf(body, x, 0.36, 1.05, "#2b2b38")
-    s.ff(body, 0.62, 0.24, 0.80, 0.48, "#cfcfda")  # memory card slot
+        s.fcf(body, x, 0.52, 1.05, "#2b2b38")
+    s.ff(body, 0.40, 0.24, 0.80, 0.36, "#d3d3de")  # the memory card slots
+    s.ff(body, 0.40, 0.29, 0.80, 0.305, "#7d7d8c")
     for i in range(8):  # the vent grid on the right face
-        s.fs(body, 0.20 + i * 0.065, 0.40, 0.20 + i * 0.065 + 0.03, 0.84, "#2f2678")
+        s.fs(body, 0.22 + i * 0.065, 0.38, 0.22 + i * 0.065 + 0.03, 0.86, "#2f2678")
     for j in range(6):
-        s.fs(body, 0.20, 0.40 + j * 0.08, 0.66, 0.40 + j * 0.08 + 0.03, "#2f2678")
+        s.fs(body, 0.22, 0.38 + j * 0.08, 0.68, 0.38 + j * 0.08 + 0.03, "#2f2678")
 
 
 def dreamcast(s: Scene) -> None:
-    body = s.box(0, 0, 0, 19.6, 19.4, 6.4, "#ecedef", r=1.6, top="#f4f5f6")
-    s.disc(9.6, 9.5, 6.4, 7.9, 0.4, "#e7e9eb", taper=0.99, top="#eff1f2")  # the disc lid
+    body = s.box(0, 0, 0, 19.6, 19.4, 7.2, "#ecedef", r=1.6, top="#f4f5f6")
+    s.disc(9.6, 9.5, 7.2, 8.2, 0.4, "#e7e9eb", taper=0.99, top="#eff1f2")  # the disc lid
     s.p_top(body, [(8.7, 14.2), (10.9, 14.2), (9.8, 16.6)], "#f9f9fb")  # the V on the lid
     s.fct(body, 0.66, 0.46, 1.0, "#f28a1a")  # the swirl
     s.fct(body, 0.11, 0.80, 1.3, "#d9dbdd")  # power
@@ -181,27 +183,34 @@ def _keys(s: Scene, b, rows, x0: float, x1: float, y0: float, row_h: float, gap:
 
 def sms(s: Scene) -> None:
     body = s.box(0, 0, 0, 37.5, 20.5, 6.5, "#1c1c20", r=0.9, top="#212126")
-    s.ft(body, 0.05, 0.10, 0.30, 0.15, "#c9c9cf")  # the maker's name
-    s.ft(body, 0.46, 0.30, 0.82, 0.74, "#d6322c")  # the red panel
-    s.p_top(body, [(19.5, 9.0), (23.5, 9.0), (21.5, 12.4)], "#f2f2f2")  # its white triangle
-    s.ft(body, 0.53, 0.04, 0.84, 0.24, "#08080a")  # the cartridge slot
-    s.ff(body, 0.06, 0.52, 0.19, 0.72, "#d6322c")
-    s.ff(body, 0.44, 0.18, 0.56, 0.60, "#08080a")  # controller ports
-    s.ft(body, 0.88, 0.50, 0.95, 0.60, "#3a3a40")
+    s.box(0.4, 0.4, 6.5, 36.7, 5.5, 1.1, "#202024", r=0.6, top="#26262a")  # the wedge rises toward the back
+    s.ft(body, 0.06, 0.15, 0.31, 0.19, "#cfcfcf")  # the name along the back left
+    s.ft(body, 0.46, 0.02, 0.75, 0.16, "#08080a")  # the cartridge slot
+    s.ft(body, 0.45, 0.20, 0.76, 0.62, "#d6322c")  # the red panel
+    s.ft(body, 0.48, 0.30, 0.73, 0.33, "#f2f2f2")
+    s.ft(body, 0.48, 0.50, 0.73, 0.53, "#f2f2f2")
+    s.p_top(body, [(19.2, 8.4), (21.6, 8.4), (20.4, 11.0)], "#f6f6f6")
+    s.ff(body, 0.0, 0.80, 1.0, 0.85, "#b8302c")  # the red line along the front edge
+    s.ff(body, 0.05, 0.50, 0.15, 0.74, "#d6322c")  # the power switch
+    s.ff(body, 0.37, 0.28, 0.45, 0.62, "#08080a")  # two controller ports
+    s.ff(body, 0.47, 0.28, 0.55, 0.62, "#08080a")
+    s.ff(body, 0.58, 0.12, 0.68, 0.74, "#060608")  # the card slot
+    s.ff(body, 0.72, 0.30, 0.86, 0.36, "#8a8a90")
 
 
 def gbc(s: Scene) -> None:
     b = s.box(0, 0, 0, 7.8, 2.7, 13.3, "#9078cc", r=0.9, top="#a08ad8")
-    s.ff(b, 0.10, 0.50, 0.90, 0.95, "#17171c")  # the black screen surround
-    s.ff(b, 0.21, 0.60, 0.79, 0.88, "#8a9884")
-    s.ff(b, 0.10, 0.50, 0.90, 0.54, "#22222a")
+    s.ff(b, 0.07, 0.48, 0.93, 0.95, "#17171c")  # the black screen surround
+    s.ff(b, 0.20, 0.60, 0.80, 0.90, "#8a9884")
+    s.ff(b, 0.20, 0.52, 0.62, 0.55, "#4a4a56")  # the name
     s.ff(b, 0.10, 0.30, 0.33, 0.35, "#26262c")  # the cross
     s.ff(b, 0.19, 0.22, 0.24, 0.44, "#26262c")
-    s.fcf(b, 0.80, 0.30, 0.55, "#26262c")  # B and A
-    s.fcf(b, 0.64, 0.24, 0.55, "#26262c")
+    s.fcf(b, 0.60, 0.28, 0.55, "#26262c")  # B and A, side by side
+    s.fcf(b, 0.75, 0.29, 0.55, "#26262c")
     s.ff(b, 0.14, 0.06, 0.34, 0.15, "#3f7a4a")  # the circuit board showing through
-    for i in range(4):  # the speaker dots
-        s.fcf(b, 0.66 + i * 0.07, 0.07 + 0.01 * i, 0.16, "#5a4a8a")
+    s.fcf(b, 0.70, 0.10, 0.85, "#6a5a9a")  # the speaker
+    for i in range(3):
+        s.ff(b, 0.62, 0.075 + i * 0.025, 0.78, 0.082 + i * 0.025, "#4a3a7a")
 
 
 def atari2600(s: Scene) -> None:
@@ -215,18 +224,19 @@ def atari2600(s: Scene) -> None:
     s.ft(back, 0.30, 0.25, 0.72, 0.42, "#3c3c42")  # the label
     s.ft(back, 0.36, 0.55, 0.64, 0.82, "#08080a")  # the cartridge slot
     for u in (0.10, 0.19, 0.78, 0.86):  # four switches
-        s.ft(back, u, 0.35, u + 0.045, 0.62, "#c9c9ce")
+        s.ft(back, u, 0.35, u + 0.04, 0.62, "#7c7c84")
 
 
 def atari7800(s: Scene) -> None:
     body = s.box(0, 0, 0, 33.0, 22.0, 5.2, "#232327", r=0.7, top="#2a2a2f")
-    s.ft(body, 0, 0.30, 1, 0.52, "#c9c9cc")  # the silver band
+    for i in range(6):  # the vent ribs along the back
+        s.ft(body, 0.05, 0.02 + i * 0.022, 0.95, 0.02 + i * 0.022 + 0.01, "#1a1a1e")
+    s.ft(body, 0.38, 0.12, 0.62, 0.36, "#08080a")  # the cartridge slot
+    s.ft(body, 0, 0.40, 1, 0.60, "#c9c9cc")  # the silver band
     for i, c in enumerate(("#d6322c", "#f28a1a", "#3fae5a", "#2d63b8")):  # with its coloured stripes
-        s.ft(body, 0, 0.50 + i * 0.012, 1, 0.50 + i * 0.012 + 0.006, c)
-    s.ft(body, 0.38, 0.06, 0.62, 0.30, "#08080a")  # the cartridge slot
-    for i in range(8):
-        s.ft(body, 0.06, 0.60 + i * 0.045, 0.34, 0.60 + i * 0.045 + 0.02, "#1a1a1e")
-    s.ff(body, 0.06, 0.30, 0.20, 0.45, "#a0a0a8")
+        s.ft(body, 0, 0.58 + i * 0.012, 1, 0.58 + i * 0.012 + 0.006, c)
+    for u in (0.12, 0.24, 0.62, 0.74):  # power, pause, select and reset
+        s.ff(body, u, 0.55, u + 0.075, 0.70, "#3a3a40")
 
 
 def gamegear(s: Scene) -> None:
@@ -237,8 +247,10 @@ def gamegear(s: Scene) -> None:
     s.ff(b, 0.07, 0.52, 0.19, 0.58, "#3a3a42")
     s.ff(b, 0.11, 0.40, 0.15, 0.70, "#3a3a42")
     s.fcf(b, 0.82, 0.78, 0.55, "#2d63b8")  # start
-    s.fcf(b, 0.85, 0.46, 0.95, "#101014")  # buttons 1 and 2
-    s.fcf(b, 0.91, 0.28, 0.95, "#101014")
+    s.fcf(b, 0.81, 0.38, 0.95, "#101014")  # buttons 1 and 2
+    s.fcf(b, 0.90, 0.55, 0.95, "#101014")
+    for i, c in enumerate(("#d6322c", "#3fae5a", "#2d63b8")):  # the three coloured dots of the logo
+        s.fcf(b, 0.15 + i * 0.03, 0.88, 0.2, c)
     s.ff(b, 0.73, 0.62, 0.84, 0.68, "#c8c8d0")  # the maker's name
     for i in range(4):  # the speaker
         for j in range(4):
@@ -247,8 +259,8 @@ def gamegear(s: Scene) -> None:
 
 def msx(s: Scene) -> None:
     body = s.box(0, 0, 0, 40.0, 24.0, 5.0, "#1c1c20", r=1.2, top="#232327")
-    s.ft(body, 0.20, 0.05, 0.56, 0.13, "#08080a")  # cartridge slots
-    s.ft(body, 0.60, 0.05, 0.80, 0.13, "#08080a")
+    s.ft(body, 0.29, 0.04, 0.62, 0.12, "#08080a")  # cartridge slots
+    s.ft(body, 0.64, 0.04, 0.96, 0.12, "#08080a")
     for i in range(5):  # function keys
         s.ft(body, 0.07 + i * 0.075, 0.19, 0.07 + i * 0.075 + 0.062, 0.26, "#8cc4e8")
     s.ft(body, 0.82, 0.19, 0.89, 0.26, "#d6322c")
@@ -259,10 +271,13 @@ def msx(s: Scene) -> None:
 
 
 def ps2(s: Scene) -> None:
-    s.box(-1.5, -0.8, 0, 21.0, 10.0, 2.4, "#2f6fd6", r=1.2)  # the blue stand
-    body = s.box(0, 0, 2.4, 18.0, 7.8, 30.0, "#17171c", r=0.8, top="#202026")
-    s.ff(body, 0.12, 0.20, 0.60, 0.30, "#3c5fa8")  # the logo
-    s.ff(body, 0, 0.55, 1, 0.56, "#0e0e12")  # the disc tray seam
+    s.box(-0.6, -0.5, 0, 19.2, 8.8, 2.0, "#2f6fd6", r=1.0)  # the blue stand
+    body = s.box(0, 0, 2.0, 18.0, 7.8, 30.0, "#17171c", r=0.8, top="#202026")
+    s.ff(body, 0.12, 0.30, 0.66, 0.34, "#4a6ec0")  # the logo
+    s.ff(body, 0.12, 0.26, 0.66, 0.285, "#2a3f78")
+    s.ff(body, 0, 0.70, 1, 0.71, "#0e0e12")  # the disc tray seam
+    for i in range(12):  # the ridges down the right edge of the front
+        s.ff(body, 0.90, 0.12 + i * 0.065, 1.0, 0.12 + i * 0.065 + 0.022, "#0b0b0e")
     for i in range(9):  # the ridges on the side
         s.fs(body, 0.10 + i * 0.09, 0.25, 0.10 + i * 0.09 + 0.04, 0.85, "#0e0e12")
     s.ff(body, 0.70, 0.62, 0.86, 0.65, "#4a4a52")
@@ -274,13 +289,13 @@ def psp(s: Scene) -> None:
     s.ff(b, 0.20, 0.12, 0.75, 0.93, "#0b0b0f")  # the big screen and its surround
     s.ff(b, 0.22, 0.17, 0.73, 0.89, "#1d2331")
     s.ff(b, 0.22, 0.60, 0.50, 0.89, "#262d3e")  # a glint
-    s.fcf(b, 0.09, 0.50, 0.65, "#0b0b0f")  # the analogue nub
-    for dx, dz in ((0, 1), (0, -1), (1, 0), (-1, 0)):  # d-pad and face buttons
-        s.fcf(b, 0.11 + dx * 0.036, 0.80 + dz * 0.12, 0.34, "#2c2c34")
-        s.fcf(b, 0.88 + dx * 0.036, 0.78 + dz * 0.12, 0.34, "#2c2c34")
+    s.fcf(b, 0.09, 0.42, 0.65, "#0b0b0f")  # the analogue nub
+    for dx, dz in ((0, 1), (0, -1), (1, 0), (-1, 0)):  # d-pad high on the left, face buttons lower on the right
+        s.fcf(b, 0.11 + dx * 0.036, 0.78 + dz * 0.12, 0.34, "#2c2c34")
+        s.fcf(b, 0.88 + dx * 0.036, 0.40 + dz * 0.12, 0.34, "#2c2c34")
     for i in range(6):
         s.fcf(b, 0.20 + i * 0.07, 0.06, 0.2, "#4a4a52")
-    s.ff(b, 0.80, 0.42, 0.90, 0.48, "#9a9aa2")
+    s.ff(b, 0.80, 0.64, 0.90, 0.70, "#9a9aa2")
 
 
 def xbox(s: Scene) -> None:
@@ -293,19 +308,23 @@ def xbox(s: Scene) -> None:
     for i in range(12):  # the vents on the right
         s.fs(b, 0.08 + i * 0.072, 0.15, 0.08 + i * 0.072 + 0.032, 0.85, "#09090b")
     s.ff(b, 0.06, 0.62, 0.22, 0.72, "#4a4a52")
-    for u in (0.30, 0.40, 0.62, 0.72):  # four controller ports
-        s.ff(b, u, 0.16, u + 0.07, 0.52, "#0b0b0d")
-    s.fcf(b, 0.52, 0.56, 0.5, "#d0d0d0")
+    for u in (0.10, 0.20, 0.65, 0.76):  # four controller ports, two each side
+        s.ff(b, u, 0.16, u + 0.08, 0.52, "#0b0b0d")
+    s.ff(b, 0.34, 0.12, 0.60, 0.62, "#8d8d93")  # the grey centre panel
+    s.fcf(b, 0.47, 0.50, 0.55, "#e6e6e6")  # power
+    s.fcf(b, 0.47, 0.26, 0.3, "#4a4a52")  # eject
 
 
 def pcengine(s: Scene) -> None:
     body = s.box(0, 0, 0, 36.0, 22.0, 6.2, "#1c1c20", r=1.2, top="#222226")
     back = s.box(3.0, 0, 6.2, 31.0, 10.0, 2.2, "#202024", r=0.8, top="#26262b")
-    s.ft(body, 0.62, 0.52, 0.82, 0.88, "#0b0b0d")  # the card slot
-    s.fct(body, 0.72, 0.69, 1.7, "#25252a")
-    for i in range(6):  # ridges at the front right
-        s.ft(body, 0.85, 0.55 + i * 0.07, 0.97, 0.55 + i * 0.07 + 0.03, "#0f0f12")
-    s.ft(body, 0.08, 0.60, 0.38, 0.65, "#d9702a")  # the name
+    s.ft(body, 0.50, 0.50, 0.68, 0.96, "#0b0b0d")  # the card slot
+    s.fct(body, 0.59, 0.80, 1.9, "#25252a")  # with its round bay in front
+    for i in range(7):  # ridges to the right of it
+        s.ft(body, 0.72, 0.52 + i * 0.065, 0.93, 0.52 + i * 0.065 + 0.03, "#0f0f12")
+    for i in range(4):  # and a few to the left
+        s.ft(body, 0.14, 0.60 + i * 0.07, 0.30, 0.60 + i * 0.07 + 0.03, "#0f0f12")
+    s.ft(body, 0.15, 0.40, 0.40, 0.46, "#d9702a")  # the name
     s.ff(body, 0.08, 0.30, 0.22, 0.62, "#0c0c0f")
 
 
@@ -313,49 +332,58 @@ def neogeo(s: Scene) -> None:
     body = s.box(0, 0, 0, 33.0, 22.0, 6.0, "#1c1c20", r=1.0, top="#222226")
     s.box(2.0, 0, 6.0, 29.0, 10.5, 1.2, "#202026", r=3.0, top="#27272d")
     s.ft(body, 0.16, 0.06, 0.84, 0.44, "#08080a")  # the long cartridge slot
-    s.fct(body, 0.16, 0.66, 1.6, "#2a2a30")
-    s.ft(body, 0.50, 0.70, 0.80, 0.77, "#d9b04a")  # the name
-    s.ff(body, 0.52, 0.20, 0.74, 0.38, "#0b0b0d")  # card slots
-    s.ff(body, 0.10, 0.30, 0.24, 0.55, "#0b0b0d")
+    s.fct(body, 0.33, 0.64, 1.7, "#2a2a30")  # the round button
+    s.ft(body, 0.48, 0.66, 0.78, 0.73, "#d9b04a")  # the name
+    s.ff(body, 0.50, 0.22, 0.58, 0.36, "#0b0b0d")  # the small slots
+    s.ff(body, 0.64, 0.22, 0.70, 0.36, "#0b0b0d")
+    s.ff(body, 0.78, 0.20, 0.96, 0.42, "#0b0b0d")  # the card slot at the right
+    s.ff(body, 0.08, 0.30, 0.22, 0.55, "#0b0b0d")
 
 
 def lynx(s: Scene) -> None:
     b = s.box(0, 0, 0, 27.0, 4.0, 11.0, "#5b5b62", r=4.0, top="#66666e")
-    s.fcf(b, 0.14, 0.55, 2.3, "#17171b")  # the big d-pad
-    s.ff(b, 0.07, 0.50, 0.21, 0.58, "#2a2a30")
-    s.ff(b, 0.12, 0.30, 0.16, 0.80, "#2a2a30")
-    s.ff(b, 0.35, 0.18, 0.62, 0.92, "#121216")  # screen surround
-    s.ff(b, 0.38, 0.26, 0.59, 0.78, "#6f8a56")
-    s.ff(b, 0.41, 0.82, 0.55, 0.88, "#d9902a")  # the name
+    s.fcf(b, 0.14, 0.58, 2.4, "#17171b")  # the big d-pad in its round recess
+    s.ff(b, 0.07, 0.53, 0.21, 0.62, "#2e2e34")
+    s.ff(b, 0.12, 0.34, 0.16, 0.82, "#2e2e34")
+    s.ff(b, 0.25, 0.64, 0.29, 0.69, "#3a3a40")  # on and off
+    s.ff(b, 0.25, 0.46, 0.29, 0.51, "#3a3a40")
+    s.ff(b, 0.31, 0.10, 0.65, 0.95, "#121216")  # the dark screen surround
+    s.ff(b, 0.36, 0.22, 0.60, 0.70, "#6f8a56")  # the screen
+    s.ff(b, 0.40, 0.80, 0.56, 0.88, "#d9902a")  # the name
     for i in range(3):  # option buttons
-        s.ff(b, 0.66, 0.30 + i * 0.12, 0.69, 0.36 + i * 0.12, "#c9a24a")
-    s.fcf(b, 0.89, 0.68, 1.0, "#17171b")  # A and B
-    s.fcf(b, 0.93, 0.34, 1.0, "#17171b")
-    for i in range(6):  # speaker
-        s.ff(b, 0.73, 0.28 + i * 0.07, 0.83, 0.31 + i * 0.07, "#3a3a42")
+        s.ff(b, 0.67, 0.28 + i * 0.14, 0.70, 0.35 + i * 0.14, "#2a2a30")
+    for i in range(6):  # the speaker grille
+        for j in range(7):
+            s.ff(b, 0.73 + j * 0.018, 0.30 + i * 0.07, 0.737 + j * 0.018, 0.33 + i * 0.07, "#33333a")
+    s.fcf(b, 0.80, 0.80, 0.95, "#17171b")  # A and B at the top right
+    s.fcf(b, 0.88, 0.80, 0.95, "#17171b")
+    s.fcf(b, 0.80, 0.20, 0.95, "#17171b")  # and again at the bottom right
+    s.fcf(b, 0.88, 0.20, 0.95, "#17171b")
 
 
 def wonderswan(s: Scene) -> None:
     b = s.box(0, 0, 0, 12.1, 2.4, 7.4, "#3a5fc8", r=1.8, top="#4a70d8")
-    s.ff(b, 0.28, 0.10, 0.74, 0.94, "#e4e4e8")  # the white screen surround
-    s.ff(b, 0.34, 0.20, 0.68, 0.84, "#6d7a8c")
-    for dx, dz in ((0, 1), (0, -1), (1, 0), (-1, 0)):  # the X buttons
-        s.fcf(b, 0.14 + dx * 0.065, 0.56 + dz * 0.17, 0.4, "#c9d4f2")
-    s.fcf(b, 0.86, 0.34, 0.5, "#c9d4f2")
-    s.fcf(b, 0.92, 0.58, 0.5, "#c9d4f2")
-    s.ff(b, 0.38, 0.03, 0.50, 0.075, "#e4e4e8")
-    s.ff(b, 0.55, 0.03, 0.64, 0.075, "#f28a1a")
+    s.ff(b, 0.20, 0.10, 0.74, 0.94, "#e4e4e8")  # the big white screen surround
+    s.ff(b, 0.26, 0.22, 0.69, 0.84, "#4c5870")
+    for dx, dz in ((0, 1), (0, -1), (1, 0), (-1, 0)):  # the four X buttons
+        s.fcf(b, 0.11 + dx * 0.05, 0.64 + dz * 0.13, 0.4, "#c9d4f2")
+    s.fcf(b, 0.79, 0.22, 0.5, "#c9d4f2")  # A and B at the lower right
+    s.fcf(b, 0.87, 0.30, 0.5, "#c9d4f2")
+    s.fcf(b, 0.88, 0.78, 1.4, "#2a4aa8")  # the round dial at the top right
+    s.ff(b, 0.22, 0.05, 0.31, 0.09, "#e4e4e8")  # start and sound
+    s.ff(b, 0.33, 0.05, 0.42, 0.09, "#e4e4e8")
+    s.ff(b, 0.44, 0.05, 0.53, 0.09, "#f28a1a")  # power
 
 
 def ngp(s: Scene) -> None:
     b = s.box(0, 0, 0, 14.5, 2.7, 8.5, "#26272d", r=2.2, top="#30313a")
     s.fcf(b, 0.12, 0.78, 0.95, "#111114")  # the stick
     s.fcf(b, 0.12, 0.78, 0.55, "#2c2c33")
-    s.ff(b, 0.18, 0.08, 0.64, 0.92, "#0e0e12")  # the screen surround
-    s.ff(b, 0.21, 0.16, 0.61, 0.86, "#8d8f8a")
-    s.fcf(b, 0.77, 0.42, 0.8, "#101014")  # the two buttons
-    s.fcf(b, 0.90, 0.58, 0.8, "#101014")
-    s.ff(b, 0.70, 0.16, 0.76, 0.20, "#4a4a52")
+    s.ff(b, 0.25, 0.08, 0.76, 0.94, "#0e0e12")  # the big screen surround
+    s.ff(b, 0.28, 0.16, 0.73, 0.88, "#8d8f8a")
+    s.fcf(b, 0.80, 0.28, 0.8, "#101014")  # the two buttons, low on the right
+    s.fcf(b, 0.90, 0.33, 0.8, "#101014")
+    s.ff(b, 0.88, 0.62, 0.93, 0.68, "#3a3a42")  # the option button
 
 
 def arcade(s: Scene) -> None:
@@ -388,22 +416,23 @@ def arcade(s: Scene) -> None:
 
 def amiga(s: Scene) -> None:
     body = s.box(0, 0, 0, 47.0, 24.0, 6.0, "#cfc9b5", r=1.0, top="#d8d2be")
-    for i in range(20):  # the vents across the back
-        s.ft(body, 0.03 + i * 0.047, 0.04, 0.03 + i * 0.047 + 0.022, 0.20, "#a8a28d")
-    s.ft(body, 0.03, 0.28, 0.97, 0.98, "#a9a38e")  # the keyboard well
+    for i in range(8):  # the long vent slots across the back
+        s.ft(body, 0.03, 0.05 + i * 0.045, 0.97, 0.05 + i * 0.045 + 0.02, "#a8a28d")
+    s.ft(body, 0.03, 0.43, 0.97, 0.97, "#a9a38e")  # the keyboard well
     for i in range(10):  # function keys
-        s.ft(body, 0.05 + i * 0.058, 0.31, 0.05 + i * 0.058 + 0.050, 0.39, "#c6c0ab")
-    _keys(s, body, 4, 0.05, 0.62, 0.43, 0.12, 0.004, "#c6c0ab", 14)
-    _keys(s, body, 4, 0.76, 0.96, 0.43, 0.12, 0.004, "#c6c0ab", 4)
-    s.ft(body, 0.64, 0.60, 0.72, 0.72, "#c6c0ab")  # the arrow keys
-    s.ft(body, 0.80, 0.14, 0.94, 0.20, "#6a6a72")  # the badge
+        s.ft(body, 0.05 + i * 0.058, 0.46, 0.05 + i * 0.058 + 0.050, 0.53, "#c6c0ab")
+    _keys(s, body, 4, 0.05, 0.62, 0.57, 0.085, 0.004, "#c6c0ab", 14)
+    _keys(s, body, 4, 0.76, 0.96, 0.57, 0.085, 0.004, "#c6c0ab", 4)
+    s.ft(body, 0.64, 0.76, 0.72, 0.90, "#c6c0ab")  # the arrow keys
+    s.ft(body, 0.78, 0.35, 0.93, 0.40, "#6a6a72")  # the badge
     s.ff(body, 0.70, 0.30, 0.90, 0.40, "#25252a")  # the floppy slot
 
 
 def gba(s: Scene) -> None:
     b = s.box(0, 0, 0, 14.4, 2.4, 8.2, "#5f46b8", r=2.0, top="#6e56c8")
-    s.ff(b, 0.22, 0.10, 0.77, 0.93, "#14141a")  # the black screen surround
-    s.ff(b, 0.28, 0.22, 0.71, 0.81, "#a0b09a")  # the screen
+    s.ff(b, 0.20, 0.06, 0.78, 0.94, "#14141a")  # the black screen surround
+    s.ff(b, 0.27, 0.24, 0.71, 0.84, "#a0b09a")  # the screen
+    s.ff(b, 0.30, 0.10, 0.66, 0.14, "#6a6a74")  # the name
     s.ff(b, 0.05, 0.64, 0.17, 0.72, "#d0d0d6")  # the d-pad
     s.ff(b, 0.09, 0.52, 0.13, 0.84, "#d0d0d6")
     s.fcf(b, 0.81, 0.46, 0.58, "#cfcfd4")  # A and B
@@ -417,25 +446,27 @@ def gba(s: Scene) -> None:
 
 
 def virtualboy(s: Scene) -> None:
-    s.beam((12.5, 5.5, 9.0), (11.0, -7.0, 0.0), 1.1, "#25252a")  # the back leg
-    s.beam((12.5, 5.5, 9.0), (-2.0, 12.0, 0.0), 1.1, "#25252a")  # the front-left leg
-    s.beam((12.5, 5.5, 9.0), (27.0, 8.0, 0.0), 1.1, "#25252a")  # the right leg
-    s.disc(12.5, 5.5, 8.0, 1.3, 4.5, "#2c2c32")  # the neck
-    s.box(1.5, 1.0, 12.0, 22.0, 10.0, 1.6, "#18181c", r=2.5)
-    v = s.box(0, 0, 13.0, 25.0, 12.0, 8.0, "#d6322c", r=3.2, top="#e24038")
-    s.ff(v, 0.14, 0.05, 0.86, 0.50, "#18181c")  # the eyepiece
-    s.ff(v, 0.20, 0.62, 0.42, 0.78, "#f4c4c0")  # its label
+    s.beam((12.5, 5.5, 5.0), (12.0, -9.0, 0.0), 1.0, "#25252a")  # the back leg
+    s.disc(12.5, 5.5, 4.5, 1.2, 7.8, "#2c2c32")  # the neck
+    s.beam((12.5, 5.5, 5.0), (-3.0, 13.0, 0.0), 1.1, "#25252a")  # the front-left leg
+    s.beam((12.5, 5.5, 5.0), (28.0, 10.0, 0.0), 1.1, "#25252a")  # the right leg
+    s.box(2.5, 1.5, 12.0, 20.0, 9.0, 1.6, "#18181c", r=2.5)  # the dark underside
+    v = s.box(0, 0, 13.0, 25.0, 12.0, 8.0, "#d6322c", r=3.4, top="#e24038")
+    s.ft(v, 0.30, 0.20, 0.70, 0.45, "#a82a28")  # the raised bump on top
+    s.ff(v, 0.10, 0.05, 0.90, 0.52, "#18181c")  # the dark eyepiece hood
+    s.ff(v, 0.16, 0.66, 0.40, 0.80, "#f4c4c0")  # its label
 
 
 def nds(s: Scene) -> None:
     low = s.box(0, 6.0, 0, 14.8, 8.4, 1.4, "#2f55d8", r=1.0, top="#3a62e6")
     s.box(0, 5.0, 0, 14.8, 1.4, 1.8, "#1d3aa0")  # the hinge
-    lid = s.tilted((0, 5.4, 1.4), (14.8, 0, 0), (0, 0.85, 0.31), (0, -2.9, 7.9), "#2f55d8")
+    lid = s.tilted((0, 5.4, 1.4), (14.8, 0, 0), (0, 0.8, 0.5), (0, -4.6, 7.0), "#2f55d8")
     s.d_on(lid, 4.0, 1.4, 10.8, 6.7, "#101014")  # the upper screen
     s.d_on(lid, 4.5, 1.9, 10.3, 6.2, "#2c2f36")
     for i in range(4):  # speaker dots on either side
-        s.d_on(lid, 1.3 + i * 0.5, 2.8, 1.6 + i * 0.5, 5.6, "#1d3aa0")
-        s.d_on(lid, 12.2 + i * 0.5, 2.8, 12.5 + i * 0.5, 5.6, "#1d3aa0")
+        for j in range(5):
+            s.d_on(lid, 1.2 + i * 0.6, 2.4 + j * 0.6, 1.45 + i * 0.6, 2.65 + j * 0.6, "#1d3aa0")
+            s.d_on(lid, 11.8 + i * 0.6, 2.4 + j * 0.6, 12.05 + i * 0.6, 2.65 + j * 0.6, "#1d3aa0")
     s.d_top(low, 4.0, 0.8, 10.8, 6.0, "#101014")  # the lower screen
     s.d_top(low, 4.5, 1.2, 10.3, 5.6, "#2c2f36")
     s.d_top(low, 1.2, 3.8, 3.2, 4.5, "#17171c")  # the d-pad
@@ -448,10 +479,14 @@ def nds(s: Scene) -> None:
 def n3ds(s: Scene) -> None:
     low = s.box(0, 6.0, 0, 13.4, 7.4, 1.2, "#1da8c8", r=1.0, top="#2cbadc")
     s.box(0, 5.0, 0, 13.4, 1.4, 1.6, "#15788f")
-    lid = s.tilted((0, 5.4, 1.2), (13.4, 0, 0), (0, 0.85, 0.31), (0, -2.9, 7.9), "#17171c")
+    lid = s.tilted((0, 5.4, 1.2), (13.4, 0, 0), (0, 0.8, 0.5), (0, -4.6, 7.0), "#17171c")
     s.d_on(lid, 2.4, 1.2, 11.0, 7.0, "#0c0c10")  # the wide upper screen
     s.d_on(lid, 2.8, 1.6, 10.6, 6.6, "#cfd3d8")
     s.d_on(lid, 6.5, 7.3, 6.9, 7.65, "#3a3a44")  # the camera
+    for i in range(3):  # speaker dots
+        for j in range(3):
+            s.d_on(lid, 0.9 + i * 0.4, 3.4 + j * 0.4, 1.1 + i * 0.4, 3.6 + j * 0.4, "#33333c")
+            s.d_on(lid, 11.9 + i * 0.4, 3.4 + j * 0.4, 12.1 + i * 0.4, 3.6 + j * 0.4, "#33333c")
     s.d_top(low, 4.3, 0.7, 9.3, 5.6, "#101014")  # the lower screen
     s.d_top(low, 4.7, 1.1, 8.9, 5.2, "#cfd3d8")
     s.c_top(low, 2.2, 2.4, 1.0, "#c7ccd2")  # the circle pad
@@ -492,6 +527,8 @@ def switch(s: Scene) -> None:
     s.fcf(right, 0.48, 0.30, 1.0, "#2a2a30")  # right stick
     s.fcf(right, 0.48, 0.30, 0.6, "#40404a")
     s.fcf(right, 0.48, 0.10, 0.4, "#1a1a20")  # home
+    s.ff(right, 0.30, 0.935, 0.66, 0.955, "#1a1a20")  # plus
+    s.ff(right, 0.46, 0.90, 0.50, 0.99, "#1a1a20")
 
 
 def wii(s: Scene) -> None:
@@ -523,7 +560,8 @@ def wiiu(s: Scene) -> None:
 
 def ps3(s: Scene) -> None:
     b = s.box(0, 0, 0, 29.0, 29.0, 6.5, "#1b1b1f", r=2.2, top="#25252a")
-    s.ff(b, 0.10, 0.18, 0.92, 0.28, "#bdbdc4")  # the disc slot
+    s.ff(b, 0.28, 0.26, 0.64, 0.34, "#c8c8ce")  # the disc slot
+    s.ff(b, 0.28, 0.34, 0.64, 0.38, "#0a0a0c")
     s.ft(b, 0.70, 0.10, 0.90, 0.16, "#6a6a72")  # the logo
     s.ft(b, 0.12, 0.84, 0.18, 0.90, "#3a3a42")  # power and eject
     s.ft(b, 0.22, 0.84, 0.28, 0.90, "#3a3a42")

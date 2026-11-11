@@ -190,12 +190,14 @@ class Scene:
         self.poly(pts, shade(color, lit))
 
     def beam(self, p0, p1, width: float, color: str) -> None:
-        """A thin straight bar between two points (a tripod leg, say)."""
+        """A thin straight bar between two points (a tripod leg, say), drawn as a flat strip facing the viewer."""
         dx, dy, dz = (p1[i] - p0[i] for i in range(3))
-        n = 12
-        for i in range(n):
-            a = (p0[0] + dx * i / n, p0[1] + dy * i / n, p0[2] + dz * i / n)
-            self.box(a[0] - width / 2, a[1] - width / 2, a[2], width, width, max(width, abs(dz) / n * 1.4), color)
+        nx, ny = -dy, dx
+        length = math.hypot(nx, ny)
+        if length < 1e-6:
+            nx, ny, length = 1.0, -1.0, math.sqrt(2.0)
+        nx, ny = nx / length * width / 2, ny / length * width / 2
+        self.poly([(p0[0] - nx, p0[1] - ny, p0[2]), (p0[0] + nx, p0[1] + ny, p0[2]), (p1[0] + nx, p1[1] + ny, p1[2]), (p1[0] - nx, p1[1] - ny, p1[2])], shade(color, 0.8))
 
     # ----- painting -----
 
