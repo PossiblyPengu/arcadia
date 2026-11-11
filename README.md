@@ -41,6 +41,15 @@ written in Python with PySide6 (Qt).
 - Controller-friendly: keyboard navigation works, and Steam Input maps a Steam Deck to it.
   A gamepad can also be read directly through evdev if the `evdev` package is installed.
 
+## Getting started
+
+The first time Arcadia runs it opens a short **Get started** checklist (also File → Get started…): your Arcadia
+folder, adding your games, getting your emulators, BIOS files (optional), and syncing saves (optional). Each step
+shows what Arcadia actually found (games in the library, emulators installed or ready through Flatpak, systems with
+games that still lack a BIOS, whether rclone and your Drive remote exist) and has a button that opens the right
+window; the checklist re-checks after each one. An empty shelf also says why it's empty and what to do (a new
+library, an empty system, a search with no match, no favorites yet) instead of showing a blank screen.
+
 ## Sorting ROMs from your downloads folder
 
 Set **Downloads folder (ROM inbox)** in File → Settings (or just choose File → Import ROMs…,

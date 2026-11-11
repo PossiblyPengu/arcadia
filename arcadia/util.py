@@ -65,3 +65,12 @@ def bundle_summary(kinds: list[str], update_versions: list[str] | None = None) -
     if counts["dlc"]:
         bits.append(f"{counts['dlc']} DLC")
     return ", ".join(bits)
+
+
+def fit_label_height(label) -> None:
+    """Make a word-wrapped QLabel tall enough for its text at its current width. Qt doesn't always do this
+    for labels inside nested layouts, which leaves the last lines cut off."""
+    width = label.width() if label.width() > 60 else max(label.minimumWidth(), label.sizeHint().width())
+    height = label.heightForWidth(width)
+    if height > 0:
+        label.setMinimumHeight(height)

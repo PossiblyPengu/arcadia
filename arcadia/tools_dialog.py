@@ -54,7 +54,7 @@ def _note(text: str) -> QLabel:
 
 
 class ToolsDialog(QDialog, _Busy):
-    def __init__(self, config: Config, parent=None):
+    def __init__(self, config: Config, parent=None, tab: int = 0):
         super().__init__(parent)
         self.config = config
         self._task = None
@@ -76,6 +76,7 @@ class ToolsDialog(QDialog, _Busy):
         layout.addWidget(self.status)
         layout.addWidget(self.bar)
         layout.addWidget(self.buttons)
+        self.tabs.setCurrentIndex(tab)
         self.refresh_bios()
         self.refresh_cores()
 

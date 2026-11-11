@@ -212,14 +212,7 @@ class CoverFlow(QWidget):
 
         if not self._items:
             painter.setPen(QColor(200, 202, 212))
-            font = painter.font()
-            font.setPointSize(font.pointSize() + 2)
-            painter.setFont(font)
-            painter.drawText(
-                self.rect(),
-                Qt.AlignmentFlag.AlignCenter,
-                "Nothing here yet.\nCheck the ROM folder in File → Settings, then rescan (Ctrl+R).",
-            )
+            painter.drawText(self.rect(), Qt.AlignmentFlag.AlignCenter, "Nothing here yet.")
             painter.end()
             return
 

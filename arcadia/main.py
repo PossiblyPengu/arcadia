@@ -5,6 +5,7 @@ import os
 import sys
 from pathlib import Path
 
+from PySide6.QtCore import QTimer
 from PySide6.QtGui import QColor, QPalette
 from PySide6.QtWidgets import QApplication
 
@@ -59,4 +60,6 @@ def main(argv: list[str] | None = None) -> int:
         window.toggle_fullscreen()
     else:
         window.show()
+    if first_run:  # a new setup: walk through what's needed
+        QTimer.singleShot(400, window.show_welcome)
     return app.exec()

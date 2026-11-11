@@ -14,8 +14,8 @@ import time
 import zlib
 from pathlib import Path
 
-from PySide6.QtCore import QEvent, QFileSystemWatcher, QProcess, QProcessEnvironment, QPropertyAnimation, QSize, Qt, QTimer
-from PySide6.QtGui import QAction, QColor, QFont, QIcon, QKeyEvent, QKeySequence, QPainter, QPixmap, QShortcut
+from PySide6.QtCore import QEvent, QFileSystemWatcher, QProcess, QProcessEnvironment, QPropertyAnimation, QSize, Qt, QTimer, QUrl
+from PySide6.QtGui import QAction, QColor, QDesktopServices, QFont, QIcon, QKeyEvent, QKeySequence, QPainter, QPixmap, QShortcut
 from PySide6.QtWidgets import (
     QApplication,
     QCheckBox,
@@ -44,6 +44,8 @@ from PySide6.QtWidgets import (
 
 from arcadia.config import Config, SystemConfig
 from arcadia.coverflow import COVER_H, COVER_W, CoverFlow
+from arcadia.empty_state import EmptyState
+from arcadia.welcome_dialog import WelcomeDialog
 from arcadia.bundles import parse_switch
 from arcadia.emulators import Installer
 from arcadia.emulators_dialog import EmulatorsDialog
@@ -56,7 +58,7 @@ from arcadia.metadata import load_metadata
 from arcadia.presets import PRESETS, accent_for
 from arcadia.savestates import SaveStateError, create_snapshot, list_snapshots, restore_snapshot
 from arcadia.scanner import scan_system
-from arcadia.setup_dialog import SetupDialog
+from arcadia.setup_dialog import BringInDialog, SetupDialog
 from arcadia.tools_dialog import ToolsDialog
 from arcadia.sorter import Confidence, Journal, Plan, apply_plan, build_plan
 from arcadia import savesync
@@ -402,6 +404,9 @@ class MainWindow(QMainWindow):
         self.coverflow.currentChanged.connect(lambda _i: self._on_game_changed())
         self.coverflow.activated.connect(lambda _i: self.launch())
         root.addWidget(self.coverflow, 1)
+        self.empty = EmptyState()
+        self.empty.hide()
+        root.addWidget(self.empty, 1)
 
         # --- game info ---
         self.title_lbl = QLabel()
@@ -489,13 +494,15 @@ class MainWindow(QMainWindow):
 
     def _build_menu(self) -> None:
         file_menu = self.menuBar().addMenu("&File")
+        file_menu.addAction("Get started…", self.show_welcome)
+        file_menu.addSeparator()
         file_menu.addAction("Rescan library", self.rescan, "Ctrl+R")
         file_menu.addAction("Import ROMs…", self.import_roms, "Ctrl+I")
         self.undo_import_action = file_menu.addAction("Undo last import", self.undo_import)
         file_menu.aboutToShow.connect(self._update_undo_action)
         file_menu.addAction("Emulators…", self.open_emulators, "Ctrl+E")
         file_menu.addAction("Arcadia folder and setup…", self.open_setup, "Ctrl+Shift+S")
-        file_menu.addAction("BIOS, emulator settings and sync…", self.open_tools, "Ctrl+Shift+B")
+        file_menu.addAction("BIOS, emulator settings and sync…", lambda: self.open_tools(0), "Ctrl+Shift+B")
         file_menu.addAction("Settings…", self.open_settings)
         file_menu.addSeparator()
         file_menu.addAction("Quit", self.close, "Ctrl+Q")
@@ -662,6 +669,7 @@ class MainWindow(QMainWindow):
             loader = lambda sid=row["system_id"], t=row["title"], p=Path(row["path"]): self._load_cover(sid, t, p)
             items.append((row["key"], title, loader))
         self.coverflow.set_items(items, select_key=previous)
+        self._update_empty_state(view, bool(items))
 
         played = sum(r["total_seconds"] for r in rows)
         noun = "game" if len(rows) == 1 else "games"
@@ -670,6 +678,41 @@ class MainWindow(QMainWindow):
             sub += f"   ·   {fmt_duration(played)} played"
         self.banner_sub.setText(sub)
         self._on_game_changed()
+
+    def _update_empty_state(self, view: str | None, has_games: bool) -> None:
+        """An empty shelf says why, and offers the next step, instead of sitting blank."""
+        self.coverflow.setVisible(has_games)
+        self.empty.setVisible(not has_games)
+        if has_games:
+            return
+        library_total = sum(self.library.summary()["systems"].values())
+        search = self.search.text().strip()
+        import_btn = ("Import ROMs…", self.import_roms, False)
+        if library_total == 0:
+            self.empty.show_message(
+                "Welcome to Arcadia",
+                "Your library is empty. Add your games, then install the emulators you need. The checklist walks you through it.",
+                [("Get started", self.show_welcome, True), import_btn],
+            )
+        elif search:
+            self.empty.show_message(f"Nothing matches “{search}”", "Try a different search, or clear it to see everything.", [("Clear search", self.search.clear, True)])
+        elif view == VIEW_FAVORITES:
+            self.empty.show_message("No favorites yet", "Select a game and press Ctrl+D (or the Favorite button) to keep it here.", [])
+        elif view == VIEW_RECENT:
+            self.empty.show_message("Nothing played yet", "Games you play show up here, most recent first.", [])
+        else:
+            name = self._system_name(view) if view else "this system"
+            folder = self.config.rom_root_path
+            self.empty.show_message(
+                f"No {name} games yet",
+                f"Put them in the “{self.config.system(view).folder}” folder inside {folder}, or import them from your downloads. Then they appear here by themselves.",
+                [("Import ROMs…", self.import_roms, True), ("Open ROM folder", lambda: self._open_rom_folder(view), False)],
+            )
+
+    def _open_rom_folder(self, view: str) -> None:
+        folder = self.config.rom_root_path / self.config.system(view).folder
+        folder.mkdir(parents=True, exist_ok=True)
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(folder)))
 
     def _on_game_changed(self) -> None:
         key = self.current_game_key()
@@ -1093,12 +1136,44 @@ class MainWindow(QMainWindow):
             if self.config.db_path != self._db_path:
                 self.toast.show_message("Restart Arcadia to use the library in its new folder", 6000)
 
-    def open_tools(self) -> None:
+    def show_welcome(self) -> None:
+        """The first-run checklist (also File → Get started…)."""
+        actions = {
+            "folder": self._open_home_folder,
+            "games": self.open_bring_in,
+            "emulators": self.open_emulators,
+            "bios": lambda: self.open_tools(0),
+            "sync": lambda: self.open_tools(2),
+        }
+        WelcomeDialog(self.config, actions, lambda: self.library.summary()["systems"], parent=self).exec()
+
+    def _open_home_folder(self) -> None:
+        home = self.config.home_path or self.config.rom_root_path
+        home.mkdir(parents=True, exist_ok=True)
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(home)))
+
+    def open_bring_in(self) -> None:
+        dialog = BringInDialog(self.config, self.journal, parent=self)
+        dialog.exec()
+        if dialog.changed:
+            self._home_changed()
+
+    def _home_changed(self) -> None:
+        """The library was brought into (or moved within) the Arcadia folder: use it."""
+        self._save_config()
+        self.config.ensure_layout()
+        self.journal = Journal(self.config.journal_path)
+        self._setup_inbox()
+        self.rescan()
+        if self.config.db_path != self._db_path:
+            self.toast.show_message("Restart Arcadia to use your library in the new folder", 6000)
+
+    def open_tools(self, tab: int = 0) -> None:
         """BIOS files, RetroArch settings and cores, Flatpak access, save sync."""
         if self._sync_task is not None:
             self.toast.show_message("Saves are syncing: open this again in a moment.")
             return
-        ToolsDialog(self.config, parent=self).exec()
+        ToolsDialog(self.config, parent=self, tab=tab).exec()
         self._save_config()
 
     def open_setup(self) -> None:
@@ -1107,13 +1182,7 @@ class MainWindow(QMainWindow):
         dialog = SetupDialog(self.config, self.config_path, self.journal, counts, parent=self)
         dialog.exec()
         if dialog.config_changed:  # the library was brought into the Arcadia folder
-            self._save_config()
-            self.config.ensure_layout()
-            self.journal = Journal(self.config.journal_path)
-            self._setup_inbox()
-            self.rescan()
-            if self.config.db_path != self._db_path:
-                self.toast.show_message("Restart Arcadia to use your library in the new folder", 6000)
+            self._home_changed()
         if dialog.restored:  # a restore replaced the library file underneath the open one
             self.library.close()
             self.library = Library(self.config.db_path)
