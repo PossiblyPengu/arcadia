@@ -92,6 +92,41 @@ class Scene:
             self.poly(pts, shade(color, brightness + 0.18))
         self.poly([(x, y, z1) for x, y in upper], shade(top or color, TOP))
 
+    # ----- shaped bodies: any footprint, with the top sloping from the back to the front -----
+
+    def solid(self, outline, z0: float, h_back: float, h_front: float, color: str, top: str | None = None):
+        """Extrude a footprint (back-right, front-right, front-left, back-left order) up to a top that slopes
+        from h_back at the back to h_front at the front. Returns a body tuple the decals understand."""
+        ys = [p[1] for p in outline]
+        y_back, y_front = min(ys), max(ys)
+        span = (y_front - y_back) or 1.0
+
+        def height(y: float) -> float:
+            return h_back + (h_front - h_back) * (y - y_back) / span
+
+        n = len(outline)
+        sides = []
+        for i in range(n):
+            (x0, y0), (x1, y1) = outline[i], outline[(i + 1) % n]
+            nx, ny = (y1 - y0), -(x1 - x0)
+            length = math.hypot(nx, ny) or 1.0
+            nx, ny = nx / length, ny / length
+            if nx + ny <= 0.02:
+                continue
+            brightness = 0.50 + 0.34 * (nx * LIGHT[0] + ny * LIGHT[1]) / math.hypot(*LIGHT)
+            sides.append(((x0 + x1) / 2 + (y0 + y1) / 2, [(x0, y0, z0), (x1, y1, z0), (x1, y1, z0 + height(y1)), (x0, y0, z0 + height(y0))], brightness))
+        for _depth, pts, brightness in sorted(sides, key=lambda s: s[0]):
+            self.poly(pts, shade(color, brightness + 0.18))
+        pts = [(x, y, z0 + height(y)) for x, y in outline]
+        # the top is lit by its own slope: a top that tilts toward the viewer is a little brighter
+        slope = (h_front - h_back) / span
+        facing = 1.0 / math.sqrt(1 + slope * slope)
+        tilt = slope / math.sqrt(1 + slope * slope)  # how much it leans toward +y
+        lit = 0.40 + 0.95 * (0.755 * facing + 0.554 * tilt)
+        self.poly(pts, shade(top or color, lit))
+        xs = [p[0] for p in outline]
+        return (min(xs), y_back, z0, max(xs) - min(xs), span, h_front, h_back)
+
     # ----- bodies -----
 
     def box(self, x, y, z, w, d, h, color: str, r: float = 0.0, taper: float = 1.0, top: str | None = None):
@@ -124,32 +159,30 @@ class Scene:
     # ----- decals: paint on a face of a body, in centimetres from its left / bottom / back -----
 
     def d_front(self, b, u0, v0, u1, v1, color: str, lit: float = FRONT, lift: float = 0.02) -> None:
-        x, y, z, w, d, h = b
+        x, y, z, w, d, h = b[:6]
         yy = y + d + lift
         self.poly([(x + u0, yy, z + v0), (x + u1, yy, z + v0), (x + u1, yy, z + v1), (x + u0, yy, z + v1)], shade(color, lit))
 
     def d_top(self, b, u0, v0, u1, v1, color: str, lit: float = TOP, lift: float = 0.02) -> None:
-        x, y, z, w, d, h = b
-        zz = z + h + lift
-        self.poly([(x + u0, y + v0, zz), (x + u1, y + v0, zz), (x + u1, y + v1, zz), (x + u0, y + v1, zz)], shade(color, lit))
+        x, y, z = b[0], b[1], b[2]
+        self.poly([(x + u, y + v, _ztop(b, v) + lift) for u, v in ((u0, v0), (u1, v0), (u1, v1), (u0, v1))], shade(color, lit))
 
     def d_side(self, b, u0, v0, u1, v1, color: str, lit: float = SIDE, lift: float = 0.02) -> None:
-        x, y, z, w, d, h = b
+        x, y, z, w, d, h = b[:6]
         xx = x + w + lift
         self.poly([(xx, y + u0, z + v0), (xx, y + u1, z + v0), (xx, y + u1, z + v1), (xx, y + u0, z + v1)], shade(color, lit))
 
     def c_front(self, b, u, v, r, color: str, lit: float = FRONT, n: int = 24) -> None:
-        x, y, z, w, d, h = b
+        x, y, z, w, d, h = b[:6]
         yy = y + d + 0.02
         self.poly([(x + u + r * math.cos(t), yy, z + v + r * math.sin(t)) for t in (2 * math.pi * i / n for i in range(n))], shade(color, lit))
 
     def c_top(self, b, u, v, r, color: str, lit: float = TOP, n: int = 24) -> None:
-        x, y, z, w, d, h = b
-        zz = z + h + 0.02
-        self.poly([(x + u + r * math.cos(t), y + v + r * math.sin(t), zz) for t in (2 * math.pi * i / n for i in range(n))], shade(color, lit))
+        x, y = b[0], b[1]
+        self.poly([(x + u + r * math.cos(t), y + v + r * math.sin(t), _ztop(b, v + r * math.sin(t)) + 0.02) for t in (2 * math.pi * i / n for i in range(n))], shade(color, lit))
 
     def c_side(self, b, u, v, r, color: str, lit: float = SIDE, n: int = 24) -> None:
-        x, y, z, w, d, h = b
+        x, y, z, w, d, h = b[:6]
         xx = x + w + 0.02
         self.poly([(xx, y + u + r * math.cos(t), z + v + r * math.sin(t)) for t in (2 * math.pi * i / n for i in range(n))], shade(color, lit))
 
@@ -177,8 +210,8 @@ class Scene:
         self.c_top(b, cx * b[3], cy * b[4], r, color, lit)
 
     def p_top(self, b, pts, color: str, lit: float = TOP) -> None:
-        x, y, z, w, d, h = b
-        self.poly([(x + u, y + v, z + h + 0.02) for u, v in pts], shade(color, lit))
+        x, y = b[0], b[1]
+        self.poly([(x + u, y + v, _ztop(b, v) + 0.02) for u, v in pts], shade(color, lit))
 
     def d_on(self, face, u0, v0, u1, v1, color: str, lit: float = FRONT) -> None:
         """A rectangle on the front face of a tilted box (u along its x edge, v along its z edge)."""
@@ -221,6 +254,34 @@ class Scene:
             painter.drawPolygon(QPolygonF([QPointF(x * f - left, y * f - top) for x, y in pts]))
         painter.end()
         return image
+
+
+def _ztop(b, v: float) -> float:
+    """Height of a body's top at v cm from its back edge (bodies with a sloped top carry a seventh value)."""
+    x, y, z, w, d, h = b[:6]
+    h_back = b[6] if len(b) > 6 else h
+    return z + h_back + (h - h_back) * (v / d if d else 0.0)
+
+
+def footprint(x: float, y: float, w: float, d: float, back_left: float = 0.0, back_right: float = 0.0, front_left: float = 0.0, front_right: float = 0.0) -> list[tuple[float, float]]:
+    """A footprint that can narrow toward the back or front: how far each corner is pulled in from the full rectangle."""
+    return [(x + w - back_right, y), (x + w - front_right, y + d), (x + front_left, y + d), (x + back_left, y)]
+
+
+def rounded(points, radius: float, steps: int = 6):
+    """Round each corner of a footprint with a curve of about this radius, leaving the straight edges straight."""
+    out = []
+    n = len(points)
+    for i in range(n):
+        (px, py), (ax, ay), (bx, by) = points[i], points[i - 1], points[(i + 1) % n]
+        da, db = math.hypot(ax - px, ay - py) or 1.0, math.hypot(bx - px, by - py) or 1.0
+        cut = min(radius, da * 0.5, db * 0.5)
+        sx, sy = px + (ax - px) / da * cut, py + (ay - py) / da * cut
+        ex, ey = px + (bx - px) / db * cut, py + (by - py) / db * cut
+        for k in range(steps + 1):
+            u = k / steps
+            out.append(((1 - u) ** 2 * sx + 2 * u * (1 - u) * px + u * u * ex, (1 - u) ** 2 * sy + 2 * u * (1 - u) * py + u * u * ey))
+    return out
 
 
 def _cross(a, b):

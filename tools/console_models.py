@@ -7,7 +7,7 @@ drawing is then reduced to the pixel style of its era by make_console_art.py. Co
 from __future__ import annotations
 
 from arcadia.eras import era_of
-from isoart import Scene
+from isoart import Scene, footprint, rounded
 
 
 # ---------------------------------------------------------------- 8-bit
@@ -49,9 +49,9 @@ def gb(s: Scene) -> None:
 # ---------------------------------------------------------------- 16-bit
 
 def snes(s: Scene) -> None:
-    body = s.box(0, 0, 0, 23.0, 20.5, 6.4, "#cfcfd5", r=0.9)
+    body = s.solid(rounded(footprint(0, 0, 23.0, 20.5, back_left=0.9, back_right=0.9), 1.3), 0, 6.8, 6.1, "#cfcfd5")
     s.ff(body, 0, 0, 1, 0.22, "#b8b8c2")
-    lid = s.box(3.2, 0.7, 6.4, 16.6, 9.6, 0.5, "#c5c5cd")  # the cartridge lid at the back
+    lid = s.box(3.2, 0.7, 6.9, 16.6, 9.6, 0.45, "#c5c5cd")  # the cartridge lid at the back
     s.ft(lid, 0.12, 0.14, 0.88, 0.34, "#aeaeb8")
     s.ft(body, 0.40, 0.56, 0.62, 1.0, "#bcbcc6")  # the grey eject plate running to the front
     s.ft(body, 0.21, 0.52, 0.40, 0.68, "#7b57c8")  # power
@@ -64,12 +64,12 @@ def snes(s: Scene) -> None:
 
 
 def genesis(s: Scene) -> None:
-    body = s.box(0, 0, 0, 28.0, 21.0, 5.6, "#222228", r=0.7)
-    back = s.box(1.4, 0, 5.6, 12.0, 9.0, 1.3, "#25252b", r=0.4)
+    # narrower at the back, and the top rises toward it
+    body = s.solid(footprint(0, 0, 28.0, 21.0, back_left=3.6, back_right=3.8), 0, 6.2, 4.8, "#222228")
     for i in range(8):  # the ribbed grille at the back left
-        s.ft(back, 0.04 + i * 0.11, 0.10, 0.04 + i * 0.11 + 0.05, 0.92, "#101014")
-    ring = s.disc(16.2, 10.0, 5.6, 5.9, 1.7, "#2a2a30", taper=0.97, top="#303038")  # the cartridge ring
-    rb = (16.2 - 5.9, 10.0 - 5.9, 5.6, 11.8, 11.8, 1.7)
+        s.ft(body, 0.14 + i * 0.030, 0.04, 0.14 + i * 0.030 + 0.014, 0.40, "#101014")
+    s.disc(16.2, 10.0, 5.4, 5.9, 2.1, "#2a2a30", taper=0.97, top="#303038")  # the cartridge ring
+    rb = (16.2 - 5.9, 10.0 - 5.9, 5.4, 11.8, 11.8, 2.1)
     s.c_top(rb, 5.9, 5.9, 5.1, "#18181d")
     s.d_top(rb, 1.8, 1.0, 10.0, 2.1, "#0c0c10")  # the cartridge slot
     s.d_top(rb, 3.6, 4.6, 8.2, 9.0, "#17171b")  # the label
@@ -119,8 +119,9 @@ def saturn(s: Scene) -> None:
 
 def n64(s: Scene) -> None:
     s.disc(21.0, 15.0, 0, 4.4, 2.7, "#1d1d21", taper=0.93, top="#2a2a30")  # the round foot at the front right
-    body = s.box(0, 0, 1.6, 26.0, 19.0, 5.4, "#3d3d43", r=3.8, top="#494950")
-    hump = s.box(5.2, 0.6, 7.0, 15.6, 8.6, 1.5, "#3d3d43", r=1.8, top="#494950")  # the raised cartridge housing
+    outline = rounded(footprint(0, 0, 26.0, 19.0, back_left=1.2, back_right=1.2), 3.4)
+    body = s.solid(outline, 1.6, 6.0, 4.2, "#3d3d43", top="#494950")  # domed: higher toward the back
+    hump = s.box(5.2, 0.8, 7.2, 15.6, 8.4, 1.4, "#3d3d43", r=1.8, top="#494950")  # the raised cartridge housing
     s.ft(hump, 0.10, 0.12, 0.90, 0.30, "#c4c4cb")  # the light slit of the cartridge slot
     s.ft(hump, 0.10, 0.30, 0.90, 0.40, "#17171b")
     for i in range(11):  # the ribbed vent in front of it
@@ -128,7 +129,7 @@ def n64(s: Scene) -> None:
     s.ft(body, 0.12, 0.50, 0.27, 0.78, "#26262c")  # the power switch
     s.ft(body, 0.34, 0.52, 0.56, 0.84, "#34343b")  # the expansion flap
     s.ft(body, 0.72, 0.60, 0.81, 0.80, "#2c2c33")  # reset
-    s.ff(body, 0.05, 0.10, 0.95, 0.82, "#16161a")  # the dark front panel
+    s.ff(body, 0.13, 0.10, 0.87, 0.82, "#16161a")  # the dark front panel
     for x in (0.17, 0.32, 0.69, 0.82):  # two ports each side of the logo window
         s.fcf(body, x, 0.44, 1.2, "#b9b9c1")
         s.fcf(body, x, 0.44, 0.78, "#0b0b0e")
@@ -182,14 +183,14 @@ def _keys(s: Scene, b, rows, x0: float, x1: float, y0: float, row_h: float, gap:
 
 
 def sms(s: Scene) -> None:
-    body = s.box(0, 0, 0, 37.5, 20.5, 6.5, "#1c1c20", r=0.9, top="#212126")
-    s.box(0.4, 0.4, 6.5, 36.7, 5.5, 1.1, "#202024", r=0.6, top="#26262a")  # the wedge rises toward the back
-    s.ft(body, 0.06, 0.15, 0.31, 0.19, "#cfcfcf")  # the name along the back left
+    # a wedge: the back left corner pulled in, and the top rising toward the back
+    body = s.solid(footprint(0, 0, 37.5, 20.5, back_left=3.6, back_right=1.8), 0, 6.8, 4.6, "#1c1c20", top="#212126")
+    s.ft(body, 0.08, 0.15, 0.31, 0.19, "#cfcfcf")  # the name along the back left
     s.ft(body, 0.46, 0.02, 0.75, 0.16, "#08080a")  # the cartridge slot
     s.ft(body, 0.45, 0.20, 0.76, 0.62, "#d6322c")  # the red panel
     s.ft(body, 0.48, 0.30, 0.73, 0.33, "#f2f2f2")
     s.ft(body, 0.48, 0.50, 0.73, 0.53, "#f2f2f2")
-    s.p_top(body, [(19.2, 8.4), (21.6, 8.4), (20.4, 11.0)], "#f6f6f6")
+    s.p_top(body, [(19.2, 8.4), (21.6, 8.4), (20.4, 11.0)], "#f6f6f6")  # its white triangle
     s.ff(body, 0.0, 0.80, 1.0, 0.85, "#b8302c")  # the red line along the front edge
     s.ff(body, 0.05, 0.50, 0.15, 0.74, "#d6322c")  # the power switch
     s.ff(body, 0.37, 0.28, 0.45, 0.62, "#08080a")  # two controller ports
@@ -214,17 +215,16 @@ def gbc(s: Scene) -> None:
 
 
 def atari2600(s: Scene) -> None:
-    low = s.box(0, 0, 0, 32.0, 21.5, 4.8, "#1c1c20", r=0.5)
-    s.ff(low, 0, 0, 1, 1, "#8a5a2b")  # the wood panel on the front
-    s.ff(low, 0, 0.88, 1, 1, "#b07a40")
-    mid = s.box(0, 0, 4.8, 32.0, 15.5, 2.2, "#1c1c20", r=0.4)
-    for i in range(10):  # the ribbed deck
-        s.ft(mid, 0.02, 0.06 + i * 0.092, 0.98, 0.06 + i * 0.092 + 0.036, "#0a0a0c")
-    back = s.box(1.4, 0, 7.0, 29.2, 7.2, 2.3, "#222226", r=0.4)
-    s.ft(back, 0.30, 0.25, 0.72, 0.42, "#3c3c42")  # the label
-    s.ft(back, 0.36, 0.55, 0.64, 0.82, "#08080a")  # the cartridge slot
+    # one wedge: low at the front, rising to the back, with the ends angled in
+    body = s.solid(footprint(0, 0, 32.0, 21.5, back_left=1.8, back_right=1.8), 0, 9.4, 4.8, "#1c1c20")
+    s.ff(body, 0, 0, 1, 1, "#8a5a2b")  # the wood panel on the front
+    s.ff(body, 0, 0.90, 1, 1, "#b07a40")
+    for i in range(9):  # the ribbed deck
+        s.ft(body, 0.03, 0.44 + i * 0.058, 0.97, 0.44 + i * 0.058 + 0.026, "#0a0a0c")
+    s.ft(body, 0.30, 0.10, 0.72, 0.20, "#3c3c42")  # the label
+    s.ft(body, 0.36, 0.25, 0.64, 0.38, "#08080a")  # the cartridge slot
     for u in (0.10, 0.19, 0.78, 0.86):  # four switches
-        s.ft(back, u, 0.35, u + 0.04, 0.62, "#7c7c84")
+        s.ft(body, u, 0.10, u + 0.04, 0.30, "#7c7c84")
 
 
 def atari7800(s: Scene) -> None:
@@ -299,25 +299,26 @@ def psp(s: Scene) -> None:
 
 
 def xbox(s: Scene) -> None:
-    b = s.box(0, 0, 0, 32.0, 26.0, 8.5, "#18181b", r=1.0, top="#202024")
-    s.p_top(b, [(2, 3), (6, 3), (30, 23), (26, 23)], "#2c2c32")  # the X
-    s.p_top(b, [(26, 3), (30, 3), (6, 23), (2, 23)], "#2c2c32")
-    s.c_top(b, 16, 13, 3.9, "#27733a")  # the green jewel
-    s.c_top(b, 16, 13, 3.0, "#3fae5a")
-    s.c_top(b, 16, 13, 1.4, "#58c875")
+    base = s.box(0, 0, 0, 32.0, 26.0, 5.5, "#18181b", r=1.0, top="#202024")
+    plate = s.box(3.5, 3.0, 5.5, 25.0, 20.0, 3.0, "#1d1d21", r=0.8, taper=0.9, top="#27272b")  # the raised top, sloping down at its sides
+    s.p_top(plate, [(1.0, 1.0), (4.0, 1.0), (24.0, 19.0), (21.0, 19.0)], "#2f2f35")  # the X
+    s.p_top(plate, [(21.0, 1.0), (24.0, 1.0), (4.0, 19.0), (1.0, 19.0)], "#2f2f35")
+    s.c_top(plate, 12.5, 10.0, 3.9, "#27733a")  # the green jewel
+    s.c_top(plate, 12.5, 10.0, 3.0, "#3fae5a")
+    s.c_top(plate, 12.5, 10.0, 1.4, "#58c875")
     for i in range(12):  # the vents on the right
-        s.fs(b, 0.08 + i * 0.072, 0.15, 0.08 + i * 0.072 + 0.032, 0.85, "#09090b")
-    s.ff(b, 0.06, 0.62, 0.22, 0.72, "#4a4a52")
+        s.fs(base, 0.08 + i * 0.072, 0.15, 0.08 + i * 0.072 + 0.032, 0.95, "#09090b")
+    s.ff(base, 0.06, 0.62, 0.22, 0.78, "#4a4a52")
     for u in (0.10, 0.20, 0.65, 0.76):  # four controller ports, two each side
-        s.ff(b, u, 0.16, u + 0.08, 0.52, "#0b0b0d")
-    s.ff(b, 0.34, 0.12, 0.60, 0.62, "#8d8d93")  # the grey centre panel
-    s.fcf(b, 0.47, 0.50, 0.55, "#e6e6e6")  # power
-    s.fcf(b, 0.47, 0.26, 0.3, "#4a4a52")  # eject
+        s.ff(base, u, 0.18, u + 0.08, 0.60, "#0b0b0d")
+    s.ff(base, 0.34, 0.12, 0.60, 0.80, "#8d8d93")  # the grey centre panel
+    s.fcf(base, 0.47, 0.58, 0.5, "#e6e6e6")  # power
+    s.fcf(base, 0.47, 0.30, 0.3, "#4a4a52")  # eject
 
 
 def pcengine(s: Scene) -> None:
-    body = s.box(0, 0, 0, 36.0, 22.0, 6.2, "#1c1c20", r=1.2, top="#222226")
-    back = s.box(3.0, 0, 6.2, 31.0, 10.0, 2.2, "#202024", r=0.8, top="#26262b")
+    body = s.solid(footprint(0, 0, 36.0, 22.0, back_left=2.6, back_right=2.6), 0, 7.4, 5.6, "#1c1c20", top="#222226")
+    s.box(4.0, 0.5, 6.8, 28.0, 9.0, 1.6, "#202024", r=0.8, top="#26262b")  # the raised slab across the back
     s.ft(body, 0.50, 0.50, 0.68, 0.96, "#0b0b0d")  # the card slot
     s.fct(body, 0.59, 0.80, 1.9, "#25252a")  # with its round bay in front
     for i in range(7):  # ridges to the right of it
@@ -329,15 +330,16 @@ def pcengine(s: Scene) -> None:
 
 
 def neogeo(s: Scene) -> None:
-    body = s.box(0, 0, 0, 33.0, 22.0, 6.0, "#1c1c20", r=1.0, top="#222226")
-    s.box(2.0, 0, 6.0, 29.0, 10.5, 1.2, "#202026", r=3.0, top="#27272d")
-    s.ft(body, 0.16, 0.06, 0.84, 0.44, "#08080a")  # the long cartridge slot
+    # wedge: the top slopes down toward the front, and the footprint narrows at the back
+    body = s.solid(footprint(0, 0, 33.0, 22.0, back_left=2.2, back_right=2.2), 0, 7.8, 4.2, "#1c1c20", top="#222226")
+    rim = s.box(3.0, 0.0, 6.8, 27.0, 10.5, 1.3, "#202026", r=3.0, top="#27272d")  # the raised arc along the back
+    s.ft(rim, 0.08, 0.14, 0.92, 0.74, "#08080a")  # the long cartridge slot
     s.fct(body, 0.33, 0.64, 1.7, "#2a2a30")  # the round button
     s.ft(body, 0.48, 0.66, 0.78, 0.73, "#d9b04a")  # the name
-    s.ff(body, 0.50, 0.22, 0.58, 0.36, "#0b0b0d")  # the small slots
-    s.ff(body, 0.64, 0.22, 0.70, 0.36, "#0b0b0d")
-    s.ff(body, 0.78, 0.20, 0.96, 0.42, "#0b0b0d")  # the card slot at the right
-    s.ff(body, 0.08, 0.30, 0.22, 0.55, "#0b0b0d")
+    s.ff(body, 0.50, 0.22, 0.58, 0.40, "#0b0b0d")  # the small slots
+    s.ff(body, 0.64, 0.22, 0.70, 0.40, "#0b0b0d")
+    s.ff(body, 0.78, 0.20, 0.96, 0.46, "#0b0b0d")  # the card slot at the right
+    s.ff(body, 0.08, 0.30, 0.22, 0.60, "#0b0b0d")
 
 
 def lynx(s: Scene) -> None:
@@ -542,7 +544,7 @@ def wii(s: Scene) -> None:
 
 
 def wiiu(s: Scene) -> None:
-    con = s.box(11.0, 0, 0, 26.9, 17.2, 4.6, "#eeeef2", r=1.8, top="#f6f6fa")
+    con = s.solid(rounded(footprint(11.0, 0, 26.9, 17.2), 2.2), 0, 4.9, 3.5, "#eeeef2", top="#f6f6fa")
     s.ff(con, 0.48, 0.52, 0.92, 0.58, "#15151a")  # the disc slot
     s.ff(con, 0.48, 0.40, 0.92, 0.46, "#cfcfd6")
     s.fcf(con, 0.40, 0.50, 0.35, "#d63a34")
@@ -559,7 +561,8 @@ def wiiu(s: Scene) -> None:
 
 
 def ps3(s: Scene) -> None:
-    b = s.box(0, 0, 0, 29.0, 29.0, 6.5, "#1b1b1f", r=2.2, top="#25252a")
+    outline = rounded(footprint(0, 0, 29.0, 29.0, back_left=1.2, back_right=1.2, front_left=0.4, front_right=0.4), 3.2)
+    b = s.solid(outline, 0, 6.9, 5.7, "#1b1b1f", top="#25252a")  # rounded, a touch lower at the front
     s.ff(b, 0.28, 0.26, 0.64, 0.34, "#c8c8ce")  # the disc slot
     s.ff(b, 0.28, 0.34, 0.64, 0.38, "#0a0a0c")
     s.ft(b, 0.70, 0.10, 0.90, 0.16, "#6a6a72")  # the logo
