@@ -1391,21 +1391,22 @@ def test_hovering_a_console_makes_it_glow_and_leaving_fades_it(window, qapp):
     assert side not in ring._glow
 
 
-def test_every_console_has_pixel_art_and_a_glow(qapp):
+def test_every_console_has_its_own_picture_and_a_glow(qapp):
     from arcadia import pixelart
     from arcadia.config import default_systems
 
-    for system in default_systems():
-        assert system.id in pixelart.SPRITES, f"no pixel art for {system.id}"
-    for view_id in [*pixelart.SPRITES, "something-the-user-added"]:
+    ids = [s.id for s in default_systems()] + ["__recent__", "__favorites__", "__all__"]
+    for view_id in ids:
+        assert pixelart.is_bundled(view_id), f"no bundled picture for {view_id}"
+    for view_id in [*ids, "something-the-user-added"]:
         image = pixelart.sprite_image(view_id)
-        assert 20 < image.width() <= 160 and 20 < image.height() <= 160  # a tight render of the model
-        opaque = sum(image.pixelColor(x, y).alpha() > 0 for x in range(image.width()) for y in range(image.height()))
-        assert opaque > 300  # a solid, filled-in shape
+        assert 30 <= image.width() <= 140 and 30 <= image.height() <= 110
         fitted = pixelart.scaled(view_id, 240)
-        assert (fitted.width(), fitted.height()) == (240, 180)  # every console is fitted into the same box
+        assert (fitted.width(), fitted.height()) == (240, 180)  # everything is fitted into the same box
         assert pixelart.glow(view_id, 128, "#ff0000").width() > 128
-    # 2.5D: the front, top and side of a console are shaded differently
+    # a console Arcadia has no picture for gets the generic cartridge
+    assert pixelart.sprite_image("something-the-user-added").size() == pixelart.sprite_image("cartridge").size()
+    # pictures have several shades (they're shaded, not flat)
     img = pixelart.sprite_image("gc")
     shades = {img.pixelColor(x, y).name() for x in range(img.width()) for y in range(img.height()) if img.pixelColor(x, y).alpha()}
     assert len(shades) >= 6

@@ -22,11 +22,12 @@ written in Python with PySide6 (Qt).
   screen searches every game.
 - **The console pictures are pixel art made from real photographs** of each console (33 of them), so they look like
   the real hardware. The photos are from Wikimedia Commons (public domain, CC0 or CC BY-SA 3.0); every source,
-  author and licence is in `arcadia/assets/consoles/ATTRIBUTION.md`, and the pixel art is regenerated with
-  `tools/fetch_console_photos.py` then `tools/make_console_art.py` (needs Pillow and numpy; Arcadia itself doesn't).
-  The arcade cabinet and the Recent / Favorites / All games tiles are drawn 3D renders instead (`pixelart.py`), and so
-  is any console you add yourself. **Use your own pictures** with View → "Use my own console pictures…": a PNG or
-  WebP named after the console (`nes.png`, `snes.png`, …) in that folder replaces Arcadia's.
+  author and licence is in `arcadia/assets/consoles/ATTRIBUTION.md`. The arcade cabinet, the Recently played /
+  Favorites / All games tiles and the generic cartridge (shown for a console you add yourself) are original drawings
+  in the same pixel-art style. Rebuild them with `tools/fetch_console_photos.py` + `tools/make_console_art.py` (the
+  photographs) and `tools/make_extra_art.py` (the drawn ones); those scripts need Pillow, numpy and PySide6, and
+  Arcadia itself only loads the finished PNGs. **Use your own pictures** with View → "Use my own console
+  pictures…": a PNG or WebP named after the console (`nes.png`, `snes.png`, …) in that folder replaces Arcadia's.
 - Sort by A–Z, recently played, most played, or favorites first (remembered between runs)
 - Type a letter to jump to the next title starting with it; search with Ctrl+F
 - Toast messages instead of dialogs, a live play timer on the Launch button, and a
@@ -545,7 +546,7 @@ arcadia/
   theme.py       stylesheet, animated backdrop, toast messages
   coverflow.py   animated cover-flow carousel with lazy cover loading
   consoles_view.py  the rotating console carousel (the first screen)
-  pixelart.py    console pictures (bundled pixel art, your own, or a drawn render) and the glow
+  pixelart.py    picks each console's picture (yours, the bundled pixel art, or a generic cartridge) and draws the glow
   assets/consoles/  the bundled pixel-art console pictures and their credits
   ../tools/      scripts that rebuild those pictures from the source photographs
   gamepad.py     optional evdev controller input

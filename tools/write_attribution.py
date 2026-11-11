@@ -22,6 +22,15 @@ lines = [
 ]
 for cid, v in sorted(sources.items()):
     lines.append(f"| `{cid}` | [{v['file']}](https://commons.wikimedia.org/wiki/File:{v['file'].replace(' ', '_')}) | {v['author']} | {v['license']} |")
-lines += ["", "The drawn 3D renders used for the few consoles without a photograph (the arcade cabinet, and the Recent, Favorites and All games tiles) are original to Arcadia.", ""]
+ORIGINAL = {
+    "arcade": "the arcade cabinet",
+    "__recent__": "the Recently played tile (an alarm clock)",
+    "__favorites__": "the Favorites tile (a heart)",
+    "__all__": "the All games tile (a stack of cartridges)",
+    "cartridge": "the generic cartridge shown for a console you add yourself",
+}
+lines += ["", "## Drawn for Arcadia", "", "These have no photograph. They are original to this project: small 3D models drawn by", "`tools/make_extra_art.py` and cut down to pixel art the same way.", ""]
+lines += [f"- `{cid}`: {what}" for cid, what in ORIGINAL.items()]
+lines.append("")
 (HERE.parent / "arcadia" / "assets" / "consoles" / "ATTRIBUTION.md").write_text("\n".join(lines), encoding="utf-8")
 print(len(sources), "credited")

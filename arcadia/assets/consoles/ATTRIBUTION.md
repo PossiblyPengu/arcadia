@@ -44,4 +44,13 @@ Console names and designs belong to their makers; these pictures are only there 
 | `wonderswan` | [WonderSwan-Color-Blue-Left.jpg](https://commons.wikimedia.org/wiki/File:WonderSwan-Color-Blue-Left.jpg) | Evan-Amos | Public domain |
 | `xbox` | [Xbox-Console-wDuke-L.png](https://commons.wikimedia.org/wiki/File:Xbox-Console-wDuke-L.png) | Evan-Amos (white background removed) | Public domain |
 
-The drawn 3D renders used for the few consoles without a photograph (the arcade cabinet, and the Recent, Favorites and All games tiles) are original to Arcadia.
+## Drawn for Arcadia
+
+These have no photograph. They are original to this project: small 3D models drawn by
+`tools/make_extra_art.py` and cut down to pixel art the same way.
+
+- `arcade`: the arcade cabinet
+- `__recent__`: the Recently played tile (an alarm clock)
+- `__favorites__`: the Favorites tile (a heart)
+- `__all__`: the All games tile (a stack of cartridges)
+- `cartridge`: the generic cartridge shown for a console you add yourself
