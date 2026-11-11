@@ -295,7 +295,7 @@ def test_pointing_at_the_arcadia_rom_folder_itself_is_explained(qapp, tmp_path):
     dialog = BringInDialog(config, Journal(config.journal_path))
     dialog.source_edit.setText(str(config.rom_root_path))
     dialog.scan()
-    assert "Can't use that folder" in dialog.summary.text() and "already the ROM folder" in dialog.summary.text()
+    assert "Can't use that ROM folder" in dialog.summary.text() and "already the ROM folder" in dialog.summary.text()
     assert not dialog.start_btn.isEnabled() and dialog.table.rowCount() == 0
     dialog.close()
 
@@ -393,3 +393,280 @@ def test_a_failed_restore_reports_that_nothing_changed(qapp, tmp_path, boxes, mo
     assert "Nothing was changed: the disk is full" in boxes["warn"][-1] and not dialog.restored
     assert (config.savestate_path / "abc" / "Game.srm").read_text() == "current"
     dialog.close()
+
+
+# ======================= sweeping the Downloads folder as well =======================
+
+import time  # noqa: E402
+
+import arcadia.sorter as sorter_module  # noqa: E402
+from arcadia.import_dialog import ImportDialog  # noqa: E402
+
+
+@pytest.fixture(autouse=True)
+def no_real_downloads(monkeypatch, tmp_path):
+    """Never let a test depend on the machine's real Downloads folder."""
+    monkeypatch.setattr(setup_dialog, "default_downloads_dir", lambda: tmp_path / "no-such-downloads")
+
+
+def nes_rom():
+    return b"NES\x1a" + bytes(0x4000)
+
+
+def gb_rom(flag_ext_mismatch=False):
+    data = bytearray(0x200)
+    data[0x104:0x10C] = bytes.fromhex("CEED6666CC0D000B")
+    return bytes(data)
+
+
+def old_file(path: Path, data=b"x", age=3600.0):
+    put(path, data)
+    stamp = time.time() - age
+    os.utime(path, (stamp, stamp))
+    return path
+
+
+def make_downloads(tmp_path):
+    dl = tmp_path / "Downloads"
+    old_file(dl / "Contra.nes", nes_rom())
+    old_file(dl / "Pokemon pack" / "Tetris.gb", gb_rom())
+    old_file(dl / "Pokemon pack" / "Mislabelled.gbc", gb_rom())  # a Game Boy header in a .gbc file: asks
+    old_file(dl / "holiday.jpg", b"jpg")
+    return dl
+
+
+def sweep_dialog(tmp_path, config, source="", downloads=True):
+    dialog = BringInDialog(config, Journal(config.journal_path))
+    dialog.home_edit.setText(str(tmp_path / "Arcadia"))
+    dialog.source_edit.setText(source)
+    dialog.dl_box.setChecked(downloads)
+    dialog.dl_edit.setText(str(tmp_path / "Downloads"))
+    dialog.scan()
+    return dialog
+
+
+def current_config(tmp_path):
+    """A setup that hasn't moved to an Arcadia folder yet: ROMs are in ~/ROMs somewhere."""
+    return Config(rom_root=str(tmp_path / "OldROMs"), data_dir=str(tmp_path / "olddata"))
+
+
+def test_the_downloads_sweep_is_on_by_default_when_the_folder_exists(qapp, tmp_path, monkeypatch):
+    (tmp_path / "RealDownloads").mkdir()
+    monkeypatch.setattr(setup_dialog, "default_downloads_dir", lambda: tmp_path / "RealDownloads")
+    dialog = BringInDialog(current_config(tmp_path), Journal(tmp_path / "j.json"))
+    assert dialog.dl_box.isChecked() and dialog.dl_edit.text() == str(tmp_path / "RealDownloads")
+    assert not dialog.keep_box.isChecked()  # watching it for good is never on by itself
+    dialog.close()
+
+
+def test_the_sweep_is_off_when_there_is_no_downloads_folder(qapp, tmp_path):
+    dialog = BringInDialog(current_config(tmp_path), Journal(tmp_path / "j.json"))
+    assert not dialog.dl_box.isChecked()  # the fixture points it at a folder that doesn't exist
+    dialog.close()
+
+
+def test_scanning_looks_at_the_library_and_downloads_together(qapp, tmp_path):
+    make_downloads(tmp_path)
+    config = current_config(tmp_path)
+    old = make_old_library(tmp_path)
+    dialog = sweep_dialog(tmp_path, config, source=str(old))
+    assert dialog.table.rowCount() == 4  # the library's folders
+    assert len(dialog.dl_plan.items) == 3  # Contra, Tetris and the mislabelled one (the photo isn't a ROM)
+    assert "3 ROMs found in Downloads; 2 will be sorted in" in dialog.dl_summary.text()
+    assert "1 needs your decision" in dialog.dl_summary.text()
+    assert sorted(i.source.name for i in dialog.dl_selection) == ["Contra.nes", "Tetris.gb"]  # the uncertain one isn't ticked
+    assert dialog.review_btn.isEnabled() and dialog.start_btn.isEnabled()
+    dialog.close()
+
+
+def test_downloads_can_be_swept_without_a_rom_folder(qapp, tmp_path):
+    make_downloads(tmp_path)
+    dialog = sweep_dialog(tmp_path, current_config(tmp_path), source="")
+    assert dialog.table.rowCount() == 0 and len(dialog.dl_plan.items) == 3
+    assert "current ROM folder" in dialog.dl_summary.text() and str(tmp_path / "OldROMs") in dialog.dl_summary.text()
+    assert dialog.start_btn.isEnabled()
+    dialog.close()
+
+
+def test_sweeping_downloads_alone_uses_the_current_rom_folder_and_starts_no_second_library(qapp, tmp_path, boxes):
+    dl = make_downloads(tmp_path)
+    config = current_config(tmp_path)
+    dialog = sweep_dialog(tmp_path, config, source="")
+    dialog.start()
+
+    assert (tmp_path / "OldROMs" / "nes" / "Contra.nes").exists() and (tmp_path / "OldROMs" / "gb" / "Tetris.gb").exists()
+    assert not (tmp_path / "Arcadia").exists()  # no new folder was made
+    assert (dl / "Pokemon pack" / "Mislabelled.gbc").exists() and (dl / "holiday.jpg").exists()  # not a certain ROM, not a ROM
+    assert not (dl / "Contra.nes").exists() and not (dl / "Pokemon pack" / "Tetris.gb").exists()
+    assert config.home_dir == "" and config.rom_root == str(tmp_path / "OldROMs")  # nothing was switched
+    assert dialog.changed and dialog.result() == QDialog.DialogCode.Accepted  # so the window rescans
+    assert "2 ROMs from Downloads sorted into your library" in boxes["info"][-1]
+
+
+def test_downloads_swept_during_a_migration_go_into_the_new_arcadia_folder(qapp, tmp_path, boxes):
+    make_downloads(tmp_path)
+    config = legacy_config(tmp_path)
+    old = tmp_path / "OldROMs"
+    put(old / "nes" / "Zelda.nes", nes_rom())
+    dialog = sweep_dialog(tmp_path, config, source=str(old))
+    dialog.start()
+
+    home = tmp_path / "Arcadia"
+    assert (home / "roms" / "nes" / "Zelda.nes").exists()  # from the library
+    assert (home / "roms" / "nes" / "Contra.nes").exists() and (home / "roms" / "gb" / "Tetris.gb").exists()  # from Downloads
+    assert config.home_dir == str(home) and config.rom_root == ""  # and Arcadia moved over
+    assert "from your ROM folder" in boxes["info"][-1] and "from Downloads sorted" in boxes["info"][-1]
+
+
+def test_the_review_step_lets_the_user_decide_what_is_included(qapp, tmp_path, monkeypatch, boxes):
+    dl = make_downloads(tmp_path)
+    config = current_config(tmp_path)
+    dialog = sweep_dialog(tmp_path, config, source="")
+    seen = {}
+
+    def choose(self):
+        seen.update(verb=self.verb, base=self.base, button=self.move_btn.text(), labels=[i.source.name for i in self.items])
+        for row, item in enumerate(self.items):
+            check = self.table.item(row, 0)
+            if item.source.name == "Contra.nes":
+                check.setCheckState(Qt.CheckState.Unchecked)  # leave this one in Downloads
+            if item.source.name == "Mislabelled.gbc":
+                check.setCheckState(Qt.CheckState.Checked)  # the user says yes to the uncertain one
+        return QDialog.DialogCode.Accepted
+
+    monkeypatch.setattr(ImportDialog, "exec", choose)
+    dialog.review()
+    assert seen["verb"] == "Include" and seen["base"] == tmp_path / "Downloads" and seen["button"] == "Include 2 ROMs"
+    assert sorted(i.source.name for i in dialog.dl_selection) == ["Mislabelled.gbc", "Tetris.gb"]
+
+    dialog.start()
+    assert (dl / "Contra.nes").exists()  # the one they unticked stayed
+    assert (tmp_path / "OldROMs" / "gb" / "Mislabelled.gbc").exists()  # the uncertain one went because they said so
+
+
+def test_cancelling_the_review_keeps_the_default_selection(qapp, tmp_path, monkeypatch):
+    make_downloads(tmp_path)
+    dialog = sweep_dialog(tmp_path, current_config(tmp_path), source="")
+    before = list(dialog.dl_selection)
+    monkeypatch.setattr(ImportDialog, "exec", lambda self: QDialog.DialogCode.Rejected)
+    dialog.review()
+    assert dialog.dl_selection == before
+    dialog.close()
+
+
+def test_the_review_window_says_which_subfolder_a_rom_was_found_in(qapp, tmp_path):
+    make_downloads(tmp_path)
+    config = current_config(tmp_path)
+    dialog = sweep_dialog(tmp_path, config, source="")
+    review = ImportDialog(config, dialog.dl_plan, base=tmp_path / "Downloads", verb="Include")
+    labels = {review.table.item(r, 1).text() for r in range(review.table.rowCount())}
+    assert "Contra.nes" in labels  # at the top level: just the name
+    assert any(label.startswith("Tetris.gb") and "in Pokemon pack/" in label for label in labels)
+    review.close()
+    dialog.close()
+
+
+def test_keeping_the_folder_watched_is_a_separate_choice(qapp, tmp_path, boxes):
+    make_downloads(tmp_path)
+    config = current_config(tmp_path)
+    dialog = sweep_dialog(tmp_path, config, source="")
+    dialog.keep_box.setChecked(True)
+    dialog.start()
+    assert config.inbox_dir == str(tmp_path / "Downloads") and "keep watching" in boxes["info"][-1]
+
+    other = current_config(tmp_path)
+    other.inbox_dir = "~/Elsewhere"  # an existing choice is never overwritten
+    old_file(tmp_path / "Downloads" / "Zelda.nes", nes_rom())  # something new to sweep, so start really runs
+    again = sweep_dialog(tmp_path, other, source="")
+    assert [i.source.name for i in again.dl_selection] == ["Zelda.nes"]
+    again.keep_box.setChecked(True)
+    again.start()
+    assert (tmp_path / "OldROMs" / "nes" / "Zelda.nes").exists()  # it did run...
+    assert other.inbox_dir == "~/Elsewhere"  # ...and left the existing choice alone
+
+
+def test_without_the_keep_watching_box_the_setting_is_untouched(qapp, tmp_path, boxes):
+    make_downloads(tmp_path)
+    config = current_config(tmp_path)
+    sweep_dialog(tmp_path, config, source="").start()
+    assert config.inbox_dir == ""
+
+
+def test_a_rom_already_in_the_library_is_left_in_downloads(qapp, tmp_path, boxes):
+    dl = make_downloads(tmp_path)
+    put(tmp_path / "OldROMs" / "nes" / "Contra.nes", b"already here")
+    dialog = sweep_dialog(tmp_path, current_config(tmp_path), source="")
+    assert [i.source.name for i in dialog.dl_selection] == ["Tetris.gb"]  # the collision isn't even ticked
+    dialog.start()
+    assert (dl / "Contra.nes").exists() and (tmp_path / "OldROMs" / "nes" / "Contra.nes").read_bytes() == b"already here"
+
+
+def test_a_failure_moving_one_rom_is_reported_and_the_rest_still_move(qapp, tmp_path, boxes, monkeypatch):
+    dl = make_downloads(tmp_path)
+    dialog = sweep_dialog(tmp_path, current_config(tmp_path), source="")
+    real = sorter_module.safe_move
+
+    def flaky(src, dst):
+        if src.name == "Tetris.gb":
+            raise sorter_module.SortError("disk full")
+        real(src, dst)
+
+    monkeypatch.setattr(sorter_module, "safe_move", flaky)
+    dialog.start()
+    assert (tmp_path / "OldROMs" / "nes" / "Contra.nes").exists() and (dl / "Pokemon pack" / "Tetris.gb").exists()
+    assert "Left in Downloads: Tetris.gb: disk full" in boxes["info"][-1]
+
+
+def test_editing_the_arcadia_folder_after_looking_still_puts_everything_in_the_right_place(qapp, tmp_path, boxes):
+    make_downloads(tmp_path)
+    old = make_old_library(tmp_path)
+    config = Config(rom_root=str(old), data_dir=str(tmp_path / "olddata"))
+    dialog = sweep_dialog(tmp_path, config, source=str(old))
+    dialog.home_edit.setText(str(tmp_path / "Somewhere Else"))  # changed their mind after the scan
+    dialog.start()
+    assert (tmp_path / "Somewhere Else" / "roms" / "nes" / "Contra.nes").exists()
+    assert not (tmp_path / "Arcadia" / "roms" / "nes" / "Contra.nes").exists()
+
+
+def test_a_library_inside_downloads_is_not_listed_twice(qapp, tmp_path):
+    dl = tmp_path / "Downloads"
+    old_file(dl / "MyROMs" / "nes" / "Contra.nes", nes_rom())  # the library being migrated happens to live in Downloads
+    old_file(dl / "Loose.nes", nes_rom())
+    dialog = sweep_dialog(tmp_path, current_config(tmp_path), source=str(dl / "MyROMs"))
+    assert [i.source.name for i in dialog.dl_plan.items] == ["Loose.nes"]  # the library is handled by the library part
+    dialog.close()
+
+
+def test_nothing_in_downloads_and_no_library_means_nothing_to_do(qapp, tmp_path):
+    (tmp_path / "Downloads").mkdir()
+    old_file(tmp_path / "Downloads" / "notes.txt", b"hi")
+    dialog = sweep_dialog(tmp_path, current_config(tmp_path), source="")
+    assert "No ROMs found in Downloads" in dialog.dl_summary.text()
+    assert not dialog.start_btn.isEnabled() and not dialog.review_btn.isEnabled()
+    dialog.close()
+
+
+def test_choosing_nothing_to_look_at_explains_itself(qapp, tmp_path):
+    dialog = BringInDialog(current_config(tmp_path), Journal(tmp_path / "j.json"))
+    dialog.source_edit.setText("")
+    dialog.dl_box.setChecked(False)
+    dialog.scan()
+    assert "Choose your ROM folder" in dialog.summary.text() and not dialog.start_btn.isEnabled()
+    dialog.close()
+
+
+def test_a_sweep_can_be_undone_from_the_file_menu(qapp, tmp_path, boxes):
+    dl = make_downloads(tmp_path)
+    config = current_config(tmp_path)
+    dialog = sweep_dialog(tmp_path, config, source="")
+    dialog.start()
+    restored, problems = dialog.journal.undo_last()
+    assert problems == [] and restored == 2
+    assert (dl / "Contra.nes").exists() and (dl / "Pokemon pack" / "Tetris.gb").exists()
+    assert not (tmp_path / "OldROMs" / "nes" / "Contra.nes").exists()
+
+
+def test_the_hub_names_the_button_for_what_it_now_does(qapp, tmp_path):
+    hub = make_hub(tmp_path)
+    assert hub.bring_btn.text() == "Bring my ROMs in…"
+    hub.close()

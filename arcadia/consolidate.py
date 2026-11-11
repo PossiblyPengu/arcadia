@@ -20,7 +20,7 @@ import re
 import shutil
 import sqlite3
 from collections.abc import Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 
 from arcadia.config import Config
@@ -63,6 +63,29 @@ ALIASES: dict[str, tuple[str, ...]] = {
     "msx": ("msx1", "msx2", "msx2plus"),
     "amiga": ("amiga500", "amiga1200", "amigacd32", "commodoreamiga"),
 }
+
+
+def default_downloads_dir(home: Path | None = None) -> Path:
+    """The user's downloads folder. On a Steam Deck in Desktop Mode (and most Linux desktops) that's
+    ~/Downloads, but the real answer is in ~/.config/user-dirs.dirs, so that's read first."""
+    home = home or Path.home()
+    config_home = Path(os.environ.get("XDG_CONFIG_HOME") or home / ".config")
+    try:
+        text = (config_home / "user-dirs.dirs").read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        text = ""
+    match = re.search(r'^\s*XDG_DOWNLOAD_DIR\s*=\s*"?([^"\n]+?)"?\s*$', text, re.MULTILINE)
+    if match:
+        path = Path(match.group(1).replace("$HOME", str(home))).expanduser()
+        if path.is_absolute() and path != home:  # "$HOME" itself means "no downloads folder"
+            return path
+    return home / "Downloads"
+
+
+def config_for_home(config: Config, home: Path) -> Config:
+    """The same setup with its ROM folder inside the given Arcadia folder, which is where ROMs go
+    when a library is being brought in. (Systems and their folder names are kept.)"""
+    return replace(config, home_dir=str(home), rom_root="")
 
 
 class ConsolidateError(Exception):

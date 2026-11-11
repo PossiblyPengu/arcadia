@@ -29,11 +29,22 @@ from PySide6.QtWidgets import (
 
 from arcadia.backup import BackupError, create_backup, inspect_backup, restore_backup
 from arcadia.config import DEFAULT_HOME, Config
-from arcadia.consolidate import ConsolidateError, SourceFolder, adopt_home, bring_in, migrate_data, scan_source
+from arcadia.consolidate import (
+    BringInResult,
+    ConsolidateError,
+    SourceFolder,
+    adopt_home,
+    bring_in,
+    config_for_home,
+    default_downloads_dir,
+    migrate_data,
+    scan_source,
+)
 from arcadia.emulators import Installer
 from arcadia.emulators_dialog import EmulatorsDialog
+from arcadia.import_dialog import ImportDialog
 from arcadia.setup_status import NONE, OK, PROBLEM, flatpak_installed, folder_sizes, status_rows
-from arcadia.sorter import Journal
+from arcadia.sorter import Journal, Plan, PlanItem, apply_plan, default_selection, sweep
 from arcadia.tasks import Task
 from arcadia.util import fmt_size
 
@@ -76,22 +87,30 @@ class _Busy:
 # ----------------------------------------------------------------------------
 
 class BringInDialog(QDialog, _Busy):
+    """Brings what you already have into place: an existing ROM folder, and the ROMs sitting in your
+    Downloads folder. When a library is being moved in, everything lands in the new Arcadia folder.
+    When only Downloads is swept, ROMs go to the ROM folder you already use, so no second library appears."""
+
     def __init__(self, config: Config, journal: Journal, parent=None):
         super().__init__(parent)
         self.config = config
         self.journal = journal
-        self.changed = False  # the configuration now points at the Arcadia folder
+        self.changed = False  # the configuration or the library changed: save it and rescan
         self.folders: list[SourceFolder] = []
+        self.dl_plan: Plan | None = None
+        self.dl_selection: list[PlanItem] = []
+        self.dl_keep_both = False
+        self._folder_error = ""  # why the ROM folder couldn't be used, if it couldn't
+        self._had_source = False  # a ROM folder was looked at (as opposed to only Downloads)
         self._task = None
-        self.setWindowTitle("Move my library into the Arcadia folder")
-        self.resize(900, 620)
+        self.setWindowTitle("Bring my ROMs in")
+        self.resize(940, 800)
 
         intro = QLabel(
-            "Pick your existing ROM folder (the one that holds nes/, psx/, snes/ and so on). Arcadia matches each "
-            "folder to a system by its name, shows you what it would do, and only then moves or copies the games "
-            "into <b>roms/</b> inside the Arcadia folder. Nothing is ever overwritten."
+            "Pick your existing ROM folder (the one that holds nes/, psx/, snes/ and so on), your Downloads folder, "
+            "or both. Arcadia works out which system each thing is for, shows you what it would do, and only "
+            "then moves or copies it. Nothing is ever overwritten."
         )
-        intro.setTextFormat(Qt.TextFormat.RichText)
         intro.setWordWrap(True)
 
         self.home_edit = QLineEdit(str(config.home_path or DEFAULT_HOME))
@@ -101,6 +120,7 @@ class BringInDialog(QDialog, _Busy):
         current = config.rom_root_path
         if current.is_dir() and not (config.home_path and config.home_path in current.parents):
             self.source_edit.setText(str(current))
+        self.source_edit.setPlaceholderText("Leave empty to only sweep Downloads")
         source_browse = QPushButton("Browse…")
         source_browse.clicked.connect(lambda: self._browse(self.source_edit, "Your existing ROM folder"))
 
@@ -114,8 +134,22 @@ class BringInDialog(QDialog, _Busy):
         self.data_box = QCheckBox("Also bring my library (favorites, playtime), covers and save-state snapshots")
         self.data_box.setChecked(True)
         self.data_box.setToolTip("These are copied, never deleted from where they are now.")
-        self.scan_btn = QPushButton("Look at this folder")
+
+        downloads = default_downloads_dir()
+        self.dl_box = QCheckBox("Also sweep my Downloads folder for ROMs")
+        self.dl_box.setChecked(downloads.is_dir())
+        self.dl_box.setToolTip("Looks in this folder and the folders inside it (two levels). Only files Arcadia recognises as ROMs are listed.")
+        self.dl_edit = QLineEdit(str(downloads))
+        dl_browse = QPushButton("Browse…")
+        dl_browse.clicked.connect(lambda: self._browse(self.dl_edit, "Your Downloads folder"))
+        self.keep_box = QCheckBox("Keep watching this folder and sort new ROMs into the library automatically")
+        self.keep_box.setToolTip("Turns on the downloads sorting in Settings for this folder. Off unless you tick it.")
+
+        self.scan_btn = QPushButton("Look")
         self.scan_btn.clicked.connect(self.scan)
+        self.review_btn = QPushButton("Review the ROMs found in Downloads…")
+        self.review_btn.setEnabled(False)
+        self.review_btn.clicked.connect(self.review)
 
         self.table = QTableWidget(0, 5)
         self.table.setHorizontalHeaderLabels(["Bring in", "Folder", "Files", "Size", "Goes to"])
@@ -129,10 +163,13 @@ class BringInDialog(QDialog, _Busy):
         header.setSectionResizeMode(4, QHeaderView.ResizeMode.Interactive)
         self.table.setColumnWidth(4, 270)
         self.table.verticalHeader().setDefaultSectionSize(40)
+        self.table.setMinimumHeight(190)
         self.table.itemChanged.connect(lambda _i: self._update_summary())
 
         self.summary = QLabel("")
         self.summary.setWordWrap(True)
+        self.dl_summary = QLabel("")
+        self.dl_summary.setWordWrap(True)
         self.status = QLabel("")
         self.status.setStyleSheet("color: rgba(236, 238, 244, 65%);")
         self.bar = QProgressBar()
@@ -151,9 +188,14 @@ class BringInDialog(QDialog, _Busy):
         layout.addLayout(form)
         layout.addWidget(self.mode)
         layout.addWidget(self.data_box)
+        layout.addWidget(self.dl_box)
+        layout.addWidget(self._row(self.dl_edit, dl_browse))
+        layout.addWidget(self.keep_box)
         layout.addWidget(self.scan_btn, alignment=Qt.AlignmentFlag.AlignLeft)
         layout.addWidget(self.table, 1)
         layout.addWidget(self.summary)
+        layout.addWidget(self.dl_summary)
+        layout.addWidget(self.review_btn, alignment=Qt.AlignmentFlag.AlignLeft)
         layout.addWidget(self.status)
         layout.addWidget(self.bar)
         layout.addWidget(box)
@@ -172,33 +214,68 @@ class BringInDialog(QDialog, _Busy):
         if folder:
             edit.setText(folder)
 
+    def _home(self) -> Path:
+        return Path(self.home_edit.text().strip() or str(DEFAULT_HOME)).expanduser()
+
     def _dest_root(self) -> Path:
-        return Config.new_install(Path(self.home_edit.text().strip() or str(DEFAULT_HOME)).expanduser()).rom_root_path
+        return Config.new_install(self._home()).rom_root_path
+
+    def _downloads(self) -> Path | None:
+        text = self.dl_edit.text().strip()
+        return Path(text).expanduser() if self.dl_box.isChecked() and text else None
+
+    def _target(self, migrating: bool) -> Config:
+        """Where swept ROMs go: the new Arcadia folder while a library is moving in, otherwise the ROM
+        folder already in use (so sweeping Downloads alone never starts a second library)."""
+        return config_for_home(self.config, self._home()) if migrating else self.config
 
     def _busy_changed(self) -> None:
         idle = self._task is None
         self.scan_btn.setEnabled(idle)
-        self.start_btn.setEnabled(idle and self._chosen_count() > 0)
+        self.review_btn.setEnabled(idle and bool(self.dl_plan and self.dl_plan.items))
+        self.start_btn.setEnabled(idle and self._anything_chosen())
 
     # ----- looking -----
 
     def scan(self) -> None:
-        source = Path(self.source_edit.text().strip()).expanduser()
+        source_text = self.source_edit.text().strip()
+        downloads = self._downloads()
+        if not source_text and downloads is None:
+            self.summary.setText("Choose your ROM folder, tick the Downloads sweep, or both.")
+            return
         dest = self._dest_root()
-        self._run(
-            lambda report: scan_source(source, self.config, dest),
-            self._on_scanned,
-            "Looking at your folders… (this can take a while for a large library)",
-        )
+        source = Path(source_text).expanduser() if source_text else None
 
-    def _on_scanned(self, folders, error) -> None:
+        def work(report):
+            folders: list[SourceFolder] = []
+            folder_error = ""
+            if source is not None:
+                try:
+                    folders = scan_source(source, self.config, dest)
+                except ConsolidateError as exc:
+                    folder_error = str(exc)
+            plan = None
+            if downloads is not None:
+                migrating = any(f.system_id for f in folders)
+                target = self._target(migrating)
+                leave_alone = [p for p in (self._home(), target.rom_root_path, source) if p is not None]
+                plan = sweep(downloads, target, exclude=leave_alone)
+            return folders, folder_error, plan
+
+        self._run(work, self._on_scanned, "Looking… (this can take a while for a large library)")
+
+    def _on_scanned(self, value, error) -> None:
         self.table.setRowCount(0)
-        self.folders = []
+        self.folders, self.dl_plan, self.dl_selection = [], None, []
         if error is not None:
-            self.summary.setText(f"Can't use that folder: {error}")
+            self.summary.setText(f"Couldn't look: {error}")
+            self.dl_summary.setText("")
             self._update_summary()
             return
+        folders, folder_error, plan = value
         self.folders = folders
+        self.dl_plan = plan
+        self.dl_selection = default_selection(plan.items) if plan else []
         self.table.blockSignals(True)
         self.table.setRowCount(len(folders))
         for row, folder in enumerate(folders):
@@ -220,8 +297,8 @@ class BringInDialog(QDialog, _Busy):
             combo.currentIndexChanged.connect(lambda _i, r=row: self._assigned(r))
             self.table.setCellWidget(row, 4, combo)
         self.table.blockSignals(False)
-        if not folders:
-            self.summary.setText("That folder has no subfolders. Point this at the folder that holds nes/, psx/, snes/…")
+        self._folder_error = folder_error
+        self._had_source = bool(self.source_edit.text().strip())
         self._update_summary()
 
     def _assigned(self, row: int) -> None:
@@ -238,74 +315,139 @@ class BringInDialog(QDialog, _Busy):
                 picked.append((folder, system_id))
         return picked
 
-    def _chosen_count(self) -> int:
-        return len(self.chosen()) if self.folders else 0
+    def _anything_chosen(self) -> bool:
+        return bool(self.chosen()) or bool(self.dl_selection)
 
     def _update_summary(self) -> None:
         picked = self.chosen()
-        if self.folders:
+        parts = []
+        if self._folder_error:
+            parts.append(f"Can't use that ROM folder: {self._folder_error}.")
+        elif self._had_source and not self.folders:
+            parts.append("That folder has no subfolders. Point this at the folder that holds nes/, psx/, snes/…")
+        elif self.folders:
             files = sum(f.files for f, _ in picked)
             size = sum(f.bytes for f, _ in picked)
             left = len(self.folders) - len(picked)
             text = f"{len(picked)} folder{'s' if len(picked) != 1 else ''} will be brought in ({files:,} files, {fmt_size(size)})."
             if left:
                 text += f" {left} left alone."
-            self.summary.setText(text)
-        self.start_btn.setEnabled(self._task is None and bool(picked))
+            parts.append(text)
+        self.summary.setText(" ".join(parts))
+
+        plan = self.dl_plan
+        if plan is None:
+            self.dl_summary.setText("")
+        elif not plan.items:
+            extra = f" ({len(plan.waiting)} still downloading)" if plan.waiting else ""
+            self.dl_summary.setText(f"No ROMs found in Downloads{extra}.")
+        else:
+            asking = sum(1 for i in plan.items if i.confidence.value == "unsure")
+            text = f"{len(plan.items)} ROM{'s' if len(plan.items) != 1 else ''} found in Downloads; {len(self.dl_selection)} will be sorted in."
+            if asking:
+                text += f" {asking} need{'s' if asking == 1 else ''} your decision: use Review to look at them."
+            if not picked:
+                text += f" They go to your current ROM folder, {self.config.rom_root_path}."
+            self.dl_summary.setText(text)
+        self.review_btn.setEnabled(self._task is None and bool(plan and plan.items))
+        self.start_btn.setEnabled(self._task is None and self._anything_chosen())
+
+    def review(self) -> None:
+        """Look at, tick and re-assign the ROMs found in Downloads, using the same window as importing them."""
+        if not self.dl_plan or not self.dl_plan.items:
+            return
+        target = self._target(bool(self.chosen()))
+        for item in self.dl_plan.items:
+            item.retarget(target, item.system_id)  # the destination may have changed since the scan
+        dialog = ImportDialog(target, self.dl_plan, self, inbox_label=str(self._downloads() or ""), verb="Include", base=self._downloads())
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            self.dl_selection = dialog.selected_items()
+            self.dl_keep_both = dialog.keep_both()
+            self._update_summary()
 
     # ----- doing -----
 
     def start(self) -> None:
         picked = self.chosen()
-        if not picked:
+        sweep_items = list(self.dl_selection)
+        if not picked and not sweep_items:
             return
+        migrating = bool(picked)
         mode = self.mode.currentData()
-        home = Path(self.home_edit.text().strip() or str(DEFAULT_HOME)).expanduser()
+        home = self._home()
+        target = self._target(migrating)
+        for item in sweep_items:
+            item.retarget(target, item.system_id)  # the Arcadia folder may have been edited since the scan
+
+        lines = []
+        if picked:
+            lines.append(f"{'Move' if mode == 'move' else 'Copy'} {len(picked)} folder(s) into {home / 'roms'}")
+        if sweep_items:
+            lines.append(f"Sort {len(sweep_items)} ROM{'s' if len(sweep_items) != 1 else ''} from Downloads into {target.rom_root_path}")
         answer = QMessageBox.question(
             self,
-            "Bring in your library",
-            f"{'Move' if mode == 'move' else 'Copy'} {len(picked)} folder(s) into\n{home / 'roms'}?\n\n"
-            + ("You can undo a move from File → Undo last import." if mode == "move" else "The originals stay where they are."),
+            "Bring your ROMs in",
+            "\n".join(lines) + "?\n\n"
+            + ("Moves can be undone from File → Undo last import. " if mode == "move" or sweep_items else "")
+            + ("Copies leave the originals where they are." if picked and mode == "copy" else ""),
         )
         if answer != QMessageBox.StandardButton.Yes:
             return
-        with_data = self.data_box.isChecked()
+        with_data = self.data_box.isChecked() and migrating
+        keep_both = self.dl_keep_both
+        downloads = self._downloads()
 
         def work(report):
-            target = Config.new_install(home)
-            target.ensure_layout()
-            result = bring_in(picked, self.config, target.rom_root_path, mode, self.journal, lambda d, t, n: report(d, t))
+            result = BringInResult()
+            if migrating:
+                Config.new_install(home).ensure_layout()
+                result = bring_in(picked, self.config, target.rom_root_path, mode, self.journal, lambda d, t, n: report(d, t))
+            swept = apply_plan(sweep_items, self.journal, keep_both=keep_both) if sweep_items else None
             notes = migrate_data(self.config, home) if with_data else []
-            return result, notes, home
+            return result, swept, notes, home
 
-        self._run(work, lambda value, error: self._on_done(value, error, with_data), "Bringing your library in…")
+        self._run(work, lambda value, error: self._on_done(value, error, with_data, migrating, downloads), "Bringing your ROMs in…")
 
-    def _on_done(self, value, error, with_data: bool) -> None:
+    def _on_done(self, value, error, with_data: bool, migrating: bool, downloads: Path | None) -> None:
         if error is not None:
-            QMessageBox.warning(self, "Couldn't bring your library in", f"{error}\n\nWhat was already moved is kept, and you can run this again.")
+            QMessageBox.warning(self, "Couldn't bring your ROMs in", f"{error}\n\nWhat was already moved is kept, and you can run this again.")
             return
-        result, notes, home = value
+        result, swept, notes, home = value
         problems = [(p, why) for p, why in result.skipped if "already exists" not in why]
         brought = result.moved + result.copied
         # Only switch to the new folder if everything that could be brought in was; otherwise the old
         # library would silently lose the games that didn't make it.
-        switched = not problems and (brought > 0 or bool(result.skipped))
+        switched = migrating and not problems and (brought > 0 or bool(result.skipped))
         if switched:
             adopt_home(self.config, home, roms=True, data=with_data)
-            self.changed = True
-        lines = [f"{result.moved + result.copied} item(s) {'moved' if result.moved else 'copied'} ({fmt_size(result.bytes)})."]
+
+        lines = []
+        if migrating:
+            lines.append(f"{brought} item(s) {'moved' if result.moved else 'copied'} from your ROM folder ({fmt_size(result.bytes)}).")
         lines += notes
         conflicts = len(result.skipped) - len(problems)
         if conflicts:
             lines.append(f"{conflicts} already existed in the Arcadia folder and were left alone.")
         for path, why in problems[:8]:
             lines.append(f"Couldn't bring in {path.name}: {why}.")
+
+        swept_count = len(swept.moved) if swept else 0
+        if swept is not None:
+            lines.append(f"{swept_count} ROM{'s' if swept_count != 1 else ''} from Downloads sorted into your library.")
+            for item, why in swept.skipped[:8]:
+                lines.append(f"Left in Downloads: {item.label}: {why}.")
+        if self.keep_box.isChecked() and downloads is not None and not self.config.inbox_dir.strip():
+            self.config.inbox_dir = str(downloads)
+            lines.append(f"Arcadia will keep watching {downloads} and sort new ROMs automatically.")
+
         if problems:
             lines.append("Arcadia hasn't switched to the new folder yet, so nothing is lost. Fix the above and run this again.")
         elif switched:
             lines.append("Arcadia now uses the Arcadia folder. Restart Arcadia to finish switching over.")
-        QMessageBox.information(self, "Done" if switched else "Not finished", "\n".join(lines))
-        if switched:
+        self.changed = switched or swept_count > 0 or self.keep_box.isChecked() and downloads is not None
+        done = switched or (not migrating and swept is not None)
+        QMessageBox.information(self, "Done" if done and not problems else "Not finished", "\n".join(lines))
+        if done and not problems:
             self.accept()
 
 
@@ -524,7 +666,7 @@ class SetupDialog(QDialog, _Busy):
         self.bar = QProgressBar()
         self.bar.setVisible(False)
 
-        self.bring_btn = QPushButton("Move my library in…")
+        self.bring_btn = QPushButton("Bring my ROMs in…")
         self.bring_btn.clicked.connect(self.bring_in)
         self.backup_btn = QPushButton("Back up and restore…")
         self.backup_btn.clicked.connect(self.backups)

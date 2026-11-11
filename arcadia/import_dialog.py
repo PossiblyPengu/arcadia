@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QBrush, QColor
 from PySide6.QtWidgets import (
@@ -32,10 +34,22 @@ COL_MOVE, COL_FILE, COL_SYSTEM, COL_WHY, COL_DEST = range(5)
 
 
 class ImportDialog(QDialog):
-    def __init__(self, config: Config, plan: Plan, parent=None, inbox_label: str = ""):
+    def __init__(
+        self,
+        config: Config,
+        plan: Plan,
+        parent=None,
+        inbox_label: str = "",
+        verb: str = "Move",
+        base: Path | None = None,
+    ):
+        """verb is the button's word ("Include" when the move happens later, as part of something bigger);
+        base is the folder that was searched, so ROMs found in its subfolders can say where."""
         super().__init__(parent)
         self.config = config
         self.plan = plan
+        self.verb = verb
+        self.base = base
         self.items = sorted(plan.items, key=lambda i: (_ORDER[i.confidence], i.source.name.lower()))
         self._updating = False
         self.setWindowTitle("Import ROMs")
@@ -107,6 +121,16 @@ class ImportDialog(QDialog):
 
     # ----- rows -----
 
+    def _subfolder(self, item: PlanItem) -> str:
+        """Where an item was found, relative to the searched folder, if that isn't the folder itself."""
+        if self.base is None:
+            return ""
+        try:
+            relative = item.source.parent.relative_to(self.base)
+        except ValueError:
+            return ""
+        return "" if str(relative) == "." else relative.as_posix() + "/"
+
     def _default_checked(self, item: PlanItem) -> bool:
         return item.confidence is not Confidence.UNSURE and not item.exists
 
@@ -125,6 +149,9 @@ class ImportDialog(QDialog):
             name.setText(f"{item.label}  ({item.detail})")
         elif extra:
             name.setText(f"{item.label}  (+{len(extra)} file{'s' if len(extra) != 1 else ''})")
+        where = self._subfolder(item)
+        if where:  # found in a subfolder of the folder that was searched: say which
+            name.setText(f"{name.text()}   in {where}")
         self.table.setItem(row, COL_FILE, name)
 
         combo = QComboBox()
@@ -213,5 +240,5 @@ class ImportDialog(QDialog):
         if self._updating:
             return
         n = len(self.selected_items())
-        self.move_btn.setText(f"Move {n} ROM{'s' if n != 1 else ''}")
+        self.move_btn.setText(f"{self.verb} {n} ROM{'s' if n != 1 else ''}")
         self.move_btn.setEnabled(n > 0)

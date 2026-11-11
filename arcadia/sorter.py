@@ -763,6 +763,61 @@ def build_plan(inbox: Path, config: Config, now: float | None = None, min_age: f
     return plan
 
 
+def default_selection(items: list[PlanItem]) -> list[PlanItem]:
+    """What gets moved unless the user says otherwise: everything the evidence supports, nothing
+    uncertain, and nothing that would collide with a file already in the library."""
+    return [i for i in items if i.confidence is not Confidence.UNSURE and not i.exists]
+
+
+def _is_under(path: Path, other: Path) -> bool:
+    try:
+        path, other = path.resolve(), other.resolve()
+    except OSError:
+        return False
+    return path == other or other in path.parents
+
+
+def sweep(
+    root: Path,
+    config: Config,
+    depth: int = 2,
+    max_dirs: int = 300,
+    exclude: tuple[Path, ...] | list[Path] = (),
+    now: float | None = None,
+    min_age: float = 5.0,
+) -> Plan:
+    """Like build_plan, but also looks inside subfolders (ROMs are often unzipped into one), down to
+    `depth` levels and at most `max_dirs` folders. Hidden folders are skipped, and so is anything that
+    contains or sits inside an `exclude` path (the library itself, say). A game that is a folder
+    (PS3, Wii U) is taken whole and not searched. Only things recognised as ROMs are ever listed."""
+    merged = Plan()
+    if not root.is_dir():
+        return merged
+    seen = 0
+    queue: list[tuple[Path, int]] = [(root, 0)]
+    while queue:
+        folder, level = queue.pop(0)
+        part = build_plan(folder, config, now=now, min_age=min_age)
+        merged.items.extend(part.items)
+        merged.waiting.extend(part.waiting)
+        merged.ignored.extend(part.ignored)
+        if level >= depth:
+            continue
+        taken = {i.source for i in part.items} | set(part.waiting)  # game folders and files still downloading
+        try:
+            subfolders = sorted(p for p in folder.iterdir() if p.is_dir() and not p.name.startswith("."))
+        except OSError:
+            continue
+        for sub in subfolders:
+            if sub in taken or any(_is_under(sub, ex) or _is_under(ex, sub) for ex in exclude):
+                continue
+            if seen >= max_dirs:
+                break  # stop adding folders, but still search the ones already queued
+            seen += 1
+            queue.append((sub, level + 1))
+    return merged
+
+
 def _newest_mtime(folder: Path, now: float, limit: int = 20_000) -> float:
     """Most recent modification time inside a folder (stops looking after `limit` files).
     A folder that can't be read counts as just modified, so it's left alone."""

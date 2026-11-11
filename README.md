@@ -238,7 +238,8 @@ It does **not** check BIOS or firmware files: where an emulator wants them depen
 can't see, so it won't claim they are found or missing. It also needs the `flatpak` program to answer for Flatpaks.
 Space used by ROMs, emulators, save states, covers and backups is shown above the table.
 
-**Move my library in.** Point it at your existing ROM folder (the one holding `nes/`, `psx/`, `Game Boy Advance/`…).
+**Bring my ROMs in.** (The button says "Bring my ROMs in…"; it covers your ROM folder and your Downloads folder.)
+Point it at your existing ROM folder (the one holding `nes/`, `psx/`, `Game Boy Advance/`…).
 It matches each subfolder to a system by name, including the names RetroPie, Batocera, EmuDeck and ES-DE use
 (`megadrive`, `wswan`, `mame-libretro`, `ps1`…), shows the list with a system for each, and leaves unrecognised folders
 (`Photos`) alone unless you choose a system for them. Then, after asking, it moves or copies what's inside into `roms/`.
@@ -253,6 +254,27 @@ It matches each subfolder to a system by name, including the names RetroPie, Bat
 - Arcadia only switches over to the new folder if everything that could be brought in was. If something failed, it says
   what and why, keeps using the old folder, and you can run it again (what already moved is skipped). **Restart Arcadia**
   after it switches so the library opens from its new place.
+
+**Sweeping your Downloads folder too.** Tick *Also sweep my Downloads folder for ROMs* and the same window also
+looks through your downloads (the folder it offers comes from the system's `user-dirs.dirs` setting, so it's
+`~/Downloads`, e.g. `/home/deck/Downloads` on a Steam Deck in Desktop Mode, unless you've changed it). You can use it with
+a ROM folder, or on its own.
+- **It looks inside subfolders**, two levels down, because ROMs are often unzipped into a folder. Hidden folders are
+  skipped, a PS3 or Wii U game folder is taken whole rather than searched, and only things recognised as ROMs are ever
+  listed. Everything else (photos, PDFs, installers) is counted and left alone.
+- **It uses the same judgement as the downloads sorter**: header first, then the file's extension, then the name. What the
+  evidence supports is ticked; anything uncertain is not. **Review the ROMs found in Downloads…** opens the same
+  window as File → Import ROMs, so you can untick things or assign a system yourself, and it names the subfolder each ROM
+  came from.
+- **Where they go depends on what you're doing.** If a library is being moved in, the ROMs from Downloads go into the new
+  Arcadia folder alongside it. If you only sweep Downloads, they go to the ROM folder you already use, so sweeping
+  never quietly starts a second library.
+- Nothing is overwritten (a ROM that already exists in the library is left in Downloads, and unticked), and the moves go
+  in the undo journal, so File → Undo last import puts them back. With a library move too there are two steps to undo,
+  one for each.
+- **Keep watching this folder** is a separate box, off unless you tick it. It turns on the Settings option so *new*
+  ROMs that land in Downloads are sorted automatically from then on. It never replaces a downloads folder you've already
+  set there.
 
 **Back up and restore.** One click makes a zip in `backups/` holding your Arcadia settings, the library (favorites and
 playtime, copied consistently even while Arcadia is open), save-state snapshots, and each installed emulator's own
@@ -482,6 +504,7 @@ tests/
   test_consolidate.py   bringing a library in
   test_backup.py        backup and restore, including hostile archives
   test_setup_dialog.py  the Setup, bring-in and backup windows
+  test_sweep.py         finding the downloads folder, and sweeping it and its subfolders
   test_newsystems.py  the extra systems, folder games, presets, and disc disambiguation
   isoutil.py     builds valid disc images for the tests
   test_ui.py     window, cover flow, and import dialog tests (skipped where Qt can't load)
