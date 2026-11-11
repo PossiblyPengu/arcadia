@@ -336,3 +336,87 @@ def test_backup_round_trips_the_saves_folder(tmp_path):
     (config.saves_path / "g.srm").write_bytes(b"ruined")
     restore_backup(config, cfg_path, result.path, now=datetime(2026, 1, 1, 1, 2, 3))
     assert (config.saves_path / "g.srm").read_bytes() == b"precious"
+
+
+# ----- Google Drive through rclone -----
+
+class FakeRclone:
+    """Stands in for rclone: remote "gd:x" is the folder <cloud>/x, and `copy` never deletes."""
+
+    def __init__(self, cloud: Path, fail=None):
+        self.cloud, self.calls, self.fail = cloud, [], fail
+
+    def _path(self, spec):
+        return self.cloud / spec.split(":", 1)[1] if ":" in spec and not spec.startswith("/") else Path(spec)
+
+    def __call__(self, cmd, **kw):
+        import shutil as sh
+        import types
+
+        self.calls.append(cmd)
+        if cmd[:2] == ["rclone", "listremotes"]:
+            return types.SimpleNamespace(returncode=0, stdout="gd: drive\nold: dropbox\n", stderr="")
+        assert cmd[:3] == ["rclone", "copy", "--"]
+        if self.fail:
+            return types.SimpleNamespace(returncode=1, stdout="", stderr=self.fail)
+        src, dest = self._path(cmd[3]), self._path(cmd[4])
+        if src.is_dir():
+            sh.copytree(src, dest, dirs_exist_ok=True)
+        return types.SimpleNamespace(returncode=0, stdout="", stderr="")
+
+
+HAVE = lambda _: "/usr/bin/rclone"  # noqa: E731
+
+
+def remote_config(tmp_path):
+    config = make_config(tmp_path)
+    config.sync_remote = "gd:Saves"
+    return config
+
+
+def test_two_devices_share_saves_through_a_remote(tmp_path):
+    cloud = tmp_path / "cloud"
+    rc = FakeRclone(cloud)
+    deck = remote_config(tmp_path / "deck")
+    pc = remote_config(tmp_path / "pc")
+    (deck.saves_path / "g.srm").write_bytes(b"from deck")
+    r = savesync.sync_remote(deck, retroarch_saves=tmp_path / "x", run=rc, which=HAVE)
+    assert r.pushed == 1 and (cloud / "Saves" / "Arcadia" / "saves" / "g.srm").read_bytes() == b"from deck"
+    r = savesync.sync_remote(pc, retroarch_saves=tmp_path / "x", run=rc, which=HAVE)
+    assert r.pulled == 1 and (pc.saves_path / "g.srm").read_bytes() == b"from deck"
+    (pc.saves_path / "g.srm").write_bytes(b"pc progress")
+    savesync.sync_remote(pc, retroarch_saves=tmp_path / "x", run=rc, which=HAVE)
+    r = savesync.sync_remote(deck, retroarch_saves=tmp_path / "x", run=rc, which=HAVE)
+    assert r.pulled == 1 and (deck.saves_path / "g.srm").read_bytes() == b"pc progress"
+    assert all(c[:3] == ["rclone", "copy", "--"] for c in rc.calls)  # only ever `copy`: nothing is deleted
+
+
+def test_remote_preview_does_not_upload(tmp_path):
+    rc = FakeRclone(tmp_path / "cloud")
+    config = remote_config(tmp_path)
+    (config.saves_path / "g.srm").write_bytes(b"x")
+    r = savesync.sync_remote(config, dry_run=True, retroarch_saves=tmp_path / "x", run=rc, which=HAVE)
+    assert r.pushed == 1 and not (tmp_path / "cloud" / "Saves" / "Arcadia").exists()
+
+
+def test_rclone_failures_and_bad_input_are_reported(tmp_path):
+    config = remote_config(tmp_path)
+    with pytest.raises(savesync.SyncError, match="quota"):
+        savesync.sync_remote(config, run=FakeRclone(tmp_path / "c", fail="quota exceeded"), which=HAVE)
+    with pytest.raises(savesync.SyncError, match="isn't installed"):
+        savesync.sync_remote(config, which=lambda _: None)
+    for bad in ("", "no-colon", "-flag:x", "a:b\nc"):
+        config.sync_remote = bad
+        with pytest.raises(savesync.SyncError):
+            savesync.sync_remote(config, run=FakeRclone(tmp_path / "c"), which=HAVE)
+
+
+def test_listing_remotes_and_choosing_the_target(tmp_path):
+    assert savesync.rclone_remotes(FakeRclone(tmp_path), HAVE) == [("gd:", "drive"), ("old:", "dropbox")]
+    with pytest.raises(savesync.SyncError):
+        savesync.rclone_remotes(which=lambda _: None)
+    config = make_config(tmp_path)
+    config.sync_dir = str(tmp_path / "folder")
+    (config.saves_path / "g.srm").write_bytes(b"x")
+    savesync.run_sync(config, retroarch_saves=tmp_path / "x")  # no remote set: uses the folder
+    assert (tmp_path / "folder" / "Arcadia" / "saves" / "g.srm").is_file()

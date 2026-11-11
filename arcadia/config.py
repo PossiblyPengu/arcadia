@@ -115,6 +115,7 @@ class Config:
     ra_integer_scale: bool = False
     ra_auto_save_state: bool = False  # save on exit and load on start
     ra_saves_in_home: bool = False  # keep RetroArch's in-game saves in Arcadia's saves/ folder (existing saves aren't moved)
+    sync_remote: str = ""  # an rclone remote and folder, e.g. "gdrive:Arcadia"; used instead of sync_dir when set
     sync_dir: str = ""  # a folder (Syncthing, cloud drive, SD card) saves are kept in step with; empty = off
     systems: list[SystemConfig] = field(default_factory=default_systems)
 

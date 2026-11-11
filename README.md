@@ -307,7 +307,13 @@ large. It does **not** hold ROMs, emulator programs, or anything a Flatpak emula
 - **Save sync.** Pick a folder that Syncthing, a cloud drive or an SD card keeps in step; Arcadia makes that folder and
   your `saves/`, `states/` (and the RetroArch Flatpak's own saves) match. Nothing is deleted; a file changed on one
   side is copied across; changed on both, the newer wins and the other is kept in `_conflicts/`; anything overwritten
-  here goes to `backups/savesync/` first. "Preview" shows what would happen. Arcadia talks to no online service itself.
+  here goes to `backups/savesync/` first. "Preview" shows what would happen.
+  - **Google Drive** (or any cloud rclone supports): install [rclone](https://rclone.org/install/), run `rclone config`
+    once and add a remote of type `drive` (it opens a browser to log in to Google; do this in Desktop Mode on a Deck),
+    then enter e.g. `gdrive:Arcadia` in the "rclone" box ("Find remotes" lists yours). Arcadia keeps a local mirror in
+    `data/sync-cache`, pulls the Drive folder into it, runs the same sync as above, and pushes back, using only
+    `rclone copy` (which never deletes). Arcadia never sees your Google login; rclone stores it. Use the same remote
+    folder on every device. A plain folder is used when the rclone box is empty.
 - `saves/` is also part of backups now.
 
 ### Not done yet
@@ -322,7 +328,7 @@ What Arcadia still does **not** do:
 - Installing emulators that only ship as a Flatpak or as a `.7z`.
 
 **Not verified on real hardware:** that a Flatpak RetroArch accepts the `--appendconfig` file (it needs the folder
-access above), the libretro build server's file layout beyond what was read from its listing, and every sync/override
+access above), real rclone and Google Drive (the tests use a stand-in for rclone and I couldn't run rclone here, so the `listremotes --long` output format is from its documentation), the libretro build server's file layout beyond what was read from its listing, and every sync/override
 command beyond the automated tests, which use stand-ins for Flatpak and the network.
 
 ## Supported systems

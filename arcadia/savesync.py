@@ -22,9 +22,11 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import shutil
+import subprocess
 from collections.abc import Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import datetime
 from pathlib import Path
 
@@ -227,3 +229,83 @@ def sync(
     if not dry_run:
         _save_state(config, new_state)
     return report
+
+
+# ----------------------------------------------------------------------------
+# Google Drive (or any cloud) through rclone
+# ----------------------------------------------------------------------------
+#
+# rclone does the logging-in and the transfers; Arcadia never sees a password or token. A local mirror
+# folder (data/sync-cache) stands in for the cloud folder: pull the cloud folder into it, run the
+# ordinary sync against it, push it back. Both transfers are `rclone copy`, which never deletes.
+
+_REMOTE = re.compile(r"^[A-Za-z0-9_][A-Za-z0-9_.\- ]*:[^\x00\n]*$")
+
+
+def valid_remote(remote: str) -> bool:
+    return bool(_REMOTE.match(remote.strip()))
+
+
+def cache_dir(config: Config) -> Path:
+    return config.data_path / "sync-cache"
+
+
+def rclone_remotes(run: Callable = subprocess.run, which: Callable[[str], str | None] = shutil.which) -> list[tuple[str, str]]:
+    """(remote name with colon, its type) for each remote rclone knows, e.g. ("gdrive:", "drive")."""
+    if which("rclone") is None:
+        raise SyncError("rclone isn't installed. Install it (see the README), then set up a Google Drive remote with `rclone config`.")
+    try:
+        result = run(["rclone", "listremotes", "--long"], capture_output=True, text=True, timeout=20)
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise SyncError(f"rclone couldn't be run: {exc}") from exc
+    if result.returncode != 0:
+        raise SyncError(f"rclone couldn't list its remotes: {(result.stderr or '').strip()[-200:]}")
+    found = []
+    for line in result.stdout.splitlines():
+        name, _, kind = line.partition(":")
+        if name.strip():
+            found.append((name.strip() + ":", kind.strip()))
+    return found
+
+
+def _rclone_copy(src: str, dest: str, run: Callable, timeout: int = 1800) -> None:
+    try:
+        result = run(["rclone", "copy", "--", src, dest], capture_output=True, text=True, timeout=timeout)
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise SyncError(f"rclone couldn't be run: {exc}") from exc
+    if result.returncode != 0:
+        raise SyncError(f"rclone failed: {((result.stderr or '') + (result.stdout or '')).strip()[-300:] or 'unknown error'}")
+
+
+def sync_remote(
+    config: Config,
+    dry_run: bool = False,
+    now: datetime | None = None,
+    progress: Callable[[int, int], None] | None = None,
+    retroarch_saves: Path = RETROARCH_FLATPAK_SAVES,
+    run: Callable = subprocess.run,
+    which: Callable[[str], str | None] = shutil.which,
+) -> SyncReport:
+    remote = config.sync_remote.strip()
+    if not remote:
+        raise SyncError("Choose a remote first.")
+    if not valid_remote(remote):
+        raise SyncError("The remote should look like  name:folder  (for example gdrive:Arcadia).")
+    if which("rclone") is None:
+        raise SyncError("rclone isn't installed. Install it (see the README), then set up a Google Drive remote with `rclone config`.")
+    cache = cache_dir(config)
+    cache.mkdir(parents=True, exist_ok=True)
+    mirror = replace(config, sync_dir=str(cache))
+    _rclone_copy(remote.rstrip("/") + "/" + SYNC_SUBDIR, str(cache / SYNC_SUBDIR), run)  # pull what other devices left
+    report = sync(mirror, dry_run, now, progress, retroarch_saves)
+    if not dry_run:
+        _rclone_copy(str(cache / SYNC_SUBDIR), remote.rstrip("/") + "/" + SYNC_SUBDIR, run)  # share what changed here
+    return report
+
+
+def run_sync(config: Config, dry_run: bool = False, **kw) -> SyncReport:
+    """Sync with whichever target is set: an rclone remote, else the chosen folder."""
+    progress = kw.get("progress")
+    if config.sync_remote.strip():
+        return sync_remote(config, dry_run, progress=progress, **{k: v for k, v in kw.items() if k != "progress"})
+    return sync(config, dry_run, progress=progress, **{k: v for k, v in kw.items() if k in ("now", "retroarch_saves")})

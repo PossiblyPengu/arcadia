@@ -240,6 +240,11 @@ class ToolsDialog(QDialog, _Busy):
         self.sync_edit.setPlaceholderText("A folder that Syncthing, a cloud drive or an SD card keeps in step")
         browse = QPushButton("Browse…")
         browse.clicked.connect(self.browse_sync)
+        self.remote_edit = QLineEdit(self.config.sync_remote)
+        self.remote_edit.setPlaceholderText("Or an rclone remote and folder, e.g. gdrive:Arcadia (Google Drive)")
+        detect = QPushButton("Find remotes")
+        detect.clicked.connect(self.find_remotes)
+        self.remote_hint = _note("")
         self.preview_btn = QPushButton("Preview")
         self.preview_btn.clicked.connect(lambda: self.run_sync(dry_run=True))
         self.sync_btn = QPushButton("Sync now")
@@ -250,6 +255,9 @@ class ToolsDialog(QDialog, _Busy):
         top = QHBoxLayout()
         top.addWidget(self.sync_edit, 1)
         top.addWidget(browse)
+        remote_row = QHBoxLayout()
+        remote_row.addWidget(self.remote_edit, 1)
+        remote_row.addWidget(detect)
         row = QHBoxLayout()
         row.addWidget(self.preview_btn)
         row.addWidget(self.sync_btn)
@@ -257,12 +265,15 @@ class ToolsDialog(QDialog, _Busy):
         layout = QVBoxLayout(page)
         layout.addWidget(QLabel("Sync folder"))
         layout.addLayout(top)
+        layout.addWidget(QLabel("Google Drive or another cloud, through rclone (used instead of the folder when filled in)"))
+        layout.addLayout(remote_row)
+        layout.addWidget(self.remote_hint)
         layout.addLayout(row)
         layout.addWidget(self.sync_result)
         layout.addStretch(1)
         layout.addWidget(
             _note(
-                "Arcadia doesn't use any online service itself: it keeps this folder and your saves and save states matching, "
+                "Arcadia has no online login of its own: with a folder it keeps that folder and your saves and save states matching, "
                 "and whatever syncs the folder (Syncthing, a cloud drive) does the rest. A save that changed on only one device "
                 "is copied to the other. If it changed on both, the newer one wins and the other copy is kept in a _conflicts "
                 "folder. Nothing is ever deleted, and anything overwritten here is first copied to backups/savesync. Run it "
@@ -276,11 +287,26 @@ class ToolsDialog(QDialog, _Busy):
         if chosen:
             self.sync_edit.setText(chosen)
 
+    def find_remotes(self) -> None:
+        try:
+            remotes = savesync.rclone_remotes()
+        except savesync.SyncError as exc:
+            self.remote_hint.setText(f"✗  {exc}")
+            return
+        drives = [name for name, kind in remotes if kind == "drive"]
+        if not remotes:
+            self.remote_hint.setText("rclone has no remotes yet. Run `rclone config` and add one of type “drive” (Google Drive).")
+        else:
+            self.remote_hint.setText("Remotes found: " + ", ".join(f"{n}{'  (Google Drive)' if n in drives else ''}" for n, _k in remotes) + ". Type one with a folder, e.g. " + (drives or [remotes[0][0]])[0] + "Arcadia")
+            if drives and not self.remote_edit.text().strip():
+                self.remote_edit.setText(drives[0] + "Arcadia")
+
     def run_sync(self, dry_run: bool) -> None:
         self.config.sync_dir = self.sync_edit.text().strip()
+        self.config.sync_remote = self.remote_edit.text().strip()
         self.sync_result.setText("")
         config = self.config
-        self._run(lambda report: savesync.sync(config, dry_run=dry_run, progress=report), lambda v, e: self._on_synced(v, e, dry_run), "Comparing saves…")
+        self._run(lambda report: savesync.run_sync(config, dry_run=dry_run, progress=report), lambda v, e: self._on_synced(v, e, dry_run), "Comparing saves…")
 
     def _on_synced(self, report, error, dry_run: bool) -> None:
         if error is not None:
@@ -322,4 +348,5 @@ class ToolsDialog(QDialog, _Busy):
         c.ra_auto_save_state = self.autosave_box.isChecked()
         c.ra_saves_in_home = self.saves_box.isChecked()
         c.sync_dir = self.sync_edit.text().strip()
+        c.sync_remote = self.remote_edit.text().strip()
         super().done(result)
