@@ -127,7 +127,7 @@ def test_inspecting_a_backup_summarises_it(tmp_path):
     config, config_path = make_setup(tmp_path)
     info = inspect_backup(create_backup(config, config_path, now=NOW).path)
     assert info.files == 7 and info.emulators == ["pcsx2"]
-    assert info.areas == {"settings": 1, "library": 2, "save states": 1, "covers": 0, "emulators": 3}
+    assert info.areas == {"settings": 1, "library": 2, "save states": 1, "saves": 0, "covers": 0, "emulators": 3}
     assert info.created.startswith("2026-03-04")
 
 

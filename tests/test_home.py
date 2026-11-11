@@ -60,10 +60,10 @@ def test_ensure_layout_creates_the_folders_and_one_rom_folder_per_system(tmp_pat
     cfg = Config.new_install(tmp_path / "Arcadia")
     made = cfg.ensure_layout()
     home = tmp_path / "Arcadia"
-    for name in ("roms", "data", "media", "states", "emulators", "bios", "backups"):
+    for name in ("roms", "data", "media", "states", "emulators", "bios", "backups", "saves"):
         assert (home / name).is_dir()
     assert all((home / "roms" / s.folder).is_dir() for s in cfg.systems)
-    assert len(made) == 7 + len(cfg.systems)
+    assert len(made) == 8 + len(cfg.systems)
     assert cfg.ensure_layout() == []  # nothing left to make the second time
 
 

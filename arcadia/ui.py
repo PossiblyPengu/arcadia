@@ -55,6 +55,7 @@ from arcadia.presets import PRESETS, accent_for
 from arcadia.savestates import SaveStateError, create_snapshot, list_snapshots, restore_snapshot
 from arcadia.scanner import scan_system
 from arcadia.setup_dialog import SetupDialog
+from arcadia.tools_dialog import ToolsDialog
 from arcadia.sorter import Confidence, Journal, Plan, apply_plan, build_plan
 from arcadia.tasks import DaemonTask
 from arcadia.theme import DEFAULT_ACCENT, Backdrop, Toast, build_stylesheet
@@ -487,6 +488,7 @@ class MainWindow(QMainWindow):
         file_menu.aboutToShow.connect(self._update_undo_action)
         file_menu.addAction("Emulators…", self.open_emulators, "Ctrl+E")
         file_menu.addAction("Arcadia folder and setup…", self.open_setup, "Ctrl+Shift+S")
+        file_menu.addAction("BIOS, emulator settings and sync…", self.open_tools, "Ctrl+Shift+B")
         file_menu.addAction("Settings…", self.open_settings)
         file_menu.addSeparator()
         file_menu.addAction("Quit", self.close, "Ctrl+Q")
@@ -1052,6 +1054,11 @@ class MainWindow(QMainWindow):
             self.rescan()
             if self.config.db_path != self._db_path:
                 self.toast.show_message("Restart Arcadia to use the library in its new folder", 6000)
+
+    def open_tools(self) -> None:
+        """BIOS files, RetroArch settings and cores, Flatpak access, save sync."""
+        ToolsDialog(self.config, parent=self).exec()
+        self._save_config()
 
     def open_setup(self) -> None:
         """The overview of what's ready, plus bringing a library in and backing up."""

@@ -4,6 +4,7 @@ What goes in a backup (one zip file):
     config.json                    Arcadia's settings
     data/library.db, imports.json  favorites, playtime, and the import undo journal
     states/                        save-state snapshots
+    saves/                         in-game saves Arcadia keeps (RetroArch's, if enabled)
     media/                         covers and metadata (only if asked: it can be large)
     emulators/<id>/{config,data,state}/   each installed emulator's own settings and saves
 
@@ -37,7 +38,7 @@ MANIFEST = "manifest.json"
 FORMAT = 1
 EMULATOR_DATA = ("config", "data", "state")  # not "app" (the program) and not "cache"
 _EMULATOR_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.\-]*$")
-_TOP = {"config.json", "data", "states", "media", "emulators"}
+_TOP = {"config.json", "data", "states", "saves", "media", "emulators"}
 _DATA_FILES = {"library.db", "imports.json"}
 
 
@@ -115,6 +116,8 @@ def _items(config: Config, config_path: Path, include_media: bool, tmp: Path) ->
         items.append((config.journal_path, "data/imports.json"))
     for f in _files_under(config.savestate_path):
         items.append((f, f"states/{f.relative_to(config.savestate_path).as_posix()}"))
+    for f in _files_under(config.saves_path):
+        items.append((f, f"saves/{f.relative_to(config.saves_path).as_posix()}"))
     if include_media:
         for f in _files_under(config.media_path):
             items.append((f, f"media/{f.relative_to(config.media_path).as_posix()}"))
@@ -196,7 +199,7 @@ def _checked(name: str) -> PurePosixPath:
         ok = len(parts) == 1
     elif top == "data":
         ok = len(parts) == 2 and parts[1] in _DATA_FILES
-    elif top in ("states", "media"):
+    elif top in ("states", "saves", "media"):
         ok = len(parts) >= 2
     elif top == "emulators":
         ok = len(parts) >= 4 and bool(_EMULATOR_ID.match(parts[1])) and parts[2] in EMULATOR_DATA
@@ -217,8 +220,8 @@ def inspect_backup(zip_path: Path) -> BackupInfo:
             raise BackupError("that zip isn't an Arcadia backup (it has no manifest)") from None
         if not isinstance(manifest, dict) or manifest.get("arcadia_backup") != FORMAT:
             raise BackupError("that backup was made by a version of Arcadia this one can't read")
-        areas = {"settings": 0, "library": 0, "save states": 0, "covers": 0, "emulators": 0}
-        names = {"config.json": "settings", "data": "library", "states": "save states", "media": "covers", "emulators": "emulators"}
+        areas = {"settings": 0, "library": 0, "save states": 0, "saves": 0, "covers": 0, "emulators": 0}
+        names = {"config.json": "settings", "data": "library", "states": "save states", "saves": "saves", "media": "covers", "emulators": "emulators"}
         for info in zf.infolist():
             if info.is_dir():
                 continue
@@ -244,7 +247,7 @@ def _targets(config: Config, config_path: Path, staging: Path) -> list[tuple[Pat
     for name, live in (("library.db", config.db_path), ("imports.json", config.journal_path)):
         if (staging / "data" / name).is_file():
             pairs.append((staging / "data" / name, live, f"data/{name}"))
-    for top, live in (("states", config.savestate_path), ("media", config.media_path)):
+    for top, live in (("states", config.savestate_path), ("saves", config.saves_path), ("media", config.media_path)):
         if (staging / top).is_dir():
             pairs.append((staging / top, live, top))
     emulators = staging / "emulators"

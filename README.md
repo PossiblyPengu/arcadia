@@ -288,16 +288,42 @@ large. It does **not** hold ROMs, emulator programs, or anything a Flatpak emula
 - A backup restores onto another machine or folder by name, so it also moves your saves between setups.
 - Restart Arcadia after restoring, so it loads the restored settings.
 
-### Not done yet: the rest of an EmuDeck-style setup
+### BIOS, RetroArch settings, cores, Flatpak access and save sync (File → BIOS, emulator settings and sync…, Ctrl+Shift+B)
 
-Arcadia now installs, updates and launches emulators, keeps everything in one folder, sorts and organises ROMs,
-checks what's ready, and backs up saves. Things a complete tool of this kind would also do, which Arcadia does
-**not** yet:
-- **Configuring the emulators for you:** resolution, controller profiles, per-emulator defaults. Arcadia launches
-  emulators but doesn't write their settings, because each has its own file format and I won't guess at them.
-- **Pointing emulators at your BIOS folder** (and checking those files), for the same reason.
-- **Syncing saves between devices** (cloud or network). Backups are local zip files you can copy yourself.
-- **Updating RetroArch cores**, and installing the emulators that only ship as Flatpak or as a `.7z`.
+- **BIOS files.** Lists the BIOS / key files known systems want (PlayStation, PS2, Saturn, Sega CD, Dreamcast, GBA,
+  DS, Lynx, PC Engine CD, Atari 7800, Switch `prod.keys`, Xbox) and whether a file with the right *name* is in
+  `bios/` (up to two folders deep, any letter case). It doesn't supply files and can't tell a good dump from a bad
+  one. The file names are the ones the emulators and libretro cores document; systems not listed aren't checked.
+- **RetroArch settings.** When Arcadia starts RetroArch it adds `--appendconfig=<data>/retroarch-arcadia.cfg`, which
+  RetroArch reads *on top of* your own `retroarch.cfg` (that file is never edited). It sets `system_directory` to
+  `bios/` and, if you choose: fullscreen, vsync, integer scaling, auto save/load state, and keeping in-game saves in
+  `saves/`. Existing saves aren't moved when you switch that last one on. Turn "Apply Arcadia's settings" off to stop
+  all of it.
+- **Cores.** Shows each core your RetroArch systems use and whether the file exists; one button installs the missing
+  ones and refreshes the rest from libretro's nightly build server (`buildbot.libretro.com` only, one `.so` taken from
+  the zip by exact name, checked to be a Linux program, swapped in atomically so a failed download leaves the old core).
+- **Flatpak access.** Shows the exact `flatpak override --user --filesystem=<Arcadia folder> <app>` commands for the
+  Flatpak emulators you use and runs them only after you confirm. (Undo: `flatpak override --user --reset <app>`.)
+- **Save sync.** Pick a folder that Syncthing, a cloud drive or an SD card keeps in step; Arcadia makes that folder and
+  your `saves/`, `states/` (and the RetroArch Flatpak's own saves) match. Nothing is deleted; a file changed on one
+  side is copied across; changed on both, the newer wins and the other is kept in `_conflicts/`; anything overwritten
+  here goes to `backups/savesync/` first. "Preview" shows what would happen. Arcadia talks to no online service itself.
+- `saves/` is also part of backups now.
+
+### Not done yet
+
+What Arcadia still does **not** do:
+- **Per-emulator settings for standalone emulators** (resolution, controller profiles). Each has its own settings file
+  format, and I won't write files I haven't verified. Only RetroArch is configured (above).
+- **Putting BIOS files where each standalone emulator looks.** RetroArch is pointed at `bios/`; for the others, copy
+  the files into that emulator's own BIOS folder.
+- **Syncing the data of emulators installed in Arcadia's folder** (`emulators/<id>/data`), which can be huge; use the
+  backup for those.
+- Installing emulators that only ship as a Flatpak or as a `.7z`.
+
+**Not verified on real hardware:** that a Flatpak RetroArch accepts the `--appendconfig` file (it needs the folder
+access above), the libretro build server's file layout beyond what was read from its listing, and every sync/override
+command beyond the automated tests, which use stand-ins for Flatpak and the network.
 
 ## Supported systems
 

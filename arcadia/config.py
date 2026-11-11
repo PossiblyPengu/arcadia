@@ -108,6 +108,14 @@ class Config:
     inbox_dir: str = ""  # folder ROMs are downloaded into (e.g. ~/Downloads); empty = sorting off
     auto_import: bool = True  # move ROMs whose header confirms their system without asking
     check_updates: bool = False  # look for emulator updates when Arcadia starts (contacts GitHub / Eden's server)
+    # RetroArch settings Arcadia applies on top of the user's own (see retroarch.py).
+    manage_retroarch: bool = True  # point RetroArch at Arcadia's BIOS folder and apply the options below
+    ra_fullscreen: bool = True
+    ra_vsync: bool = True
+    ra_integer_scale: bool = False
+    ra_auto_save_state: bool = False  # save on exit and load on start
+    ra_saves_in_home: bool = False  # keep RetroArch's in-game saves in Arcadia's saves/ folder (existing saves aren't moved)
+    sync_dir: str = ""  # a folder (Syncthing, cloud drive, SD card) saves are kept in step with; empty = off
     systems: list[SystemConfig] = field(default_factory=default_systems)
 
     @classmethod
@@ -158,6 +166,15 @@ class Config:
         return self.home_path / "states" if self.home_path else self.data_path / "savestates"
 
     @property
+    def saves_path(self) -> Path:
+        """In-game saves Arcadia keeps itself (RetroArch's, when ra_saves_in_home is on)."""
+        return self.home_path / "saves" if self.home_path else self.data_path / "saves"
+
+    @property
+    def sync_path(self) -> Path | None:
+        return Path(self.sync_dir).expanduser() if self.sync_dir.strip() else None
+
+    @property
     def emulators_path(self) -> Path:
         """Installed emulators live here, one folder each."""
         return self.home_path / "emulators" if self.home_path else self.data_path / "emulators"
@@ -183,7 +200,7 @@ class Config:
         """Create the folders under the home folder. Returns the ones that were missing.
         A ROM folder per system is only made when the ROM root is inside the home folder, so
         nothing is created in a ROM folder you pointed somewhere else."""
-        wanted = [self.rom_root_path, self.data_path, self.media_path, self.savestate_path, self.emulators_path, self.bios_path, self.backups_path]
+        wanted = [self.rom_root_path, self.data_path, self.media_path, self.savestate_path, self.emulators_path, self.bios_path, self.backups_path, self.saves_path]
         if not self.rom_root.strip():
             wanted += [self.rom_root_path / s.folder for s in self.systems]
         made = []

@@ -69,7 +69,20 @@ def build_stylesheet(accent: str) -> str:
     QMenuBar::item {{ padding: 6px 12px; background: transparent; }}
     QMenuBar::item:selected {{ background: {_white(12)}; border-radius: 6px; }}
     QTableWidget {{ background: {_white(4)}; gridline-color: {_white(8)}; }}
+    QHeaderView {{ background: transparent; }}
+    QTableCornerButton::section {{ background: transparent; border: none; }}
     QHeaderView::section {{ background: {_white(8)}; border: none; padding: 6px; }}
+    QTabWidget::pane {{ border: 1px solid {_white(10)}; border-radius: 10px; background: transparent; top: -1px; }}
+    QTabBar::tab {{ background: {_white(6)}; padding: 8px 18px; margin-right: 4px; border-top-left-radius: 10px; border-top-right-radius: 10px; }}
+    QTabBar::tab:hover {{ background: {_white(12)}; }}
+    QTabBar::tab:selected {{ background: {accent}; color: white; font-weight: 600; }}
+    QCheckBox {{ background: transparent; spacing: 8px; }}
+    QCheckBox::indicator {{ width: 16px; height: 16px; border-radius: 5px; border: 1px solid {_white(35)}; background: {_white(6)}; }}
+    QCheckBox::indicator:checked {{ background: {accent}; border: 1px solid {accent}; }}
+    QScrollBar:vertical {{ background: transparent; width: 12px; margin: 0; }}
+    QScrollBar::handle:vertical {{ background: {_white(22)}; border-radius: 5px; min-height: 28px; }}
+    QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{ height: 0; }}
+    QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {{ background: transparent; }}
     QToolTip {{ background: #1d1f27; color: #eceef4; border: 1px solid {accent}; }}
     QMessageBox, QDialog {{ background: #1a1b22; }}
     """

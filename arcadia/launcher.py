@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from arcadia.emulators import CATALOG, Installer
+from arcadia.retroarch import retroarch_index, with_appendconfig, write_appendconfig
 
 if TYPE_CHECKING:
     from arcadia.config import Config, SystemConfig
@@ -80,4 +81,10 @@ def resolve_launch(
             return LaunchPlan(build_command(template, rom, extras), installer.launch_env(spec.id), f"local:{spec.id}")
         if not system.command.strip():
             raise LaunchError(f"{spec.name} isn't installed. Install it from File → Emulators…")
-    return LaunchPlan(build_command(system.command, rom, extras))
+    args = build_command(system.command, rom, extras)
+    if config.manage_retroarch and retroarch_index(args) is not None:
+        try:
+            args = with_appendconfig(args, write_appendconfig(config))
+        except OSError:
+            pass  # RetroArch still starts, just with the user's own settings
+    return LaunchPlan(args)
