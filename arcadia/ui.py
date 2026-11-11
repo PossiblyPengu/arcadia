@@ -7,7 +7,9 @@ actions, and a line of key hints. Messages appear as toasts.
 
 from __future__ import annotations
 
+import dataclasses
 import random
+import shutil
 import time
 import zlib
 from pathlib import Path
@@ -57,7 +59,10 @@ from arcadia.scanner import scan_system
 from arcadia.setup_dialog import SetupDialog
 from arcadia.tools_dialog import ToolsDialog
 from arcadia.sorter import Confidence, Journal, Plan, apply_plan, build_plan
-from arcadia.tasks import DaemonTask
+from arcadia import savesync
+from arcadia.tasks import DaemonTask, Task
+
+TaskClass = Task  # tests swap this for a version that runs immediately
 from arcadia.theme import DEFAULT_ACCENT, Backdrop, Toast, build_stylesheet
 from arcadia.updates import CHOOSE, READY, plan_updates
 from arcadia.util import bundle_summary, fmt_clock, fmt_duration, fmt_timestamp, snapshot_label
@@ -309,6 +314,7 @@ class MainWindow(QMainWindow):
         self._accent_hex = ""
         self._last_view: str | None = None
         self._closed = False
+        self._sync_task = None
         self._importing = False  # an import dialog is open
         self._asked: set[str] = set()  # inbox files the user has already been asked about
         self.journal = Journal(config.journal_path)
@@ -477,6 +483,7 @@ class MainWindow(QMainWindow):
         QTimer.singleShot(0, self.coverflow.setFocus)
         QTimer.singleShot(800, self.check_inbox)
         QTimer.singleShot(5000, self._startup_update_check)
+        QTimer.singleShot(3000, self._auto_sync)
 
     # ----- menu, fullscreen, persistence -----
 
@@ -750,6 +757,9 @@ class MainWindow(QMainWindow):
         if self.process is not None:
             self.toast.show_message("A game is already running.")
             return
+        if self._sync_task is not None:
+            self.toast.show_message("Syncing your saves first: try again in a moment.")
+            return
         row = self.library.get(key)
         if row["kind"] in ("update", "dlc"):
             what = "an update" if row["kind"] == "update" else "DLC"
@@ -795,6 +805,34 @@ class MainWindow(QMainWindow):
     def _on_finished(self, _exit_code, _exit_status) -> None:
         if self.process is not None:
             self._end_session(record=True)
+            self._auto_sync()  # the game has closed, so its saves are complete
+
+    def _auto_sync(self) -> None:
+        """Sync saves in the background: at startup and after each game. Quiet unless something happens."""
+        c = self.config
+        if self._closed or not c.auto_sync or self._sync_task is not None or self.process is not None:
+            return
+        if not (c.sync_remote.strip() or c.sync_dir.strip()):
+            return
+        if c.sync_remote.strip() and shutil.which("rclone") is None:
+            return  # sync is on by default; until rclone is set up there is nothing to do
+        snapshot = dataclasses.replace(c)  # the window may change settings while this runs
+        self._sync_task = TaskClass(lambda report: savesync.run_sync(snapshot), self)
+        self._sync_task.done.connect(self._on_auto_synced)
+        self._sync_task.start()
+
+    def _on_auto_synced(self, report, error) -> None:
+        self._sync_task = None
+        if self._closed:
+            return
+        if error is not None:
+            self.toast.show_message(f"Save sync failed: {error}", 7000)
+        elif report.errors:
+            self.toast.show_message(f"Save sync: {len(report.errors)} file(s) couldn't be synced", 6000)
+        elif report.conflicts:
+            self.toast.show_message(f"Saves synced; {report.conflicts} changed on two devices (the older copy was kept)", 7000)
+        elif report.changed:
+            self.toast.show_message(f"Saves synced ({report.pushed} up, {report.pulled} down)")
 
     def _end_session(self, record: bool) -> None:
         key = self.running_key
@@ -1057,6 +1095,9 @@ class MainWindow(QMainWindow):
 
     def open_tools(self) -> None:
         """BIOS files, RetroArch settings and cores, Flatpak access, save sync."""
+        if self._sync_task is not None:
+            self.toast.show_message("Saves are syncing: open this again in a moment.")
+            return
         ToolsDialog(self.config, parent=self).exec()
         self._save_config()
 
@@ -1111,6 +1152,8 @@ class MainWindow(QMainWindow):
 
     def closeEvent(self, event) -> None:
         self._closed = True
+        if self._sync_task is not None:
+            self._sync_task.wait(60_000)  # never close the window on a half-finished sync
         self.inbox_debounce.stop()
         self.inbox_poll.stop()
         self.controller.stop()

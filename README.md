@@ -314,6 +314,10 @@ large. It does **not** hold ROMs, emulator programs, or anything a Flatpak emula
     `data/sync-cache`, pulls the Drive folder into it, runs the same sync as above, and pushes back, using only
     `rclone copy` (which never deletes). Arcadia never sees your Google login; rclone stores it. Use the same remote
     folder on every device. A plain folder is used only when the rclone box is empty.
+  - **Automatic:** with a target set up and rclone installed, Arcadia syncs in the background when it starts and each
+    time a game closes (never while one is running; launching waits if a sync is in progress). It shows a short message
+    only when something was copied, conflicted or failed. Turn it off with the checkbox on the Save sync tab. It can't
+    run while Arcadia is closed; it's tied to the app, not a background service.
   - **Delta (iOS) can't be synced this way.** Delta stores its Google Drive sync in Drive's hidden *app data* area,
     which only Delta's own Google login can read (read from Harmony-Drive, the library Delta uses). rclone and Arcadia
     can't see or write it, and guessing at its format could corrupt your Delta sync.

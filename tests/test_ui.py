@@ -20,6 +20,14 @@ from arcadia.library import Library  # noqa: E402
 from arcadia.ui import VIEW_FAVORITES, VIEW_RECENT, MainWindow, _shorten  # noqa: E402
 
 
+@pytest.fixture(autouse=True)
+def _never_sync_for_real(monkeypatch):
+    """The window syncs saves by itself; no window test may reach a real rclone or sync folder."""
+    from arcadia import savesync
+
+    monkeypatch.setattr(savesync, "run_sync", lambda *a, **k: savesync.SyncReport())
+
+
 @pytest.fixture(scope="module")
 def qapp():
     return QApplication.instance() or QApplication([])
@@ -1217,3 +1225,47 @@ def test_a_daemon_task_delivers_its_result_on_the_interface_thread(qapp):
             break
         _time.sleep(0.01)
     assert got[1][0] is None and isinstance(got[1][1], ZeroDivisionError)
+
+
+# ----- automatic save sync -----
+
+def _auto_window(window, monkeypatch, calls, rclone=True):
+    import arcadia.ui as ui
+    from arcadia import savesync
+    from qtutil import SyncTask
+
+    monkeypatch.setattr(ui, "TaskClass", SyncTask)
+    monkeypatch.setattr(ui.shutil, "which", lambda _n: "/usr/bin/rclone" if rclone else None)
+    monkeypatch.setattr(savesync, "run_sync", lambda cfg, *a, **k: calls.append(cfg) or savesync.SyncReport(pushed=2))
+    return window
+
+
+def test_saves_sync_at_startup_and_after_a_game_closes(window, monkeypatch):
+    calls = []
+    _auto_window(window, monkeypatch, calls)
+    window._auto_sync()
+    assert len(calls) == 1 and window._sync_task is None
+    window.process = object()  # a game is running: never sync under it
+    window._auto_sync()
+    assert len(calls) == 1
+    window.process = None
+
+
+def test_auto_sync_stays_quiet_when_it_cannot_or_should_not_run(window, monkeypatch):
+    calls = []
+    _auto_window(window, monkeypatch, calls, rclone=False)
+    window._auto_sync()  # default target is Google Drive but rclone isn't installed
+    window.config.sync_remote, window.config.sync_dir = "", ""
+    _auto_window(window, monkeypatch, calls)
+    window._auto_sync()  # nothing set up
+    window.config.sync_remote = "gdrive:Arcadia"
+    window.config.auto_sync = False
+    window._auto_sync()  # switched off
+    assert calls == []
+
+
+def test_launch_waits_while_saves_are_syncing(window, monkeypatch):
+    window._sync_task = object()
+    window.launch()
+    assert window.process is None
+    window._sync_task = None
