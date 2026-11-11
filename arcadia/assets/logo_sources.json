@@ -1,0 +1,148 @@
+{
+ "nes": [
+  "NES_logo.svg"
+ ],
+ "snes": [
+  "Super_Nintendo_Entertainment_System_logo.svg",
+  "Super_NES_USA_logo.png"
+ ],
+ "n64": [
+  "Nintendo_64_(logo).svg"
+ ],
+ "gc": [
+  "Nintendo_Gamecube_Logo.svg",
+  "GameCube_logo.svg",
+  "Nintendo_GameCube_logo.svg"
+ ],
+ "wii": [
+  "Wii.svg",
+  "Wii_logo.svg",
+  "Wii_Logo.svg"
+ ],
+ "wiiu": [
+  "Wii_U_Logo.svg",
+  "Wii_U_logo.svg",
+  "Wii_U.svg"
+ ],
+ "switch": [
+  "Nintendo_Switch_logo.svg"
+ ],
+ "gb": [
+  "Gameboy_logo.svg",
+  "Game_Boy_logo.svg",
+  "Game_Boy_Logo.svg"
+ ],
+ "gbc": [
+  "Game_Boy_Color_logo.svg",
+  "Gameboy_color_logo.svg"
+ ],
+ "gba": [
+  "Game_Boy_Advance_logo.svg",
+  "Gameboy_advance_logo.svg"
+ ],
+ "nds": [
+  "Nintendo_DS_Logo.svg",
+  "Nintendo_DS_logo.svg"
+ ],
+ "n3ds": [
+  "Nintendo_3DS_Logo.svg",
+  "Nintendo_3DS_logo.svg",
+  "3DS_Logo.svg"
+ ],
+ "genesis": [
+  "Sega_Genesis_logo.svg",
+  "Sega_Genesis.svg",
+  "Genesis_logo.svg"
+ ],
+ "sms": [
+  "Sega_Master_System_logo.svg",
+  "Master_System_logo.svg",
+  "Sega_Master_System_Logo.svg"
+ ],
+ "gamegear": [
+  "Sega_Game_Gear_logo.svg",
+  "Game_Gear_logo.svg",
+  "Game_Gear.svg"
+ ],
+ "segacd": [
+  "Sega_CD_logo.svg",
+  "Sega_Mega-CD_logo.svg"
+ ],
+ "saturn": [
+  "Sega_Saturn_Logo.svg",
+  "Sega_Saturn_logo.svg",
+  "SegaSaturn.svg"
+ ],
+ "dreamcast": [
+  "Dreamcast_logo_Japan.svg",
+  "Dreamcast_logo.svg",
+  "Dreamcast_Logo.svg"
+ ],
+ "psx": [
+  "Playstation_logo_colour.svg",
+  "PlayStation_logo.svg"
+ ],
+ "ps2": [
+  "PlayStation_2_logo.svg",
+  "PS2_logo.svg",
+  "PlayStation_2_Logo.svg"
+ ],
+ "ps3": [
+  "PlayStation_3_Logo.svg",
+  "PS3_Logo.svg",
+  "PlayStation_3_logo.svg"
+ ],
+ "psp": [
+  "PSP_Logo.svg",
+  "PlayStation_Portable_logo.svg",
+  "PSP_logo.svg"
+ ],
+ "xbox": [
+  "Xbox_logo_(2001).svg",
+  "Xbox_Logo.svg",
+  "Xbox_logo_2001.svg"
+ ],
+ "pcengine": [
+  "PC_engine_logo_red.svg",
+  "TurboGrafx-16_logo.svg"
+ ],
+ "neogeo": [
+  "Neo_Geo_logo.svg",
+  "NeoGeo_logo.svg",
+  "Neo-Geo_logo.svg"
+ ],
+ "atari2600": [
+  "Atari_2600_Logo.svg",
+  "Atari_2600_logo.svg"
+ ],
+ "atari7800": [
+  "Atari_7800_logo.svg",
+  "Atari_7800_Logo.svg"
+ ],
+ "lynx": [
+  "Atari_Lynx_Logo.svg",
+  "Atari_Lynx_logo.svg",
+  "Atari_Lynx.svg"
+ ],
+ "wonderswan": [
+  "WonderSwan_logo.svg",
+  "Wonderswan_logo.png"
+ ],
+ "ngp": [
+  "Neo_Geo_Pocket_logo.png",
+  "Neo_Geo_Pocket_Color_logo.svg",
+  "NGPC_logo.png"
+ ],
+ "virtualboy": [
+  "Virtual_Boy_logo.svg",
+  "Virtualboy_logo.svg"
+ ],
+ "msx": [
+  "MSX_Logo.svg",
+  "MSX_logo.svg"
+ ],
+ "amiga": [
+  "Amiga_logo.svg",
+  "Amiga_Logo.svg"
+ ]
+}

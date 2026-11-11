@@ -15,8 +15,9 @@ import zlib
 from pathlib import Path
 
 from PySide6.QtCore import QEvent, QFileSystemWatcher, QProcess, QProcessEnvironment, QPropertyAnimation, QSize, Qt, QTimer, QUrl
-from PySide6.QtGui import QAction, QColor, QDesktopServices, QFont, QIcon, QKeyEvent, QKeySequence, QPainter, QPixmap, QShortcut
+from PySide6.QtGui import QAction, QActionGroup, QColor, QDesktopServices, QFont, QIcon, QKeyEvent, QKeySequence, QPainter, QPixmap, QShortcut
 from PySide6.QtWidgets import (
+    QProgressDialog,
     QStackedWidget,
     QApplication,
     QCheckBox,
@@ -48,7 +49,7 @@ from arcadia.consoles_view import ConsoleCarousel, Entry
 from arcadia.coverflow import COVER_H, COVER_W, CoverFlow
 from arcadia.empty_state import EmptyState
 from arcadia.welcome_dialog import WelcomeDialog
-from arcadia import pixelart
+from arcadia import logos, pixelart
 from arcadia.sounds import Sounds
 from arcadia.transitions import ZoomOverlay
 from arcadia.bundles import parse_switch
@@ -300,7 +301,7 @@ class MainWindow(QMainWindow):
         self.journal = Journal(config.journal_path)
         self._db_path = config.db_path
 
-        pixelart.set_art_dir(config.media_path / "consoles")  # your own console pictures, if you've added any
+        self._configure_art()  # your own pictures, your downloaded logos, and which style to show
         self.setWindowTitle("Arcadia")
         self.resize(1360, 860)
         self.setStyleSheet(build_stylesheet(DEFAULT_ACCENT))
@@ -521,6 +522,17 @@ class MainWindow(QMainWindow):
         self.sounds_action.setChecked(self.config.sounds)
         self.sounds_action.toggled.connect(self._on_sounds_toggled)
         view_menu.addAction(self.sounds_action)
+        pictures = view_menu.addMenu("Pictures")
+        group = QActionGroup(self)
+        self.logos_action = QAction("Console logos", self, checkable=True)
+        self.drawings_action = QAction("Console drawings", self, checkable=True)
+        for action, style in ((self.logos_action, "logos"), (self.drawings_action, "drawings")):
+            group.addAction(action)
+            pictures.addAction(action)
+            action.setChecked(self.config.art_style == style)
+            action.triggered.connect(lambda _c=False, s=style: self._set_art_style(s))
+        pictures.addSeparator()
+        pictures.addAction("Download console logos…", self.download_logos)
         view_menu.addAction("Use my own console pictures…", self.open_console_art)
         view_menu.addSeparator()
         self.fullscreen_action = QAction("Fullscreen", self, checkable=True)
@@ -530,6 +542,56 @@ class MainWindow(QMainWindow):
         self.empty_action.setChecked(self.config.show_empty_systems)
         self.empty_action.toggled.connect(self._on_show_empty_toggled)
         view_menu.addAction(self.empty_action)
+
+    def _configure_art(self) -> None:
+        pixelart.configure(self.config.media_path / "consoles", self.config.media_path / "logos", self.config.art_style)
+
+    def _set_art_style(self, style: str) -> None:
+        self.config.art_style = style
+        self._save_config()
+        self._configure_art()
+        self.carousel.update()
+
+    def download_logos(self) -> None:
+        """Fetch each console's logo from Wikipedia / Wikimedia Commons, after saying what that means."""
+        answer = QMessageBox.question(
+            self,
+            "Download console logos",
+            "Arcadia will download each console's logo from Wikipedia / Wikimedia Commons and keep them in your own "
+            f"media folder ({self.config.media_path / 'logos'}). They are the makers' trademarks, used here only to label "
+            "each console on screen, and they aren't included with Arcadia.\n\n"
+            "Each is then redrawn in the pixel style of its console's era. This takes a minute or two. Continue?",
+        )
+        if answer != QMessageBox.StandardButton.Yes:
+            return
+        media = self.config.media_path
+        progress = QProgressDialog("Downloading console logos…", "", 0, 100, self)
+        progress.setCancelButton(None)
+        progress.setWindowTitle("Console logos")
+        progress.setMinimumDuration(0)
+        progress.setValue(0)
+        task = TaskClass(lambda report: logos.fetch_logos(media, progress=report), self)
+        task.progress.connect(lambda done, total: (progress.setMaximum(max(1, total)), progress.setValue(done)))
+        task.done.connect(lambda result, error: self._logos_done(progress, result, error))
+        self._logo_task = task
+        task.start()
+
+    def _logos_done(self, progress, result, error) -> None:
+        progress.close()
+        self._logo_task = None
+        self._configure_art()
+        self.carousel.update()
+        if error is not None:
+            QMessageBox.warning(self, "Console logos", f"Couldn't download the logos: {error}")
+            return
+        text = f"Downloaded {len(result.done)} logo{'s' if len(result.done) != 1 else ''}."
+        if result.failed:
+            text += f"\n\nNo logo could be found for {len(result.failed)}: " + ", ".join(sorted(result.failed)) + (
+                "\n\nThose keep their drawings. You can put your own picture in the console pictures folder (View → Use my own console pictures)."
+            )
+        QMessageBox.information(self, "Console logos", text)
+        if result.done and self.config.art_style != "logos":
+            self.toast.show_message("Logos downloaded: View → Pictures → Console logos to show them", 6000)
 
     def open_console_art(self) -> None:
         """Open the folder where console pictures go (nes.png, snes.png, ...), and say how it works."""
@@ -599,7 +661,7 @@ class MainWindow(QMainWindow):
 
     def rescan(self, initial: bool = False) -> None:
         """Sort anything waiting in the downloads folder, then rescan the library."""
-        pixelart.set_art_dir(self.config.media_path / "consoles")  # picks up pictures added since last time
+        self._configure_art()  # picks up pictures added since last time
         if not initial:
             self.check_inbox(rescan_after=False)
         self._scan_library(initial)

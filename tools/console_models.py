@@ -7,7 +7,9 @@ drawing is then reduced to the pixel style of its era by make_console_art.py. Co
 from __future__ import annotations
 
 from arcadia.eras import era_of
-from isoart import Scene, footprint, rounded
+import math
+
+from isoart import Scene, contour, footprint, rounded, rrect_xz
 
 
 # ---------------------------------------------------------------- 8-bit
@@ -30,7 +32,7 @@ def nes(s: Scene) -> None:
 
 
 def gb(s: Scene) -> None:
-    b = s.box(0, 0, 0, 9.0, 3.2, 14.8, "#c9c9c3", r=0.7)
+    b = s.extrude_y(rrect_xz(9.0, 14.8, 0.9, 2.8, 0.9, 0.9), 0, 3.2, "#c9c9c3", top="#d8d8d2")  # the bottom right corner is much rounder
     s.ff(b, 0.10, 0.42, 0.90, 0.94, "#6c6c74")  # the wide dark-grey screen surround
     s.ff(b, 0.10, 0.885, 0.90, 0.905, "#8a78b8")
     s.ff(b, 0.10, 0.845, 0.90, 0.865, "#5a5a9a")
@@ -86,9 +88,9 @@ def genesis(s: Scene) -> None:
 # ---------------------------------------------------------------- 32-bit
 
 def psx(s: Scene) -> None:
-    body = s.box(0, 0, 0, 27.0, 19.5, 6.0, "#a9a9a5", r=0.8, top="#b2b2ae")
-    s.disc(11.8, 9.6, 6.0, 7.6, 0.9, "#a5a5a1", taper=0.98, top="#b0b0ac")  # the disc lid
-    lb = (4.2, 2.0, 6.0, 15.2, 15.2, 0.9)
+    body = s.solid(rounded(footprint(0, 0, 27.0, 19.5), 1.6), 0, 6.3, 5.7, "#a9a9a5", top="#b2b2ae")
+    s.disc(11.8, 9.6, 5.9, 7.6, 0.9, "#a5a5a1", taper=0.98, top="#b0b0ac")  # the disc lid
+    lb = (4.2, 2.0, 5.9, 15.2, 15.2, 0.9)
     s.c_top(lb, 7.6, 7.6, 5.4, "#aeaeaa")
     s.c_top(body, 3.0, 8.4, 1.5, "#98aaa6")  # power
     s.c_top(body, 24.3, 15.4, 1.5, "#98aaa6")  # open
@@ -100,10 +102,12 @@ def psx(s: Scene) -> None:
 
 
 def saturn(s: Scene) -> None:
-    body = s.box(0, 0, 0, 26.0, 23.5, 7.4, "#1c1c21", r=1.2, top="#222228")
-    s.box(3.0, 0.5, 7.4, 20.0, 3.4, 0.5, "#202026", r=0.4)  # the raised cartridge cover along the back
-    s.disc(10.8, 11.4, 7.4, 7.3, 0.8, "#17171b", taper=0.98, top="#1c1c21")  # the disc cover
-    cb = (3.5, 4.1, 7.4, 14.6, 14.6, 0.8)
+    # the sides slant in toward the back
+    outline = rounded(footprint(0, 0, 26.0, 23.5, back_left=2.2, back_right=2.2), 1.8)
+    body = s.solid(outline, 0, 7.9, 7.0, "#1c1c21", top="#222228")
+    s.box(4.0, 0.5, 7.8, 18.0, 3.2, 0.5, "#202026", r=0.4)  # the raised cartridge cover along the back
+    s.disc(10.8, 11.6, 7.5, 7.3, 0.8, "#17171b", taper=0.98, top="#1c1c21")  # the disc cover
+    cb = (3.5, 4.3, 7.5, 14.6, 14.6, 0.8)
     s.c_top(cb, 7.3, 2.2, 0.9, "#2a2a31")  # the little bump at the back of it
     s.ff(body, 0.07, 0.30, 0.15, 0.46, "#d0d0d8")  # the maker's name
     s.ff(body, 0.22, 0.38, 0.27, 0.46, "#33333a")  # power, reset, open
@@ -159,12 +163,14 @@ def gc(s: Scene) -> None:
 
 
 def dreamcast(s: Scene) -> None:
-    body = s.box(0, 0, 0, 19.6, 19.4, 7.2, "#ecedef", r=1.6, top="#f4f5f6")
-    s.disc(9.6, 9.5, 7.2, 8.2, 0.4, "#e7e9eb", taper=0.99, top="#eff1f2")  # the disc lid
+    # the front corners are cut in, and the top is a little higher at the back
+    outline = rounded(footprint(0, 0, 19.6, 19.4, front_left=1.6, front_right=1.6), 2.2)
+    body = s.solid(outline, 0, 7.6, 6.8, "#ecedef", top="#f4f5f6")
+    s.disc(9.8, 9.2, 7.0, 8.2, 0.5, "#e7e9eb", taper=0.99, top="#eff1f2")  # the disc lid
     s.p_top(body, [(8.7, 14.2), (10.9, 14.2), (9.8, 16.6)], "#f9f9fb")  # the V on the lid
     s.fct(body, 0.66, 0.46, 1.0, "#f28a1a")  # the swirl
-    s.fct(body, 0.11, 0.80, 1.3, "#d9dbdd")  # power
-    s.fct(body, 0.88, 0.82, 1.3, "#d9dbdd")  # open
+    s.fct(body, 0.12, 0.80, 1.3, "#d9dbdd")  # power
+    s.fct(body, 0.87, 0.82, 1.3, "#d9dbdd")  # open
     for x in (0.31, 0.47, 0.63):  # three controller ports
         s.ff(body, x - 0.05, 0.20, x + 0.05, 0.52, "#3a3a42")
     s.ff(body, 0.38, 0.66, 0.56, 0.76, "#2d63b8")  # the maker's name
@@ -200,7 +206,7 @@ def sms(s: Scene) -> None:
 
 
 def gbc(s: Scene) -> None:
-    b = s.box(0, 0, 0, 7.8, 2.7, 13.3, "#9078cc", r=0.9, top="#a08ad8")
+    b = s.extrude_y(rrect_xz(7.8, 13.3, 1.9, 1.9, 0.9, 0.9), 0, 2.7, "#9078cc", top="#a890e0")
     s.ff(b, 0.07, 0.48, 0.93, 0.95, "#17171c")  # the black screen surround
     s.ff(b, 0.20, 0.60, 0.80, 0.90, "#8a9884")
     s.ff(b, 0.20, 0.52, 0.62, 0.55, "#4a4a56")  # the name
@@ -240,7 +246,7 @@ def atari7800(s: Scene) -> None:
 
 
 def gamegear(s: Scene) -> None:
-    b = s.box(0, 0, 0, 21.0, 3.7, 11.1, "#202026", r=2.4, top="#2a2a30")
+    b = s.extrude_y(contour(21.0, 11.1, lambda u: 0.24 * (1 - math.sin(math.pi * u) ** 0.7), lambda u: 1.0 - 0.03 * math.sin(math.pi * u), 3.6), 0, 3.7, "#202026", top="#2e2e34")
     s.ff(b, 0.27, 0.16, 0.69, 0.92, "#2e2e35")  # the screen surround
     s.ff(b, 0.30, 0.26, 0.66, 0.86, "#4a6a72")  # the screen
     s.fcf(b, 0.13, 0.55, 1.5, "#141418")  # the d-pad recess
@@ -284,7 +290,7 @@ def ps2(s: Scene) -> None:
 
 
 def psp(s: Scene) -> None:
-    b = s.box(0, 0, 0, 17.0, 2.3, 7.4, "#16161a", r=1.5, top="#202026")
+    b = s.extrude_y(contour(17.0, 7.4, lambda u: 0.13 * (1 - math.sin(math.pi * u)), lambda u: 1.0 - 0.025 * math.sin(math.pi * u), 2.2), 0, 2.3, "#16161a", top="#24242a")
     s.ff(b, 0, 0, 1, 0.035, "#c8c8cd")  # the silver trim at the bottom
     s.ff(b, 0.20, 0.12, 0.75, 0.93, "#0b0b0f")  # the big screen and its surround
     s.ff(b, 0.22, 0.17, 0.73, 0.89, "#1d2331")
@@ -343,7 +349,7 @@ def neogeo(s: Scene) -> None:
 
 
 def lynx(s: Scene) -> None:
-    b = s.box(0, 0, 0, 27.0, 4.0, 11.0, "#5b5b62", r=4.0, top="#66666e")
+    b = s.extrude_y(contour(27.0, 11.0, lambda u: 0.10 * math.sin(math.pi * u), lambda u: 0.94 + 0.06 * math.sin(math.pi * u), 4.8), 0, 4.0, "#5b5b62", top="#6c6c74")
     s.fcf(b, 0.14, 0.58, 2.4, "#17171b")  # the big d-pad in its round recess
     s.ff(b, 0.07, 0.53, 0.21, 0.62, "#2e2e34")
     s.ff(b, 0.12, 0.34, 0.16, 0.82, "#2e2e34")
@@ -364,7 +370,7 @@ def lynx(s: Scene) -> None:
 
 
 def wonderswan(s: Scene) -> None:
-    b = s.box(0, 0, 0, 12.1, 2.4, 7.4, "#3a5fc8", r=1.8, top="#4a70d8")
+    b = s.extrude_y(contour(12.1, 7.4, lambda u: 0.0, lambda u: 0.93 + 0.07 * math.exp(-(((u - 0.88) / 0.09) ** 2)), 2.2), 0, 2.4, "#3a5fc8", top="#5078e0")
     s.ff(b, 0.20, 0.10, 0.74, 0.94, "#e4e4e8")  # the big white screen surround
     s.ff(b, 0.26, 0.22, 0.69, 0.84, "#4c5870")
     for dx, dz in ((0, 1), (0, -1), (1, 0), (-1, 0)):  # the four X buttons
@@ -378,7 +384,7 @@ def wonderswan(s: Scene) -> None:
 
 
 def ngp(s: Scene) -> None:
-    b = s.box(0, 0, 0, 14.5, 2.7, 8.5, "#26272d", r=2.2, top="#30313a")
+    b = s.extrude_y(contour(14.5, 8.5, lambda u: 0.12 * (1 - math.sin(math.pi * u)), lambda u: 1.0, 2.8), 0, 2.7, "#26272d", top="#34353e")
     s.fcf(b, 0.12, 0.78, 0.95, "#111114")  # the stick
     s.fcf(b, 0.12, 0.78, 0.55, "#2c2c33")
     s.ff(b, 0.25, 0.08, 0.76, 0.94, "#0e0e12")  # the big screen surround
@@ -431,7 +437,7 @@ def amiga(s: Scene) -> None:
 
 
 def gba(s: Scene) -> None:
-    b = s.box(0, 0, 0, 14.4, 2.4, 8.2, "#5f46b8", r=2.0, top="#6e56c8")
+    b = s.extrude_y(contour(14.4, 8.2, lambda u: 0.14 - 0.12 * math.sin(math.pi * u), lambda u: 1.0 - 0.02 * math.sin(math.pi * u), 2.4), 0, 2.4, "#5f46b8", top="#7058cc")
     s.ff(b, 0.20, 0.06, 0.78, 0.94, "#14141a")  # the black screen surround
     s.ff(b, 0.27, 0.24, 0.71, 0.84, "#a0b09a")  # the screen
     s.ff(b, 0.30, 0.10, 0.66, 0.14, "#6a6a74")  # the name
@@ -452,11 +458,12 @@ def virtualboy(s: Scene) -> None:
     s.disc(12.5, 5.5, 4.5, 1.2, 7.8, "#2c2c32")  # the neck
     s.beam((12.5, 5.5, 5.0), (-3.0, 13.0, 0.0), 1.1, "#25252a")  # the front-left leg
     s.beam((12.5, 5.5, 5.0), (28.0, 10.0, 0.0), 1.1, "#25252a")  # the right leg
-    s.box(2.5, 1.5, 12.0, 20.0, 9.0, 1.6, "#18181c", r=2.5)  # the dark underside
-    v = s.box(0, 0, 13.0, 25.0, 12.0, 8.0, "#d6322c", r=3.4, top="#e24038")
-    s.ft(v, 0.30, 0.20, 0.70, 0.45, "#a82a28")  # the raised bump on top
-    s.ff(v, 0.10, 0.05, 0.90, 0.52, "#18181c")  # the dark eyepiece hood
-    s.ff(v, 0.16, 0.66, 0.40, 0.80, "#f4c4c0")  # its label
+    s.box(2.5, 2.0, 11.6, 20.0, 8.5, 1.4, "#18181c", r=2.5)  # the dark underside
+    # the visor: a red shell that is taller at the back and slopes down to the front, rounded all round
+    v = s.solid(rounded(footprint(0, 0, 25.0, 12.0, back_left=1.0, back_right=1.0), 3.6), 12.6, 9.4, 6.0, "#d6322c", top="#e24038")
+    s.ft(v, 0.30, 0.15, 0.70, 0.40, "#a82a28")  # the raised bump on top
+    s.box(2.4, 8.0, 12.6, 20.2, 5.2, 4.2, "#18181c", r=2.2)  # the dark eyepiece hood, standing out at the front
+    s.ff(v, 0.16, 0.50, 0.40, 0.78, "#f4c4c0")  # its label
 
 
 def nds(s: Scene) -> None:

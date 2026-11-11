@@ -127,6 +127,32 @@ class Scene:
         xs = [p[0] for p in outline]
         return (min(xs), y_back, z0, max(xs) - min(xs), span, h_front, h_back)
 
+    # ----- handhelds: a curved outline seen from the front (x across, z up), extruded to a thickness -----
+
+    def extrude_y(self, outline, y0: float, depth: float, color: str, top: str | None = None):
+        """Extrude an (x, z) outline, listed counter-clockwise, back from y0+depth (the front face) to y0."""
+        n = len(outline)
+        faces = []
+        for i in range(n):
+            (x0, z0), (x1, z1) = outline[i], outline[(i + 1) % n]
+            nx, nz = (z1 - z0), -(x1 - x0)
+            length = math.hypot(nx, nz) or 1.0
+            nx, nz = nx / length, nz / length
+            if nz <= 0.03 and nx <= 0.03:
+                continue  # facing away from the viewer
+            if nz > 0.03:
+                b = (0.64 + 0.50 * nz - 0.06 * max(nx, 0)) / 1.0
+                c = top or color
+            else:
+                b = 0.60 + 0.06 * (1 - nx)
+                c = color
+            faces.append(((x0 + x1) / 2, [(x0, y0, z0), (x1, y0, z1), (x1, y0 + depth, z1), (x0, y0 + depth, z0)], b, c))
+        for _mid, pts, b, c in sorted(faces, key=lambda f: f[0]):
+            self.poly(pts, shade(c, b))
+        self.poly([(x, y0 + depth, z) for x, z in outline], shade(color, FRONT))
+        xs, zs = [p[0] for p in outline], [p[1] for p in outline]
+        return (min(xs), y0, min(zs), max(xs) - min(xs), depth, max(zs) - min(zs))
+
     # ----- bodies -----
 
     def box(self, x, y, z, w, d, h, color: str, r: float = 0.0, taper: float = 1.0, top: str | None = None):
@@ -284,6 +310,31 @@ def rounded(points, radius: float, steps: int = 6):
     return out
 
 
+def rrect_xz(w: float, h: float, bl: float, br: float, tr: float, tl: float, steps: int = 8):
+    """A rectangle outline (x across, z up, counter-clockwise) with a different radius on each corner."""
+    pts = []
+    for cx, cz, r, a0 in ((w - br, br, br, -90), (w - tr, h - tr, tr, 0), (tl, h - tl, tl, 90), (bl, bl, bl, 180)):
+        for k in range(steps + 1):
+            a = math.radians(a0 + 90 * k / steps)
+            pts.append((cx + r * math.cos(a), cz + r * math.sin(a)))
+    return pts
+
+
+def contour(w: float, h: float, bottom, top, end: float, n: int = 36):
+    """A handheld's front outline: bottom(u) and top(u) give each edge's height (0..1 of h) along its length u, and
+    the two ends are rounded with a curve of about `end` cm."""
+    def inset(x: float) -> float:
+        edge = min(x, w - x)
+        if edge >= end:
+            return 0.0
+        return end * (1 - math.sqrt(max(0.0, 1 - ((end - edge) / end) ** 2)))
+
+    xs = [w * i / n for i in range(n + 1)]
+    low = [(x, h * bottom(x / w) + inset(x)) for x in xs]
+    high = [(x, h * top(x / w) - inset(x)) for x in reversed(xs)]
+    return low + high
+
+
 def _cross(a, b):
     return (a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0])
 
@@ -294,23 +345,11 @@ def _len(v):
 
 # ============================================================ eras
 
-@dataclass(frozen=True)
-class Era:
-    label: str
-    width: int  # the widest a picture is, in pixels
-    colors: int  # the most colours it uses
-    smooth: bool  # soft edges (a 3D chip's filtering) rather than hard pixels
-    blur: float = 0.0  # extra softness, like a filtered texture
+import sys as _sys
 
+_sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from arcadia.eras import STYLES as ERAS, EraStyle as Era  # noqa: E402  (one table, shared with the app)
 
-ERAS = {
-    "8-bit": Era("8-bit", 56, 12, False),
-    "16-bit": Era("16-bit", 80, 26, False),
-    "32-bit": Era("32-bit", 100, 44, False),
-    "64-bit": Era("64-bit", 116, 56, True, 0.6),
-    "128-bit": Era("128-bit", 132, 80, True),
-    "HD": Era("HD", 152, 120, True),
-}
 OUTLINE = (13, 14, 19, 255)
 
 

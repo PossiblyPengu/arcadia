@@ -3,6 +3,7 @@
 * Your own: a PNG/WebP/JPEG named after the console (nes.png, snes.png, ...) in the media/consoles folder.
 * The ones that ship with Arcadia (arcadia/assets/consoles/): pixel art made from photographs of the real
   consoles, plus a few drawn ones; see ATTRIBUTION.md there and the scripts in tools/ that make them.
+* Logos you downloaded (media/logos, see logos.py), when the picture style is "logos": drawn in each console's era.
 * Anything else (a console you added yourself) gets the generic cartridge.
 
 Pictures are fitted into the same box, scaled with crisp pixels, and given a soft glow on hover.
@@ -36,18 +37,31 @@ def _signature(folder: Path | None) -> tuple:
 
 
 _art_sig: tuple = ()
+_logo_dir: Path | None = None
+_style = "logos"
+STYLES = ("logos", "drawings")
+
+
+def configure(custom_dir: Path | None, logo_dir: Path | None = None, style: str | None = None) -> None:
+    """Say where your own pictures and your downloaded logos are, and which style to prefer. Cheap to call
+    again: the caches are only reset when something has actually changed."""
+    global _art_dir, _logo_dir, _style, _art_sig
+    style = style if style in STYLES else _style
+    signature = (_signature(custom_dir), _signature(logo_dir), style)
+    if (custom_dir, logo_dir, style) == (_art_dir, _logo_dir, _style) and signature == _art_sig:
+        return
+    _art_dir, _logo_dir, _style, _art_sig = custom_dir, logo_dir, style, signature
+    for cached in (sprite_image, scaled, glow, _load_custom_cached, _load_bundled):
+        cached.cache_clear()
 
 
 def set_art_dir(folder: Path | None) -> None:
-    """Where to look for your own console pictures (None = just use the built-in renders). Cheap to call
-    again: the caches are only reset when the folder or the pictures in it have changed."""
-    global _art_dir, _art_sig
-    signature = _signature(folder)
-    if folder == _art_dir and signature == _art_sig:
-        return
-    _art_dir, _art_sig = folder, signature
-    for cached in (sprite_image, scaled, glow, _load_custom_cached, _load_bundled):
-        cached.cache_clear()
+    """Where to look for your own console pictures (None = just the bundled ones)."""
+    configure(folder, _logo_dir, _style)
+
+
+def style() -> str:
+    return _style
 
 
 def art_dir() -> Path | None:
@@ -94,10 +108,19 @@ ASSETS = Path(__file__).resolve().parent / "assets" / "consoles"
 
 
 def bundled_file(view_id: str) -> Path | None:
+    """The picture to use for a console: its downloaded logo (in the logos style), else the bundled drawing."""
     if "/" in view_id or "\\" in view_id or view_id.startswith("."):
         return None
+    if _style == "logos" and _logo_dir is not None:
+        logo = _logo_dir / f"{view_id}.png"
+        if logo.is_file():
+            return logo
     path = ASSETS / f"{view_id}.png"
     return path if path.is_file() else None
+
+
+def is_logo(view_id: str) -> bool:
+    return not is_custom(view_id) and bundled_file(view_id) is not None and bundled_file(view_id).parent == _logo_dir
 
 
 @lru_cache(maxsize=None)

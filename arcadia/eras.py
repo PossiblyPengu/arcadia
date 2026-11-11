@@ -6,6 +6,8 @@ pixel style of its era: how many pixels wide, how many colours, hard pixel edges
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 ERA_OF = {
     # 8-bit
     "nes": "8-bit", "gb": "8-bit", "gbc": "8-bit", "sms": "8-bit", "gamegear": "8-bit",
@@ -28,3 +30,22 @@ LABELS = ("8-bit", "16-bit", "32-bit", "64-bit", "128-bit", "HD")
 def era_of(view_id: str) -> str:
     """The era label for a console, or "" for the collections and for consoles added by hand."""
     return ERA_OF.get(view_id, "")
+
+
+@dataclass(frozen=True)
+class EraStyle:
+    label: str
+    width: int  # the widest a picture is, in pixels
+    colors: int  # the most colours it uses
+    smooth: bool  # soft edges (a 3D chip's filtering) rather than hard pixels
+    blur: float = 0.0  # extra softness, like a filtered texture
+
+
+STYLES = {
+    "8-bit": EraStyle("8-bit", 56, 12, False),
+    "16-bit": EraStyle("16-bit", 80, 26, False),
+    "32-bit": EraStyle("32-bit", 100, 44, False),
+    "64-bit": EraStyle("64-bit", 116, 56, True, 0.6),
+    "128-bit": EraStyle("128-bit", 132, 80, True),
+    "HD": EraStyle("HD", 152, 120, True),
+}
