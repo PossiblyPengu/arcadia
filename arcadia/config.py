@@ -107,6 +107,7 @@ class Config:
     sort: str = "title"  # title | recent | played | favorites
     inbox_dir: str = ""  # folder ROMs are downloaded into (e.g. ~/Downloads); empty = sorting off
     auto_import: bool = True  # move ROMs whose header confirms their system without asking
+    check_updates: bool = False  # look for emulator updates when Arcadia starts (contacts GitHub / Eden's server)
     systems: list[SystemConfig] = field(default_factory=default_systems)
 
     @classmethod

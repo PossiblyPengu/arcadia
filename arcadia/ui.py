@@ -43,6 +43,7 @@ from PySide6.QtWidgets import (
 from arcadia.config import Config, SystemConfig
 from arcadia.coverflow import COVER_H, COVER_W, CoverFlow
 from arcadia.bundles import parse_switch
+from arcadia.emulators import Installer
 from arcadia.emulators_dialog import EmulatorsDialog
 from arcadia.files_dialog import FilesDialog
 from arcadia.gamepad import ControllerReader
@@ -55,7 +56,9 @@ from arcadia.savestates import SaveStateError, create_snapshot, list_snapshots, 
 from arcadia.scanner import scan_system
 from arcadia.setup_dialog import SetupDialog
 from arcadia.sorter import Confidence, Journal, Plan, apply_plan, build_plan
+from arcadia.tasks import DaemonTask
 from arcadia.theme import DEFAULT_ACCENT, Backdrop, Toast, build_stylesheet
+from arcadia.updates import CHOOSE, READY, plan_updates
 from arcadia.util import bundle_summary, fmt_clock, fmt_duration, fmt_timestamp, snapshot_label
 
 COVER_SIZE = QSize(COVER_W, COVER_H)
@@ -182,12 +185,15 @@ class SettingsDialog(QDialog):
         inbox_row.addWidget(inbox_browse)
         self.auto_import = QCheckBox("Move ROMs automatically when their file header confirms the system (otherwise always ask)")
         self.auto_import.setChecked(config.auto_import)
+        self.check_updates = QCheckBox("Check for emulator updates when Arcadia starts (contacts GitHub, and Eden's own server)")
+        self.check_updates.setChecked(config.check_updates)
 
         form = QFormLayout()
         form.addRow("Arcadia folder (everything in one place):", home_row)
         form.addRow("ROM root folder:", rom_row)
         form.addRow("Downloads folder (ROM inbox):", inbox_row)
         form.addRow("", self.auto_import)
+        form.addRow("", self.check_updates)
         form.addRow("Media folder (covers, metadata):", self.media_dir)
         form.addRow("Save-state folder:", self.savestate_dir)
 
@@ -261,6 +267,7 @@ class SettingsDialog(QDialog):
         config.rom_root = self.rom_root.text().strip() if config.home_dir else (self.rom_root.text().strip() or config.rom_root)
         config.inbox_dir = self.inbox_dir.text().strip()
         config.auto_import = self.auto_import.isChecked()
+        config.check_updates = self.check_updates.isChecked()
         config.media_dir = self.media_dir.text().strip()
         config.savestate_dir = self.savestate_dir.text().strip()
 
@@ -468,6 +475,7 @@ class MainWindow(QMainWindow):
         self._scan_library(initial=True)
         QTimer.singleShot(0, self.coverflow.setFocus)
         QTimer.singleShot(800, self.check_inbox)
+        QTimer.singleShot(5000, self._startup_update_check)
 
     # ----- menu, fullscreen, persistence -----
 
@@ -1066,6 +1074,27 @@ class MainWindow(QMainWindow):
             self.toast.show_message("Backup restored. Restart Arcadia to use the restored settings.", 6000)
         if dialog.emulators_changed:
             self.toast.show_message("Emulators updated")
+
+    def _startup_update_check(self) -> None:
+        """If the user asked for it, look for emulator updates in the background and just say so.
+        Nothing is downloaded, and it never blocks closing the app."""
+        if self._closed or not self.config.check_updates:
+            return
+        installer = Installer(self.config.emulators_path)
+        if not installer.installed():
+            return
+        self._update_task = DaemonTask(lambda: plan_updates(installer), self)
+        self._update_task.done.connect(self._on_startup_updates)
+        self._update_task.start()
+
+    def _on_startup_updates(self, rows, error) -> None:
+        if self._closed or error is not None or not rows:
+            return
+        waiting = sum(1 for row in rows if row.status in (READY, CHOOSE))
+        if waiting:
+            self.toast.show_message(
+                f"{waiting} emulator update{'s' if waiting != 1 else ''} available: File → Emulators… → Update all", 7000
+            )
 
     def open_emulators(self) -> None:
         dialog = EmulatorsDialog(self.config, parent=self)

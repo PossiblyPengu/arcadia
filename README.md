@@ -28,6 +28,8 @@ written in Python with PySide6 (Qt).
 - **Everything in one folder**: ROMs, emulators, BIOS files, covers, saves and the library live under one
   `Arcadia` folder, and Arcadia can install emulators into it (File → Emulators) so each one is self-contained
   instead of spread across Flatpak, `~/.config` and `~/.local/share`. `--home PATH` makes the whole thing portable
+- **Update all** emulators in one step (File → Emulators… → Update all…), keeping the build you chose, with the
+  Flatpak emulators optionally updated too and an optional check for updates when Arcadia starts
 - A **Setup** window (File → Arcadia folder and setup…) that shows which systems are actually ready to play,
   brings an existing library into the Arcadia folder, and backs up and restores your saves and settings
 - **34 systems** with launch presets (see the table below), from the NES to the PS3, Wii U and Xbox
@@ -160,6 +162,25 @@ download (the file, its size, where it comes from, and whether a checksum will b
 fetched. Once installed, that system launches your copy; until then it uses the Flatpak, as before. You can switch
 back at any time by clearing the *Installed emulator* column in Settings, or by removing the emulator.
 
+**Updating.** *Update all…* looks up the latest release of every emulator installed here and shows what it would do
+for each: the version change, the exact file, and whether that file's checksum can be checked. Then it installs the
+ones you tick, one after another.
+- **It keeps the build you chose.** Updating compares the new release's files with the one you installed, ignoring
+  version numbers and commit hashes, so an Eden you picked the `steamdeck` build of stays the `steamdeck` build (not
+  `amd64`, not `clang-pgo`). If it can't identify the same build with certainty (a project renamed its files, say), it
+  doesn't guess: that row is left unticked with a menu of the new downloads for you to choose from.
+- Each update uses the same installer as a first install: checksum verified when published, safe unpacking, and the
+  old copy kept until the new one is in place. **One failure never stops the others**, and an emulator that fails to
+  update still works as before. Your emulators' settings and saves are never touched.
+- **Flatpak emulators** can be updated in the same step (a ticked option, shown with the list of apps). Arcadia asks
+  Flatpak which are installed, leaves out any that a local copy has replaced, and runs
+  `flatpak update -y --noninteractive` for **just those apps**, never everything on your machine. The command is the
+  standard one but I couldn't run it against a real Flatpak install here, so treat its first use with the usual care.
+  Cores you downloaded in RetroArch aren't updated by this; use RetroArch's own Online Updater.
+- **Checking at startup is off by default.** Turn on *Check for emulator updates when Arcadia starts* in
+  File → Settings and Arcadia will look in the background (it contacts GitHub, and Eden's own server) and show a
+  message if updates are waiting. It never downloads anything by itself and never delays closing the app.
+
 **Keeping each emulator's data in its own folder.** When Arcadia launches an installed emulator it sets
 `XDG_CONFIG_HOME`, `XDG_DATA_HOME`, `XDG_CACHE_HOME` and `XDG_STATE_HOME` to that emulator's folder, so its
 settings, saves and shader caches land there and not in your home directory. This works for programs that follow
@@ -243,6 +264,18 @@ large. It does **not** hold ROMs, emulator programs, or anything a Flatpak emula
   deleted), and if it fails part way it puts everything back. A damaged zip is caught before anything changes.
 - A backup restores onto another machine or folder by name, so it also moves your saves between setups.
 - Restart Arcadia after restoring, so it loads the restored settings.
+
+### Not done yet: the rest of an EmuDeck-style setup
+
+Arcadia now installs, updates and launches emulators, keeps everything in one folder, sorts and organises ROMs,
+checks what's ready, and backs up saves. Things a complete tool of this kind would also do, which Arcadia does
+**not** yet:
+- **Steam integration:** adding your games to Steam as shortcuts, with artwork, so they appear in Game Mode.
+- **Configuring the emulators for you:** resolution, controller profiles, per-emulator defaults. Arcadia launches
+  emulators but doesn't write their settings, because each has its own file format and I won't guess at them.
+- **Pointing emulators at your BIOS folder** (and checking those files), for the same reason.
+- **Syncing saves between devices** (cloud or network). Backups are local zip files you can copy yourself.
+- **Updating RetroArch cores**, and installing the emulators that only ship as Flatpak or as a `.7z`.
 
 ## Supported systems
 
@@ -417,7 +450,8 @@ arcadia/
   discs.py       disc image analysis: ISO 9660, PS1 vs PS2, Nintendo/Sega/Xbox discs, CSO, CHD
   folders.py     games that are folders (PS3, Wii U) and their titles
   emulators.py   install emulators into their own folders: catalog, safe download, unpack, isolation
-  emulators_dialog.py  the Emulators window
+  emulators_dialog.py  the Emulators window, including Update all
+  updates.py     plan and apply updates for every emulator, keeping the installed build; Flatpak updates
   setup_status.py  is each system ready to play? (Flatpak, core file, command checks, folder sizes)
   consolidate.py bring an existing library into the Arcadia folder
   backup.py      back up and restore saves, settings and the library
@@ -442,6 +476,7 @@ tests/
   test_multifile.py  multi-disc sets and update/DLC bundles end to end
   test_discs.py  disc image analysis
   test_emulators.py  the installer, against a real local server (including attack cases)
+  test_updates.py    updating everything: same-build matching, failure isolation, Flatpak
   test_home.py   the single-folder layout and portable mode
   test_setup_status.py  readiness checks
   test_consolidate.py   bringing a library in

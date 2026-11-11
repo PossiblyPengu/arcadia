@@ -2,13 +2,16 @@
 
 from __future__ import annotations
 
+import shutil
+import subprocess
 from pathlib import Path
 from urllib.parse import urlparse
 
 from PySide6.QtCore import QUrl, Qt
-from PySide6.QtGui import QDesktopServices
+from PySide6.QtGui import QColor, QDesktopServices
 from PySide6.QtWidgets import (
     QAbstractItemView,
+    QCheckBox,
     QComboBox,
     QDialog,
     QDialogButtonBox,
@@ -35,6 +38,17 @@ from arcadia.emulators import (
     candidate_assets,
 )
 from arcadia.tasks import Task
+from arcadia.updates import (
+    CHOOSE,
+    CURRENT,
+    READY,
+    UpdateRow,
+    apply_updates,
+    flatpaks_in_use,
+    installed_flatpaks,
+    plan_updates,
+    update_flatpaks,
+)
 from arcadia.util import fmt_size
 
 
@@ -119,6 +133,130 @@ class InstallConfirmDialog(QDialog):
             )
 
 
+class UpdateAllDialog(QDialog):
+    """Everything an update would do, laid out before it happens: what's installed, what's new, which
+    file it would download, and whether that file's checksum can be checked."""
+
+    def __init__(self, rows: list[UpdateRow], flatpak_apps: list[str], parent=None):
+        super().__init__(parent)
+        self.rows = rows
+        self.flatpak_apps = flatpak_apps
+        self.setWindowTitle("Update emulators")
+        self.resize(940, 520)
+
+        intro = QLabel(
+            "Each update downloads the file shown, keeps the build you installed before (so a Steam Deck build "
+            "stays a Steam Deck build), and leaves the emulator's settings and saves alone. If an update fails, "
+            "that emulator keeps working as it was."
+        )
+        intro.setWordWrap(True)
+
+        self.table = QTableWidget(len(rows), 6)
+        self.table.setHorizontalHeaderLabels(["Update", "Emulator", "Installed", "New", "Download", "Checksum"])
+        self.table.verticalHeader().setVisible(False)
+        self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        header = self.table.horizontalHeader()
+        for col in (0, 1, 2, 3):
+            header.setSectionResizeMode(col, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(4, QHeaderView.ResizeMode.Stretch)
+        header.setSectionResizeMode(5, QHeaderView.ResizeMode.ResizeToContents)
+        self.table.verticalHeader().setDefaultSectionSize(40)
+        self.combos: dict[int, QComboBox] = {}
+        for r, row in enumerate(rows):
+            self._fill_row(r, row)
+        self.table.itemChanged.connect(lambda _i: self._update_button())
+
+        self.flatpak_box = QCheckBox(
+            f"Also update the Flatpak emulators your systems use ({len(flatpak_apps)}): " + ", ".join(flatpak_apps)
+        )
+        self.flatpak_box.setChecked(bool(flatpak_apps))
+        self.flatpak_box.setVisible(bool(flatpak_apps))
+        self.flatpak_box.setToolTip("Runs `flatpak update` for just these apps, nothing else on your machine.")
+        self.flatpak_box.toggled.connect(lambda _c: self._update_button())
+
+        self.go = QPushButton("Update")
+        self.go.setObjectName("primary")
+        buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Cancel)
+        buttons.addButton(self.go, QDialogButtonBox.ButtonRole.AcceptRole)
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+
+        layout = QVBoxLayout(self)
+        layout.addWidget(intro)
+        layout.addWidget(self.table, 1)
+        layout.addWidget(self.flatpak_box)
+        layout.addWidget(buttons)
+        self._update_button()
+
+    def _fill_row(self, r: int, row: UpdateRow) -> None:
+        check = QTableWidgetItem()
+        check.setFlags(Qt.ItemFlag.ItemIsEnabled)
+        self.table.setItem(r, 0, check)
+        for col, text in ((1, row.spec.name), (2, row.installed.version), (3, row.newer or "—")):
+            self.table.setItem(r, col, QTableWidgetItem(text))
+        if row.status == READY:
+            check.setFlags(Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
+            check.setCheckState(Qt.CheckState.Checked)
+            self.table.setItem(r, 4, QTableWidgetItem(row.asset.name))
+            self.table.setItem(r, 5, QTableWidgetItem(self._checksum_text(row.asset)))
+        elif row.status == CHOOSE:
+            check.setFlags(Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
+            check.setCheckState(Qt.CheckState.Unchecked)
+            combo = QComboBox()
+            combo.addItem("— choose which download —", None)
+            for asset in row.choices:
+                combo.addItem(asset.name, asset)
+            combo.setStyleSheet("padding: 3px 12px; border-radius: 12px;")
+            combo.setToolTip(row.message)
+            combo.currentIndexChanged.connect(lambda _i, r=r: self._chose(r))
+            self.combos[r] = combo
+            self.table.setCellWidget(r, 4, combo)
+            self.table.setItem(r, 5, QTableWidgetItem("—"))
+        else:
+            note = {CURRENT: "Up to date"}.get(row.status, row.message or row.status)
+            self.table.setItem(r, 4, QTableWidgetItem(note))
+            self.table.setItem(r, 5, QTableWidgetItem(""))
+            for col in range(1, 6):
+                item = self.table.item(r, col)
+                if item is not None:
+                    item.setForeground(QColor(236, 238, 244, 120))
+
+    @staticmethod
+    def _checksum_text(asset: Asset) -> str:
+        return "will be checked" if asset.digest else "none published"
+
+    def _chose(self, r: int) -> None:
+        """Picking a download is the user saying yes to this one."""
+        asset = self.combos[r].currentData()
+        self.table.item(r, 5).setText(self._checksum_text(asset) if asset else "—")
+        self.table.item(r, 0).setCheckState(Qt.CheckState.Checked if asset else Qt.CheckState.Unchecked)
+        self._update_button()
+
+    def selection(self) -> list[tuple[UpdateRow, Asset]]:
+        picked = []
+        for r, row in enumerate(self.rows):
+            item = self.table.item(r, 0)
+            if not (item.flags() & Qt.ItemFlag.ItemIsUserCheckable) or item.checkState() != Qt.CheckState.Checked:
+                continue
+            asset = row.asset if row.status == READY else self.combos[r].currentData()
+            if asset is not None:
+                picked.append((row, asset))
+        return picked
+
+    def include_flatpak(self) -> bool:
+        return bool(self.flatpak_apps) and self.flatpak_box.isChecked()
+
+    def _update_button(self) -> None:
+        n = len(self.selection())
+        parts = []
+        if n:
+            parts.append(f"{n} emulator{'s' if n != 1 else ''}")
+        if self.include_flatpak():
+            parts.append("Flatpaks")
+        self.go.setText("Update " + " and ".join(parts) if parts else "Nothing selected")
+        self.go.setEnabled(bool(parts))
+
+
 class EmulatorsDialog(QDialog):
     def __init__(self, config: Config, installer: Installer | None = None, parent=None):
         super().__init__(parent)
@@ -128,6 +266,9 @@ class EmulatorsDialog(QDialog):
         self._latest: dict[str, str] = {}
         self._task = None
         self._progress: QProgressDialog | None = None
+        self._progress_bytes = True  # progress is in bytes (one download) or in steps (a batch)
+        self.flatpak_run = subprocess.run  # tests swap these
+        self.flatpak_which = shutil.which
         self.setWindowTitle("Emulators")
         self.resize(900, 640)
 
@@ -163,6 +304,8 @@ class EmulatorsDialog(QDialog):
         self.open_btn.clicked.connect(self.open_folder)
         self.check_btn = QPushButton("Check for updates")
         self.check_btn.clicked.connect(self.check_updates)
+        self.update_btn = QPushButton("Update all…")
+        self.update_btn.clicked.connect(self.update_all)
 
         self.status = QLabel("")
         self.status.setWordWrap(True)
@@ -176,7 +319,7 @@ class EmulatorsDialog(QDialog):
         note.setStyleSheet("color: rgba(236, 238, 244, 45%);")
 
         buttons = QHBoxLayout()
-        for button in (self.install_btn, self.remove_btn, self.open_btn, self.check_btn):
+        for button in (self.install_btn, self.remove_btn, self.open_btn, self.check_btn, self.update_btn):
             buttons.addWidget(button)
         buttons.addStretch(1)
         box = QDialogButtonBox(QDialogButtonBox.StandardButton.Close)
@@ -235,6 +378,7 @@ class EmulatorsDialog(QDialog):
         self.remove_btn.setEnabled(installed and not busy)
         self.open_btn.setEnabled(spec is not None and self.installer.folder(spec.id).exists())
         self.check_btn.setEnabled(not busy and bool(self.installer.installed()))
+        self.update_btn.setEnabled(not busy)
 
     # ----- running things in the background -----
 
@@ -262,7 +406,8 @@ class EmulatorsDialog(QDialog):
         if total > 0:
             self._progress.setRange(0, 100)
             self._progress.setValue(int(done * 100 / total))
-            self._progress.setLabelText(f"{self._progress_label}\n{fmt_size(done)} of {fmt_size(total)}")
+            if self._progress_bytes:
+                self._progress.setLabelText(f"{self._progress_label}\n{fmt_size(done)} of {fmt_size(total)}")
         else:
             self._progress.setRange(0, 0)
 
@@ -295,6 +440,7 @@ class EmulatorsDialog(QDialog):
             return
         asset = confirm.chosen_asset()
         self._progress_label = f"Downloading {asset.name}"
+        self._progress_bytes = True
         self._progress = QProgressDialog(self._progress_label, "", 0, 0, self)
         self._progress.setCancelButton(None)
         self._progress.setWindowTitle(f"Installing {spec.name}")
@@ -347,6 +493,71 @@ class EmulatorsDialog(QDialog):
         newer = [CATALOG[i].name for i, tag in (found or {}).items()
                  if not tag.startswith("couldn't") and self.installer.get(i) and tag != self.installer.get(i).version]
         self.status.setText("Updates available: " + ", ".join(newer) if newer else "Everything installed is up to date.")
+
+    # ----- update everything -----
+
+    def update_all(self) -> None:
+        def look(report):
+            rows = plan_updates(self.installer)
+            installed = installed_flatpaks(self.flatpak_run, self.flatpak_which)
+            apps = flatpaks_in_use(self.config, installed, self.installer) if installed else []
+            return rows, apps
+
+        self._run(look, self._on_update_plan, "Looking for updates…")
+
+    def _on_update_plan(self, value, error: Exception | None) -> None:
+        if error is not None:
+            QMessageBox.warning(self, "Update emulators", f"Couldn't look for updates: {error}")
+            return
+        rows, apps = value
+        if not rows and not apps:
+            self.status.setText("Nothing to update: no emulators are installed in Arcadia's folder, and none of your Flatpak emulators were found.")
+            return
+        if not apps and all(r.status == CURRENT for r in rows):
+            self._latest.update({r.spec.id: r.newer for r in rows})
+            self.refresh()
+            self.status.setText("Everything installed is up to date.")
+            return
+        dialog = UpdateAllDialog(rows, apps, self)
+        if dialog.exec() != QDialog.DialogCode.Accepted:
+            return
+        chosen, with_flatpak = dialog.selection(), dialog.include_flatpak()
+        if not chosen and not with_flatpak:
+            return
+        self._progress_label = "Updating emulators"
+        self._progress_bytes = False
+        self._progress = QProgressDialog(self._progress_label, "", 0, 0, self)
+        self._progress.setCancelButton(None)
+        self._progress.setWindowTitle("Updating")
+        self._progress.setWindowModality(Qt.WindowModality.WindowModal)
+        self._progress.show()
+
+        def work(report):
+            outcomes = apply_updates(self.installer, chosen, report)
+            flatpak = update_flatpaks(apps, self.flatpak_run, self.flatpak_which) if with_flatpak else None
+            return outcomes, flatpak
+
+        self._run(work, self._on_updated, "Updating…")
+
+    def _on_updated(self, value, error: Exception | None) -> None:
+        if error is not None:
+            QMessageBox.warning(self, "Update emulators", f"The update stopped: {error}")
+            return
+        outcomes, flatpak = value
+        lines = []
+        for outcome in outcomes:
+            if outcome.ok:
+                lines.append(f"✓ {outcome.spec.name} is now {outcome.version}")
+                self._latest[outcome.spec.id] = outcome.version
+            else:
+                lines.append(f"✗ {outcome.spec.name} wasn't updated and still works as before: {outcome.error}")
+        if flatpak is not None:
+            lines.append("✓ Flatpak emulators updated" if flatpak.ok else f"✗ Flatpak update didn't finish: {flatpak.output}")
+        self.changed = self.changed or any(o.ok for o in outcomes)
+        self.refresh()
+        failed = any(not o.ok for o in outcomes) or (flatpak is not None and not flatpak.ok)
+        self.status.setText(lines[0] if len(lines) == 1 else f"{len(lines)} results: see the summary.")
+        (QMessageBox.warning if failed else QMessageBox.information)(self, "Update emulators", "\n".join(lines))
 
     # ----- remove / open -----
 

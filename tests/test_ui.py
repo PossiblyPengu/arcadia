@@ -914,3 +914,306 @@ def test_bringing_a_library_in_saves_the_config_and_says_to_restart(qapp, tmp_pa
         assert "Restart Arcadia" in win.toast.text()
     finally:
         win.close()
+
+
+# ---------- updating every emulator ----------
+
+import subprocess as _subprocess  # noqa: E402
+import time as _time  # noqa: E402
+
+from arcadia.tasks import DaemonTask  # noqa: E402
+from arcadia.emulators_dialog import UpdateAllDialog  # noqa: E402
+from arcadia.updates import CHOOSE, CURRENT, ERROR, NO_BUILD, READY, UpdateRow  # noqa: E402
+
+
+def _installed_stub(emu_id, asset, version="v1"):
+    from arcadia.emulators import Installed
+
+    return Installed(emu_id, version, asset, "0" * 64, True, "emu")
+
+
+def _update_row(emu_id, status, **kw):
+    spec = CATALOG[emu_id]
+    release = Release("v2", ()) if status != ERROR else None
+    return UpdateRow(spec, _installed_stub(emu_id, f"{emu_id}-v1.AppImage"), release, status, **kw)
+
+
+def test_the_update_window_lays_out_exactly_what_would_happen(qapp):
+    verified = Asset("pcsx2-v2.AppImage", "https://github.com/x/a", 10, "ab" * 32)
+    unverified = Asset("Eden-v2-steamdeck.AppImage", "https://x/b", 10, "")
+    options = (Asset("mgba-v2-a.AppImage", "https://x/c", 1, "cd" * 32), Asset("mgba-v2-b.AppImage", "https://x/d", 1, ""))
+    rows = [
+        _update_row("pcsx2", READY, asset=verified),
+        _update_row("eden", READY, asset=unverified),
+        _update_row("mgba", CHOOSE, choices=options, message="couldn't tell which"),
+        _update_row("cemu", CURRENT),
+        _update_row("flycast", NO_BUILD, message="no Linux 64-bit download"),
+        _update_row("xemu", ERROR, message="couldn't reach the server"),
+    ]
+    dialog = UpdateAllDialog(rows, ["org.libretro.RetroArch", "io.mgba.mGBA"])
+    text = lambda r, c: dialog.table.item(r, c).text()
+    check = lambda r: dialog.table.item(r, 0).checkState()
+
+    assert (text(0, 1), text(0, 2), text(0, 3), text(0, 4), text(0, 5)) == ("PCSX2", "v1", "v2", "pcsx2-v2.AppImage", "will be checked")
+    assert text(1, 5) == "none published" and check(0) == check(1) == Qt.CheckState.Checked
+    assert dialog.combos[2].count() == 3 and check(2) == Qt.CheckState.Unchecked  # an ambiguous one is not ticked for you
+    assert text(3, 4) == "Up to date" and text(4, 4) == "no Linux 64-bit download" and text(5, 4) == "couldn't reach the server"
+    assert not (dialog.table.item(3, 0).flags() & Qt.ItemFlag.ItemIsUserCheckable)  # nothing to select on these
+    assert [r.spec.id for r, _a in dialog.selection()] == ["pcsx2", "eden"]
+    assert dialog.go.text() == "Update 2 emulators and Flatpaks" and dialog.go.isEnabled()
+
+    dialog.combos[2].setCurrentIndex(1)  # choosing a download is saying yes to it
+    assert check(2) == Qt.CheckState.Checked and text(2, 5) == "will be checked"
+    assert [(r.spec.id, a.name) for r, a in dialog.selection()][-1] == ("mgba", "mgba-v2-a.AppImage")
+    dialog.combos[2].setCurrentIndex(2)
+    assert text(2, 5) == "none published"
+    dialog.combos[2].setCurrentIndex(0)
+    assert check(2) == Qt.CheckState.Unchecked and len(dialog.selection()) == 2
+
+
+def test_the_flatpak_option_is_offered_only_when_there_are_flatpaks(qapp):
+    none = UpdateAllDialog([_update_row("pcsx2", READY, asset=Asset("a.AppImage", "https://x/a", 1, ""))], [])
+    assert none.flatpak_box.isHidden() and not none.include_flatpak()
+    some = UpdateAllDialog([_update_row("pcsx2", CURRENT)], ["io.mgba.mGBA"])
+    some.show()
+    assert some.include_flatpak() and "io.mgba.mGBA" in some.flatpak_box.text()
+    assert some.go.text() == "Update Flatpaks" and some.go.isEnabled()  # nothing local to update, but Flatpaks can be
+    some.flatpak_box.setChecked(False)
+    assert some.go.text() == "Nothing selected" and not some.go.isEnabled()
+
+
+def _fake_flatpak(listing="io.mgba.mGBA\norg.libretro.RetroArch\nnet.pcsx2.PCSX2\n", update_rc=0):
+    calls = []
+
+    def run(cmd, **kw):
+        calls.append(list(cmd))
+        if cmd[:2] == ["flatpak", "list"]:
+            return _subprocess.CompletedProcess(cmd, 0, stdout=listing, stderr="")
+        return _subprocess.CompletedProcess(cmd, update_rc, stdout="Updating io.mgba.mGBA\n", stderr="")
+
+    run.calls = calls
+    return run
+
+
+def _accept_update_dialog(monkeypatch):
+    monkeypatch.setattr(UpdateAllDialog, "exec", lambda self: QDialog.DialogCode.Accepted)
+
+
+def _install_v1(dialog, name_v1, spec_id, tag="v1"):
+    spec = CATALOG[spec_id]
+    publish(dialog.base, dialog.routes, {name_v1: APPIMAGE}, tag=tag, repo=spec.repo)
+    release = dialog.installer.latest_release(spec)
+    dialog.installer.install(spec, release, release.assets[0])
+
+
+def test_update_all_updates_every_emulator_and_the_flatpaks(emu_dialog, monkeypatch):
+    _accept_update_dialog(monkeypatch)
+    shown = {"info": [], "warn": []}
+    monkeypatch.setattr(QMessageBox, "information", lambda *a, **k: shown["info"].append(a[2]))
+    monkeypatch.setattr(QMessageBox, "warning", lambda *a, **k: shown["warn"].append(a[2]))
+    _install_v1(emu_dialog, "pcsx2-v1-linux-appimage-x64-Qt.AppImage", "pcsx2", "v1")
+    _install_v1(emu_dialog, "mGBA-1-appimage-x64.appimage", "mgba", "1")
+    publish(emu_dialog.base, emu_dialog.routes, {"pcsx2-v2-linux-appimage-x64-Qt.AppImage": APPIMAGE + b"2"}, tag="v2", repo=CATALOG["pcsx2"].repo)
+    publish(emu_dialog.base, emu_dialog.routes, {"mGBA-2-appimage-x64.appimage": APPIMAGE + b"2"}, tag="2", repo=CATALOG["mgba"].repo)
+    emu_dialog.flatpak_run = _fake_flatpak()
+    emu_dialog.flatpak_which = lambda p: "/usr/bin/flatpak"
+
+    emu_dialog.update_all()
+
+    assert emu_dialog.installer.get("pcsx2").version == "v2" and emu_dialog.installer.get("mgba").version == "2"
+    assert emu_dialog.changed is True and not shown["warn"]
+    summary = shown["info"][-1]
+    assert "✓ PCSX2 is now v2" in summary and "✓ mGBA is now 2" in summary and "Flatpak emulators updated" in summary
+    update_call = [c for c in emu_dialog.flatpak_run.calls if c[:2] == ["flatpak", "update"]][0]
+    # PCSX2 and mGBA now run from Arcadia's folder, so their Flatpaks are no longer in use and aren't touched;
+    # RetroArch is still behind other systems, so it's the only one named
+    assert update_call == ["flatpak", "update", "-y", "--noninteractive", "org.libretro.RetroArch"]
+    assert _row_text(emu_dialog, "pcsx2")[2].startswith("v2")
+
+
+def _row_text(dialog, emu_id):
+    row = [s.id for s in dialog.specs].index(emu_id)
+    return [dialog.table.item(row, c).text() for c in range(5)]
+
+
+def test_a_failure_in_the_batch_is_reported_and_leaves_that_emulator_as_it_was(emu_dialog, monkeypatch):
+    _accept_update_dialog(monkeypatch)
+    shown = {"info": [], "warn": []}
+    monkeypatch.setattr(QMessageBox, "information", lambda *a, **k: shown["info"].append(a[2]))
+    monkeypatch.setattr(QMessageBox, "warning", lambda *a, **k: shown["warn"].append(a[2]))
+    _install_v1(emu_dialog, "pcsx2-v1-linux-appimage-x64-Qt.AppImage", "pcsx2", "v1")
+    _install_v1(emu_dialog, "mGBA-1-appimage-x64.appimage", "mgba", "1")
+    publish(emu_dialog.base, emu_dialog.routes, {"pcsx2-v2-linux-appimage-x64-Qt.AppImage": APPIMAGE}, tag="v2", digest="wrong", repo=CATALOG["pcsx2"].repo)
+    publish(emu_dialog.base, emu_dialog.routes, {"mGBA-2-appimage-x64.appimage": APPIMAGE}, tag="2", repo=CATALOG["mgba"].repo)
+    emu_dialog.flatpak_which = lambda p: None  # no flatpak on this machine
+
+    emu_dialog.update_all()
+    assert emu_dialog.installer.get("pcsx2").version == "v1" and emu_dialog.installer.get("mgba").version == "2"
+    message = shown["warn"][-1]  # a problem is a warning, not a cheerful "done"
+    assert "✗ PCSX2 wasn't updated and still works as before" in message and "checksum" in message and "✓ mGBA is now 2" in message
+    assert not shown["info"]
+
+
+def test_cancelling_the_update_window_changes_nothing(emu_dialog, monkeypatch):
+    monkeypatch.setattr(UpdateAllDialog, "exec", lambda self: QDialog.DialogCode.Rejected)
+    _install_v1(emu_dialog, "pcsx2-v1-linux-appimage-x64-Qt.AppImage", "pcsx2", "v1")
+    publish(emu_dialog.base, emu_dialog.routes, {"pcsx2-v2-linux-appimage-x64-Qt.AppImage": APPIMAGE}, tag="v2", repo=CATALOG["pcsx2"].repo)
+    emu_dialog.flatpak_which = lambda p: None
+    emu_dialog.update_all()
+    assert emu_dialog.installer.get("pcsx2").version == "v1" and not emu_dialog.changed
+
+
+def test_unticking_the_flatpaks_leaves_them_alone(emu_dialog, monkeypatch):
+    def accept_without_flatpaks(self):
+        self.flatpak_box.setChecked(False)
+        return QDialog.DialogCode.Accepted
+
+    monkeypatch.setattr(UpdateAllDialog, "exec", accept_without_flatpaks)
+    monkeypatch.setattr(QMessageBox, "information", lambda *a, **k: None)
+    _install_v1(emu_dialog, "pcsx2-v1-linux-appimage-x64-Qt.AppImage", "pcsx2", "v1")
+    publish(emu_dialog.base, emu_dialog.routes, {"pcsx2-v2-linux-appimage-x64-Qt.AppImage": APPIMAGE}, tag="v2", repo=CATALOG["pcsx2"].repo)
+    emu_dialog.flatpak_run = _fake_flatpak()
+    emu_dialog.flatpak_which = lambda p: "/usr/bin/flatpak"
+    emu_dialog.update_all()
+    assert emu_dialog.installer.get("pcsx2").version == "v2"
+    assert not [c for c in emu_dialog.flatpak_run.calls if c[:2] == ["flatpak", "update"]]  # asked about, never updated
+
+
+def test_nothing_installed_and_no_flatpak_says_so_without_a_window(emu_dialog, monkeypatch):
+    opened = []
+    monkeypatch.setattr(UpdateAllDialog, "exec", lambda self: opened.append(1) or QDialog.DialogCode.Rejected)
+    emu_dialog.flatpak_which = lambda p: None
+    emu_dialog.update_all()
+    assert not opened and "Nothing to update" in emu_dialog.status.text()
+
+
+def test_when_everything_is_current_it_just_says_so(emu_dialog, monkeypatch):
+    opened = []
+    monkeypatch.setattr(UpdateAllDialog, "exec", lambda self: opened.append(1) or QDialog.DialogCode.Rejected)
+    _install_v1(emu_dialog, "pcsx2-linux-appimage-x64-Qt.AppImage", "pcsx2", "v7")
+    emu_dialog.flatpak_which = lambda p: None
+    emu_dialog.update_all()
+    assert not opened and "up to date" in emu_dialog.status.text()
+
+
+def test_a_failed_lookup_is_explained(emu_dialog, monkeypatch):
+    warned = []
+    monkeypatch.setattr(QMessageBox, "warning", lambda *a, **k: warned.append(a[2]))
+    monkeypatch.setattr(emulators_dialog, "plan_updates", lambda installer: (_ for _ in ()).throw(RuntimeError("no network")))
+    emu_dialog.update_all()
+    assert warned and "Couldn't look for updates: no network" in warned[0]
+
+
+# ---------- the startup check ----------
+
+class SyncDaemon(QObject):
+    done = Signal(object, object)
+
+    def __init__(self, fn, parent=None):
+        super().__init__(parent)
+        self._fn = fn
+
+    def start(self):
+        try:
+            value, error = self._fn(), None
+        except Exception as exc:
+            value, error = None, exc
+        self.done.emit(value, error)
+
+
+def _startup_window(tmp_path, server, monkeypatch, check):
+    base, routes = server
+    config = Config.new_install(tmp_path / "Arcadia")
+    config.ensure_layout()
+    config.check_updates = check
+    installer = Installer(config.emulators_path, fetcher_for(base))
+    publish(base, routes, {"pcsx2-v1-linux-appimage-x64-Qt.AppImage": APPIMAGE}, tag="v1", repo=CATALOG["pcsx2"].repo)
+    spec = CATALOG["pcsx2"]
+    installer.install(spec, installer.latest_release(spec), installer.latest_release(spec).assets[0])
+    monkeypatch.setattr(ui_module, "Installer", lambda path: Installer(path, fetcher_for(base)))
+    monkeypatch.setattr(ui_module, "DaemonTask", SyncDaemon)
+    win = MainWindow(config, tmp_path / "config.json", Library(config.db_path))
+    return win, base, routes
+
+
+def test_the_startup_check_only_mentions_updates_it_does_not_install_them(qapp, tmp_path, server, monkeypatch):
+    win, base, routes = _startup_window(tmp_path, server, monkeypatch, check=True)
+    try:
+        publish(base, routes, {"pcsx2-v2-linux-appimage-x64-Qt.AppImage": APPIMAGE + b"2"}, tag="v2", repo=CATALOG["pcsx2"].repo)
+        win._startup_update_check()
+        assert "1 emulator update available" in win.toast.text() and "Update all" in win.toast.text()
+        assert Installer(win.config.emulators_path).get("pcsx2").version == "v1"  # nothing was installed
+    finally:
+        win.close()
+
+
+def test_the_startup_check_is_silent_when_there_is_nothing_new(qapp, tmp_path, server, monkeypatch):
+    win, base, routes = _startup_window(tmp_path, server, monkeypatch, check=True)
+    try:
+        win._startup_update_check()  # the latest release is still v1
+        assert win.toast.text() == "" or "update" not in win.toast.text()
+    finally:
+        win.close()
+
+
+def test_the_startup_check_makes_no_requests_unless_asked(qapp, tmp_path, server, monkeypatch):
+    win, base, routes = _startup_window(tmp_path, server, monkeypatch, check=False)
+    started = []
+    monkeypatch.setattr(SyncDaemon, "start", lambda self: started.append(1))
+    try:
+        win._startup_update_check()
+        assert started == []  # the default: no network at startup
+    finally:
+        win.close()
+
+
+def test_the_startup_check_does_nothing_with_no_emulators_installed(qapp, tmp_path, monkeypatch):
+    config = Config.new_install(tmp_path / "Arcadia")
+    config.check_updates = True
+    started = []
+    monkeypatch.setattr(ui_module, "DaemonTask", lambda fn, parent=None: started.append(1))
+    win = MainWindow(config, tmp_path / "config.json", Library(config.db_path))
+    try:
+        win._startup_update_check()
+        assert started == []
+    finally:
+        win.close()
+
+
+def test_the_settings_dialog_saves_the_update_check_option(qapp, tmp_path):
+    config = Config(data_dir=str(tmp_path / "data"))
+    assert config.check_updates is False  # off unless the user turns it on
+    dialog = SettingsDialog(config)
+    assert not dialog.check_updates.isChecked() and "Eden" in dialog.check_updates.text()
+    dialog.check_updates.setChecked(True)
+    dialog.apply(config)
+    assert config.check_updates is True
+
+
+def test_a_daemon_task_delivers_its_result_on_the_interface_thread(qapp):
+    got = []
+
+    class Receiver(QObject):
+        def take(self, value, error):
+            got.append((value, error))
+
+    receiver = Receiver()
+    task = DaemonTask(lambda: 21 * 2, receiver)
+    task.done.connect(receiver.take)
+    task.start()
+    for _ in range(300):
+        qapp.processEvents()
+        if got:
+            break
+        _time.sleep(0.01)
+    assert got == [(42, None)]
+
+    failing = DaemonTask(lambda: 1 / 0, receiver)
+    failing.done.connect(receiver.take)
+    failing.start()
+    for _ in range(300):
+        qapp.processEvents()
+        if len(got) > 1:
+            break
+        _time.sleep(0.01)
+    assert got[1][0] is None and isinstance(got[1][1], ZeroDivisionError)
