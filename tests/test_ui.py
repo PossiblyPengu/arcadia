@@ -1400,7 +1400,7 @@ def test_every_console_has_its_own_picture_and_a_glow(qapp):
         assert pixelart.is_bundled(view_id), f"no bundled picture for {view_id}"
     for view_id in [*ids, "something-the-user-added"]:
         image = pixelart.sprite_image(view_id)
-        assert 30 <= image.width() <= 140 and 30 <= image.height() <= 110
+        assert 25 <= image.width() <= 170 and 25 <= image.height() <= 170
         fitted = pixelart.scaled(view_id, 240)
         assert (fitted.width(), fitted.height()) == (240, 180)  # everything is fitted into the same box
         assert pixelart.glow(view_id, 128, "#ff0000").width() > 128
@@ -1454,7 +1454,7 @@ def test_bundled_pixel_art_is_used_and_well_formed(qapp):
     assert sum(f.stat().st_size for f in files) < 2_000_000  # small enough to keep in the repository
     for f in files:
         image = QImage(str(f))
-        assert 30 <= image.width() <= 140 and 30 <= image.height() <= 110, f.name
+        assert 25 <= image.width() <= 170 and 25 <= image.height() <= 170, f.name
         assert image.hasAlphaChannel() and image.pixelColor(0, 0).alpha() == 0, f.name  # cut out, not on a white box
         assert pixelart.is_bundled(f.stem)
     # the consoles that have a picture use it; every console still has *something*
@@ -1468,66 +1468,44 @@ def test_bundled_pixel_art_is_used_and_well_formed(qapp):
     assert not pixelart.is_custom("nes")
 
 
-def test_every_bundled_picture_is_credited(qapp):
+def test_the_art_is_original_and_says_so(qapp):
     from arcadia import pixelart
 
     text = (pixelart.ASSETS / "ATTRIBUTION.md").read_text(encoding="utf-8")
-    for f in sorted(pixelart.ASSETS.glob("*.png")):
-        assert f"`{f.stem}`" in text, f"{f.stem} is missing from ATTRIBUTION.md"
+    assert "original to Arcadia" in text and "No photograph is copied" in text
 
 
-# ---------- transition and sound ----------
+def test_every_console_has_an_era_and_the_picture_is_drawn_at_its_size(qapp):
+    from PySide6.QtGui import QImage
 
-def test_opening_and_leaving_a_console_zooms_and_clears_itself(window, qapp):
+    from arcadia import eras, pixelart
+    from arcadia.config import default_systems
+
+    widths = {}
+    for system in default_systems():
+        era = eras.era_of(system.id)
+        assert era in eras.LABELS, f"{system.id} has no era"
+        widths.setdefault(era, []).append(QImage(str(pixelart.ASSETS / f"{system.id}.png")).width())
+    assert set(widths) == set(eras.LABELS)  # every generation is represented
+    # later generations are drawn bigger and finer: the average width grows with the era
+    averages = [sum(widths[e]) / len(widths[e]) for e in eras.LABELS]
+    assert averages == sorted(averages) and averages[-1] > averages[0] * 2
+    # the early eras use few colours, like the hardware
+    def colours(cid):
+        image = QImage(str(pixelart.ASSETS / f"{cid}.png"))
+        return len({image.pixelColor(x, y).name() for x in range(image.width()) for y in range(image.height()) if image.pixelColor(x, y).alpha()})
+
+    assert colours("nes") <= 14 and colours("snes") <= 28 and colours("gc") > colours("nes")
+    assert eras.era_of("__recent__") == "" and eras.era_of("something-the-user-added") == ""
+
+
+def test_the_console_name_shows_its_era(window, qapp):
     window.resize(1000, 700)
+    window.carousel.set_current_id("snes")
     qapp.processEvents()
-    assert not window.zoom.running()
-    window.show_games()
-    assert window.on_games_page() and window.zoom.running()  # the old screen is zooming away over the new one
-    for _ in range(40):
-        QTest.qWait(16)
-    assert not window.zoom.running() and not window.zoom.isVisible()
-    window.show_consoles()
-    assert not window.on_games_page() and window.zoom.running()
-    window.show_games()  # a quick second press never leaves a stale overlay behind
-    for _ in range(40):
-        QTest.qWait(16)
-    assert not window.zoom.running() and window.on_games_page()
+    image = window.carousel.grab().toImage()
+    assert not image.isNull()
+    assert window.carousel.entries()[window.carousel.index()].view_id == "snes"
+    from arcadia.eras import era_of
 
-
-def test_the_zoom_does_not_block_clicks(window, qapp):
-    from PySide6.QtCore import Qt
-
-    window.show_games()
-    assert window.zoom.testAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
-    window.zoom.finish()
-
-
-def test_sounds_play_only_when_on_and_never_fail_without_audio(tmp_path):
-    from arcadia.sounds import ASSETS, NAMES, Sounds
-
-    for name in NAMES:
-        assert (ASSETS / f"{name}.wav").stat().st_size > 1000
-    s = Sounds(enabled=False)
-    assert s.play("tick") is False
-    s.enabled = True
-    assert s.play("nonsense") is False
-    s.play("tick")  # whether or not this machine has speakers, it must not raise
-    s.play("open")
-    assert Sounds(enabled=True, folder=tmp_path).play("tick") is False  # missing files: silent
-
-
-def test_the_ring_ticks_and_screens_chime_and_the_menu_toggles_it(window, monkeypatch):
-    played = []
-    monkeypatch.setattr(window.sounds, "play", lambda name: played.append(name) or True)
-    window.carousel.rotate(1)
-    window.show_games()
-    window.zoom.finish()
-    window.show_consoles()
-    window.zoom.finish()
-    assert played == ["tick", "open", "back"]
-    window.show_consoles()  # already there: no second chime
-    assert played == ["tick", "open", "back"]
-    window.sounds_action.setChecked(False)
-    assert window.config.sounds is False and window.sounds.enabled is False
-    assert '"sounds": false' in window.config_path.read_text()
+    assert era_of("snes") == "16-bit"

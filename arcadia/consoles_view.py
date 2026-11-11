@@ -16,6 +16,7 @@ from PySide6.QtGui import QColor, QFont, QKeyEvent, QPainter, QPen, QRadialGradi
 from PySide6.QtWidgets import QWidget
 
 from arcadia import pixelart
+from arcadia.eras import era_of
 
 VISIBLE = 3.0  # how many places either side of the middle are drawn
 IDLE_GLOW = 0.5  # the selected console glows a little by itself
@@ -228,6 +229,9 @@ class ConsoleCarousel(QWidget):
         top = self.height() * 0.42 + mid * pixelart.H / pixelart.W / 2 + mid * 0.16
         self._paint_label(painter, entry.name.upper(), QPointF(self.width() / 2, top), 30, 1.0, spacing=3.0, bold=True)
         sub = "Empty" if not entry.count else f"{entry.count} game{'s' if entry.count != 1 else ''}"
+        era = era_of(entry.view_id)
+        if era:
+            sub = f"{era.upper()}   ·   {sub}"
         self._paint_label(painter, sub, QPointF(self.width() / 2, top + 36), 15, 0.6)
         if self.count() > 1:
             self._paint_dots(painter, QPointF(self.width() / 2, top + 66))

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Draw the pictures that have no photograph, in the same pixel-art style as the photographed consoles.
+"""Draw the pictures that aren't consoles: the collection tiles and the generic cartridge.
 
-Arcade cabinet, the Recently played / Favorites / All games tiles, and the generic cartridge shown for a
+The Recently played / Favorites / All games tiles, and the generic cartridge shown for a
 console you add yourself. They are original to Arcadia: small 3D models (tools/voxel.py) rendered at an
 isometric angle, then cut down to pixel art by the same step as the photographs (make_console_art.pixelate).
 Needs PySide6, Pillow and numpy.
@@ -24,25 +24,8 @@ sys.path.insert(0, str(HERE))
 from PIL import Image  # noqa: E402
 from PySide6.QtGui import QGuiApplication  # noqa: E402
 
-from make_console_art import OUT, pixelate  # noqa: E402
+from isoart import ERAS, OUT, pixelate  # noqa: E402
 from voxel import Model  # noqa: E402
-
-
-def arcade() -> Model:
-    blue, trim, dark = "#2b44a6", "#171720", "#26262e"
-    m = Model().box(0, 0, 0, 28, 32, 24, blue).box(0, 0, 24, 28, 22, 26, blue).box(0, 22, 21, 28, 12, 4, dark)
-    m.box(0, 0, 50, 28, 23, 7, trim)  # the marquee
-    m.front(2, 51, 24, 5, "#ffcf3a").front(5, 53, 18, 1, "#f28a1a").front(3, 55, 22, 1, "#fff2a8")
-    m.front(3, 29, 22, 19, trim).front(5, 31, 18, 15, "#14724c").front(7, 33, 14, 11, "#1f9a66")  # the screen
-    for x, z in ((9, 41), (13, 41), (17, 41), (11, 38), (15, 38), (9, 35), (13, 35), (17, 35)):  # a few invaders
-        m.front(x, z, 2, 1, "#c8ffd8")
-    m.front(10, 5, 8, 13, dark).front(11, 6, 6, 11, "#3a3a46").front(12, 11, 2, 3, "#d6322c").front(15, 11, 2, 3, "#d6322c")  # coin door
-    m.top(2, 24, 24, 8, dark)
-    m.box(7, 27, 25, 1, 1, 5, "#c9c9d2").cyl(7.5, 27.5, 30, 2.2, 3, "#d6322c")  # the joystick
-    for x, c in ((14, "#f2c200"), (18, "#35b6e8"), (22, "#3fae5a")):
-        m.top_disc(x, 27, 1.8, c).top_disc(x + 1, 31, 1.8, c)
-    m.side(0, 0, 33, 3, trim).side(0, 30, 33, 5, "#e8318f").side(0, 36, 33, 2, "#35d6e8").side(0, 40, 33, 3, "#f2c200")
-    return m
 
 
 def clock() -> Model:
@@ -104,7 +87,7 @@ def cartridge() -> Model:
     return m
 
 
-MODELS = {"arcade": arcade, "__recent__": clock, "__favorites__": favorites, "__all__": all_games, "cartridge": cartridge}
+MODELS = {"__recent__": clock, "__favorites__": favorites, "__all__": all_games, "cartridge": cartridge}
 
 
 def main() -> int:
@@ -115,7 +98,12 @@ def main() -> int:
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "render.png"
             image.save(str(path))
-            pixelate(Image.open(path).convert("RGBA")).save(OUT / f"{name}.png", optimize=True)
+            picture = Image.open(path).convert("RGBA")
+            picture = picture.crop(picture.getbbox())
+            era = ERAS["32-bit"]  # these tiles are drawn at the 32-bit size
+            scale = min(era.width / picture.width, era.width * 0.95 / picture.height)
+            picture = picture.resize((max(2, round(picture.width * scale)), max(2, round(picture.height * scale))), Image.BOX)
+            pixelate(picture, era).save(OUT / f"{name}.png", optimize=True)
         print(f"{name}: done")
     return 0
 

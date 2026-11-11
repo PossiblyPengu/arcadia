@@ -24,14 +24,18 @@ written in Python with PySide6 (Qt).
 - **Sound effects** (View → Sound effects, on by default): a soft tick as the console ring turns, a chime on opening
   a console, a falling tone on going back. They are tiny generated tones (`assets/sounds`, made by
   `tools/make_sounds.py`); with no audio device, or with the setting off, nothing plays and nothing breaks.
-- **The console pictures are pixel art made from real photographs** of each console (33 of them), so they look like
-  the real hardware. The photos are from Wikimedia Commons (public domain, CC0 or CC BY-SA 3.0); every source,
-  author and licence is in `arcadia/assets/consoles/ATTRIBUTION.md`. The arcade cabinet, the Recently played /
-  Favorites / All games tiles and the generic cartridge (shown for a console you add yourself) are original drawings
-  in the same pixel-art style. Rebuild them with `tools/fetch_console_photos.py` + `tools/make_console_art.py` (the
-  photographs) and `tools/make_extra_art.py` (the drawn ones); those scripts need Pillow, numpy and PySide6, and
-  Arcadia itself only loads the finished PNGs. **Use your own pictures** with View → "Use my own console
-  pictures…": a PNG or WebP named after the console (`nes.png`, `snes.png`, …) in that folder replaces Arcadia's.
+- **Each console is drawn in the pixel style of its own generation, and the screen says which** (8-BIT, 16-BIT,
+  32-BIT, 64-BIT, 128-BIT, HD, under the console's name). The NES, Master System, Game Boy and Atari consoles are
+  small, chunky, hard-edged sprites in a handful of colours; the SNES, Genesis, PC Engine and Neo Geo are finer with a
+  richer palette; the PlayStation, Saturn and GBA finer again; the N64 gets the soft filtering of its 3D chip; the
+  Dreamcast, GameCube, PS2 and Xbox are detailed; the Wii, Wii U, PS3, Switch and 3DS are smooth. The pictures are
+  **original to Arcadia**: each console is modelled in real centimetres, with its details (the NES's black door and
+  ribbed vent, the SNES's purple buttons, the Genesis's cartridge ring, the GameCube's disc lid and vents, and so on)
+  placed from reference photographs, then drawn at the size and colour depth of its era. See
+  `arcadia/assets/consoles/ATTRIBUTION.md`; rebuild with `tools/make_console_art.py` (and `make_extra_art.py` for
+  the collection tiles). Those scripts need Pillow, numpy and PySide6; Arcadia itself only loads the finished PNGs.
+  Which generation a console belongs to is `arcadia/eras.py`. **Use your own pictures** with View → "Use my own
+  console pictures…": a PNG or WebP named after the console (`nes.png`, `snes.png`, …) in that folder replaces ours.
 - Sort by A–Z, recently played, most played, or favorites first (remembered between runs)
 - Type a letter to jump to the next title starting with it; search with Ctrl+F
 - Toast messages instead of dialogs, a live play timer on the Launch button, and a
@@ -551,6 +555,7 @@ arcadia/
   coverflow.py   animated cover-flow carousel with lazy cover loading
   consoles_view.py  the rotating console carousel (the first screen)
   pixelart.py    picks each console's picture (yours, the bundled pixel art, or a generic cartridge) and draws the glow
+  eras.py        which bit-generation each console belongs to (8-bit ... HD)
   transitions.py the zoom between the two screens
   sounds.py      the small sound effects (assets/sounds/*.wav)
   assets/consoles/  the bundled pixel-art console pictures and their credits

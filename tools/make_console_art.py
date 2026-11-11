@@ -1,151 +1,42 @@
 #!/usr/bin/env python3
-"""Turn photographs of consoles into the pixel-art pictures Arcadia ships (arcadia/assets/consoles/*.png).
+"""Draw every console (tools/console_models.py) and reduce each to the pixel style of its generation.
 
-This is build-time tooling: Arcadia itself only loads the finished PNGs. Needs Pillow and numpy.
+    python tools/make_console_art.py [id ...]       # writes arcadia/assets/consoles/<id>.png
+    python tools/make_console_art.py --preview DIR  # also saves the large drawing next to each, to check it
 
-    python tools/make_console_art.py PHOTO_DIR [id ...]
-
-PHOTO_DIR holds one photo per console, named <id>.<ext> (png/jpg/img). Each is cut out from its white
-background, cropped (tools/console_crops.json), scaled down, limited to a small palette, and given a
-one-pixel dark outline. Sources and licences are listed in arcadia/assets/consoles/ATTRIBUTION.md.
+Needs PySide6, Pillow and numpy. The pictures are original to Arcadia.
 """
 
 from __future__ import annotations
 
-import json
 import sys
 from pathlib import Path
 
-import numpy as np
-from PIL import Image, ImageDraw, ImageEnhance, ImageFilter
-
-MAX_W, MAX_H = 104, 78  # the pixel size of the biggest side of a finished picture
-COLORS = 28
-OUTLINE = (13, 14, 19, 255)
 HERE = Path(__file__).resolve().parent
-OUT = HERE.parent / "arcadia" / "assets" / "consoles"
+sys.path.insert(0, str(HERE))
 
-
-def cut_out(image: Image.Image, pocket: int = 253) -> Image.Image:
-    """Make the (white) background transparent: only white connected to the picture's edge goes."""
-    im = image.convert("RGBA")
-    flat = Image.new("RGB", im.size, (255, 255, 255))
-    flat.paste(im, mask=im.split()[3])
-    work = flat.copy()
-    sentinel = (255, 0, 255)
-    w, h = work.size
-    seeds = [(0, 0), (w - 1, 0), (0, h - 1), (w - 1, h - 1)] + [(x, 0) for x in range(0, w, max(1, w // 8))] + [(x, h - 1) for x in range(0, w, max(1, w // 8))] + [(0, y) for y in range(0, h, max(1, h // 8))] + [(w - 1, y) for y in range(0, h, max(1, h // 8))]
-    for xy in seeds:
-        pixel = work.getpixel(xy)
-        if pixel != sentinel and min(pixel) >= 232:
-            ImageDraw.floodfill(work, xy, sentinel, thresh=16)
-    arr = np.array(work)
-    background = (arr[:, :, 0] == 255) & (arr[:, :, 1] == 0) & (arr[:, :, 2] == 255)
-    background |= _white_pockets(np.array(flat), background, pocket)
-    out = np.array(flat.convert("RGBA"))
-    out[:, :, 3] = np.where(background, 0, 255)
-    return Image.fromarray(out)
-
-
-def _white_pockets(rgb: np.ndarray, background: np.ndarray, level: int = 253) -> np.ndarray:
-    """Pure white areas the edge fill couldn't reach (the gap inside a loop of cable, say). A console's own
-    whites are never quite pure, so a sizeable patch of pure white is background."""
-    white = (rgb.min(axis=2) >= level) & ~background
-    h, w = white.shape
-    seen = np.zeros_like(white)
-    pockets = np.zeros_like(white)
-    for y0, x0 in zip(*np.nonzero(white)):
-        if seen[y0, x0]:
-            continue
-        stack, patch = [(y0, x0)], []
-        seen[y0, x0] = True
-        while stack:
-            y, x = stack.pop()
-            patch.append((y, x))
-            for ny, nx in ((y + 1, x), (y - 1, x), (y, x + 1), (y, x - 1)):
-                if 0 <= ny < h and 0 <= nx < w and white[ny, nx] and not seen[ny, nx]:
-                    seen[ny, nx] = True
-                    stack.append((ny, nx))
-        if len(patch) >= 120:
-            ys, xs = zip(*patch)
-            pockets[list(ys), list(xs)] = True
-    return pockets
-
-
-def remove_cables(image: Image.Image, radius: int) -> Image.Image:
-    """Take off thin things (controller cables, stray wires): shrink the shape, then grow it back, which
-    drops anything narrower than the radius and leaves the console itself as it was."""
-    alpha = image.split()[3]
-    size = radius * 2 + 1
-    opened = alpha.filter(ImageFilter.MinFilter(size)).filter(ImageFilter.MaxFilter(size))
-    image = image.copy()
-    image.putalpha(Image.fromarray(np.minimum(np.array(alpha), np.array(opened))))
-    return image
-
-
-def erase_regions(image: Image.Image, boxes: list[list[float]]) -> Image.Image:
-    """Make rectangles (as fractions of the picture) transparent: for a controller that overlaps the console."""
-    image = image.copy()
-    draw = ImageDraw.Draw(image)
-    w, h = image.size
-    for left, top, right, bottom in boxes:
-        draw.rectangle((int(left * w), int(top * h), int(right * w), int(bottom * h)), fill=(0, 0, 0, 0))
-    return image
-
-
-def pixelate(image: Image.Image, lift: float = 1.0) -> Image.Image:
-    box = image.getbbox()
-    image = image.crop(box)
-    w, h = image.size
-    scale = min(MAX_W / w, MAX_H / h)
-    size = (max(1, round(w * scale)), max(1, round(h * scale)))
-    small = image.resize(size, Image.BOX)
-    alpha = np.array(small.split()[3]) >= 150
-    rgb = small.convert("RGB")
-    if lift != 1.0:  # dark consoles are brightened so they read against a dark screen
-        rgb = ImageEnhance.Brightness(rgb).enhance(lift)
-    rgb = ImageEnhance.Color(rgb).enhance(1.12)
-    rgb = ImageEnhance.Contrast(rgb).enhance(1.08)
-    quant = np.array(rgb.quantize(colors=COLORS, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE).convert("RGB"))
-    out = np.zeros((size[1] + 2, size[0] + 2, 4), dtype=np.uint8)
-    out[1:-1, 1:-1, :3] = quant
-    out[1:-1, 1:-1, 3] = np.where(alpha, 255, 0)
-    solid = out[:, :, 3] > 0
-    edge = np.zeros_like(solid)
-    edge[1:, :] |= solid[:-1, :]
-    edge[:-1, :] |= solid[1:, :]
-    edge[:, 1:] |= solid[:, :-1]
-    edge[:, :-1] |= solid[:, 1:]
-    out[edge & ~solid] = OUTLINE
-    return Image.fromarray(out)
+sys.path.insert(0, str(HERE.parent))
+from console_models import ERA, MODELS  # noqa: E402
+from isoart import ERAS, OUT, Scene, pixelate, to_pil  # noqa: E402
 
 
 def main(argv: list[str]) -> int:
-    if not argv:
-        print(__doc__)
-        return 2
-    photos = Path(argv[0])
-    crops = json.loads((HERE / "console_crops.json").read_text())
-    wanted = argv[1:] or sorted(crops)
+    preview = None
+    if "--preview" in argv:
+        i = argv.index("--preview")
+        preview = Path(argv[i + 1])
+        preview.mkdir(parents=True, exist_ok=True)
+        argv = argv[:i] + argv[i + 2:]
     OUT.mkdir(parents=True, exist_ok=True)
-    for cid in wanted:
-        found = next((p for p in photos.glob(f"{cid}.*") if p.suffix.lower() in (".png", ".jpg", ".jpeg", ".img")), None)
-        if found is None:
-            print(f"{cid}: no photo, skipped")
-            continue
-        image = Image.open(found)
-        spec = crops.get(cid, [0, 0, 1, 1])
-        spec = {"crop": spec} if isinstance(spec, list) else spec
-        left, top, right, bottom = spec.get("crop", [0, 0, 1, 1])
-        w, h = image.size
-        image = image.crop((int(left * w), int(top * h), int(right * w), int(bottom * h)))
-        cut = cut_out(image, spec.get("pocket", 253))
-        if spec.get("cables"):
-            cut = remove_cables(cut, spec["cables"])
-        if spec.get("erase"):
-            cut = erase_regions(cut, spec["erase"])
-        pixelate(cut, spec.get("lift", 1.0)).save(OUT / f"{cid}.png", optimize=True)
-        print(f"{cid}: done")
+    for cid in argv or sorted(MODELS):
+        build, era = MODELS[cid], ERA[cid]
+        scene = Scene()
+        build(scene)
+        if preview:
+            to_pil(scene.render()).save(preview / f"{cid}_big.png")
+        e = ERAS[era]
+        pixelate(scene.render(width=e.width, smooth=e.smooth), e).save(OUT / f"{cid}.png", optimize=True)
+        print(f"{cid}: {era}")
     return 0
 
 
