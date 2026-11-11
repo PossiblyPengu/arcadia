@@ -39,7 +39,7 @@ class ImportDialog(QDialog):
         self.items = sorted(plan.items, key=lambda i: (_ORDER[i.confidence], i.source.name.lower()))
         self._updating = False
         self.setWindowTitle("Import ROMs")
-        self.resize(1100, 540)
+        self.resize(1200, 560)
 
         unsure = sum(1 for i in self.items if i.confidence is Confidence.UNSURE)
         intro = f"Found {len(self.items)} ROM{'s' if len(self.items) != 1 else ''}"
@@ -65,16 +65,18 @@ class ImportDialog(QDialog):
         header.setSectionResizeMode(COL_WHY, QHeaderView.ResizeMode.Stretch)
         header.setSectionResizeMode(COL_DEST, QHeaderView.ResizeMode.ResizeToContents)
         header.setStretchLastSection(False)
-        self.table.setColumnWidth(COL_FILE, 300)
-        self.table.setColumnWidth(COL_SYSTEM, 300)
+        self.table.setColumnWidth(COL_FILE, 270)
+        self.table.setColumnWidth(COL_SYSTEM, 270)
         self.table.verticalHeader().setDefaultSectionSize(42)
         self.table.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.table.setTextElideMode(Qt.TextElideMode.ElideRight)
+        self.table.setWordWrap(True)  # reasons are the point of this dialog: never cut them off
+        self.table.setTextElideMode(Qt.TextElideMode.ElideNone)
 
         self.combos: list[QComboBox] = []
         for row, item in enumerate(self.items):
             self._build_row(row, item)
         self.table.itemChanged.connect(lambda _i: self._refresh_summary())
+        self._fit_rows()
 
         self.keep_both_box = QCheckBox("If a file with the same name is already in the library, keep both (rename the new one)")
 
@@ -115,12 +117,14 @@ class ImportDialog(QDialog):
         check.setCheckState(Qt.CheckState.Checked if self._default_checked(item) else Qt.CheckState.Unchecked)
         self.table.setItem(row, COL_MOVE, check)
 
-        name = QTableWidgetItem(item.source.name)
+        name = QTableWidgetItem(item.label)
         name.setFlags(Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable)
         extra = [c.name for c in item.companions]
         name.setToolTip(str(item.source) + ("".join(f"\n+ {n}" for n in extra)))
-        if extra:
-            name.setText(f"{item.source.name}  (+{len(extra)} file{'s' if len(extra) != 1 else ''})")
+        if item.detail:
+            name.setText(f"{item.label}  ({item.detail})")
+        elif extra:
+            name.setText(f"{item.label}  (+{len(extra)} file{'s' if len(extra) != 1 else ''})")
         self.table.setItem(row, COL_FILE, name)
 
         combo = QComboBox()
@@ -128,6 +132,7 @@ class ImportDialog(QDialog):
             combo.addItem(system.name or SYSTEM_LABELS.get(system.id, system.id), system.id)
         combo.setCurrentIndex(max(0, combo.findData(item.system_id)))
         combo.setStyleSheet("padding: 3px 12px; border-radius: 12px;")
+        combo.setFixedHeight(32)
         combo.currentIndexChanged.connect(lambda _i, r=row: self._on_system_picked(r))
         self.table.setCellWidget(row, COL_SYSTEM, combo)
         self.combos.append(combo)
@@ -141,6 +146,8 @@ class ImportDialog(QDialog):
         item = self.items[row]
         badge, color = ("✓", "#6fcf97") if item.manual else _BADGES[item.confidence]
         why = "Confirmed by you" if item.manual else item.reason
+        if item.merge and item.kind == "disc_set" and not item.exists and "existing playlist" not in why:
+            why += "  (added to the existing playlist)"
         if item.exists:
             why += "  (already in the library)"
         self._updating = True
@@ -149,9 +156,30 @@ class ImportDialog(QDialog):
         why_cell.setToolTip(why)
         why_cell.setForeground(QBrush(QColor(color)))
         dest = self.table.item(row, COL_DEST)
-        dest.setText(item.destination.parent.name + "/")  # the folder under your ROM root
+        dest.setText(item.dest_label())  # the folder under your ROM root
         dest.setToolTip(str(item.destination))
         self._updating = False
+
+    def _fit_rows(self) -> None:
+        """Size each row to its wrapped text (the file name and the reason), with a comfortable minimum.
+        Measured by hand: letting Qt size rows would also count the taller combo boxes."""
+        metrics = self.table.fontMetrics()
+        flags = int(Qt.AlignmentFlag.AlignLeft | Qt.TextFlag.TextWordWrap)
+        for row in range(self.table.rowCount()):
+            height = 0
+            for col in (COL_FILE, COL_WHY):
+                item = self.table.item(row, col)
+                width = max(60, self.table.columnWidth(col) - 14)
+                height = max(height, metrics.boundingRect(0, 0, width, 10_000, flags, item.text()).height())
+            self.table.setRowHeight(row, max(44, height + 16))
+
+    def showEvent(self, event) -> None:
+        super().showEvent(event)
+        self._fit_rows()  # column widths are only known once the dialog is laid out
+
+    def resizeEvent(self, event) -> None:
+        super().resizeEvent(event)
+        self._fit_rows()
 
     def _on_system_picked(self, row: int) -> None:
         item = self.items[row]
@@ -166,6 +194,7 @@ class ImportDialog(QDialog):
         )
         self._updating = False
         self._paint_row(row)
+        self._fit_rows()
         self._refresh_summary()
 
     # ----- results -----

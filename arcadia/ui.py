@@ -42,6 +42,8 @@ from PySide6.QtWidgets import (
 
 from arcadia.config import Config, SystemConfig
 from arcadia.coverflow import COVER_H, COVER_W, CoverFlow
+from arcadia.bundles import parse_switch
+from arcadia.files_dialog import FilesDialog
 from arcadia.gamepad import ControllerReader
 from arcadia.import_dialog import ImportDialog
 from arcadia.launcher import LaunchError, build_command
@@ -52,7 +54,7 @@ from arcadia.savestates import SaveStateError, create_snapshot, list_snapshots, 
 from arcadia.scanner import scan_system
 from arcadia.sorter import Confidence, Journal, Plan, apply_plan, build_plan
 from arcadia.theme import DEFAULT_ACCENT, Backdrop, Toast, build_stylesheet
-from arcadia.util import fmt_clock, fmt_duration, fmt_timestamp, snapshot_label
+from arcadia.util import bundle_summary, fmt_clock, fmt_duration, fmt_timestamp, snapshot_label
 
 COVER_SIZE = QSize(COVER_W, COVER_H)
 
@@ -383,12 +385,15 @@ class MainWindow(QMainWindow):
         self.states_menu = QMenu(self)
         self.states_menu.aboutToShow.connect(self._build_states_menu)
         self.states_btn.setMenu(self.states_menu)
+        self.files_btn = QPushButton("Files…")
+        self.files_btn.setToolTip("Every file that makes up this game: discs, updates, DLC")
+        self.files_btn.clicked.connect(self.show_files)
         self.surprise_btn = QPushButton("🎲  Surprise me")
         self.surprise_btn.clicked.connect(self.surprise)
 
         actions = QHBoxLayout()
         actions.addStretch(1)
-        for button in (self.launch_btn, self.stop_btn, self.fav_btn, self.states_btn, self.surprise_btn):
+        for button in (self.launch_btn, self.stop_btn, self.fav_btn, self.states_btn, self.files_btn, self.surprise_btn):
             actions.addWidget(button)
         actions.addStretch(1)
         root.addLayout(actions)
@@ -641,9 +646,48 @@ class MainWindow(QMainWindow):
             parts.append(f"last played {fmt_timestamp(row['last_played'])}")
         else:
             parts.append("never played")
+        children = self.library.children(key)
+        if children:
+            versions = [
+                info.version
+                for c in children
+                if c["kind"] == "update" and (info := parse_switch(Path(c["path"]).name)) is not None
+            ]
+            parts.insert(1, bundle_summary([c["kind"] for c in children], versions))
+        elif row["kind"] in ("update", "dlc"):
+            parts.insert(1, "update file" if row["kind"] == "update" else "DLC file")
         self.meta_lbl.setText("   ·   ".join(parts))
         self.desc_lbl.setText(_shorten(meta.description, 200))
         self.desc_lbl.setToolTip(meta.description)
+
+    def _launch_extras(self, key: str) -> dict[str, list[Path]]:
+        """Files linked to a game, for the {discs} / {updates} / {dlc} launch placeholders."""
+        names = {"disc": "discs", "update": "updates", "dlc": "dlc"}
+        extras: dict[str, list[Path]] = {v: [] for v in names.values()}
+        for child in self.library.children(key):
+            if child["kind"] in names:
+                extras[names[child["kind"]]].append(Path(child["path"]))
+        return extras
+
+    def _file_rows(self, key: str) -> list[tuple[str, Path]]:
+        row = self.library.get(key)
+        main = Path(row["path"])
+        rows = [("Playlist" if main.suffix.lower() == ".m3u" else "Game", main)]
+        for child in self.library.children(key):
+            path = Path(child["path"])
+            if child["kind"] == "update":
+                info = parse_switch(path.name)
+                rows.append((f"Update {info.version}".strip() if info else "Update", path))
+            else:
+                rows.append(({"disc": "Disc", "dlc": "DLC"}.get(child["kind"], child["kind"].title()), path))
+        return rows
+
+    def show_files(self) -> None:
+        key = self.current_game_key()
+        if key is None:
+            return
+        row = self.library.get(key)
+        FilesDialog(row["title"], self._file_rows(key), self).exec()
 
     def surprise(self) -> None:
         count = self.coverflow.count()
@@ -661,9 +705,18 @@ class MainWindow(QMainWindow):
             self.toast.show_message("A game is already running.")
             return
         row = self.library.get(key)
+        if row["kind"] in ("update", "dlc"):
+            what = "an update" if row["kind"] == "update" else "DLC"
+            QMessageBox.information(
+                self,
+                "Not a game",
+                f"This file is {what}, and its base game isn't in your library, so there is nothing to launch.\n"
+                "Add the base game and Arcadia will attach this to it.",
+            )
+            return
         system = self.config.system(row["system_id"])
         try:
-            args = build_command(system.command, Path(row["path"]))
+            args = build_command(system.command, Path(row["path"]), self._launch_extras(key))
         except LaunchError as exc:
             QMessageBox.warning(self, "Cannot launch", str(exc))
             return
@@ -730,6 +783,7 @@ class MainWindow(QMainWindow):
         self.stop_btn.setVisible(running)
         self.fav_btn.setEnabled(has_game)
         self.states_btn.setEnabled(has_game)
+        self.files_btn.setEnabled(has_game)
         self.surprise_btn.setEnabled(self.coverflow.count() > 0)
 
     # ----- favorites & save states -----

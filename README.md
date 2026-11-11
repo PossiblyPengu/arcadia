@@ -21,9 +21,11 @@ written in Python with PySide6 (Qt).
 - Toast messages instead of dialogs, a live play timer on the Launch button, and a
   fullscreen mode for the couch (`python -m arcadia --fullscreen` or F11)
 - Covers load lazily, so large libraries stay fast
+- **Multi-disc games** become one library entry (an `.m3u` playlist), and **games with updates and
+  DLC** (Nintendo Switch) show as one game with its update and DLC files attached
 - **ROM sorting**: point Arcadia at your downloads folder and it moves each ROM into the
   right system folder, asking you whenever it isn't sure (see below)
-- Presets for Nintendo (NES, SNES, Game Boy, Game Boy Color, GBA, N64), Sega (Genesis,
+- Presets for Nintendo (NES, SNES, Game Boy, Game Boy Color, GBA, N64, Switch), Sega (Genesis,
   Master System, Game Gear), and PlayStation / PSP, using standalone Flatpak emulators
   where they exist and RetroArch otherwise
 - "Surprise me" picks a random game from the current system
@@ -65,9 +67,61 @@ Limits: `.7z` and `.rar` archives can't be inspected (they're only offered if th
 system), `.chd` and `.cue` images can't be fully verified, multi-disc `.m3u` playlists aren't handled, and
 a zip is moved as one file rather than extracted, so a zip of 50 ROMs is treated as one game.
 
+## Multi-disc games
+
+A multi-disc game is one entry in the library, backed by an `.m3u` playlist that lists its discs.
+RetroArch and DuckStation load the playlist directly and let you swap discs in the emulator.
+
+```
+psx/Final Fantasy VII (USA).m3u        <- this is the game in Arcadia
+psx/Final Fantasy VII (USA)/           <- its discs live here and are hidden
+    Final Fantasy VII (USA) (Disc 1).cue / .bin
+    Final Fantasy VII (USA) (Disc 2).cue / .bin
+```
+
+- **From the downloads folder**, discs are recognised by tags like `(Disc 1)`, `(Disc 2 of 3)`, `[Disc A]`,
+  `(CD2)`, or `Disc 3` in the name, grouped by game and region, and joined automatically when the
+  header checks are certain. Discs of different regions or revisions are never mixed.
+- **A missing disc asks you first**: if `(Disc 1)` and `(Disc 3)` arrive, or `(Disc 1 of 3)` has no
+  disc 2, the set is shown unticked with the reason, and nothing moves until you confirm.
+- **A disc arriving later** (say disc 2 a week after disc 1) is added to the existing playlist.
+- **Making your own playlist** works too: put an `.m3u` next to your discs and Arcadia hides the
+  discs and moves their favorite flag and playtime onto the playlist.
+- Undo (File → Undo last import) removes the playlist and folder it made, or restores an edited playlist.
+
+Limits: a lone disc with no playlist yet is moved as an ordinary game (with a note that it looks like
+a disc), and discs already sitting loose in your library aren't reorganised for you. PPSSPP can't open
+playlists, so multi-disc PSP games need their discs launched individually.
+
+## Games with updates and DLC (Nintendo Switch)
+
+Switch files carry a title ID in their name (`Game [0100ABCD00012000][v0].nsp`), and the ID says what a file is:
+a base game ends in `000`, its update in `800`, and its DLC lives in the next ID block up. Arcadia uses that
+to attach updates and DLC to their base game, so the library shows **one game**, not one entry per file.
+
+- The details line shows what's attached ("1 update (latest v65536), 2 DLC"), and **Files…** lists every file
+  with its size and opens the folder.
+- From the downloads folder, a game and the updates and DLC that arrived with it move together.
+- An update or DLC with no base game is shown on its own, labelled `(update)` or `(DLC)`, and can't be
+  launched (there's nothing to run). It attaches itself as soon as the base game turns up. An update
+  arriving for a game that isn't in your library yet is flagged so you can decide.
+- Files are stored side by side in the `switch` folder, as most emulators expect.
+
+**What Arcadia does not do:** it can't make an emulator apply an update. Ryujinx and similar emulators
+install updates and DLC through their own menus, and I haven't verified a command-line way to pass them,
+so the Ryujinx preset launches the base game only. If your emulator does take them on the command line,
+use the placeholders in the launch command (Settings): `{rom}` the game, `{updates}` update files,
+`{dlc}` DLC files, `{discs}` a multi-disc game's discs, e.g. `myemu --update {updates} --dlc {dlc} {rom}`.
+A placeholder with nothing to fill it disappears, and every path is quoted.
+
+Other limits: linking depends on the `[title ID]` in the file name, as in most dumps (the files' contents are
+encrypted), so a file without one is treated as a game of its own. A DLC whose ID ends in `800` would be
+mistaken for an update.
+
 ## Presets and Flatpak access
 
-Launch commands default to the presets in `arcadia/presets.py`. Their Flatpak IDs were
+Launch commands default to the presets in `arcadia/presets.py` (Switch uses Ryujinx from the Ryubing
+fork, Flathub `io.github.ryubing.Ryujinx`; Eden, `dev.eden_emu.eden`, is the other Flathub option). Their Flatpak IDs were
 checked on Flathub. The command-line options and save folders are the usual defaults and
 should be checked on your machine. Settings → "Reset launch commands to presets" restores them.
 
@@ -79,6 +133,7 @@ flatpak override --user --filesystem=/path/to/ROMs io.mgba.mGBA
 flatpak override --user --filesystem=/path/to/ROMs com.snes9x.Snes9x
 flatpak override --user --filesystem=/path/to/ROMs org.duckstation.DuckStation
 flatpak override --user --filesystem=/path/to/ROMs org.ppsspp.PPSSPP
+flatpak override --user --filesystem=/path/to/ROMs io.github.ryubing.Ryujinx
 ```
 
 Save-state snapshots only work where the save folder is set. Standalone presets
@@ -154,6 +209,8 @@ arcadia/
   config.py      settings and default systems
   scanner.py     ROM discovery and title cleanup
   sorter.py      identify ROMs in the downloads folder and move them safely, with undo
+  bundles.py     disc tags, playlists, and Switch title IDs
+  files_dialog.py  every file that makes up a game
   import_dialog.py  the confirm-before-moving dialog
   library.py     SQLite store (games, favorites, sessions)
   launcher.py    launch template -> argument list
@@ -168,5 +225,7 @@ arcadia/
 tests/
   test_core.py   scanning, library, launching, save states, config
   test_sorter.py ROM identification, plans, safe moves, and undo
+  test_bundles.py  disc-name, playlist, and title-ID parsing
+  test_multifile.py  multi-disc sets and update/DLC bundles end to end
   test_ui.py     window, cover flow, and import dialog tests (skipped where Qt can't load)
 ```

@@ -24,8 +24,9 @@ _DEFAULT_SYSTEM_ROWS = [
     ("genesis", "Sega Genesis", "genesis", [".md", ".gen", ".bin", ".zip"]),
     ("sms", "Sega Master System", "mastersystem", [".sms", ".zip"]),
     ("gamegear", "Sega Game Gear", "gamegear", [".gg", ".zip"]),
-    ("psx", "PlayStation", "psx", [".cue", ".chd", ".pbp", ".iso"]),
+    ("psx", "PlayStation", "psx", [".cue", ".chd", ".pbp", ".iso", ".m3u"]),
     ("psp", "PlayStation Portable", "psp", [".iso", ".cso", ".pbp"]),
+    ("switch", "Nintendo Switch", "switch", [".nsp", ".xci", ".nsz", ".xcz"]),
 ]
 
 

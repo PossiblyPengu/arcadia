@@ -342,3 +342,164 @@ def test_settings_dialog_saves_inbox_options(qapp, tmp_path):
     dialog.apply(cfg)
     assert cfg.inbox_dir == "~/Downloads" and cfg.auto_import is False
     assert cfg.inbox_path == Path("~/Downloads").expanduser()
+
+
+# ---------- multi-disc games and updates / DLC ----------
+
+from arcadia.bundles import write_m3u  # noqa: E402
+from arcadia.files_dialog import FilesDialog  # noqa: E402
+
+_TID = "0100ABCD0001"
+
+
+def _psx_bin():
+    data = bytearray(0x10000)
+    data[0x8000:0x8006] = b"\x01CD001"
+    data[0x8008:0x8013] = b"PLAYSTATION"
+    return bytes(data)
+
+
+def _library_window(tmp_path, template="echo {rom}"):
+    roms = tmp_path / "roms"
+    psx = roms / "psx"
+    (psx / "Final Fantasy VII").mkdir(parents=True)
+    (psx / "Final Fantasy VII" / "Final Fantasy VII (Disc 1).cue").write_text("x")
+    (psx / "Final Fantasy VII" / "Final Fantasy VII (Disc 2).cue").write_text("x")
+    write_m3u(psx / "Final Fantasy VII.m3u", ["Final Fantasy VII/Final Fantasy VII (Disc 1).cue", "Final Fantasy VII/Final Fantasy VII (Disc 2).cue"])
+    sw = roms / "switch"
+    sw.mkdir(parents=True)
+    (sw / f"Super Game [{_TID}2000][v0].nsp").write_bytes(b"PFS0")
+    (sw / f"Super Game [{_TID}2800][v65536].nsp").write_bytes(b"PFS0")
+    (sw / f"Super Game DLC [{_TID}3001][v0].nsp").write_bytes(b"PFS0")
+    (sw / f"Orphan Game [0100FFFF00022800][v1].nsp").write_bytes(b"PFS0")
+    cfg = Config(rom_root=str(roms), data_dir=str(tmp_path / "data"))
+    for s in cfg.systems:
+        s.command = template
+    win = MainWindow(cfg, tmp_path / "config.json", Library(cfg.db_path))
+    win.show()
+    return win
+
+
+def _select_view(win, view):
+    ids = [win.systems_list.item(i).data(Qt.ItemDataRole.UserRole) for i in range(win.systems_list.count())]
+    win.systems_list.setCurrentRow(ids.index(view))
+
+
+def test_discs_and_updates_are_hidden_inside_their_game(qapp, tmp_path):
+    win = _library_window(tmp_path)
+    try:
+        _select_view(win, "psx")
+        assert win.coverflow.titles() == ["Final Fantasy VII"]  # one game, not three entries
+        assert "2 discs" in win.meta_lbl.text()
+        _select_view(win, "switch")
+        assert win.coverflow.titles() == ["Orphan Game (update)", "Super Game"]
+        win.coverflow.set_index(win.coverflow.titles().index("Super Game"), animate=False)
+        assert "1 update (latest v65536), 1 DLC" in win.meta_lbl.text()
+    finally:
+        win.close()
+
+
+def test_launch_passes_the_playlist_and_linked_files(qapp, tmp_path):
+    win = _library_window(tmp_path, template="echo --u {updates} --d {dlc} {rom}")
+    try:
+        _select_view(win, "switch")
+        win.coverflow.set_index(win.coverflow.titles().index("Super Game"), animate=False)
+        win.launch()
+        args = win.process.arguments()
+        assert any("2800" in a for a in args[args.index("--u") + 1 :]) and any("3001" in a for a in args)
+        assert args[-1].endswith("[0100ABCD00012000][v0].nsp")  # the base game is what launches
+        for _ in range(300):
+            qapp.processEvents()
+            QTest.qWait(10)
+            if win.process is None:
+                break
+
+        _select_view(win, "psx")
+        win.launch()
+        assert win.process.arguments()[-1].endswith("Final Fantasy VII.m3u")  # emulators open the playlist
+        for _ in range(300):
+            qapp.processEvents()
+            QTest.qWait(10)
+            if win.process is None:
+                break
+    finally:
+        win.close()
+
+
+def test_launching_a_stray_update_explains_instead_of_launching(qapp, tmp_path, monkeypatch):
+    win = _library_window(tmp_path)
+    try:
+        _select_view(win, "switch")
+        win.coverflow.set_index(win.coverflow.titles().index("Orphan Game (update)"), animate=False)
+        shown = []
+        monkeypatch.setattr(QMessageBox, "information", lambda *a, **k: shown.append(a[2]))
+        win.launch()
+        assert win.process is None
+        assert shown and "an update" in shown[0] and "base game" in shown[0]
+        assert "update file" in win.meta_lbl.text()
+    finally:
+        win.close()
+
+
+def test_files_dialog_lists_every_part(qapp, tmp_path):
+    win = _library_window(tmp_path)
+    try:
+        _select_view(win, "psx")
+        rows = win._file_rows(win.current_game_key())
+        assert [r for r, _p in rows] == ["Playlist", "Disc", "Disc"]
+        _select_view(win, "switch")
+        win.coverflow.set_index(win.coverflow.titles().index("Super Game"), animate=False)
+        rows = win._file_rows(win.current_game_key())
+        assert [r for r, _p in rows] == ["Game", "DLC", "Update v65536"]
+
+        dialog = FilesDialog("Super Game", rows)
+        assert dialog.table.rowCount() == 3
+        assert dialog.table.item(0, 2).text() == "4 B"  # real file sizes
+    finally:
+        win.close()
+
+
+def test_import_dialog_describes_sets_and_bundles(qapp, tmp_path):
+    inbox = tmp_path / "inbox"
+    inbox.mkdir()
+    for n in (1, 2):
+        _put(inbox / f"Game (Disc {n}).cue", f'FILE "Game (Disc {n}).bin" BINARY\n'.encode())
+        _put(inbox / f"Game (Disc {n}).bin", _psx_bin())
+    _put(inbox / f"Super Game [{_TID}2000][v0].nsp", b"PFS0")
+    _put(inbox / f"Super Game [{_TID}2800][v1].nsp", b"PFS0")
+    _put(inbox / "Lost (Disc 1).cue", b'FILE "Lost (Disc 1).bin" BINARY\n')
+    _put(inbox / "Lost (Disc 1).bin", _psx_bin())
+    _put(inbox / "Lost (Disc 3).cue", b'FILE "Lost (Disc 3).bin" BINARY\n')
+    _put(inbox / "Lost (Disc 3).bin", _psx_bin())
+    cfg = Config(rom_root=str(tmp_path / "roms"), data_dir=str(tmp_path / "data"))
+    dialog = ImportDialog(cfg, build_plan(inbox, cfg))
+
+    cells = {dialog.table.item(r, 1).text(): r for r in range(dialog.table.rowCount())}
+    assert "Game  (2 discs)" in cells and "Super Game [0100ABCD00012000][v0].nsp  (+1 update)" in cells
+    set_row, bundle_row = cells["Game  (2 discs)"], cells["Super Game [0100ABCD00012000][v0].nsp  (+1 update)"]
+    assert dialog.table.item(set_row, 4).text() == "psx/Game/"
+    assert dialog.table.item(bundle_row, 4).text() == "switch/"
+    selected = {i.label for i in dialog.selected_items()}
+    assert "Game" in selected and "Super Game [0100ABCD00012000][v0].nsp" in selected
+    assert "Lost" not in selected  # disc 2 is missing, so the user has to decide
+
+
+def test_discs_in_the_downloads_folder_are_joined_automatically(qapp, tmp_path, asked):
+    inbox = tmp_path / "inbox"
+    inbox.mkdir()
+    for n in (1, 2):
+        _put(inbox / f"Game (Disc {n}).cue", f'FILE "Game (Disc {n}).bin" BINARY\n'.encode())
+        _put(inbox / f"Game (Disc {n}).bin", _psx_bin())
+    cfg = Config(rom_root=str(tmp_path / "roms"), data_dir=str(tmp_path / "data"), inbox_dir=str(inbox))
+    for s in cfg.systems:
+        s.command = "echo {rom}"
+    win = MainWindow(cfg, tmp_path / "config.json", Library(cfg.db_path))
+    try:
+        win.check_inbox()
+        assert asked == []  # certain, so no question
+        assert (tmp_path / "roms" / "psx" / "Game.m3u").exists()
+        _select_view(win, "psx")
+        assert win.coverflow.titles() == ["Game"] and "2 discs" in win.meta_lbl.text()
+        assert list(inbox.iterdir()) == []
+    finally:
+        win.close()

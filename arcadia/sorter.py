@@ -33,6 +33,14 @@ from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 
+from arcadia.bundles import (
+    SWITCH_EXTS,
+    DiscInfo,
+    merge_m3u_lines,
+    parse_disc,
+    parse_switch,
+    write_m3u,
+)
 from arcadia.config import Config
 
 
@@ -56,6 +64,7 @@ SYSTEM_LABELS = {
     "gamegear": "Game Gear",
     "psx": "PlayStation",
     "psp": "PSP",
+    "switch": "Nintendo Switch",
 }
 
 # Extensions that identify a system (or, for discs, a short list of candidates).
@@ -79,6 +88,10 @@ EXT_SYSTEMS: dict[str, list[str]] = {
     ".chd": ["psx", "psp"],
     ".cue": ["psx"],
     ".bin": ["genesis", "psx"],
+    ".nsp": ["switch"],
+    ".xci": ["switch"],
+    ".nsz": ["switch"],
+    ".xcz": ["switch"],
 }
 CART_EXTS = {".nes", ".sfc", ".smc", ".gb", ".gbc", ".gba", ".z64", ".n64", ".v64", ".md", ".gen", ".sms", ".gg", ".bin"}
 DISC_EXTS = {".iso", ".cso", ".pbp", ".chd", ".cue", ".bin"}
@@ -96,6 +109,7 @@ N64_MAGICS = {bytes.fromhex("80371240"), bytes.fromhex("37804012"), bytes.fromhe
 # Name hints, longest phrases first so "game boy advance" wins over "game boy".
 _HINT_PHRASES = [
     ("nintendo entertainment system", "nes"),
+    ("nintendo switch", "switch"),
     ("playstation portable", "psp"),
     ("game boy advance", "gba"),
     ("gameboy advance", "gba"),
@@ -126,6 +140,8 @@ _HINT_PHRASES = [
     ("psp", "psp"),
     ("nes", "nes"),
     ("sfc", "snes"),
+    ("switch", "switch"),
+    ("nsw", "switch"),
     ("gg", "gamegear"),
     ("gb", "gb"),
 ]
@@ -211,6 +227,15 @@ def sniff_cartridge(data: bytes, size: int, ext: str) -> tuple[str | None, str]:
     return None, ""
 
 
+def sniff_switch(data: bytes) -> tuple[str | None, str]:
+    """NSP/NSZ files are PFS0 containers; XCI/XCZ carry a HEAD marker at 0x100."""
+    if data[:4] == b"PFS0":
+        return "switch", "Switch NSP container"
+    if data[0x100:0x104] == b"HEAD":
+        return "switch", "Switch XCI cartridge image"
+    return None, ""
+
+
 def sniff_disc(data: bytes, read_at: Callable[[int, int], bytes] | None) -> tuple[str | None, str]:
     """Identify a disc image or PBP. Returns (system_id, evidence) or (None, '')."""
     if data[:4] in (b"CISO", b"ZISO"):
@@ -261,6 +286,8 @@ def _identify_rom(
     if ext in CART_EXTS:
         n = EXHIROM_READ if size > 0x400000 and ext in (".sfc", ".smc") else CART_READ
         sniffed, detail = sniff_cartridge(read(n), size, ext)
+    if ext in SWITCH_EXTS:
+        sniffed, detail = sniff_switch(read(0x200))
     if sniffed is None and ext in DISC_EXTS and ext != ".cue":
         sniffed, detail = sniff_disc(read(DISC_READ), read_at)
 
@@ -428,18 +455,38 @@ class PlanItem:
     destination: Path = field(default_factory=Path)
     exists: bool = False  # something already sits at the destination
     manual: bool = False  # the user chose or confirmed the system
+    kind: str = "single"  # single | disc_set (discs joined by a playlist) | bundle (game + updates/DLC)
+    title: str = ""  # disc sets: the game title, used for the folder and playlist names
+    discs: list[Path] = field(default_factory=list)  # disc sets: the main disc files, in play order
+    merge: bool = False  # disc sets: a playlist for this game already exists, so discs are added to it
+    detail: str = ""  # short extra info for the UI: "3 discs", "+1 update, 2 DLC"
 
     @property
     def sources(self) -> list[Path]:
         return [self.source, *self.companions]
 
+    @property
+    def label(self) -> str:
+        return self.title if self.kind == "disc_set" else self.source.name
+
+    def dest_label(self) -> str:
+        """Where this goes, relative to the ROM root: 'psx/Game Title/' or 'nes/'."""
+        if self.kind == "disc_set":
+            return f"{self.destination.parent.name}/{self.title}/"
+        return self.destination.parent.name + "/"
+
     def retarget(self, config: Config, system_id: str) -> None:
         """Point this item at a system (e.g. the user picked a different one)."""
         self.system_id = system_id
-        self.destination = destination_for(config, system_id, self.source)
-        self.exists = any(
-            (self.destination.parent / p.name).exists() for p in self.sources
-        )
+        folder = config.rom_root_path / config.system(system_id).folder
+        if self.kind == "disc_set":
+            self.destination = folder / f"{self.title}.m3u"
+            disc_dir = folder / self.title
+            self.exists = any((disc_dir / p.name).exists() for p in self.sources)
+            self.merge = self.destination.exists()
+        else:
+            self.destination = folder / self.source.name
+            self.exists = any((folder / p.name).exists() for p in self.sources)
 
 
 @dataclass
@@ -511,7 +558,194 @@ def build_plan(inbox: Path, config: Config, now: float | None = None, min_age: f
         )
         item.retarget(config, ident.system_id)
         plan.items.append(item)
+    plan.items = _group_switch(_group_discs(plan.items, config), config)
     return plan
+
+
+# ----------------------------------------------------------------------------
+# Games made of several files
+# ----------------------------------------------------------------------------
+
+_SET_DISC_EXTS = {".cue", ".chd", ".iso", ".pbp", ".cso"}
+
+
+def _worst(items: list[PlanItem]) -> Confidence:
+    return max((i.confidence for i in items), key=lambda c: _RANK[c])
+
+
+def _plural(n: int, word: str) -> str:
+    return f"{n} {word}{'' if n == 1 else 's'}"
+
+
+def _make_disc_set(members: list[PlanItem], infos: list[DiscInfo], config: Config) -> PlanItem:
+    order = sorted(range(len(members)), key=lambda i: infos[i].number)
+    members = [members[i] for i in order]
+    infos = [infos[i] for i in order]
+    numbers = [i.number for i in infos]
+    total = max((i.total for i in infos if i.total), default=None)
+    missing = [n for n in range(1, (total or max(numbers)) + 1) if n not in numbers]
+    title = infos[0].base
+    confidence = _worst(members)
+    reason = f"{_plural(len(members), 'disc')} of {title}: {members[0].reason}"
+    if missing:
+        confidence = Confidence.UNSURE
+        reason = (
+            f"found {_plural(len(members), 'disc')} of {title} but not disc "
+            + ", ".join(str(n) for n in missing)
+            + "; the playlist would be incomplete"
+        )
+    combined = PlanItem(
+        source=members[0].source,
+        system_id=members[0].system_id,
+        confidence=confidence,
+        reason=reason,
+        alternatives=members[0].alternatives,
+        companions=[m.source for m in members[1:]] + [c for m in members for c in m.companions],
+        kind="disc_set",
+        title=title,
+        discs=[m.source for m in members],
+        detail=_plural(len(members), "disc"),
+    )
+    combined.retarget(config, combined.system_id)
+    return combined
+
+
+def _lone_disc(item: PlanItem, info: DiscInfo, config: Config) -> PlanItem:
+    """One disc of a set arrived by itself. If the library already has that game's playlist,
+    add the disc to it; otherwise move it as an ordinary game but say what it looks like."""
+    folder = config.rom_root_path / config.system(item.system_id).folder
+    if (folder / f"{info.base}.m3u").exists():
+        combined = PlanItem(
+            source=item.source,
+            system_id=item.system_id,
+            confidence=item.confidence,
+            reason=f"disc {info.number} of {info.base}, added to its existing playlist",
+            alternatives=item.alternatives,
+            companions=item.companions,
+            kind="disc_set",
+            title=info.base,
+            discs=[item.source],
+            detail=f"adds disc {info.number}",
+        )
+        combined.retarget(config, item.system_id)
+        return combined
+    if item.confidence is Confidence.CERTAIN:
+        item.confidence = Confidence.LIKELY
+    item.reason += f"; this looks like disc {info.number} of a multi-disc game and the other discs aren't in this folder"
+    return item
+
+
+def _group_discs(items: list[PlanItem], config: Config) -> list[PlanItem]:
+    parsed: dict[int, DiscInfo] = {}
+    groups: dict[tuple[str, str], list[PlanItem]] = {}
+    for it in items:
+        if it.kind != "single" or it.source.suffix.lower() not in _SET_DISC_EXTS:
+            continue
+        info = parse_disc(it.source.stem)
+        if info is not None:
+            parsed[id(it)] = info
+            groups.setdefault((it.system_id, info.base.lower()), []).append(it)
+
+    replacement: dict[int, PlanItem | None] = {}
+    for members in groups.values():
+        infos = [parsed[id(m)] for m in members]
+        numbers = [i.number for i in infos]
+        if len(members) >= 2 and len(set(numbers)) == len(numbers):
+            replacement[id(members[0])] = _make_disc_set(members, infos, config)
+            for other in members[1:]:
+                replacement[id(other)] = None
+        elif len(members) == 1:
+            replacement[id(members[0])] = _lone_disc(members[0], infos[0], config)
+        # two files claiming the same disc number are left as they are, for the user to look at
+
+    out: list[PlanItem] = []
+    for it in items:
+        if id(it) not in replacement:
+            out.append(it)
+        elif replacement[id(it)] is not None:
+            out.append(replacement[id(it)])
+    return out
+
+
+def _library_has_switch_base(config: Config, group: int) -> bool:
+    try:
+        folder = config.rom_root_path / config.system("switch").folder
+    except KeyError:
+        return False
+    if not folder.is_dir():
+        return False
+    for path in folder.rglob("*"):
+        if path.suffix.lower() in SWITCH_EXTS:
+            info = parse_switch(path.name)
+            if info is not None and info.role == "base" and info.group == group:
+                return True
+    return False
+
+
+def _group_switch(items: list[PlanItem], config: Config) -> list[PlanItem]:
+    """Bundle a Switch game with the updates and DLC that arrived with it, and warn about
+    updates or DLC that have no base game yet."""
+    infos = {}
+    groups: dict[int, list[PlanItem]] = {}
+    for it in items:
+        if it.kind != "single" or it.system_id != "switch" or it.source.suffix.lower() not in SWITCH_EXTS:
+            continue
+        info = parse_switch(it.source.name)
+        if info is not None:
+            infos[id(it)] = info
+            groups.setdefault(info.group, []).append(it)
+
+    replacement: dict[int, PlanItem | None] = {}
+    for group, members in groups.items():
+        bases = [m for m in members if infos[id(m)].role == "base"]
+        updates = [m for m in members if infos[id(m)].role == "update"]
+        dlcs = [m for m in members if infos[id(m)].role == "dlc"]
+        has_base = bool(bases) or _library_has_switch_base(config, group)
+        note = "" if has_base else "; its base game isn't in your library yet"
+
+        if len(members) == 1:
+            only = members[0]
+            if infos[id(only)].role != "base":
+                if not has_base and only.confidence is Confidence.CERTAIN:
+                    only.confidence = Confidence.LIKELY
+                kind = "an update" if infos[id(only)].role == "update" else "DLC"
+                only.reason += f"; this is {kind}" + (note if note else " for a game already in your library")
+            continue
+
+        lead = (bases or members)[0]
+        rest = [m for m in members if m is not lead]
+        parts = []
+        if updates:
+            parts.append(f"+{_plural(len(updates), 'update')}")
+        if dlcs:
+            parts.append(f"{len(dlcs)} DLC")
+        if len(bases) > 1:
+            parts.append(f"{len(bases)} base files")
+        confidence = _worst(members)
+        if not has_base and confidence is Confidence.CERTAIN:
+            confidence = Confidence.LIKELY
+        combined = PlanItem(
+            source=lead.source,
+            system_id=lead.system_id,
+            confidence=confidence,
+            reason=f"{lead.reason}; bundled with its {' and '.join(p.lstrip('+') for p in parts)}{note}",
+            alternatives=lead.alternatives,
+            companions=[*lead.companions, *[m.source for m in rest], *[c for m in rest for c in m.companions]],
+            kind="bundle",
+            detail=", ".join(parts),
+        )
+        combined.retarget(config, lead.system_id)
+        replacement[id(members[0])] = combined
+        for other in members[1:]:
+            replacement[id(other)] = None
+
+    out: list[PlanItem] = []
+    for it in items:
+        if id(it) not in replacement:
+            out.append(it)
+        elif replacement[id(it)] is not None:
+            out.append(replacement[id(it)])
+    return out
 
 
 # ----------------------------------------------------------------------------
@@ -586,11 +820,20 @@ class Journal:
         tmp.write_text(json.dumps(batches[-self.MAX_BATCHES :], indent=1), encoding="utf-8")
         os.replace(tmp, self.path)
 
-    def record(self, moves: list[Move]) -> None:
+    def record(self, moves: list[Move], created: list[str] | None = None, restore: dict[str, str] | None = None) -> None:
+        """created: files/folders this import made (a new playlist and its folder).
+        restore: playlists it edited, mapped to their previous text."""
         if not moves:
             return
         batches = self._load()
-        batches.append({"time": time.time(), "moves": [{"src": m.src, "dst": m.dst} for m in moves]})
+        batches.append(
+            {
+                "time": time.time(),
+                "moves": [{"src": m.src, "dst": m.dst} for m in moves],
+                "created": list(created or []),
+                "restore": dict(restore or {}),
+            }
+        )
         self._save(batches)
 
     def can_undo(self) -> bool:
@@ -620,6 +863,25 @@ class Journal:
                     restored += 1
                 except SortError as exc:
                     problems.append(str(exc))
+        for path, text in batch.get("restore", {}).items():  # playlists we added discs to
+            try:
+                Path(path).write_text(text, encoding="utf-8")
+            except OSError as exc:
+                problems.append(f"could not restore {Path(path).name}: {exc.strerror or exc}")
+        for path in batch.get("created", []):  # playlists and folders we made (folders last)
+            p = Path(path)
+            try:
+                if p.is_file():
+                    p.unlink()
+            except OSError as exc:
+                problems.append(f"could not remove {p.name}: {exc.strerror or exc}")
+        for path in reversed(batch.get("created", [])):
+            p = Path(path)
+            if p.is_dir():
+                try:
+                    p.rmdir()
+                except OSError:
+                    problems.append(f"{p.name} was left in place because it isn't empty")
         self._save(batches)
         return restored, problems
 
@@ -629,6 +891,60 @@ class ApplyResult:
     moved: list[PlanItem] = field(default_factory=list)
     skipped: list[tuple[PlanItem, str]] = field(default_factory=list)
     moves: list[Move] = field(default_factory=list)
+    created: list[str] = field(default_factory=list)
+    restore: dict[str, str] = field(default_factory=dict)
+
+
+def _apply_disc_set(item: PlanItem, result: ApplyResult) -> None:
+    """Move a set's discs into '<system folder>/<title>/' and write (or extend) '<title>.m3u'."""
+    playlist = item.destination
+    disc_dir = playlist.parent / item.title
+    pairs = []
+    for src in item.sources:
+        dst = disc_dir / src.name
+        if dst.exists():
+            result.skipped.append((item, f"{src.name} already exists in the library"))
+            return
+        pairs.append((src, dst))
+
+    made_dir = not disc_dir.exists()
+    done: list[Move] = []
+
+    def roll_back() -> None:
+        for m in reversed(done):  # put everything back, including half a set
+            try:
+                safe_move(Path(m.dst), Path(m.src))
+            except SortError:
+                pass
+        if made_dir:
+            try:
+                disc_dir.rmdir()
+            except OSError:
+                pass
+
+    try:
+        for src, dst in pairs:
+            safe_move(src, dst)
+            done.append(Move(str(src), str(dst)))
+        previous = None
+        existing: list[str] = []
+        if playlist.exists():
+            previous = playlist.read_text(encoding="utf-8", errors="replace")
+            existing = [ln.strip() for ln in previous.splitlines() if ln.strip() and not ln.strip().startswith("#")]
+        write_m3u(playlist, merge_m3u_lines(existing, [f"{item.title}/{d.name}" for d in item.discs]))
+    except (SortError, OSError) as exc:
+        roll_back()
+        result.skipped.append((item, str(exc)))
+        return
+
+    if previous is None:
+        result.created.append(str(playlist))
+    else:
+        result.restore[str(playlist)] = previous
+    if made_dir:
+        result.created.append(str(disc_dir))
+    result.moved.append(item)
+    result.moves.extend(done)
 
 
 def apply_plan(items: list[PlanItem], journal: Journal, keep_both: bool = False) -> ApplyResult:
@@ -636,6 +952,9 @@ def apply_plan(items: list[PlanItem], journal: Journal, keep_both: bool = False)
     (with keep_both, single files only) the incoming file is renamed 'Name (2).ext'."""
     result = ApplyResult()
     for item in items:
+        if item.kind == "disc_set":
+            _apply_disc_set(item, result)
+            continue
         pairs: list[tuple[Path, Path]] = []
         dest_dir = item.destination.parent
         for src in item.sources:
@@ -665,5 +984,5 @@ def apply_plan(items: list[PlanItem], journal: Journal, keep_both: bool = False)
             continue
         result.moved.append(item)
         result.moves.extend(done)
-    journal.record(result.moves)
+    journal.record(result.moves, result.created, result.restore)
     return result

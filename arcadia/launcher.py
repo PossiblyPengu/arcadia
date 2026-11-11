@@ -11,21 +11,32 @@ class LaunchError(Exception):
     pass
 
 
-def build_command(template: str, rom: Path) -> list[str]:
+def build_command(template: str, rom: Path, extras: dict[str, list[Path]] | None = None) -> list[str]:
     """Substitute the ROM path into a launch template.
 
     Example: 'retroarch -L /cores/snes9x.so {rom}' ->
              ['retroarch', '-L', '/cores/snes9x.so', '/roms/snes/Game (USA).sfc']
     If the template has no {rom}, the ROM path is appended as the last argument.
     A leading '~' in any argument is expanded to the home directory.
+
+    Games made of several files can use extra placeholders, each replaced by the quoted
+    paths of that kind of file (or by nothing if there are none):
+        {updates}  update files linked to the game
+        {dlc}      DLC files linked to the game
+        {discs}    the discs of a multi-disc game
     """
     if not template or not template.strip():
         raise LaunchError("No launch command is set for this system. Add one in Settings.")
+    command = template
+    for name, paths in (extras or {}).items():
+        command = command.replace("{" + name + "}", " ".join(shlex.quote(str(p)) for p in paths))
+    for name in ("updates", "dlc", "discs"):  # placeholders with nothing to fill them
+        command = command.replace("{" + name + "}", "")
     quoted = shlex.quote(str(rom))
-    if "{rom}" in template:
-        command = template.replace("{rom}", quoted)
+    if "{rom}" in command:
+        command = command.replace("{rom}", quoted)
     else:
-        command = f"{template} {quoted}"
+        command = f"{command} {quoted}"
     try:
         args = shlex.split(command)
     except ValueError as exc:

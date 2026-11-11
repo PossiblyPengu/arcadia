@@ -274,3 +274,26 @@ def test_ui_settings_round_trip(tmp_path):
     loaded = Config.load(path)
     assert loaded.show_empty_systems is True and loaded.sort == "played"
     assert Config().show_empty_systems is False and Config().sort == "title"
+
+
+# ---------- sizes and bundle summaries ----------
+
+from arcadia.util import bundle_summary, fmt_size  # noqa: E402
+
+
+@pytest.mark.parametrize(
+    "n, expected",
+    [(0, "0 B"), (1023, "1023 B"), (1024, "1.0 KB"), (5 * 1024 * 1024, "5.0 MB"), (3 * 1024**3, "3.0 GB"), (5000 * 1024**3, "5000.0 GB")],
+)
+def test_fmt_size(n, expected):
+    assert fmt_size(n) == expected
+
+
+def test_bundle_summary():
+    assert bundle_summary(["disc", "disc", "disc"]) == "3 discs"
+    assert bundle_summary(["disc"]) == "1 disc"
+    assert bundle_summary(["update", "dlc", "dlc"]) == "1 update, 2 DLC"
+    assert bundle_summary(["update"], ["v65536"]) == "1 update (latest v65536)"
+    assert bundle_summary(["update", "update"], ["v65536", "v131072"]) == "2 updates (latest v131072)"
+    assert bundle_summary(["update", "update"], ["v1.2.0", "v1.10.0"]) == "2 updates (latest v1.10.0)"
+    assert bundle_summary([]) == ""

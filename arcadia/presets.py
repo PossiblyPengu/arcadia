@@ -42,6 +42,7 @@ PRESETS: dict[str, Preset] = {
     "sms": Preset("RetroArch · Genesis Plus GX", _retroarch("genesis_plus_gx_libretro.so"), RETROARCH_SAVES, "#d9342b"),
     "gamegear": Preset("RetroArch · Genesis Plus GX", _retroarch("genesis_plus_gx_libretro.so"), RETROARCH_SAVES, "#2bb3a3"),
     "psx": Preset("DuckStation (Flatpak)", "flatpak run org.duckstation.DuckStation -batch -- {rom}", "", "#7a8aa6"),
+    "switch": Preset("Ryujinx · Ryubing (Flatpak)", "flatpak run io.github.ryubing.Ryujinx {rom}", "", "#00c3e3"),
     "psp": Preset("PPSSPP (Flatpak)", "flatpak run org.ppsspp.PPSSPP {rom}", "", "#3b6ea8"),
 }
 
