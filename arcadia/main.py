@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import argparse
+import os
 import sys
+from pathlib import Path
 
 from PySide6.QtGui import QColor, QPalette
 from PySide6.QtWidgets import QApplication
@@ -30,15 +32,29 @@ def main(argv: list[str] | None = None) -> int:
 
     parser = argparse.ArgumentParser(prog="arcadia", description="Emulator launcher and ROM library manager")
     parser.add_argument("--fullscreen", action="store_true", help="start in fullscreen (handy on a Steam Deck)")
+    parser.add_argument(
+        "--home",
+        type=Path,
+        help="run entirely from this folder: its config.json, ROMs, emulators and saves, so it can be moved or "
+        "carried on a drive (also read from the ARCADIA_HOME environment variable)",
+    )
     args, qt_args = parser.parse_known_args(sys.argv[1:] if argv is None else argv)
 
     app = QApplication([sys.argv[0], *qt_args])
     app.setApplicationName("Arcadia")
     apply_dark_theme(app)
 
-    config = Config.load(CONFIG_PATH)
+    home = args.home or (Path(os.environ["ARCADIA_HOME"]) if os.environ.get("ARCADIA_HOME") else None)
+    if home is not None:
+        home = home.expanduser().resolve()
+    config_path = home / "config.json" if home is not None else CONFIG_PATH
+    first_run = not config_path.exists()
+    config = Config.load(config_path, home=home)
+    if first_run:  # set up the Arcadia folder the first time, so there's somewhere to put ROMs
+        config.ensure_layout()
+        config.save(config_path)
     library = Library(config.db_path)
-    window = MainWindow(config, CONFIG_PATH, library)
+    window = MainWindow(config, config_path, library)
     if args.fullscreen:
         window.toggle_fullscreen()
     else:

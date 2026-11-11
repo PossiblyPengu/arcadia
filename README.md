@@ -25,6 +25,9 @@ written in Python with PySide6 (Qt).
   DLC** (Nintendo Switch) show as one game with its update and DLC files attached
 - **ROM sorting**: point Arcadia at your downloads folder and it moves each ROM into the
   right system folder, asking you whenever it isn't sure (see below)
+- **Everything in one folder**: ROMs, emulators, BIOS files, covers, saves and the library live under one
+  `Arcadia` folder, and Arcadia can install emulators into it (File → Emulators) so each one is self-contained
+  instead of spread across Flatpak, `~/.config` and `~/.local/share`. `--home PATH` makes the whole thing portable
 - **34 systems** with launch presets (see the table below), from the NES to the PS3, Wii U and Xbox
 - Presets for Nintendo (NES, SNES, Game Boy, Game Boy Color, GBA, N64, Switch), Sega (Genesis,
   Master System, Game Gear), and PlayStation / PSP, using standalone Flatpak emulators
@@ -120,6 +123,67 @@ Other limits: linking depends on the `[title ID]` in the file name, as in most d
 encrypted), so a file without one is treated as a game of its own. A DLC whose ID ends in `800` would be
 mistaken for an update.
 
+## Everything in one folder
+
+A fresh install keeps everything under one folder, `~/Arcadia` by default:
+
+```
+Arcadia/
+  roms/<system>/        your games, one folder per system (created for you)
+  emulators/<name>/     one self-contained folder per installed emulator:
+      app/                the program (an AppImage, or an unpacked archive)
+      config/ data/       its settings, saves, shader caches and so on (see below)
+      cache/ state/
+      install.json        what was installed, from where, and whether its checksum was verified
+  bios/                 a place for BIOS and firmware files
+  media/                covers and metadata
+  states/               save-state snapshots made by Arcadia
+  data/                 the library database and the import undo journal
+```
+
+Change the folder in File → Settings → *Arcadia folder*. Any single location can still be set separately (say
+ROMs on a big drive), and the rest stays inside the Arcadia folder. **An existing setup keeps working exactly as it
+was** until you set an Arcadia folder; nothing is moved for you. If you do move, copy your ROMs into `roms/` yourself.
+
+**Portable mode.** `python -m arcadia --home /path/to/Arcadia` (or the `ARCADIA_HOME` environment variable) runs
+entirely from that folder, including its own `config.json`, and writes nothing to `~/.config` or `~/.local/share`.
+Copy the folder to an SD card or another machine and point Arcadia at it.
+
+### Installing emulators into that folder (File → Emulators…)
+
+Ten emulators can be installed here: PCSX2, RPCS3, Cemu, DuckStation, Flycast, melonDS, Azahar, RMG, mGBA and xemu.
+Pick one and Arcadia looks up the project's latest release **on your machine** and shows you exactly what it would
+download (the file, its size, where it comes from, and whether a checksum will be checked) before anything is
+fetched. Once installed, that system launches your copy; until then it uses the Flatpak, as before. You can switch
+back at any time by clearing the *Installed emulator* column in Settings, or by removing the emulator.
+
+**Keeping each emulator's data in its own folder.** When Arcadia launches an installed emulator it sets
+`XDG_CONFIG_HOME`, `XDG_DATA_HOME`, `XDG_CACHE_HOME` and `XDG_STATE_HOME` to that emulator's folder, so its
+settings, saves and shader caches land there and not in your home directory. This works for programs that follow
+the XDG convention, which most Qt and SDL emulators do. **It is not guaranteed for every emulator**: one that
+hard-codes its own location would ignore it, and one that wants BIOS files still needs pointing at the `bios/`
+folder inside its own settings. Flatpak emulators are unaffected, because Flatpak keeps its own data under
+`~/.var/app`.
+
+**Safety.** Downloads only come over https from GitHub's own hosts, and a redirect to anywhere else is refused. The
+file's SHA-256 is verified whenever GitHub publishes one (and the download is thrown away if it doesn't match);
+when it doesn't, the dialog says the download can't be verified and the record notes it. Archives are unpacked
+into a staging folder and can't write outside it (no `..` paths, absolute paths, or links). An update keeps the old
+copy until the new one is in place, never touches the emulator's settings and saves, and a failed one leaves the
+working copy alone. Removing offers to keep or delete the settings and saves. Nothing downloaded is run by the
+installer.
+
+**What I could and couldn't check.** I couldn't read any project's real release page from where this was built, so
+the file-name patterns Arcadia uses to preselect a build are from my knowledge of each project and **unverified**.
+That's why a wrong guess is harmless: the dialog lists every Linux 64-bit build it can unpack, preselects one only
+if it matches, and otherwise asks you to choose. If nothing suitable is found it tells you and points to the
+Flatpak. The installer itself was tested end to end against a local server, including attack cases, but not
+against the real downloads.
+
+**Not installable here:** Dolphin, PPSSPP, Snes9x, MAME, openMSX and FS-UAE publish no portable Linux build Arcadia
+can install, RetroArch's is a `.7z`, and I couldn't confirm a download source for Ryujinx or Eden, so these stay on
+Flatpak. AppImages need FUSE (SteamOS has it).
+
 ## Supported systems
 
 Every system below is in the default setup with a launch preset. Systems with no games are hidden from the
@@ -198,7 +262,7 @@ and Sega CD, because those are the emulators that open them.
 Limits: all of this was tested against disc and ROM images I built from the published formats, not against
 real dumps, so an unusual real file may land in "unsure". That is the safe direction.
 
-## Presets and Flatpak access
+## Presets and Flatpak access (the fallback)
 
 Launch commands default to the presets in `arcadia/presets.py` (Switch uses Ryujinx from the Ryubing
 fork, Flathub `io.github.ryubing.Ryujinx`; Eden, `dev.eden_emu.eden`, is the other Flathub option). Their Flatpak IDs were
@@ -290,6 +354,8 @@ arcadia/
   bundles.py     disc tags, playlists, and Switch title IDs
   discs.py       disc image analysis: ISO 9660, PS1 vs PS2, Nintendo/Sega/Xbox discs, CSO, CHD
   folders.py     games that are folders (PS3, Wii U) and their titles
+  emulators.py   install emulators into their own folders: catalog, safe download, unpack, isolation
+  emulators_dialog.py  the Emulators window
   files_dialog.py  every file that makes up a game
   import_dialog.py  the confirm-before-moving dialog
   library.py     SQLite store (games, favorites, sessions)
@@ -308,6 +374,8 @@ tests/
   test_bundles.py  disc-name, playlist, and title-ID parsing
   test_multifile.py  multi-disc sets and update/DLC bundles end to end
   test_discs.py  disc image analysis
+  test_emulators.py  the installer, against a real local server (including attack cases)
+  test_home.py   the single-folder layout and portable mode
   test_newsystems.py  the extra systems, folder games, presets, and disc disambiguation
   isoutil.py     builds valid disc images for the tests
   test_ui.py     window, cover flow, and import dialog tests (skipped where Qt can't load)

@@ -39,6 +39,9 @@ class Preset:
     command: str
     save_dir: str = ""
     accent: str = "#3e89d6"
+    # An emulator Arcadia can install into its own folder (see emulators.py). While it isn't
+    # installed, `command` (usually a Flatpak) is used instead.
+    emulator: str = ""
 
 
 def _ra(label: str, core: str, accent: str) -> Preset:
@@ -49,31 +52,31 @@ PRESETS: dict[str, Preset] = {
     # --- Nintendo, consoles ---
     "nes": _ra("Nestopia", "nestopia_libretro.so", "#e60012"),
     "snes": Preset("Snes9x (Flatpak)", "flatpak run com.snes9x.Snes9x {rom}", "", "#7b4fd6"),
-    "n64": Preset("RMG (Flatpak)", "flatpak run com.github.Rosalie241.RMG {rom}", "", "#f2c200"),
+    "n64": Preset("RMG (Flatpak)", "flatpak run com.github.Rosalie241.RMG {rom}", "", "#f2c200", emulator="rmg"),
     "gc": Preset("Dolphin (Flatpak)", "flatpak run org.DolphinEmu.dolphin-emu -b -e {rom}", "", "#6a5acd"),
     "wii": Preset("Dolphin (Flatpak)", "flatpak run org.DolphinEmu.dolphin-emu -b -e {rom}", "", "#35b6e8"),
-    "wiiu": Preset("Cemu (Flatpak)", "flatpak run info.cemu.Cemu -g {rom}", "", "#009ac7"),
+    "wiiu": Preset("Cemu (Flatpak)", "flatpak run info.cemu.Cemu -g {rom}", "", "#009ac7", emulator="cemu"),
     "switch": Preset("Ryujinx · Ryubing (Flatpak)", "flatpak run io.github.ryubing.Ryujinx {rom}", "", "#00c3e3"),
     # --- Nintendo, handhelds ---
-    "gb": Preset("mGBA (Flatpak)", "flatpak run io.mgba.mGBA {rom}", "", "#8bac0f"),
-    "gbc": Preset("mGBA (Flatpak)", "flatpak run io.mgba.mGBA {rom}", "", "#4fa6c9"),
-    "gba": Preset("mGBA (Flatpak)", "flatpak run io.mgba.mGBA {rom}", "", "#5e3fa3"),
-    "nds": Preset("melonDS (Flatpak)", "flatpak run net.kuribo64.melonDS {rom}", "", "#9aa5b1"),
-    "n3ds": Preset("Azahar (Flatpak)", "flatpak run org.azahar_emu.Azahar {rom}", "", "#d6322c"),
+    "gb": Preset("mGBA (Flatpak)", "flatpak run io.mgba.mGBA {rom}", "", "#8bac0f", emulator="mgba"),
+    "gbc": Preset("mGBA (Flatpak)", "flatpak run io.mgba.mGBA {rom}", "", "#4fa6c9", emulator="mgba"),
+    "gba": Preset("mGBA (Flatpak)", "flatpak run io.mgba.mGBA {rom}", "", "#5e3fa3", emulator="mgba"),
+    "nds": Preset("melonDS (Flatpak)", "flatpak run net.kuribo64.melonDS {rom}", "", "#9aa5b1", emulator="melonds"),
+    "n3ds": Preset("Azahar (Flatpak)", "flatpak run org.azahar_emu.Azahar {rom}", "", "#d6322c", emulator="azahar"),
     # --- Sega ---
     "genesis": _ra("Genesis Plus GX", "genesis_plus_gx_libretro.so", "#1e6fd9"),
     "sms": _ra("Genesis Plus GX", "genesis_plus_gx_libretro.so", "#d9342b"),
     "gamegear": _ra("Genesis Plus GX", "genesis_plus_gx_libretro.so", "#2bb3a3"),
     "segacd": _ra("Genesis Plus GX", "genesis_plus_gx_libretro.so", "#2a8fbd"),
     "saturn": _ra("Beetle Saturn", "mednafen_saturn_libretro.so", "#4b5fa8"),
-    "dreamcast": Preset("Flycast (Flatpak)", "flatpak run org.flycast.Flycast {rom}", "", "#f28a1a"),
+    "dreamcast": Preset("Flycast (Flatpak)", "flatpak run org.flycast.Flycast {rom}", "", "#f28a1a", emulator="flycast"),
     # --- Sony ---
-    "psx": Preset("DuckStation (Flatpak)", "flatpak run org.duckstation.DuckStation -batch -- {rom}", "", "#7a8aa6"),
-    "ps2": Preset("PCSX2 (Flatpak)", "flatpak run net.pcsx2.PCSX2 -batch -- {rom}", "", "#3a57c4"),
-    "ps3": Preset("RPCS3 (Flatpak)", "flatpak run net.rpcs3.RPCS3 {rom}", "", "#2f3b52"),
+    "psx": Preset("DuckStation (Flatpak)", "flatpak run org.duckstation.DuckStation -batch -- {rom}", "", "#7a8aa6", emulator="duckstation"),
+    "ps2": Preset("PCSX2 (Flatpak)", "flatpak run net.pcsx2.PCSX2 -batch -- {rom}", "", "#3a57c4", emulator="pcsx2"),
+    "ps3": Preset("RPCS3 (Flatpak)", "flatpak run net.rpcs3.RPCS3 {rom}", "", "#2f3b52", emulator="rpcs3"),
     "psp": Preset("PPSSPP (Flatpak)", "flatpak run org.ppsspp.PPSSPP {rom}", "", "#3b6ea8"),
     # --- Microsoft ---
-    "xbox": Preset("xemu (Flatpak)", "flatpak run app.xemu.xemu -dvd_path {rom}", "", "#6fb43a"),
+    "xbox": Preset("xemu (Flatpak)", "flatpak run app.xemu.xemu -dvd_path {rom}", "", "#6fb43a", emulator="xemu"),
     # --- Arcade and others (RetroArch cores) ---
     "pcengine": _ra("Beetle PCE Fast", "mednafen_pce_fast_libretro.so", "#e8a33d"),
     "neogeo": _ra("FinalBurn Neo", "fbneo_libretro.so", "#c0392b"),

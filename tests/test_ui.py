@@ -529,3 +529,282 @@ def test_mouse_wheel_scrolls_the_system_bar_sideways(qapp, tmp_path):
         assert bar.value() > start  # wheel down moves right, to later systems
     finally:
         win.close()
+
+
+# ---------- emulators kept in Arcadia's own folder ----------
+
+import json as _json  # noqa: E402
+
+from PySide6.QtCore import QObject, Signal  # noqa: E402
+from PySide6.QtWidgets import QDialog  # noqa: E402
+
+import arcadia.emulators_dialog as emulators_dialog  # noqa: E402
+from arcadia.emulators import CATALOG, Asset, Candidates, Installer, Release  # noqa: E402
+from arcadia.emulators_dialog import EmulatorsDialog, InstallConfirmDialog  # noqa: E402
+from test_emulators import APPIMAGE, _install_fake, fetcher_for, publish, server  # noqa: E402,F401
+
+
+class SyncTask(QObject):
+    """Stands in for the background thread so a test can run a whole flow in order."""
+
+    progress = Signal(int, int)
+    done = Signal(object, object)
+
+    def __init__(self, fn, parent=None):
+        super().__init__(parent)
+        self._fn = fn
+
+    def start(self):
+        try:
+            value, error = self._fn(self.progress.emit), None
+        except Exception as exc:
+            value, error = None, exc
+        self.done.emit(value, error)
+
+
+@pytest.fixture
+def emu_dialog(qapp, tmp_path, server, monkeypatch):
+    base, routes = server
+    monkeypatch.setattr(emulators_dialog, "TaskClass", SyncTask)
+    config = Config.new_install(tmp_path / "Arcadia")
+    dialog = EmulatorsDialog(config, Installer(config.emulators_path, fetcher_for(base)))
+    dialog.base, dialog.routes = base, routes
+    yield dialog
+    dialog.close()
+
+
+def _select(dialog, emu_id):
+    dialog.table.selectRow([s.id for s in dialog.specs].index(emu_id))
+
+
+def _row(dialog, emu_id):
+    row = [s.id for s in dialog.specs].index(emu_id)
+    return [dialog.table.item(row, c).text() for c in range(5)]
+
+
+def _accept_install(monkeypatch):
+    monkeypatch.setattr(InstallConfirmDialog, "exec", lambda self: QDialog.DialogCode.Accepted)
+
+
+def _record_warnings(monkeypatch):
+    shown = []
+    monkeypatch.setattr(QMessageBox, "warning", lambda *a, **k: shown.append(a[2]))
+    return shown
+
+
+def test_the_emulator_list_shows_what_each_one_runs_and_uses(emu_dialog):
+    assert emu_dialog.table.rowCount() == len(CATALOG)
+    name, runs, here, latest, uses = _row(emu_dialog, "mgba")
+    assert (name, here, uses) == ("mGBA", "—", "Flatpak")
+    assert runs == "Game Boy, Game Boy Color, Game Boy Advance"
+    _select(emu_dialog, "mgba")
+    assert emu_dialog.install_btn.text() == "Install…" and not emu_dialog.remove_btn.isEnabled()
+    assert str(emu_dialog.config.emulators_path) in emu_dialog.intro.text()
+
+
+def test_installing_from_the_dialog_end_to_end(emu_dialog, monkeypatch):
+    _accept_install(monkeypatch)
+    publish(emu_dialog.base, emu_dialog.routes, {"pcsx2-v2-linux-appimage-x64-Qt.AppImage": APPIMAGE, "pcsx2-windows.7z": b"w"}, tag="v2.0")
+    _select(emu_dialog, "pcsx2")
+    emu_dialog.install_selected()
+
+    inst = emu_dialog.installer.get("pcsx2")
+    assert inst is not None and inst.version == "v2.0" and inst.verified
+    assert emu_dialog.changed is True
+    name, runs, here, latest, uses = _row(emu_dialog, "pcsx2")
+    assert here == "v2.0  ✓ verified" and uses == "this copy"
+    assert "is installed" in emu_dialog.status.text()
+    assert emu_dialog.install_btn.text() == "Update…" and emu_dialog.remove_btn.isEnabled()
+
+
+def test_a_release_with_no_linux_build_changes_nothing_and_points_to_the_flatpak(emu_dialog, monkeypatch):
+    shown = _record_warnings(monkeypatch)
+    publish(emu_dialog.base, emu_dialog.routes, {"pcsx2-windows-x64.7z": b"w", "pcsx2-macos.tar.xz": b"m"})
+    _select(emu_dialog, "pcsx2")
+    emu_dialog.install_selected()
+    assert emu_dialog.installer.get("pcsx2") is None and not emu_dialog.changed
+    assert shown and "no Linux 64-bit download" in shown[0] and "flatpak install flathub net.pcsx2.PCSX2" in shown[0]
+
+
+def test_a_network_failure_is_explained_not_thrown(emu_dialog, monkeypatch):
+    shown = _record_warnings(monkeypatch)
+    _select(emu_dialog, "cemu")  # nothing published for this repo: the server answers 404
+    emu_dialog.install_selected()
+    assert shown and "Couldn't look up Cemu" in shown[0] and "Nothing was changed" in shown[0]
+    assert emu_dialog.installer.get("cemu") is None
+    assert emu_dialog._task is None  # the dialog is usable again
+    assert emu_dialog.install_btn.isEnabled()
+
+
+def test_a_bad_checksum_is_reported_and_leaves_nothing_installed(emu_dialog, monkeypatch):
+    _accept_install(monkeypatch)
+    shown = _record_warnings(monkeypatch)
+    publish(emu_dialog.base, emu_dialog.routes, {"pcsx2-linux-x64.AppImage": APPIMAGE}, digest="wrong")
+    _select(emu_dialog, "pcsx2")
+    emu_dialog.install_selected()
+    assert emu_dialog.installer.get("pcsx2") is None and not emu_dialog.changed
+    assert shown and "wasn't installed" in shown[0] and "checksum" in shown[0]
+
+
+def test_cancelling_the_confirmation_downloads_nothing(emu_dialog, monkeypatch):
+    monkeypatch.setattr(InstallConfirmDialog, "exec", lambda self: QDialog.DialogCode.Rejected)
+    publish(emu_dialog.base, emu_dialog.routes, {"pcsx2-linux-x64.AppImage": APPIMAGE})
+    hits = []
+    real = emu_dialog.installer.install
+    emu_dialog.installer.install = lambda *a, **k: hits.append(1) or real(*a, **k)
+    _select(emu_dialog, "pcsx2")
+    emu_dialog.install_selected()
+    assert hits == [] and emu_dialog.installer.get("pcsx2") is None
+
+
+def test_check_for_updates_reports_a_newer_release(emu_dialog, monkeypatch):
+    _accept_install(monkeypatch)
+    publish(emu_dialog.base, emu_dialog.routes, {"pcsx2-linux-x64.AppImage": APPIMAGE}, tag="v1")
+    _select(emu_dialog, "pcsx2")
+    emu_dialog.install_selected()
+    assert emu_dialog.check_btn.isEnabled()
+
+    publish(emu_dialog.base, emu_dialog.routes, {"pcsx2-linux-x64.AppImage": APPIMAGE}, tag="v2")
+    emu_dialog.check_updates()
+    assert _row(emu_dialog, "pcsx2")[3] == "v2  — update available"
+    assert "Updates available: PCSX2" in emu_dialog.status.text()
+
+    publish(emu_dialog.base, emu_dialog.routes, {"pcsx2-linux-x64.AppImage": APPIMAGE}, tag="v1")
+    emu_dialog.check_updates()
+    assert "up to date" in emu_dialog.status.text()
+
+
+@pytest.mark.parametrize("choice, data_survives", [("keep", True), ("wipe", False)])
+def test_removing_keeps_or_deletes_the_settings_as_chosen(emu_dialog, monkeypatch, choice, data_survives):
+    _accept_install(monkeypatch)
+    publish(emu_dialog.base, emu_dialog.routes, {"pcsx2-linux-x64.AppImage": APPIMAGE})
+    _select(emu_dialog, "pcsx2")
+    emu_dialog.install_selected()
+    folder = emu_dialog.installer.folder("pcsx2")
+    (folder / "config").mkdir(exist_ok=True)
+    (folder / "config" / "PCSX2.ini").write_text("my settings")
+
+    monkeypatch.setattr(EmulatorsDialog, "_ask_remove", lambda self, spec: choice)
+    emu_dialog.remove_selected()
+    assert emu_dialog.installer.get("pcsx2") is None
+    assert (folder / "config" / "PCSX2.ini").exists() is data_survives
+    assert _row(emu_dialog, "pcsx2")[2] == "—" and _row(emu_dialog, "pcsx2")[4] == "Flatpak"
+
+
+def test_declining_to_remove_changes_nothing(emu_dialog, monkeypatch):
+    _accept_install(monkeypatch)
+    publish(emu_dialog.base, emu_dialog.routes, {"pcsx2-linux-x64.AppImage": APPIMAGE})
+    _select(emu_dialog, "pcsx2")
+    emu_dialog.install_selected()
+    monkeypatch.setattr(EmulatorsDialog, "_ask_remove", lambda self, spec: None)
+    emu_dialog.remove_selected()
+    assert emu_dialog.installer.get("pcsx2") is not None
+
+
+def test_the_confirmation_shows_what_will_be_downloaded(qapp, tmp_path):
+    spec = CATALOG["pcsx2"]
+    verified = Asset("pcsx2-linux-x64.AppImage", "https://github.com/x/a", 5 * 1024 * 1024, "ab" * 32)
+    unverified = Asset("other-linux.zip", "https://github.com/x/b", 100, "")
+    release = Release("v9.9", (verified, unverified))
+
+    sure = InstallConfirmDialog(spec, release, Candidates((verified, unverified), verified), tmp_path / "pcsx2")
+    assert sure.chosen_asset() is verified and "64-bit Linux build" in sure.hint.text()
+    assert "SHA-256" in sure.checksum.text() and "thrown away" in sure.checksum.text()
+    assert "5.0 MB" in sure.combo.itemText(0)
+    sure.combo.setCurrentIndex(1)  # picking a file with no checksum says so
+    assert sure.chosen_asset() is unverified and "can't be verified" in sure.checksum.text()
+
+    unsure = InstallConfirmDialog(spec, release, Candidates((verified, unverified), None), tmp_path / "pcsx2")
+    assert "hasn't picked one" in unsure.hint.text()  # it asks rather than guessing
+
+
+# ---------- launching through the main window ----------
+
+def _local_window(tmp_path, script):
+    config = Config.new_install(tmp_path / "Arcadia")
+    config.ensure_layout()
+    (config.rom_root_path / "ps2" / "Game Name.iso").write_bytes(isoutil.ps2_disc())
+    _install_fake(config, "pcsx2", script=script)
+    win = MainWindow(config, tmp_path / "config.json", Library(config.db_path))
+    win.show()
+    return win, config
+
+
+def _wait_for_exit(win, qapp):
+    for _ in range(300):
+        qapp.processEvents()
+        QTest.qWait(10)
+        if win.process is None:
+            return
+
+
+def test_launching_runs_the_installed_copy_with_its_data_kept_in_its_folder(qapp, tmp_path):
+    seen = tmp_path / "seen.txt"
+    script = f'#!/bin/sh\necho "$XDG_CONFIG_HOME|$XDG_DATA_HOME|$@" > "{seen}"\n'
+    win, config = _local_window(tmp_path, script)
+    try:
+        _select_view(win, "ps2")
+        win.launch()
+        _wait_for_exit(win, qapp)
+        folder = config.emulators_path / "pcsx2"
+        text = seen.read_text().strip()
+        assert text.startswith(f"{folder / 'config'}|{folder / 'data'}|-batch -- ")
+        assert text.endswith("Game Name.iso")
+        assert win.library.games("ps2")[0]["play_count"] == 1  # and the session was still recorded
+    finally:
+        win.close()
+
+
+def test_without_a_local_copy_the_game_launches_via_the_flatpak_command_as_before(qapp, tmp_path):
+    config = Config.new_install(tmp_path / "Arcadia")
+    config.ensure_layout()
+    (config.rom_root_path / "ps2" / "Game Name.iso").write_bytes(isoutil.ps2_disc())
+    config.system("ps2").command = "echo flatpak-path {rom}"  # stands in for the Flatpak, so it can run here
+    win = MainWindow(config, tmp_path / "config.json", Library(config.db_path))
+    win.show()
+    try:
+        _select_view(win, "ps2")
+        win.launch()
+        assert win.process.program() == "echo" and "flatpak-path" in win.process.arguments()
+        _wait_for_exit(win, qapp)
+    finally:
+        win.close()
+
+
+def test_the_file_menu_has_an_emulators_entry(qapp, tmp_path):
+    config = Config.new_install(tmp_path / "Arcadia")
+    win = MainWindow(config, tmp_path / "config.json", Library(config.db_path))
+    try:
+        labels = [a.text() for a in win.menuBar().actions()[0].menu().actions()]
+        assert "Emulators…" in labels
+    finally:
+        win.close()
+
+
+# ---------- settings ----------
+
+def test_the_settings_dialog_edits_the_arcadia_folder_and_installed_emulator(qapp, tmp_path):
+    config = Config.new_install(tmp_path / "Arcadia")
+    dialog = SettingsDialog(config)
+    assert dialog.home_dir.text() == str(tmp_path / "Arcadia")
+    assert str(tmp_path / "Arcadia" / "roms") in dialog.rom_root.placeholderText()
+
+    dialog.home_dir.setText(str(tmp_path / "Elsewhere"))
+    row = [dialog.table.item(r, 0).text() for r in range(dialog.table.rowCount())].index("ps2")
+    assert dialog.table.item(row, 6).text() == "pcsx2"
+    dialog.table.item(row, 6).setText("")  # opt this system out of the installed copy
+    dialog.apply(config)
+    assert config.home_dir == str(tmp_path / "Elsewhere") and config.rom_root == ""  # still derived from the home
+    assert config.system("ps2").emulator == ""
+
+    dialog._reset_presets()
+    dialog.apply(config)
+    assert config.system("ps2").emulator == "pcsx2"
+
+
+def test_clearing_the_arcadia_folder_returns_to_the_old_layout(qapp, tmp_path):
+    config = Config(rom_root="/games", data_dir=str(tmp_path / "data"))
+    dialog = SettingsDialog(config)
+    dialog.home_dir.setText("")
+    dialog.apply(config)
+    assert config.home_dir == "" and config.rom_root == "/games"

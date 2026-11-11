@@ -12,7 +12,7 @@ import time
 import zlib
 from pathlib import Path
 
-from PySide6.QtCore import QEvent, QFileSystemWatcher, QProcess, QPropertyAnimation, QSize, Qt, QTimer
+from PySide6.QtCore import QEvent, QFileSystemWatcher, QProcess, QProcessEnvironment, QPropertyAnimation, QSize, Qt, QTimer
 from PySide6.QtGui import QAction, QColor, QFont, QIcon, QKeyEvent, QKeySequence, QPainter, QPixmap, QShortcut
 from PySide6.QtWidgets import (
     QApplication,
@@ -43,10 +43,11 @@ from PySide6.QtWidgets import (
 from arcadia.config import Config, SystemConfig
 from arcadia.coverflow import COVER_H, COVER_W, CoverFlow
 from arcadia.bundles import parse_switch
+from arcadia.emulators_dialog import EmulatorsDialog
 from arcadia.files_dialog import FilesDialog
 from arcadia.gamepad import ControllerReader
 from arcadia.import_dialog import ImportDialog
-from arcadia.launcher import LaunchError, build_command
+from arcadia.launcher import LaunchError, resolve_launch
 from arcadia.library import Library
 from arcadia.metadata import load_metadata
 from arcadia.presets import PRESETS, accent_for
@@ -150,7 +151,16 @@ class SettingsDialog(QDialog):
         self.setWindowTitle("Settings")
         self.resize(1080, 560)
 
+        self.home_dir = QLineEdit(config.home_dir)
+        self.home_dir.setPlaceholderText("Not set: folders are kept wherever each one is set below")
+        home_browse = QPushButton("Browse…")
+        home_browse.clicked.connect(self._browse_home)
+        home_row = QHBoxLayout()
+        home_row.addWidget(self.home_dir)
+        home_row.addWidget(home_browse)
+
         self.rom_root = QLineEdit(config.rom_root)
+        self.rom_root.setPlaceholderText(f"{config.rom_root_path}  (inside the Arcadia folder)" if config.home_path else str(config.rom_root_path))
         browse = QPushButton("Browse…")
         browse.clicked.connect(self._browse)
         rom_row = QHBoxLayout()
@@ -173,19 +183,20 @@ class SettingsDialog(QDialog):
         self.auto_import.setChecked(config.auto_import)
 
         form = QFormLayout()
+        form.addRow("Arcadia folder (everything in one place):", home_row)
         form.addRow("ROM root folder:", rom_row)
         form.addRow("Downloads folder (ROM inbox):", inbox_row)
         form.addRow("", self.auto_import)
         form.addRow("Media folder (covers, metadata):", self.media_dir)
         form.addRow("Save-state folder:", self.savestate_dir)
 
-        headers = ["ID", "Name", "ROM folder", "Extensions (comma separated)", "Launch command", "Emulator save folder"]
+        headers = ["ID", "Name", "ROM folder", "Extensions (comma separated)", "Launch command", "Emulator save folder", "Installed emulator"]
         self.table = QTableWidget(len(config.systems), len(headers))
         self.table.setHorizontalHeaderLabels(headers)
         self.table.verticalHeader().setVisible(False)
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         for row, s in enumerate(config.systems):
-            self._fill_row(row, s.id, s.name, s.folder, ", ".join(s.extensions), s.command, s.save_dir)
+            self._fill_row(row, s.id, s.name, s.folder, ", ".join(s.extensions), s.command, s.save_dir, s.emulator)
 
         reset = QPushButton("Reset launch commands to presets")
         reset.setToolTip("Fills launch command and save folder for every system from Arcadia's presets.")
@@ -210,8 +221,10 @@ class SettingsDialog(QDialog):
         layout.addWidget(reset)
         layout.addWidget(buttons)
 
-    def _fill_row(self, row: int, sid: str, name: str, folder: str, exts: str, command: str, save_dir: str) -> None:
-        for col, value in enumerate([sid, name, folder, exts, command, save_dir]):
+    def _fill_row(
+        self, row: int, sid: str, name: str, folder: str, exts: str, command: str, save_dir: str, emulator: str = ""
+    ) -> None:
+        for col, value in enumerate([sid, name, folder, exts, command, save_dir, emulator]):
             item = QTableWidgetItem(value)
             if col == 0:
                 item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
@@ -223,6 +236,13 @@ class SettingsDialog(QDialog):
             if preset:
                 self.table.item(row, 4).setText(preset.command)
                 self.table.item(row, 5).setText(preset.save_dir)
+                self.table.item(row, 6).setText(preset.emulator)
+
+    def _browse_home(self) -> None:
+        start = self.home_dir.text().strip() or str(Path.home())
+        folder = QFileDialog.getExistingDirectory(self, "Arcadia folder", start)
+        if folder:
+            self.home_dir.setText(folder)
 
     def _browse(self) -> None:
         folder = QFileDialog.getExistingDirectory(self, "ROM root folder", self.rom_root.text())
@@ -236,7 +256,8 @@ class SettingsDialog(QDialog):
             self.inbox_dir.setText(folder)
 
     def apply(self, config: Config) -> None:
-        config.rom_root = self.rom_root.text().strip() or config.rom_root
+        config.home_dir = self.home_dir.text().strip()
+        config.rom_root = self.rom_root.text().strip() if config.home_dir else (self.rom_root.text().strip() or config.rom_root)
         config.inbox_dir = self.inbox_dir.text().strip()
         config.auto_import = self.auto_import.isChecked()
         config.media_dir = self.media_dir.text().strip()
@@ -261,6 +282,7 @@ class SettingsDialog(QDialog):
                     extensions=exts,
                     command=cell(row, 4),
                     save_dir=cell(row, 5),
+                    emulator=cell(row, 6),
                 )
             )
         config.systems = systems
@@ -281,6 +303,7 @@ class MainWindow(QMainWindow):
         self._importing = False  # an import dialog is open
         self._asked: set[str] = set()  # inbox files the user has already been asked about
         self.journal = Journal(config.journal_path)
+        self._db_path = config.db_path
 
         self.setWindowTitle("Arcadia")
         self.resize(1360, 860)
@@ -453,6 +476,7 @@ class MainWindow(QMainWindow):
         file_menu.addAction("Import ROMs…", self.import_roms, "Ctrl+I")
         self.undo_import_action = file_menu.addAction("Undo last import", self.undo_import)
         file_menu.aboutToShow.connect(self._update_undo_action)
+        file_menu.addAction("Emulators…", self.open_emulators, "Ctrl+E")
         file_menu.addAction("Settings…", self.open_settings)
         file_menu.addSeparator()
         file_menu.addAction("Quit", self.close, "Ctrl+Q")
@@ -726,14 +750,20 @@ class MainWindow(QMainWindow):
             return
         system = self.config.system(row["system_id"])
         try:
-            args = build_command(system.command, Path(row["path"]), self._launch_extras(key))
+            plan = resolve_launch(self.config, system, Path(row["path"]), self._launch_extras(key))
         except LaunchError as exc:
             QMessageBox.warning(self, "Cannot launch", str(exc))
             return
+        args = plan.args
 
         proc = QProcess(self)
         proc.setProgram(args[0])
         proc.setArguments(args[1:])
+        if plan.env:  # an emulator Arcadia installed keeps its settings and saves in its own folder
+            environment = QProcessEnvironment.systemEnvironment()
+            for name, value in plan.env.items():
+                environment.insert(name, value)
+            proc.setProcessEnvironment(environment)
         proc.finished.connect(self._on_finished)
         proc.errorOccurred.connect(self._on_process_error)
         self.process = proc
@@ -741,7 +771,7 @@ class MainWindow(QMainWindow):
         self.session_start = time.time()
         proc.start()
         self.play_timer.start()
-        self.toast.show_message(f"Launching {row['title']}…")
+        self.toast.show_message(f"Launching {row['title']}…" + (" with your installed copy" if plan.via.startswith("local:") else ""))
         self._update_running_state()
 
     def _on_process_error(self, error) -> None:
@@ -1005,9 +1035,19 @@ class MainWindow(QMainWindow):
         if dialog.exec() == QDialog.DialogCode.Accepted:
             dialog.apply(self.config)
             self._save_config()
+            if self.config.home_path is not None:
+                self.config.ensure_layout()
             self.journal = Journal(self.config.journal_path)
             self._setup_inbox()
             self.rescan()
+            if self.config.db_path != self._db_path:
+                self.toast.show_message("Restart Arcadia to use the library in its new folder", 6000)
+
+    def open_emulators(self) -> None:
+        dialog = EmulatorsDialog(self.config, parent=self)
+        dialog.exec()
+        if dialog.changed:
+            self.toast.show_message("Emulators updated")
 
     def closeEvent(self, event) -> None:
         self._closed = True
