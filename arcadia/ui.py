@@ -134,6 +134,16 @@ def dot_icon(color: str) -> QIcon:
     return icon
 
 
+class PillList(QListWidget):
+    """The system bar. The mouse wheel scrolls it sideways (there are a lot of systems now)."""
+
+    def wheelEvent(self, event) -> None:
+        bar = self.horizontalScrollBar()
+        delta = event.angleDelta().y() or event.angleDelta().x()
+        bar.setValue(bar.value() - delta)
+        event.accept()
+
+
 class SettingsDialog(QDialog):
     def __init__(self, config: Config, parent=None):
         super().__init__(parent)
@@ -311,7 +321,7 @@ class MainWindow(QMainWindow):
         root.addLayout(top)
 
         # --- system pills ---
-        self.systems_list = QListWidget()
+        self.systems_list = PillList()
         self.systems_list.setObjectName("systems")
         self.systems_list.setViewMode(QListView.ViewMode.ListMode)
         self.systems_list.setFlow(QListView.Flow.LeftToRight)

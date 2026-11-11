@@ -24,8 +24,8 @@ import errno
 import json
 import os
 import re
+import shlex
 import shutil
-import struct
 import time
 import zipfile
 from collections.abc import Callable
@@ -42,6 +42,8 @@ from arcadia.bundles import (
     write_m3u,
 )
 from arcadia.config import Config
+from arcadia.discs import DiscGuess, sniff_chd, sniff_disc_image
+from arcadia.folders import FOLDER_RULES, find_game_folder
 
 
 class Confidence(Enum):
@@ -55,19 +57,41 @@ _RANK = {Confidence.CERTAIN: 0, Confidence.LIKELY: 1, Confidence.UNSURE: 2}
 SYSTEM_LABELS = {
     "nes": "NES",
     "snes": "Super Nintendo",
+    "n64": "Nintendo 64",
+    "gc": "GameCube",
+    "wii": "Wii",
+    "wiiu": "Wii U",
+    "switch": "Nintendo Switch",
     "gb": "Game Boy",
     "gbc": "Game Boy Color",
     "gba": "Game Boy Advance",
-    "n64": "Nintendo 64",
+    "nds": "Nintendo DS",
+    "n3ds": "Nintendo 3DS",
     "genesis": "Sega Genesis",
     "sms": "Master System",
     "gamegear": "Game Gear",
+    "segacd": "Sega CD",
+    "saturn": "Sega Saturn",
+    "dreamcast": "Dreamcast",
     "psx": "PlayStation",
+    "ps2": "PlayStation 2",
+    "ps3": "PlayStation 3",
     "psp": "PSP",
-    "switch": "Nintendo Switch",
+    "xbox": "Xbox",
+    "pcengine": "PC Engine",
+    "neogeo": "Neo Geo",
+    "arcade": "Arcade",
+    "atari2600": "Atari 2600",
+    "atari7800": "Atari 7800",
+    "lynx": "Atari Lynx",
+    "wonderswan": "WonderSwan",
+    "ngp": "Neo Geo Pocket",
+    "virtualboy": "Virtual Boy",
+    "msx": "MSX",
+    "amiga": "Amiga",
 }
 
-# Extensions that identify a system (or, for discs, a short list of candidates).
+# Extensions that identify a system (or, for discs and generic formats, a short list of candidates).
 EXT_SYSTEMS: dict[str, list[str]] = {
     ".nes": ["nes"],
     ".sfc": ["snes"],
@@ -82,19 +106,72 @@ EXT_SYSTEMS: dict[str, list[str]] = {
     ".gen": ["genesis"],
     ".sms": ["sms"],
     ".gg": ["gamegear"],
-    ".cso": ["psp"],
-    ".iso": ["psp", "psx"],
+    ".nds": ["nds"],
+    ".dsi": ["nds"],
+    ".3ds": ["n3ds"],
+    ".cci": ["n3ds"],
+    ".cxi": ["n3ds"],
+    ".cia": ["n3ds"],
+    ".3dsx": ["n3ds"],
+    ".wux": ["wiiu"],
+    ".wud": ["wiiu"],
+    ".wua": ["wiiu"],
+    ".rpx": ["wiiu"],
+    ".gcm": ["gc"],
+    ".wbfs": ["wii"],
+    ".rvz": ["gc", "wii"],
+    ".wia": ["gc", "wii"],
+    ".gcz": ["gc", "wii"],
+    ".ciso": ["gc", "wii"],
+    ".pce": ["pcengine"],
+    ".sgx": ["pcengine"],
+    ".neo": ["neogeo"],
+    ".a26": ["atari2600"],
+    ".a78": ["atari7800"],
+    ".lnx": ["lynx"],
+    ".ws": ["wonderswan"],
+    ".wsc": ["wonderswan"],
+    ".ngp": ["ngp"],
+    ".ngc": ["ngp"],
+    ".vb": ["virtualboy"],
+    ".mx1": ["msx"],
+    ".mx2": ["msx"],
+    ".rom": ["msx"],
+    ".dsk": ["msx"],
+    ".cas": ["msx"],
+    ".adf": ["amiga"],
+    ".ipf": ["amiga"],
+    ".dms": ["amiga"],
+    ".hdf": ["amiga"],
+    ".lha": ["amiga"],
+    ".zso": ["ps2"],
+    ".xiso": ["xbox"],
+    ".cso": ["psp", "ps2"],
+    ".iso": ["ps2", "psx", "psp", "gc", "wii", "xbox", "ps3", "saturn", "segacd"],
     ".pbp": ["psp", "psx"],
-    ".chd": ["psx", "psp"],
-    ".cue": ["psx"],
-    ".bin": ["genesis", "psx"],
+    ".chd": ["psx", "ps2", "saturn", "segacd", "dreamcast", "pcengine", "psp", "arcade"],
+    ".cue": ["psx", "ps2", "saturn", "segacd", "pcengine"],
+    ".gdi": ["dreamcast"],
+    ".cdi": ["dreamcast"],
+    ".bin": ["genesis", "psx", "ps2", "saturn", "segacd", "atari2600"],
     ".nsp": ["switch"],
     ".xci": ["switch"],
     ".nsz": ["switch"],
     ".xcz": ["switch"],
 }
-CART_EXTS = {".nes", ".sfc", ".smc", ".gb", ".gbc", ".gba", ".z64", ".n64", ".v64", ".md", ".gen", ".sms", ".gg", ".bin"}
-DISC_EXTS = {".iso", ".cso", ".pbp", ".chd", ".cue", ".bin"}
+# Cartridge-style files whose header can be checked.
+CART_EXTS = {
+    ".nes", ".sfc", ".smc", ".gb", ".gbc", ".gba", ".z64", ".n64", ".v64", ".md", ".gen", ".sms", ".gg", ".bin",
+    ".nds", ".dsi", ".3ds", ".cci", ".cxi", ".cia", ".3dsx", ".wux", ".wud", ".a78", ".lnx", ".ngp", ".ngc",
+}
+# Disc images, analysed by discs.py.
+DISC_EXTS = {
+    ".iso", ".cso", ".pbp", ".chd", ".bin", ".gcm", ".rvz", ".gcz", ".ciso", ".wia", ".wbfs", ".xiso", ".zso",
+}
+# Formats shared by too many things to trust on the extension alone: they need the name to say so.
+WEAK_EXTS = {".bin", ".rom", ".dsk", ".cas"}
+# Systems whose emulators open an .m3u playlist, so multi-disc games can be joined with one.
+M3U_SYSTEMS = {"psx", "saturn", "segacd"}
 PARTIAL_EXTS = {".part", ".crdownload", ".tmp", ".download", ".opdownload", ".filepart", ".aria2", ".!ut"}
 UNREADABLE_ARCHIVES = {".7z", ".rar"}
 
@@ -117,31 +194,66 @@ _HINT_PHRASES = [
     ("gameboy color", "gbc"),
     ("super nintendo", "snes"),
     ("super famicom", "snes"),
+    ("neo geo pocket", "ngp"),
+    ("nintendo gamecube", "gc"),
+    ("sega dreamcast", "dreamcast"),
+    ("virtual boy", "virtualboy"),
+    ("nintendo 3ds", "n3ds"),
     ("nintendo 64", "n64"),
+    ("nintendo ds", "nds"),
+    ("sega saturn", "saturn"),
     ("master system", "sms"),
     ("playstation 1", "psx"),
+    ("playstation 2", "ps2"),
+    ("playstation 3", "ps3"),
+    ("pc engine", "pcengine"),
+    ("turbografx", "pcengine"),
+    ("atari 2600", "atari2600"),
+    ("atari 7800", "atari7800"),
     ("mega drive", "genesis"),
     ("megadrive", "genesis"),
+    ("wonderswan", "wonderswan"),
+    ("dreamcast", "dreamcast"),
+    ("game cube", "gc"),
+    ("gamecube", "gc"),
     ("playstation", "psx"),
     ("game gear", "gamegear"),
     ("gamegear", "gamegear"),
+    ("sega cd", "segacd"),
+    ("mega cd", "segacd"),
+    ("neo geo", "neogeo"),
+    ("neogeo", "neogeo"),
     ("game boy", "gb"),
     ("gameboy", "gb"),
     ("famicom", "nes"),
     ("genesis", "genesis"),
+    ("saturn", "saturn"),
+    ("arcade", "arcade"),
+    ("wii u", "wiiu"),
+    ("wiiu", "wiiu"),
+    ("xbox", "xbox"),
+    ("amiga", "amiga"),
     ("psone", "psx"),
     ("snes", "snes"),
+    ("switch", "switch"),
     ("gbc", "gbc"),
     ("gba", "gba"),
     ("n64", "n64"),
+    ("nds", "nds"),
+    ("3ds", "n3ds"),
     ("sms", "sms"),
     ("psx", "psx"),
     ("ps1", "psx"),
+    ("ps2", "ps2"),
+    ("ps3", "ps3"),
     ("psp", "psp"),
+    ("wii", "wii"),
     ("nes", "nes"),
     ("sfc", "snes"),
-    ("switch", "switch"),
     ("nsw", "switch"),
+    ("mame", "arcade"),
+    ("msx", "msx"),
+    ("lynx", "lynx"),
     ("gg", "gamegear"),
     ("gb", "gb"),
 ]
@@ -222,6 +334,20 @@ def sniff_cartridge(data: bytes, size: int, ext: str) -> tuple[str | None, str]:
                 return "sms", "Master System header"
             if region in (5, 6, 7):
                 return "gamegear", "Game Gear header"
+    if len(data) > 0x160 and data[0x15C:0x15E] == b"\x56\xcf":  # the Nintendo logo checksum, always 0xCF56
+        return "nds", "Nintendo DS header"
+    if data[0x100:0x104] in (b"NCSD", b"NCCH") or data[:4] == b"3DSX":
+        return "n3ds", "Nintendo 3DS header"
+    if data[:8] == bytes.fromhex("2020000000000000"):  # a CIA starts with its 0x2020-byte header size
+        return "n3ds", "Nintendo 3DS CIA header"
+    if data[:4] == b"WUX0" or data[:4] == b"WUP-":
+        return "wiiu", "Wii U disc image"
+    if data[1:10] == b"ATARI7800":
+        return "atari7800", "Atari 7800 header"
+    if data[:4] == b"LYNX":
+        return "lynx", "Atari Lynx header"
+    if data[:28] == b"COPYRIGHT BY SNK CORPORATION" or data[:27] == b"LICENSED BY SNK CORPORATION":
+        return "ngp", "Neo Geo Pocket header"
     if _sniff_snes(data, size):
         return "snes", "SNES header checksum"
     return None, ""
@@ -233,26 +359,6 @@ def sniff_switch(data: bytes) -> tuple[str | None, str]:
         return "switch", "Switch NSP container"
     if data[0x100:0x104] == b"HEAD":
         return "switch", "Switch XCI cartridge image"
-    return None, ""
-
-
-def sniff_disc(data: bytes, read_at: Callable[[int, int], bytes] | None) -> tuple[str | None, str]:
-    """Identify a disc image or PBP. Returns (system_id, evidence) or (None, '')."""
-    if data[:4] in (b"CISO", b"ZISO"):
-        return "psp", "compressed PSP disc (CISO)"
-    if data[:4] == b"\x00PBP" and read_at is not None and len(data) >= 40:
-        (psar,) = struct.unpack_from("<I", data, 36)
-        marker = read_at(psar, 8) if psar else b""
-        if marker == b"PSISOIMG":
-            return "psx", "PBP containing a PlayStation disc"
-        if marker == b"NPUMDIMG":
-            return "psp", "PBP containing a PSP disc"
-        return None, ""
-    if b"PSP_GAME" in data:
-        return "psp", "PSP disc (PSP_GAME folder)"
-    head = data[:0x10000]
-    if b"CD001" in head and b"PLAYSTATION" in head:
-        return "psx", "PlayStation disc"
     return None, ""
 
 
@@ -283,13 +389,15 @@ def _identify_rom(
 
     sniffed: str | None = None
     detail = ""
+    ambiguous: list[str] = []
     if ext in CART_EXTS:
         n = EXHIROM_READ if size > 0x400000 and ext in (".sfc", ".smc") else CART_READ
         sniffed, detail = sniff_cartridge(read(n), size, ext)
     if ext in SWITCH_EXTS:
         sniffed, detail = sniff_switch(read(0x200))
-    if sniffed is None and ext in DISC_EXTS and ext != ".cue":
-        sniffed, detail = sniff_disc(read(DISC_READ), read_at)
+    if sniffed is None and ext in DISC_EXTS:
+        guess = sniff_chd(read, read_at) if ext == ".chd" else sniff_disc_image(read(DISC_READ), ext, read_at)
+        sniffed, detail, ambiguous = guess.system, guess.detail, guess.candidates
 
     if sniffed is not None:
         if sniffed not in known:
@@ -304,18 +412,23 @@ def _identify_rom(
             alts,
         )
 
+    # The contents narrowed it down without settling it (a CHD that is a CD, a PlayStation disc that
+    # could be PS1 or PS2, ...): keep only the systems the user has, hints first.
+    if ambiguous:
+        narrowed = [c for c in ambiguous if c in known and c in cands] or cands
+        ordered = [c for c in narrowed if c in hints] + [c for c in narrowed if c not in hints]
+        if len(ordered) == 1 and ordered[0] in cands:
+            return Identification(ordered[0], Confidence.LIKELY, f"{detail}; the header doesn't confirm it")
+        return Identification(ordered[0], Confidence.UNSURE, f"{detail} ({_join(ordered)})", ordered[1:])
+
     # Nothing verified: fall back to the extension and the name.
-    if ext == ".bin":
+    if ext in WEAK_EXTS:
         if not hints:
-            return None  # a stray .bin is not necessarily a ROM
+            return None  # a stray .bin or .rom is not necessarily a game
         pick = [h for h in hints if h in cands]
         if not pick:
             return None
         return Identification(pick[0], Confidence.UNSURE, f"only the name suggests {_label(pick[0])}", pick[1:])
-    if ext == ".cue":
-        return Identification(
-            cands[0], Confidence.UNSURE, "disc images can't be verified without their data files", cands[1:]
-        )
     if len(cands) == 1:
         if hints and cands[0] not in hints:
             return Identification(
@@ -356,7 +469,17 @@ def _identify_zip(path: Path, known: set[str]) -> Identification | None:
             if ident is not None:
                 results.append((member.name, ident))
         if not results:
-            return None
+            # Nothing inside is recognisable (arcade sets are just zips of unlabelled files), so the
+            # name is all there is to go on.
+            hints = hint_systems(path.stem, known)
+            if not hints:
+                return None
+            return Identification(
+                hints[0],
+                Confidence.UNSURE,
+                f"the zip's contents can't be recognised; the name suggests {_join(hints)}",
+                hints[1:],
+            )
 
     systems: list[str] = []
     for _name, ident in results:
@@ -424,20 +547,73 @@ def cue_files(cue: Path) -> list[Path]:
     return [cue.parent / (m.group(1) or m.group(2)) for m in _CUE_FILE.finditer(text)]
 
 
-def _identify_cue(cue: Path, tracks: list[Path], known: set[str]) -> Identification | None:
-    if "psx" not in known:
+def gdi_files(gdi: Path) -> list[Path]:
+    """Track files a Dreamcast .gdi sheet lists (first line is the track count)."""
+    try:
+        lines = gdi.read_text(encoding="utf-8", errors="replace").splitlines()
+    except OSError:
+        return []
+    tracks = []
+    for line in lines[1:]:
+        try:
+            fields = shlex.split(line)
+        except ValueError:
+            continue
+        if len(fields) >= 6:  # number, start, type, sector size, file name, offset
+            tracks.append(gdi.parent / fields[4])
+    return tracks
+
+
+def _sheet_tracks(sheet: Path) -> list[Path]:
+    return cue_files(sheet) if sheet.suffix.lower() == ".cue" else gdi_files(sheet)
+
+
+def _identify_sheet(sheet: Path, tracks: list[Path], known: set[str]) -> Identification | None:
+    """A .cue or .gdi sheet: identify the disc from its track files."""
+    ext = sheet.suffix.lower()
+    cands = [s for s in EXT_SYSTEMS[ext] if s in known]
+    if not cands:
         return None
+    hints = hint_systems(sheet.stem, known)
     missing = [t.name for t in tracks if not t.exists()]
     if not tracks or missing:
         return Identification(
-            "psx", Confidence.UNSURE, "the cue sheet refers to files that aren't in this folder: " + ", ".join(missing or ["none listed"])
+            cands[0],
+            Confidence.UNSURE,
+            f"the {ext[1:]} sheet refers to files that aren't in this folder: " + ", ".join(missing or ["none listed"]),
+            cands[1:],
         )
-    sniffed, detail = sniff_disc(_read(tracks[0], DISC_READ), None)
-    if sniffed == "psx":
-        return Identification("psx", Confidence.CERTAIN, detail)
-    if sniffed == "psp":
-        return Identification("psp", Confidence.UNSURE, detail + ", but cue/bin images are normally PlayStation", ["psx"])
-    return Identification("psx", Confidence.UNSURE, "disc image not recognised (could be another disc-based system)")
+
+    guess = DiscGuess()
+    # A cue's first track is the data track. A gdi mixes audio and data, so look at them all (briefly).
+    probes = tracks[:1] if ext == ".cue" else tracks
+    size = DISC_READ if ext == ".cue" else 0x10000
+    for track in probes:
+        found = sniff_disc_image(_read(track, size), ".bin", None)
+        if found.system or found.candidates:
+            guess = found
+            break
+
+    if guess.system:
+        if guess.system not in known:
+            return None
+        if guess.system in cands:
+            return Identification(guess.system, Confidence.CERTAIN, guess.detail)
+        return Identification(
+            guess.system, Confidence.UNSURE, f"{guess.detail}, but a {ext} sheet is normally {_join(cands)}", cands
+        )
+    if guess.candidates:
+        narrowed = [c for c in guess.candidates if c in known and c in cands] or cands
+        ordered = [c for c in narrowed if c in hints] + [c for c in narrowed if c not in hints]
+        if len(ordered) == 1:
+            return Identification(ordered[0], Confidence.LIKELY, f"{guess.detail}; the data doesn't confirm it")
+        return Identification(ordered[0], Confidence.UNSURE, f"{guess.detail} ({_join(ordered)})", ordered[1:])
+    if ext == ".gdi":
+        return Identification("dreamcast", Confidence.LIKELY, "a .gdi sheet is a Dreamcast format; its data track couldn't be verified")
+    ordered = [c for c in cands if c in hints] + [c for c in cands if c not in hints]
+    return Identification(
+        ordered[0], Confidence.UNSURE, f"disc image not recognised (could be {_join(cands)})", ordered[1:]
+    )
 
 
 # ----------------------------------------------------------------------------
@@ -523,23 +699,23 @@ def build_plan(inbox: Path, config: Config, now: float | None = None, min_age: f
         return False
 
     track_files: set[Path] = set()
-    cue_tracks: dict[Path, list[Path]] = {}
+    sheet_tracks: dict[Path, list[Path]] = {}
     for p in files:
-        if p.suffix.lower() == ".cue":
-            tracks = [t for t in cue_files(p) if t.parent == p.parent]
-            cue_tracks[p] = tracks
+        if p.suffix.lower() in (".cue", ".gdi"):
+            tracks = [t for t in _sheet_tracks(p) if t.parent == p.parent]
+            sheet_tracks[p] = tracks
             track_files.update(tracks)
 
     for p in files:
         if p in track_files or p.suffix.lower() in PARTIAL_EXTS:
             continue
         companions: list[Path] = []
-        if p in cue_tracks:
-            companions = [t for t in cue_tracks[p] if t.exists()]
+        if p in sheet_tracks:
+            companions = [t for t in sheet_tracks[p] if t.exists()]
             if young([p, *companions]):
                 plan.waiting.append(p)
                 continue
-            ident = _identify_cue(p, cue_tracks[p], known)
+            ident = _identify_sheet(p, sheet_tracks[p], known)
         else:
             if young([p]):
                 plan.waiting.append(p)
@@ -558,8 +734,51 @@ def build_plan(inbox: Path, config: Config, now: float | None = None, min_age: f
         )
         item.retarget(config, ident.system_id)
         plan.items.append(item)
+
+    # Games that are whole folders (PS3 and Wii U dumps) are moved as a unit.
+    for folder in sorted(p for p in inbox.iterdir() if p.is_dir() and not p.name.startswith(".")):
+        for system_id in FOLDER_RULES:
+            if system_id not in known:
+                continue
+            hit = find_game_folder(folder, system_id)
+            if hit is None:
+                continue
+            if now - _newest_mtime(folder, now) < min_age:
+                plan.waiting.append(folder)
+                break
+            marker = hit[0].relative_to(folder).as_posix()
+            item = PlanItem(
+                source=folder,
+                system_id=system_id,
+                confidence=Confidence.CERTAIN,
+                reason=f"a {_label(system_id)} game folder ({marker} found)",
+                alternatives=[],
+                detail="game folder",
+            )
+            item.retarget(config, system_id)
+            plan.items.append(item)
+            break
+
     plan.items = _group_switch(_group_discs(plan.items, config), config)
     return plan
+
+
+def _newest_mtime(folder: Path, now: float, limit: int = 20_000) -> float:
+    """Most recent modification time inside a folder (stops looking after `limit` files).
+    A folder that can't be read counts as just modified, so it's left alone."""
+    newest = 0.0
+    seen = 0
+    for dirpath, _dirnames, filenames in os.walk(folder):
+        try:
+            newest = max(newest, os.stat(dirpath).st_mtime)
+            for name in filenames:
+                seen += 1
+                if seen > limit:
+                    return newest
+                newest = max(newest, os.stat(os.path.join(dirpath, name)).st_mtime)
+        except OSError:
+            return now
+    return newest
 
 
 # ----------------------------------------------------------------------------
@@ -639,7 +858,7 @@ def _group_discs(items: list[PlanItem], config: Config) -> list[PlanItem]:
     parsed: dict[int, DiscInfo] = {}
     groups: dict[tuple[str, str], list[PlanItem]] = {}
     for it in items:
-        if it.kind != "single" or it.source.suffix.lower() not in _SET_DISC_EXTS:
+        if it.kind != "single" or it.system_id not in M3U_SYSTEMS or it.source.suffix.lower() not in _SET_DISC_EXTS:
             continue
         info = parse_disc(it.source.stem)
         if info is not None:
@@ -772,8 +991,38 @@ def unique_destination(path: Path) -> Path:
         n += 1
 
 
+def _tree_stats(path: Path) -> tuple[int, int]:
+    """(number of files, total bytes) in a folder."""
+    count = size = 0
+    for dirpath, _dirnames, filenames in os.walk(path):
+        for name in filenames:
+            count += 1
+            size += os.path.getsize(os.path.join(dirpath, name))
+    return count, size
+
+
+def _copy_folder_verified(src: Path, dst: Path) -> None:
+    """Copy a folder to another drive, check the copy, then (and only then) remove the original."""
+    partial = dst.with_name(dst.name + ".arcadia-part")
+    try:
+        shutil.copytree(src, partial, symlinks=True)
+        if _tree_stats(partial) != _tree_stats(src):
+            raise SortError(f"copy of {src.name} was incomplete")
+        os.replace(partial, dst)
+    except (OSError, shutil.Error) as exc:
+        shutil.rmtree(partial, ignore_errors=True)
+        raise SortError(f"could not copy {src.name}: {getattr(exc, 'strerror', None) or exc}") from exc
+    except SortError:
+        shutil.rmtree(partial, ignore_errors=True)
+        raise
+    try:
+        shutil.rmtree(src)
+    except OSError as exc:
+        raise SortError(f"{src.name} was copied but the original could not be removed: {exc.strerror or exc}") from exc
+
+
 def safe_move(src: Path, dst: Path) -> None:
-    """Move a file without ever overwriting. Across filesystems the copy is verified
+    """Move a file or folder without ever overwriting. Across filesystems the copy is verified
     before the original is removed."""
     if dst.exists():
         raise SortError(f"{dst} already exists")
@@ -784,6 +1033,9 @@ def safe_move(src: Path, dst: Path) -> None:
     except OSError as exc:
         if exc.errno != errno.EXDEV:
             raise SortError(f"could not move {src.name}: {exc.strerror or exc}") from exc
+    if src.is_dir():
+        _copy_folder_verified(src, dst)
+        return
     partial = dst.with_name(dst.name + ".arcadia-part")
     try:
         shutil.copy2(src, partial)

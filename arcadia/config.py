@@ -15,18 +15,47 @@ CONFIG_PATH = CONFIG_HOME / "config.json"
 
 # (id, display name, ROM folder under rom_root, accepted extensions)
 _DEFAULT_SYSTEM_ROWS = [
+    # Nintendo, consoles
     ("nes", "Nintendo Entertainment System", "nes", [".nes", ".zip", ".7z"]),
     ("snes", "Super Nintendo", "snes", [".sfc", ".smc", ".zip", ".7z"]),
+    ("n64", "Nintendo 64", "n64", [".z64", ".n64", ".v64", ".zip"]),
+    ("gc", "Nintendo GameCube", "gamecube", [".iso", ".gcm", ".rvz", ".gcz", ".ciso", ".wia"]),
+    ("wii", "Nintendo Wii", "wii", [".iso", ".wbfs", ".rvz", ".gcz", ".ciso", ".wia"]),
+    ("wiiu", "Nintendo Wii U", "wiiu", [".wua", ".wud", ".wux", ".rpx"]),
+    ("switch", "Nintendo Switch", "switch", [".nsp", ".xci", ".nsz", ".xcz"]),
+    # Nintendo, handhelds
     ("gb", "Game Boy", "gb", [".gb", ".zip"]),
     ("gbc", "Game Boy Color", "gbc", [".gbc", ".zip"]),
     ("gba", "Game Boy Advance", "gba", [".gba", ".zip"]),
-    ("n64", "Nintendo 64", "n64", [".z64", ".n64", ".v64", ".zip"]),
+    ("nds", "Nintendo DS", "nds", [".nds", ".dsi", ".zip", ".7z"]),
+    ("n3ds", "Nintendo 3DS", "3ds", [".3ds", ".cci", ".cxi", ".cia", ".3dsx"]),
+    # Sega
     ("genesis", "Sega Genesis", "genesis", [".md", ".gen", ".bin", ".zip"]),
     ("sms", "Sega Master System", "mastersystem", [".sms", ".zip"]),
     ("gamegear", "Sega Game Gear", "gamegear", [".gg", ".zip"]),
+    ("segacd", "Sega CD", "segacd", [".cue", ".chd", ".iso", ".m3u"]),
+    ("saturn", "Sega Saturn", "saturn", [".cue", ".chd", ".iso", ".m3u"]),
+    ("dreamcast", "Sega Dreamcast", "dreamcast", [".gdi", ".cdi", ".chd"]),
+    # Sony
     ("psx", "PlayStation", "psx", [".cue", ".chd", ".pbp", ".iso", ".m3u"]),
+    ("ps2", "PlayStation 2", "ps2", [".iso", ".chd", ".cso", ".zso"]),
+    ("ps3", "PlayStation 3", "ps3", [".iso"]),
     ("psp", "PlayStation Portable", "psp", [".iso", ".cso", ".pbp"]),
-    ("switch", "Nintendo Switch", "switch", [".nsp", ".xci", ".nsz", ".xcz"]),
+    # Microsoft
+    ("xbox", "Xbox", "xbox", [".iso", ".xiso"]),
+    # Arcade and others
+    ("pcengine", "PC Engine / TurboGrafx-16", "pcengine", [".pce", ".sgx", ".cue", ".chd"]),
+    ("neogeo", "Neo Geo", "neogeo", [".zip", ".7z", ".neo"]),
+    ("arcade", "Arcade (MAME)", "arcade", [".zip", ".7z", ".chd"]),
+    ("atari2600", "Atari 2600", "atari2600", [".a26", ".bin", ".zip"]),
+    ("atari7800", "Atari 7800", "atari7800", [".a78", ".zip"]),
+    ("lynx", "Atari Lynx", "lynx", [".lnx", ".zip"]),
+    ("wonderswan", "WonderSwan", "wonderswan", [".ws", ".wsc", ".zip"]),
+    ("ngp", "Neo Geo Pocket", "ngp", [".ngp", ".ngc", ".zip"]),
+    ("virtualboy", "Virtual Boy", "virtualboy", [".vb", ".zip"]),
+    # Computers
+    ("msx", "MSX", "msx", [".rom", ".mx1", ".mx2", ".dsk", ".cas", ".zip"]),
+    ("amiga", "Amiga", "amiga", [".adf", ".ipf", ".dms", ".hdf", ".lha"]),
 ]
 
 

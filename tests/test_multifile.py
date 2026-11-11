@@ -7,6 +7,8 @@ from pathlib import Path
 
 import pytest
 
+import isoutil
+
 import arcadia.sorter as sorter
 from arcadia.bundles import write_m3u
 from arcadia.config import Config, SystemConfig, default_systems
@@ -20,10 +22,7 @@ TID = "0100ABCD0001"  # first 12 hex digits of a made-up title ID block
 
 
 def psx_bin():
-    data = bytearray(0x10000)
-    data[0x8000:0x8006] = b"\x01CD001"
-    data[0x8008:0x8013] = b"PLAYSTATION"
-    return bytes(data)
+    return isoutil.psx_disc()
 
 
 def nsp():

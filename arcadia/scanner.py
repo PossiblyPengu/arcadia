@@ -2,18 +2,21 @@
 
 Games made of several files are linked together:
 * an .m3u playlist is the game, and the disc files it lists are its children;
-* a Switch base game owns the updates and DLC whose title IDs belong to it.
+* a Switch base game owns the updates and DLC whose title IDs belong to it;
+* for PS3 and Wii U, a whole folder is one game (see folders.py).
 Children are stored (so they can be shown and passed to the emulator) but hidden from the library.
 """
 
 from __future__ import annotations
 
+import os
 import re
 from dataclasses import dataclass, replace
 from pathlib import Path
 
 from arcadia.bundles import SWITCH_EXTS, parse_switch, read_m3u
 from arcadia.config import SystemConfig
+from arcadia.folders import FOLDER_RULES, find_game_folder
 
 _TAG = re.compile(r"\s*[\(\[][^\)\]]*[\)\]]")
 _ARTICLE = re.compile(r"^(.*), (The|A|An)$")
@@ -83,9 +86,20 @@ def scan_system(rom_root: Path, system: SystemConfig) -> list[Game]:
         return []
     extensions = {e.lower() if e.startswith(".") else f".{e.lower()}" for e in system.extensions} | ALWAYS_ACCEPTED
     games: dict[Path, Game] = {}
-    for path in sorted(folder.rglob("*")):
-        if path.is_file() and not path.name.startswith(".") and path.suffix.lower() in extensions:
-            games[path] = Game(system_id=system.id, path=path, title=clean_title(path.stem))
+    for dirpath, dirnames, filenames in os.walk(folder):
+        dirnames.sort()
+        here = Path(dirpath)
+        if system.id in FOLDER_RULES and here != folder:
+            hit = find_game_folder(here, system.id)
+            if hit is not None:  # the whole folder is one game: don't look inside it
+                launch, title = hit
+                games[launch] = Game(system_id=system.id, path=launch, title=title)
+                dirnames.clear()
+                continue
+        for name in sorted(filenames):
+            path = here / name
+            if not name.startswith(".") and path.suffix.lower() in extensions:
+                games[path] = Game(system_id=system.id, path=path, title=clean_title(path.stem))
     _link_playlists(games)
     _link_switch_bundles(games)
     return list(games.values())

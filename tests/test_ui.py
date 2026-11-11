@@ -4,6 +4,8 @@ import os
 
 import pytest
 
+import isoutil
+
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 pytest.importorskip("PySide6.QtWidgets", exc_type=ImportError)
 
@@ -353,10 +355,7 @@ _TID = "0100ABCD0001"
 
 
 def _psx_bin():
-    data = bytearray(0x10000)
-    data[0x8000:0x8006] = b"\x01CD001"
-    data[0x8008:0x8013] = b"PLAYSTATION"
-    return bytes(data)
+    return isoutil.psx_disc()
 
 
 def _library_window(tmp_path, template="echo {rom}"):
@@ -501,5 +500,32 @@ def test_discs_in_the_downloads_folder_are_joined_automatically(qapp, tmp_path, 
         _select_view(win, "psx")
         assert win.coverflow.titles() == ["Game"] and "2 discs" in win.meta_lbl.text()
         assert list(inbox.iterdir()) == []
+    finally:
+        win.close()
+
+
+def test_mouse_wheel_scrolls_the_system_bar_sideways(qapp, tmp_path):
+    from PySide6.QtCore import QPoint, QPointF
+    from PySide6.QtGui import QWheelEvent
+
+    from arcadia.config import default_systems
+
+    roms = tmp_path / "roms"
+    for s in default_systems():  # a game in every system, so every pill shows
+        (roms / s.folder).mkdir(parents=True)
+        (roms / s.folder / f"G{s.extensions[0]}").write_text("x")
+    cfg = Config(rom_root=str(roms), data_dir=str(tmp_path / "data"))
+    win = MainWindow(cfg, tmp_path / "config.json", Library(cfg.db_path))
+    win.resize(900, 700)
+    win.show()
+    try:
+        qapp.processEvents()
+        bar = win.systems_list.horizontalScrollBar()
+        assert bar.maximum() > 0  # more pills than fit
+        start = bar.value()
+        down = QWheelEvent(QPointF(50, 20), QPointF(50, 20), QPoint(0, 0), QPoint(0, -120),
+                           Qt.MouseButton.NoButton, Qt.KeyboardModifier.NoModifier, Qt.ScrollPhase.NoScrollPhase, False)
+        win.systems_list.wheelEvent(down)
+        assert bar.value() > start  # wheel down moves right, to later systems
     finally:
         win.close()

@@ -19,6 +19,10 @@ def build_command(template: str, rom: Path, extras: dict[str, list[Path]] | None
     If the template has no {rom}, the ROM path is appended as the last argument.
     A leading '~' in any argument is expanded to the home directory.
 
+    Other placeholders for the game's own path (each is quoted):
+        {stem}     the file name without its extension (MAME wants this: mame -rompath {dir} {stem})
+        {dir}      the folder the game is in
+
     Games made of several files can use extra placeholders, each replaced by the quoted
     paths of that kind of file (or by nothing if there are none):
         {updates}  update files linked to the game
@@ -32,11 +36,12 @@ def build_command(template: str, rom: Path, extras: dict[str, list[Path]] | None
         command = command.replace("{" + name + "}", " ".join(shlex.quote(str(p)) for p in paths))
     for name in ("updates", "dlc", "discs"):  # placeholders with nothing to fill them
         command = command.replace("{" + name + "}", "")
+    command = command.replace("{stem}", shlex.quote(rom.stem)).replace("{dir}", shlex.quote(str(rom.parent)))
     quoted = shlex.quote(str(rom))
     if "{rom}" in command:
         command = command.replace("{rom}", quoted)
-    else:
-        command = f"{command} {quoted}"
+    elif "{stem}" not in template and "{dir}" not in template:
+        command = f"{command} {quoted}"  # no placeholder for the game at all: it goes last
     try:
         args = shlex.split(command)
     except ValueError as exc:

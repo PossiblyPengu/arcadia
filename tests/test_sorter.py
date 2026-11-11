@@ -5,6 +5,8 @@ from pathlib import Path
 
 import pytest
 
+import isoutil
+
 from arcadia.config import Config
 from arcadia.sorter import (
     Confidence,
@@ -73,10 +75,7 @@ def psp_iso():
 
 
 def psx_iso():
-    data = bytearray(0x10000)
-    data[0x8000:0x8006] = b"\x01CD001"
-    data[0x8008:0x8013] = b"PLAYSTATION"
-    return bytes(data)
+    return isoutil.psx_disc()
 
 
 def pbp(marker: bytes):
@@ -135,7 +134,7 @@ def test_hint_ignores_systems_not_in_setup():
         ("Chrono Trigger.smc", snes(copier=True), "snes"),
         ("Patapon.iso", psp_iso(), "psp"),
         ("Crash.iso", psx_iso(), "psx"),
-        ("Game.cso", b"CISO" + bytes(100), "psp"),
+        ("Game.cso", isoutil.cso(isoutil.psp_disc()), "psp"),
         ("Crash.pbp", pbp(b"PSISOIMG0000"), "psx"),
         ("Lumines.pbp", pbp(b"NPUMDIMG0000"), "psp"),
     ],

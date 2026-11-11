@@ -25,6 +25,7 @@ written in Python with PySide6 (Qt).
   DLC** (Nintendo Switch) show as one game with its update and DLC files attached
 - **ROM sorting**: point Arcadia at your downloads folder and it moves each ROM into the
   right system folder, asking you whenever it isn't sure (see below)
+- **34 systems** with launch presets (see the table below), from the NES to the PS3, Wii U and Xbox
 - Presets for Nintendo (NES, SNES, Game Boy, Game Boy Color, GBA, N64, Switch), Sega (Genesis,
   Master System, Game Gear), and PlayStation / PSP, using standalone Flatpak emulators
   where they exist and RetroArch otherwise
@@ -112,11 +113,90 @@ install updates and DLC through their own menus, and I haven't verified a comman
 so the Ryujinx preset launches the base game only. If your emulator does take them on the command line,
 use the placeholders in the launch command (Settings): `{rom}` the game, `{updates}` update files,
 `{dlc}` DLC files, `{discs}` a multi-disc game's discs, e.g. `myemu --update {updates} --dlc {dlc} {rom}`.
-A placeholder with nothing to fill it disappears, and every path is quoted.
+`{stem}` is the file name without its extension and `{dir}` its folder (MAME wants both:
+`-rompath {dir} {stem}`). A placeholder with nothing to fill it disappears, and every path is quoted.
 
 Other limits: linking depends on the `[title ID]` in the file name, as in most dumps (the files' contents are
 encrypted), so a file without one is treated as a game of its own. A DLC whose ID ends in `800` would be
 mistaken for an update.
+
+## Supported systems
+
+Every system below is in the default setup with a launch preset. Systems with no games are hidden from the
+bar, so only the ones you use show up. Folder names are under your ROM root.
+
+| System | Folder | Emulator (Flatpak ID, or RetroArch core) |
+|---|---|---|
+| NES | `nes` | RetroArch `nestopia` |
+| Super Nintendo | `snes` | Snes9x `com.snes9x.Snes9x` |
+| Nintendo 64 | `n64` | RMG `com.github.Rosalie241.RMG` |
+| GameCube / Wii | `gamecube` / `wii` | Dolphin `org.DolphinEmu.dolphin-emu` |
+| Wii U | `wiiu` | Cemu `info.cemu.Cemu` |
+| Switch | `switch` | Ryujinx (Ryubing) `io.github.ryubing.Ryujinx` |
+| Game Boy / Color / Advance | `gb` / `gbc` / `gba` | mGBA `io.mgba.mGBA` |
+| Nintendo DS | `nds` | melonDS `net.kuribo64.melonDS` |
+| Nintendo 3DS | `3ds` | Azahar `org.azahar_emu.Azahar` |
+| Genesis, Master System, Game Gear, Sega CD | `genesis`, `mastersystem`, `gamegear`, `segacd` | RetroArch `genesis_plus_gx` |
+| Sega Saturn | `saturn` | RetroArch `mednafen_saturn` |
+| Dreamcast | `dreamcast` | Flycast `org.flycast.Flycast` |
+| PlayStation | `psx` | DuckStation `org.duckstation.DuckStation` |
+| PlayStation 2 | `ps2` | PCSX2 `net.pcsx2.PCSX2` |
+| PlayStation 3 | `ps3` | RPCS3 `net.rpcs3.RPCS3` |
+| PSP | `psp` | PPSSPP `org.ppsspp.PPSSPP` |
+| Xbox | `xbox` | xemu `app.xemu.xemu` |
+| PC Engine, Neo Geo | `pcengine`, `neogeo` | RetroArch `mednafen_pce_fast`, `fbneo` |
+| Arcade | `arcade` | MAME `org.mamedev.MAME` |
+| Atari 2600 / 7800 / Lynx | `atari2600`, `atari7800`, `lynx` | RetroArch `stella`, `prosystem`, `handy` |
+| WonderSwan, Neo Geo Pocket, Virtual Boy | `wonderswan`, `ngp`, `virtualboy` | RetroArch `mednafen_wswan`, `mednafen_ngp`, `mednafen_vb` |
+| MSX | `msx` | openMSX `org.openmsx.openMSX` |
+| Amiga | `amiga` | FS-UAE `net.fsuae.FS-UAE` |
+
+**What was checked.** Every Flatpak ID exists on Flathub and every RetroArch core file exists on the libretro
+build server. The command-line options were read from each project's own source for Dolphin (`-b -e`), PCSX2
+(`-batch --`), Cemu (`-g`), RPCS3 (a path argument), melonDS (a ROM argument), xemu (`-dvd_path`), RMG and MAME
+(`-rompath`). **They were not confirmed** for Azahar, Flycast, FS-UAE, openMSX, DuckStation, PPSSPP, mGBA, Snes9x
+or Ryujinx: those use the usual "emulator file" form, but run each once and fix the command in Settings if it
+isn't right. Save folders are only preset for RetroArch.
+
+**What each needs from you.** Arcadia launches emulators; it doesn't set them up.
+- RetroArch cores are downloaded on demand (Online Updater → Core Downloader), once each.
+- BIOS or firmware files are needed for PS1, PS2, Saturn, Sega CD, Dreamcast, Neo Geo, MSX, Amiga, Xbox
+  (xemu wants a BIOS and a hard-disk image), and for Switch the prod keys.
+- MAME and FinalBurn Neo want exact ROM sets: the zip's name is the game, so don't rename them.
+- RPCS3 can't boot an encrypted PS3 `.iso`; use a decrypted dump or a game folder.
+- Wii U updates and DLC, like Switch ones, are installed from inside Cemu, not by Arcadia.
+
+**Not added, and why.** PS4 (shadPS4 is early-stage and I couldn't verify how to launch a dump), PS Vita (Vita3K
+isn't on Flathub), ScummVM and DOSBox (they launch a game *folder* with per-game setup, which doesn't fit "one
+launch command per system"), Mednafen and ares (RetroArch covers those systems), and Xbox 360 or Windows games.
+
+## Game folders (PS3, Wii U)
+
+Some games are a folder, not a file. For PS3 and Wii U, a folder counts as one game when it holds the right
+marker file, and that file is what gets launched:
+
+| System | Folder is a game when it contains | Launches | Title read from |
+|---|---|---|---|
+| PS3 | `PS3_GAME/USRDIR/EBOOT.BIN` (or `USRDIR/EBOOT.BIN`) | that `EBOOT.BIN` | `PARAM.SFO` |
+| Wii U | `code/*.rpx` | that `.rpx` | `meta/meta.xml` |
+
+The folder name (`BLUS30443`) is the fallback title. Nothing inside a game folder shows up as a separate game.
+From the downloads folder, a game folder is recognised the same way and moved as a unit. Moving a folder across
+drives copies it, checks the file count and total size, and only then removes the original.
+
+## How disc images are told apart
+
+PlayStation 1 and 2 discs both carry a "PLAYSTATION" marker, so Arcadia reads the disc's own file system
+instead: `SYSTEM.CNF` says `BOOT` on a PS1 disc and `BOOT2` on a PS2 disc. It also reads the PSP, PS3, Xbox,
+GameCube, Wii, Saturn, Sega CD and Dreamcast layouts, looks inside compressed PSP `.cso` files, and reads the
+kind of disc (CD, DVD, GD-ROM) from a `.chd`. A `.cue` or `.gdi` sheet is judged by its data track.
+
+When the contents can't settle it, Arcadia asks rather than guessing: a disc image it can't place defaults to
+the likeliest system but stays unticked. Playlists for multi-disc games are only made for PlayStation, Saturn
+and Sega CD, because those are the emulators that open them.
+
+Limits: all of this was tested against disc and ROM images I built from the published formats, not against
+real dumps, so an unusual real file may land in "unsure". That is the safe direction.
 
 ## Presets and Flatpak access
 
@@ -128,12 +208,10 @@ should be checked on your machine. Settings → "Reset launch commands to preset
 Flatpak apps can only read folders they've been granted, so grant your ROM folder once per app:
 
 ```bash
-flatpak override --user --filesystem=/path/to/ROMs org.libretro.RetroArch
-flatpak override --user --filesystem=/path/to/ROMs io.mgba.mGBA
-flatpak override --user --filesystem=/path/to/ROMs com.snes9x.Snes9x
-flatpak override --user --filesystem=/path/to/ROMs org.duckstation.DuckStation
-flatpak override --user --filesystem=/path/to/ROMs org.ppsspp.PPSSPP
-flatpak override --user --filesystem=/path/to/ROMs io.github.ryubing.Ryujinx
+# run once per emulator you use
+for app in org.libretro.RetroArch io.mgba.mGBA com.snes9x.Snes9x org.duckstation.DuckStation org.ppsspp.PPSSPP io.github.ryubing.Ryujinx org.DolphinEmu.dolphin-emu info.cemu.Cemu net.kuribo64.melonDS org.azahar_emu.Azahar net.pcsx2.PCSX2 net.rpcs3.RPCS3 app.xemu.xemu org.flycast.Flycast com.github.Rosalie241.RMG org.mamedev.MAME org.openmsx.openMSX net.fsuae.FS-UAE; do
+  flatpak override --user --filesystem=/path/to/ROMs "$app"
+done
 ```
 
 Save-state snapshots only work where the save folder is set. Standalone presets
@@ -210,6 +288,8 @@ arcadia/
   scanner.py     ROM discovery and title cleanup
   sorter.py      identify ROMs in the downloads folder and move them safely, with undo
   bundles.py     disc tags, playlists, and Switch title IDs
+  discs.py       disc image analysis: ISO 9660, PS1 vs PS2, Nintendo/Sega/Xbox discs, CSO, CHD
+  folders.py     games that are folders (PS3, Wii U) and their titles
   files_dialog.py  every file that makes up a game
   import_dialog.py  the confirm-before-moving dialog
   library.py     SQLite store (games, favorites, sessions)
@@ -227,5 +307,8 @@ tests/
   test_sorter.py ROM identification, plans, safe moves, and undo
   test_bundles.py  disc-name, playlist, and title-ID parsing
   test_multifile.py  multi-disc sets and update/DLC bundles end to end
+  test_discs.py  disc image analysis
+  test_newsystems.py  the extra systems, folder games, presets, and disc disambiguation
+  isoutil.py     builds valid disc images for the tests
   test_ui.py     window, cover flow, and import dialog tests (skipped where Qt can't load)
 ```
