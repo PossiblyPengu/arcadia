@@ -468,7 +468,22 @@ Save-state snapshots only work where the save folder is set. Standalone presets
 (mGBA, Snes9x, DuckStation, PPSSPP) have no save folder set by default, because the
 exact location depends on the emulator's configuration. Set it in Settings if you want snapshots.
 
-## Install
+## Install and run on a Steam Deck (or any Linux PC)
+
+In Desktop Mode, open a terminal in the Arcadia folder and run:
+
+```bash
+./install.sh        # private Python environment + an "Arcadia" entry in the application menu
+./arcadia.sh        # start it full screen   (./arcadia.sh --windowed for a normal window)
+./install.sh --uninstall   # remove the environment and menu entry (never your ROMs or saves)
+```
+
+Arcadia is its own app: nothing is added to Steam and your games never appear in the Steam library. To start it
+from Game Mode, add `arcadia.sh` yourself (Steam > Add a Non-Steam Game > browse to it). The launcher then asks
+Qt for gamescope's X11 display automatically. A Steam Input layout with the gamepad template works for the
+controls. Not yet tried on real Deck hardware.
+
+## Install (development)
 
 ```bash
 python3 -m venv .venv
