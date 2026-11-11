@@ -205,3 +205,23 @@ def test_a_too_many_requests_answer_is_retried(qapp, tmp_path, monkeypatch):
     fetcher = Busy(make_logo())
     result = logos.fetch_logos(tmp_path / "media", fetcher=fetcher, pause=0)
     assert result.done == ["nes"] and len(fetcher.asked) == 3 and len(set(fetcher.asked)) == 1  # the same address, three times
+
+
+def test_check_custom_pictures(tmp_path):
+    from PySide6.QtGui import QColor, QImage
+
+    from arcadia import pixelart
+
+    good = QImage(300, 200, QImage.Format.Format_ARGB32)
+    good.fill(QColor("red"))
+    good.save(str(tmp_path / "nes.png"))
+    tiny = QImage(20, 20, QImage.Format.Format_ARGB32)
+    tiny.fill(QColor("red"))
+    tiny.save(str(tmp_path / "snes.png"))
+    good.save(str(tmp_path / "bogus.png"))
+    (tmp_path / "gc.png").write_text("not a picture")
+    (tmp_path / "notes.txt").write_text("x")
+    text = "\n".join(pixelart.check_custom(tmp_path, {"nes", "snes", "gc"}))
+    assert "snes.png: only 20" in text and "bogus.png" in text and "gc.png: can't be read" in text and "notes.txt" in text
+    assert "nes.png" not in text.replace("snes.png", "")
+    assert pixelart.check_custom(None, set()) == []

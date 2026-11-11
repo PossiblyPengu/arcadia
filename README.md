@@ -468,6 +468,11 @@ Save-state snapshots only work where the save folder is set. Standalone presets
 (mGBA, Snes9x, DuckStation, PPSSPP) have no save folder set by default, because the
 exact location depends on the emulator's configuration. Set it in Settings if you want snapshots.
 
+Folder choosers inside Arcadia (Arcadia folder, ROM folder, downloads folder, sync folder) are
+controller-friendly: a "Jump to…" list (Home, Downloads, plugged-in memory cards and USB drives), then A on a
+folder opens it. View > Check my console pictures tells you what's wrong with pictures in `media/consoles`. Installing
+an emulator shows speed and time left and has a Cancel button.
+
 ## Install and run on a Steam Deck (or any Linux PC)
 
 In Desktop Mode, open a terminal in the Arcadia folder and run:
@@ -482,6 +487,10 @@ Arcadia is its own app: nothing is added to Steam and your games never appear in
 from Game Mode, add `arcadia.sh` yourself (Steam > Add a Non-Steam Game > browse to it). The launcher then asks
 Qt for gamescope's X11 display automatically. A Steam Input layout with the gamepad template works for the
 controls. Not yet tried on real Deck hardware.
+
+In Steam's controller settings for Arcadia, bind: D-pad to the arrow keys, **A** to Enter, **B** to Escape,
+**Y** to Ctrl+D, left/right bumper to Page Up / Page Down, and the left stick to the arrow keys too. That covers
+every control in the table below. `docs/steam-input.md` has the same list to follow button by button.
 
 ## Install (development)
 
@@ -529,7 +538,7 @@ media/snes/Super Mario World.png    cover art (png, jpg, jpeg, webp)
 | Launch the game | Enter | A |
 | Back to the consoles | Esc / Backspace | B |
 | Jump to a console or a game | Type a letter | — |
-| Change console without going back (game screen) | — | Left / right bumper |
+| Change console without going back (game screen) | Page Up / Page Down | Left / right bumper |
 | Favorite | Ctrl+D | Y (game screen) |
 | Search (all games, from the console screen) | Ctrl+F | — |
 | Fullscreen | F11 | — |

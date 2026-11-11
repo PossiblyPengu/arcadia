@@ -27,6 +27,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from arcadia.folder_picker import choose_folder
 from arcadia.backup import BackupError, create_backup, inspect_backup, restore_backup
 from arcadia.config import DEFAULT_HOME, Config
 from arcadia.consolidate import (
@@ -210,7 +211,7 @@ class BringInDialog(QDialog, _Busy):
         return widget
 
     def _browse(self, edit: QLineEdit, title: str) -> None:
-        folder = QFileDialog.getExistingDirectory(self, title, edit.text() or str(Path.home()))
+        folder = choose_folder(self, title, edit.text() or str(Path.home()))
         if folder:
             edit.setText(folder)
 

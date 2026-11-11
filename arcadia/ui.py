@@ -32,7 +32,6 @@ from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
     QDialogButtonBox,
-    QFileDialog,
     QFormLayout,
     QGraphicsOpacityEffect,
     QHBoxLayout,
@@ -50,6 +49,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from arcadia.folder_picker import choose_folder
 from arcadia.config import Config, SystemConfig
 from arcadia.consoles_view import ConsoleCarousel, Entry
 from arcadia.coverflow import COVER_H, COVER_W, CoverFlow
@@ -240,18 +240,18 @@ class SettingsDialog(QDialog):
 
     def _browse_home(self) -> None:
         start = self.home_dir.text().strip() or str(Path.home())
-        folder = QFileDialog.getExistingDirectory(self, "Arcadia folder", start)
+        folder = choose_folder(self, "Arcadia folder", start)
         if folder:
             self.home_dir.setText(folder)
 
     def _browse(self) -> None:
-        folder = QFileDialog.getExistingDirectory(self, "ROM root folder", self.rom_root.text())
+        folder = choose_folder(self, "ROM root folder", self.rom_root.text())
         if folder:
             self.rom_root.setText(folder)
 
     def _browse_inbox(self) -> None:
         start = self.inbox_dir.text().strip() or str(Path.home() / "Downloads")
-        folder = QFileDialog.getExistingDirectory(self, "Downloads folder (ROM inbox)", start)
+        folder = choose_folder(self, "Downloads folder (ROM inbox)", start)
         if folder:
             self.inbox_dir.setText(folder)
 
@@ -541,6 +541,7 @@ class MainWindow(QMainWindow):
         pictures.addSeparator()
         pictures.addAction("Download console logos…", self.download_logos)
         view_menu.addAction("Use my own console pictures…", self.open_console_art)
+        view_menu.addAction("Check my console pictures", self.check_console_art)
         view_menu.addSeparator()
         self.fullscreen_action = QAction("Fullscreen", self, checkable=True)
         self.fullscreen_action.triggered.connect(lambda _c: self.toggle_fullscreen())
@@ -612,6 +613,18 @@ class MainWindow(QMainWindow):
             "For example  nes.png, snes.png, n64.png, gc.png, psx.png, genesis.webp.\n"
             "PNG or WebP with a transparent background looks best. Close and reopen Arcadia (or press Ctrl+R) to see them.",
         )
+
+    def check_console_art(self) -> None:
+        folder = self.config.media_path / "consoles"
+        known = {s.id for s in self.config.systems} | set(VIEW_NAMES)
+        problems = pixelart.check_custom(folder, known)
+        if not folder.is_dir() or not any(folder.iterdir()):
+            text = f"There are no pictures of your own yet. Put them in:\n{folder}"
+        elif problems:
+            text = "Things to look at:\n\n" + "\n".join("• " + p for p in problems)
+        else:
+            text = "Your pictures all look fine."
+        QMessageBox.information(self, "Your console pictures", text)
 
     def toggle_fullscreen(self) -> None:
         if self.isFullScreen():
@@ -770,6 +783,9 @@ class MainWindow(QMainWindow):
     def keyPressEvent(self, event) -> None:
         if self.on_games_page() and event.key() in (Qt.Key.Key_Escape, Qt.Key.Key_Backspace) and not self.search.hasFocus():
             self.show_consoles()
+            return
+        if event.key() in (Qt.Key.Key_PageUp, Qt.Key.Key_PageDown) and not self.search.hasFocus():
+            self.handle_action("prev_system" if event.key() == Qt.Key.Key_PageUp else "next_system")  # the bumpers, as keys
             return
         super().keyPressEvent(event)
 
@@ -1296,7 +1312,7 @@ class MainWindow(QMainWindow):
         inbox = self.config.inbox_path
         if inbox is None or not inbox.is_dir():
             start = str(inbox) if inbox else str(Path.home() / "Downloads")
-            folder = QFileDialog.getExistingDirectory(self, "Choose your downloads folder", start)
+            folder = choose_folder(self, "Choose your downloads folder", start)
             if not folder:
                 return
             self.config.inbox_dir = folder

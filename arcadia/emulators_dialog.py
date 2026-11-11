@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import shutil
 import subprocess
+import threading
+import time
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -400,6 +402,17 @@ class EmulatorsDialog(QDialog):
         self._update_buttons()
         on_done(value, error)
 
+    def _cancellable(self, report):
+        """The progress callback, but stopping the download as soon as Cancel is pressed."""
+        cancel = self._cancel
+
+        def checked(done: int, total: int) -> None:
+            if cancel.is_set():
+                raise EmulatorError("cancelled")
+            report(done, total)
+
+        return checked
+
     def _on_progress(self, done: int, total: int) -> None:
         if self._progress is None:
             return
@@ -407,7 +420,14 @@ class EmulatorsDialog(QDialog):
             self._progress.setRange(0, 100)
             self._progress.setValue(int(done * 100 / total))
             if self._progress_bytes:
-                self._progress.setLabelText(f"{self._progress_label}\n{fmt_size(done)} of {fmt_size(total)}")
+                text = f"{self._progress_label}\n{fmt_size(done)} of {fmt_size(total)}"
+                elapsed = time.monotonic() - getattr(self, "_started", time.monotonic())
+                if elapsed >= 2 and done > 0 and done < total:
+                    rate = done / elapsed
+                    text += f"  ({fmt_size(int(rate))}/s, about {max(1, round((total - done) / rate))} s left)"
+                elif done >= total:
+                    text += "\nUnpacking…"
+                self._progress.setLabelText(text)
         else:
             self._progress.setRange(0, 0)
 
@@ -441,18 +461,23 @@ class EmulatorsDialog(QDialog):
         asset = confirm.chosen_asset()
         self._progress_label = f"Downloading {asset.name}"
         self._progress_bytes = True
-        self._progress = QProgressDialog(self._progress_label, "", 0, 0, self)
-        self._progress.setCancelButton(None)
+        self._cancel = threading.Event()
+        self._started = time.monotonic()
+        self._progress = QProgressDialog(self._progress_label, "Cancel", 0, 0, self)
+        self._progress.canceled.connect(self._cancel.set)
         self._progress.setWindowTitle(f"Installing {spec.name}")
         self._progress.setWindowModality(Qt.WindowModality.WindowModal)
         self._progress.show()
         self._run(
-            lambda report: self.installer.install(spec, release, asset, report),
+            lambda report: self.installer.install(spec, release, asset, self._cancellable(report)),
             lambda installed, err: self._on_installed(spec, installed, err),
             f"Installing {spec.name}…",
         )
 
     def _on_installed(self, spec: EmulatorSpec, installed, error: Exception | None) -> None:
+        if error is not None and str(error) == "cancelled":
+            self.status.setText(f"Installing {spec.name} was cancelled. Nothing was changed.")
+            return
         if error is not None:
             self._explain_failure(spec, f"{spec.name} wasn't installed: {error}")
             return
@@ -526,8 +551,10 @@ class EmulatorsDialog(QDialog):
             return
         self._progress_label = "Updating emulators"
         self._progress_bytes = False
-        self._progress = QProgressDialog(self._progress_label, "", 0, 0, self)
-        self._progress.setCancelButton(None)
+        self._cancel = threading.Event()
+        self._started = time.monotonic()
+        self._progress = QProgressDialog(self._progress_label, "Cancel", 0, 0, self)
+        self._progress.canceled.connect(self._cancel.set)
         self._progress.setWindowTitle("Updating")
         self._progress.setWindowModality(Qt.WindowModality.WindowModal)
         self._progress.show()

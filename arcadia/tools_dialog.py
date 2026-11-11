@@ -10,7 +10,6 @@ from PySide6.QtWidgets import (
     QCheckBox,
     QDialog,
     QDialogButtonBox,
-    QFileDialog,
     QHBoxLayout,
     QHeaderView,
     QLabel,
@@ -26,6 +25,7 @@ from PySide6.QtWidgets import (
 )
 
 from arcadia import bios, retroarch, savesync
+from arcadia.folder_picker import choose_folder
 from arcadia.config import Config
 from arcadia.setup_dialog import _Busy
 from arcadia.updates import flatpaks_in_use, installed_flatpaks
@@ -287,7 +287,7 @@ class ToolsDialog(QDialog, _Busy):
         return page
 
     def browse_sync(self) -> None:
-        chosen = QFileDialog.getExistingDirectory(self, "Choose the sync folder", self.sync_edit.text() or str(Path.home()))
+        chosen = choose_folder(self, "Choose the sync folder", self.sync_edit.text() or str(Path.home()))
         if chosen:
             self.sync_edit.setText(chosen)
 

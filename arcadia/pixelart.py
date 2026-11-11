@@ -207,3 +207,36 @@ def glow(view_id: str, width: int, color: str) -> QPixmap:
 
 def glow_padding(width: int) -> int:
     return max(20, width // 3)
+
+
+# ----- checking your own pictures -----
+
+def check_custom(folder: Path | None, known_ids: set[str]) -> list[str]:
+    """Plain-language problems with the pictures in your console-pictures folder (empty list = all fine)."""
+    if folder is None or not folder.is_dir():
+        return []
+    problems: list[str] = []
+    for path in sorted(folder.iterdir()):
+        if path.suffix.lower() not in ART_TYPES:
+            if path.is_file() and not path.name.startswith("."):
+                problems.append(f"{path.name}: not used (use PNG, WebP or JPEG)")
+            continue
+        if path.stem not in known_ids and path.stem != "cartridge":
+            problems.append(f"{path.name}: no console is called “{path.stem}”, so it isn't shown")
+            continue
+        image = QImage(str(path))
+        if image.isNull():
+            problems.append(f"{path.name}: can't be read as a picture")
+            continue
+        trimmed = _load_custom(path)
+        if trimmed is None:
+            problems.append(f"{path.name}: completely transparent")
+            continue
+        if trimmed.width() < 64 or trimmed.height() < 48:
+            problems.append(f"{path.name}: only {trimmed.width()}×{trimmed.height()} pixels, it will look blurry (aim for 256 wide or more)")
+        ratio = trimmed.width() / trimmed.height()
+        if ratio > 4 or ratio < 0.25:
+            problems.append(f"{path.name}: very {'wide' if ratio > 1 else 'tall'} ({trimmed.width()}×{trimmed.height()}); it will be shown small")
+        if path.suffix.lower() in (".jpg", ".jpeg"):
+            problems.append(f"{path.name}: JPEG has no transparency, so it shows as a rectangle (PNG or WebP looks better)")
+    return problems
