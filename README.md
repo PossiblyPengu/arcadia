@@ -37,6 +37,7 @@ written in Python with PySide6 (Qt).
   Master System, Game Gear), and PlayStation / PSP, using standalone Flatpak emulators
   where they exist and RetroArch otherwise
 - "Surprise me" picks a random game from the current system
+- Its own app: Arcadia never adds games to your Steam library (deliberately; no Steam shortcuts).
 - Controller-friendly: keyboard navigation works, and Steam Input maps a Steam Deck to it.
   A gamepad can also be read directly through evdev if the `evdev` package is installed.
 
@@ -292,7 +293,6 @@ large. It does **not** hold ROMs, emulator programs, or anything a Flatpak emula
 Arcadia now installs, updates and launches emulators, keeps everything in one folder, sorts and organises ROMs,
 checks what's ready, and backs up saves. Things a complete tool of this kind would also do, which Arcadia does
 **not** yet:
-- **Steam integration:** adding your games to Steam as shortcuts, with artwork, so they appear in Game Mode.
 - **Configuring the emulators for you:** resolution, controller profiles, per-emulator defaults. Arcadia launches
   emulators but doesn't write their settings, because each has its own file format and I won't guess at them.
 - **Pointing emulators at your BIOS folder** (and checking those files), for the same reason.
