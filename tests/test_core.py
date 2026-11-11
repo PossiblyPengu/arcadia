@@ -193,6 +193,29 @@ def test_config_missing_file_gives_defaults(tmp_path):
     assert [s.id for s in cfg.systems] == [s.id for s in default_systems()]
 
 
+def test_default_systems_include_sega_and_psp_with_presets():
+    systems = {s.id: s for s in default_systems()}
+    for sid in ["nes", "snes", "gb", "gbc", "gba", "n64", "genesis", "sms", "gamegear", "psx", "psp"]:
+        assert sid in systems, sid
+        assert systems[sid].command, f"{sid} has no launch preset"
+        build_command(systems[sid].command, Path("/roms/x.bin"))  # every preset parses
+
+
+def test_load_adds_newly_defined_systems_to_old_config(tmp_path):
+    path = tmp_path / "config.json"
+    path.write_text('{"rom_root": "/games", "systems": [{"id": "nes", "name": "NES", "folder": "nes", "extensions": [".nes"], "command": "emu {rom}", "save_dir": ""}]}')
+    cfg = Config.load(path)
+    ids = [s.id for s in cfg.systems]
+    assert ids[0] == "nes"
+    assert cfg.system("nes").command == "emu {rom}"  # user's command kept
+    assert "psp" in ids and "sms" in ids
+
+
+def test_build_command_expands_home_in_arguments():
+    args = build_command("retroarch -L ~/cores/x.so {rom}", Path("/roms/x.nes"))
+    assert args[2].startswith("/") and "~" not in args[2]
+
+
 @pytest.mark.parametrize("seconds, expected", [(5, "5s"), (125, "2m"), (3725, "1h 02m")])
 def test_fmt_duration(seconds, expected):
     assert fmt_duration(seconds) == expected

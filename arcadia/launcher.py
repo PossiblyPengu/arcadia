@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import shlex
 from pathlib import Path
 
@@ -16,6 +17,7 @@ def build_command(template: str, rom: Path) -> list[str]:
     Example: 'retroarch -L /cores/snes9x.so {rom}' ->
              ['retroarch', '-L', '/cores/snes9x.so', '/roms/snes/Game (USA).sfc']
     If the template has no {rom}, the ROM path is appended as the last argument.
+    A leading '~' in any argument is expanded to the home directory.
     """
     if not template or not template.strip():
         raise LaunchError("No launch command is set for this system. Add one in Settings.")
@@ -30,4 +32,4 @@ def build_command(template: str, rom: Path) -> list[str]:
         raise LaunchError(f"Launch command could not be parsed: {exc}") from exc
     if not args:
         raise LaunchError("Launch command is empty after substitution.")
-    return args
+    return [os.path.expanduser(a) for a in args]

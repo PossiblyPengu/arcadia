@@ -12,8 +12,34 @@ written in Python with PySide6 (Qt).
 - Save-state snapshots: copy a game's saves into a snapshot, restore any snapshot later
   (the current saves are backed up automatically before a restore)
 - Covers and metadata from an optional media folder (sidecar files, see below)
+- Cover-flow shelf: the selected game sits large with its neighbors tilted back, the
+  whole window takes on the current system's color, and each system name animates in
+- Presets for Nintendo (NES, SNES, Game Boy, Game Boy Color, GBA, N64), Sega (Genesis,
+  Master System, Game Gear), and PlayStation / PSP, using standalone Flatpak emulators
+  where they exist and RetroArch otherwise
+- "Surprise me" picks a random game from the current system
 - Controller-friendly: keyboard navigation works, and Steam Input maps a Steam Deck to it.
   A gamepad can also be read directly through evdev if the `evdev` package is installed.
+
+## Presets and Flatpak access
+
+Launch commands default to the presets in `arcadia/presets.py`. Their Flatpak IDs were
+checked on Flathub. The command-line options and save folders are the usual defaults and
+should be checked on your machine. Settings → "Reset launch commands to presets" restores them.
+
+Flatpak apps can only read folders they've been granted, so grant your ROM folder once per app:
+
+```bash
+flatpak override --user --filesystem=/path/to/ROMs org.libretro.RetroArch
+flatpak override --user --filesystem=/path/to/ROMs io.mgba.mGBA
+flatpak override --user --filesystem=/path/to/ROMs com.snes9x.Snes9x
+flatpak override --user --filesystem=/path/to/ROMs org.duckstation.DuckStation
+flatpak override --user --filesystem=/path/to/ROMs org.ppsspp.PPSSPP
+```
+
+Save-state snapshots only work where the save folder is set. Standalone presets
+(mGBA, Snes9x, DuckStation, PPSSPP) have no save folder set by default, because the
+exact location depends on the emulator's configuration. Set it in Settings if you want snapshots.
 
 ## Install
 
@@ -60,6 +86,7 @@ media/snes/Super Mario World.png    cover art (png, jpg, jpeg, webp)
 | Back           | Esc              | B                                |
 | Favorite       | Ctrl+D           | Y                                |
 | Previous/next system | —          | Left / right bumper              |
+| Surprise me    | —                | —                                |
 | Search         | Ctrl+F           | —                                |
 | Rescan         | Ctrl+R           | —                                |
 
@@ -82,6 +109,8 @@ arcadia/
   launcher.py    launch template -> argument list
   savestates.py  snapshot / restore of per-game saves
   metadata.py    sidecar JSON and cover art
+  presets.py     launch presets and system accent colors
+  coverflow.py   animated cover-flow carousel widget
   gamepad.py     optional evdev controller input
   ui.py          Qt windows and dialogs
   main.py        entry point

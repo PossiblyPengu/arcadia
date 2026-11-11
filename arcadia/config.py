@@ -7,6 +7,8 @@ import os
 from dataclasses import asdict, dataclass, field, fields
 from pathlib import Path
 
+from arcadia.presets import PRESETS
+
 CONFIG_HOME = Path(os.environ.get("XDG_CONFIG_HOME") or Path.home() / ".config") / "arcadia"
 DATA_HOME = Path(os.environ.get("XDG_DATA_HOME") or Path.home() / ".local" / "share") / "arcadia"
 CONFIG_PATH = CONFIG_HOME / "config.json"
@@ -20,7 +22,10 @@ _DEFAULT_SYSTEM_ROWS = [
     ("gba", "Game Boy Advance", "gba", [".gba", ".zip"]),
     ("n64", "Nintendo 64", "n64", [".z64", ".n64", ".v64", ".zip"]),
     ("genesis", "Sega Genesis", "genesis", [".md", ".gen", ".bin", ".zip"]),
+    ("sms", "Sega Master System", "mastersystem", [".sms", ".zip"]),
+    ("gamegear", "Sega Game Gear", "gamegear", [".gg", ".zip"]),
     ("psx", "PlayStation", "psx", [".cue", ".chd", ".pbp", ".iso"]),
+    ("psp", "PlayStation Portable", "psp", [".iso", ".cso", ".pbp"]),
 ]
 
 
@@ -37,7 +42,20 @@ class SystemConfig:
 
 
 def default_systems() -> list[SystemConfig]:
-    return [SystemConfig(id=i, name=n, folder=f, extensions=list(e)) for i, n, f, e in _DEFAULT_SYSTEM_ROWS]
+    systems = []
+    for system_id, name, folder, extensions in _DEFAULT_SYSTEM_ROWS:
+        preset = PRESETS.get(system_id)
+        systems.append(
+            SystemConfig(
+                id=system_id,
+                name=name,
+                folder=folder,
+                extensions=list(extensions),
+                command=preset.command if preset else "",
+                save_dir=preset.save_dir if preset else "",
+            )
+        )
+    return systems
 
 
 @dataclass
@@ -83,6 +101,9 @@ class Config:
         known = {f.name for f in fields(cls)} - {"systems"}
         kwargs = {k: v for k, v in raw.items() if k in known}
         systems = [SystemConfig(**s) for s in systems_raw] or default_systems()
+        # Add systems that were added to the defaults after this config was saved.
+        existing = {s.id for s in systems}
+        systems += [s for s in default_systems() if s.id not in existing]
         return cls(systems=systems, **kwargs)
 
     def save(self, path: Path = CONFIG_PATH) -> None:
