@@ -16,13 +16,11 @@
  ],
  "wii": [
   "Wii.svg",
-  "Wii_logo.svg",
-  "Wii_Logo.svg"
+  "Wii_logo.svg"
  ],
  "wiiu": [
-  "Wii_U_Logo.svg",
-  "Wii_U_logo.svg",
-  "Wii_U.svg"
+  "Wii_U.svg",
+  "Wii_U_logo.svg"
  ],
  "switch": [
   "Nintendo_Switch_logo.svg"
@@ -38,7 +36,9 @@
  ],
  "gba": [
   "Game_Boy_Advance_logo.svg",
-  "Gameboy_advance_logo.svg"
+  "Gameboy_Advance_logo.svg",
+  "Game_Boy_Advance.svg",
+  "Game_Boy_Advance_logo.png"
  ],
  "nds": [
   "Nintendo_DS_Logo.svg",
@@ -55,23 +55,22 @@
   "Genesis_logo.svg"
  ],
  "sms": [
-  "Sega_Master_System_logo.svg",
-  "Master_System_logo.svg",
-  "Sega_Master_System_Logo.svg"
+  "Sega-master-system-logo.png",
+  "Sega_Master_System_logo.svg"
  ],
  "gamegear": [
-  "Sega_Game_Gear_logo.svg",
-  "Game_Gear_logo.svg",
-  "Game_Gear.svg"
+  "Game_gear_us-jp_logo.svg",
+  "Sega_Game_Gear_logo.svg"
  ],
  "segacd": [
   "Sega_CD_logo.svg",
+  "Sega_CD.svg",
+  "Sega_CD_Logo.svg",
   "Sega_Mega-CD_logo.svg"
  ],
  "saturn": [
-  "Sega_Saturn_Logo.svg",
-  "Sega_Saturn_logo.svg",
-  "SegaSaturn.svg"
+  "Sega_Saturn_Japanese_logo_with_blue_planet.svg",
+  "Sega_Saturn_Logo.svg"
  ],
  "dreamcast": [
   "Dreamcast_logo_Japan.svg",
@@ -98,9 +97,8 @@
   "PSP_logo.svg"
  ],
  "xbox": [
-  "Xbox_logo_(2001).svg",
-  "Xbox_Logo.svg",
-  "Xbox_logo_2001.svg"
+  "Xbox_original_logo_black.png",
+  "Xbox_logo_(2001).svg"
  ],
  "pcengine": [
   "PC_engine_logo_red.svg",
@@ -116,13 +114,12 @@
   "Atari_2600_logo.svg"
  ],
  "atari7800": [
-  "Atari_7800_logo.svg",
-  "Atari_7800_Logo.svg"
+  "Atari_7800_logo-09.svg",
+  "Atari_7800_logo.svg"
  ],
  "lynx": [
   "Atari_Lynx_Logo.svg",
-  "Atari_Lynx_logo.svg",
-  "Atari_Lynx.svg"
+  "Atari_Lynx_logo.svg"
  ],
  "wonderswan": [
   "WonderSwan_logo.svg",
@@ -138,11 +135,12 @@
   "Virtualboy_logo.svg"
  ],
  "msx": [
-  "MSX_Logo.svg",
-  "MSX_logo.svg"
+  "MSX-Logo.svg",
+  "MSX_Logo.svg"
  ],
  "amiga": [
-  "Amiga_logo.svg",
-  "Amiga_Logo.svg"
+  "Commodore_Amiga_logo-03.svg",
+  "Commodore_Amiga_US_Logo.svg",
+  "Amiga_logo.svg"
  ]
 }
