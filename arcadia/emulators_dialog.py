@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from urllib.parse import urlparse
 
-from PySide6.QtCore import QThread, QUrl, Qt, Signal
+from PySide6.QtCore import QUrl, Qt
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import (
     QAbstractItemView,
@@ -34,25 +34,8 @@ from arcadia.emulators import (
     Release,
     candidate_assets,
 )
+from arcadia.tasks import Task
 from arcadia.util import fmt_size
-
-
-class Task(QThread):
-    """Run a function off the interface thread. The function gets a progress callback."""
-
-    progress = Signal(int, int)
-    done = Signal(object, object)  # (result, error)
-
-    def __init__(self, fn, parent=None):
-        super().__init__(parent)
-        self._fn = fn
-
-    def run(self) -> None:
-        try:
-            value, error = self._fn(self.progress.emit), None
-        except Exception as exc:  # reported to the user, never lost in a thread
-            value, error = None, exc
-        self.done.emit(value, error)
 
 
 TaskClass = Task  # tests swap this for a version that runs immediately

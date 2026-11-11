@@ -28,6 +28,8 @@ written in Python with PySide6 (Qt).
 - **Everything in one folder**: ROMs, emulators, BIOS files, covers, saves and the library live under one
   `Arcadia` folder, and Arcadia can install emulators into it (File → Emulators) so each one is self-contained
   instead of spread across Flatpak, `~/.config` and `~/.local/share`. `--home PATH` makes the whole thing portable
+- A **Setup** window (File → Arcadia folder and setup…) that shows which systems are actually ready to play,
+  brings an existing library into the Arcadia folder, and backs up and restores your saves and settings
 - **34 systems** with launch presets (see the table below), from the NES to the PS3, Wii U and Xbox
 - Presets for Nintendo (NES, SNES, Game Boy, Game Boy Color, GBA, N64, Switch), Sega (Genesis,
   Master System, Game Gear), and PlayStation / PSP, using standalone Flatpak emulators
@@ -197,6 +199,50 @@ those two hosts**, nothing else, and no other emulator may use them. This one I 
 
 When several downloads match a project's known pattern equally well, Arcadia no longer preselects any of them
 and asks you to choose, since picking one would be arbitrary.
+
+### Setup: what's ready, bringing your library in, and backups
+
+File → **Arcadia folder and setup…** (Ctrl+Shift+S) is the one place to see and manage all of this.
+
+**What's ready.** Each system that has games (or an emulator installed here) gets a row saying what it launches
+with and whether that can work, and what to do if not. It only reports things it can really check:
+- an emulator installed in the Arcadia folder is ready;
+- a Flatpak command is checked with `flatpak info`, so "not installed" comes with the exact
+  `flatpak install flathub …` line, and "Flatpak isn't available" is its own message;
+- a RetroArch command also checks that the core file it names exists, and says to download it in RetroArch's
+  Core Downloader if not;
+- any other command is looked up on your path.
+
+It does **not** check BIOS or firmware files: where an emulator wants them depends on its own settings, which Arcadia
+can't see, so it won't claim they are found or missing. It also needs the `flatpak` program to answer for Flatpaks.
+Space used by ROMs, emulators, save states, covers and backups is shown above the table.
+
+**Move my library in.** Point it at your existing ROM folder (the one holding `nes/`, `psx/`, `Game Boy Advance/`…).
+It matches each subfolder to a system by name, including the names RetroPie, Batocera, EmuDeck and ES-DE use
+(`megadrive`, `wswan`, `mame-libretro`, `ps1`…), shows the list with a system for each, and leaves unrecognised folders
+(`Photos`) alone unless you choose a system for them. Then, after asking, it moves or copies what's inside into `roms/`.
+- **Move** is fast on the same drive and is recorded, so File → Undo last import puts everything back. **Copy** keeps
+  the old folder untouched but needs twice the space and can't be undone (delete the copies yourself).
+- Nothing is ever overwritten: anything already in the destination is skipped and listed.
+- Across drives a copy is checked (file count and size) before the original is removed.
+- It refuses any folder that contains, or sits inside, the Arcadia ROM folder, so it can't move the Arcadia folder
+  into itself.
+- Optionally it also **copies** (never deletes) your library (favorites, play counts, playtime), covers and
+  save-state snapshots, so the old setup keeps working until you're happy.
+- Arcadia only switches over to the new folder if everything that could be brought in was. If something failed, it says
+  what and why, keeps using the old folder, and you can run it again (what already moved is skipped). **Restart Arcadia**
+  after it switches so the library opens from its new place.
+
+**Back up and restore.** One click makes a zip in `backups/` holding your Arcadia settings, the library (favorites and
+playtime, copied consistently even while Arcadia is open), save-state snapshots, and each installed emulator's own
+settings and saves (`config`, `data` and `state`, not its program or its cache). Covers are optional because they can be
+large. It does **not** hold ROMs, emulator programs, or anything a Flatpak emulator keeps under `~/.var/app`.
+- A restore only accepts those paths, so a backup file can put saves and settings back and nothing else: it can never
+  place a program inside an emulator's `app/` folder, and paths like `../` are refused.
+- It unpacks to a staging folder first, moves whatever it replaces to `backups/before-restore-<time>/` (nothing is
+  deleted), and if it fails part way it puts everything back. A damaged zip is caught before anything changes.
+- A backup restores onto another machine or folder by name, so it also moves your saves between setups.
+- Restart Arcadia after restoring, so it loads the restored settings.
 
 ## Supported systems
 
@@ -372,6 +418,11 @@ arcadia/
   folders.py     games that are folders (PS3, Wii U) and their titles
   emulators.py   install emulators into their own folders: catalog, safe download, unpack, isolation
   emulators_dialog.py  the Emulators window
+  setup_status.py  is each system ready to play? (Flatpak, core file, command checks, folder sizes)
+  consolidate.py bring an existing library into the Arcadia folder
+  backup.py      back up and restore saves, settings and the library
+  setup_dialog.py  the Setup window, bring-in and backup dialogs
+  tasks.py       background work so windows never freeze
   files_dialog.py  every file that makes up a game
   import_dialog.py  the confirm-before-moving dialog
   library.py     SQLite store (games, favorites, sessions)
@@ -392,6 +443,10 @@ tests/
   test_discs.py  disc image analysis
   test_emulators.py  the installer, against a real local server (including attack cases)
   test_home.py   the single-folder layout and portable mode
+  test_setup_status.py  readiness checks
+  test_consolidate.py   bringing a library in
+  test_backup.py        backup and restore, including hostile archives
+  test_setup_dialog.py  the Setup, bring-in and backup windows
   test_newsystems.py  the extra systems, folder games, presets, and disc disambiguation
   isoutil.py     builds valid disc images for the tests
   test_ui.py     window, cover flow, and import dialog tests (skipped where Qt can't load)

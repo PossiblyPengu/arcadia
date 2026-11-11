@@ -829,3 +829,88 @@ def test_the_confirmation_names_the_real_download_host_and_shows_the_hardware_no
 def test_eden_appears_in_the_emulator_list_for_the_switch(emu_dialog):
     name, runs, here, latest, uses = _row(emu_dialog, "eden")
     assert (name, runs, here, uses) == ("Eden", "Nintendo Switch", "—", "Flatpak")
+
+
+# ---------- the Setup window from the main window ----------
+
+import arcadia.ui as ui_module  # noqa: E402
+from arcadia.consolidate import adopt_home  # noqa: E402
+
+
+def _fake_setup(flags: dict):
+    """A stand-in Setup window that records what it was given and reports the outcomes in `flags`."""
+
+    class FakeSetup:
+        def __init__(self, config, config_path, journal, counts, parent=None):
+            self.config_changed = flags.get("config_changed", False)
+            self.restored = flags.get("restored", False)
+            self.emulators_changed = flags.get("emulators_changed", False)
+            self.received = (config, config_path, journal, counts)
+            flags["seen"] = self
+
+        def exec(self):
+            if flags.get("act"):
+                flags["act"]()
+
+    return FakeSetup
+
+
+def test_the_file_menu_has_the_setup_entry(qapp, tmp_path):
+    config = Config.new_install(tmp_path / "Arcadia")
+    win = MainWindow(config, tmp_path / "config.json", Library(config.db_path))
+    try:
+        labels = [a.text() for a in win.menuBar().actions()[0].menu().actions()]
+        assert "Arcadia folder and setup…" in labels
+    finally:
+        win.close()
+
+
+def test_the_setup_window_is_given_the_game_counts(qapp, tmp_path, monkeypatch):
+    config = Config.new_install(tmp_path / "Arcadia")
+    config.ensure_layout()
+    (config.rom_root_path / "psx" / "Game.cue").write_text("x")
+    win = MainWindow(config, tmp_path / "config.json", Library(config.db_path))
+    flags = {}
+    monkeypatch.setattr(ui_module, "SetupDialog", _fake_setup(flags))
+    try:
+        win.open_setup()
+        given_config, given_path, given_journal, counts = flags["seen"].received
+        assert given_config is config and given_path == tmp_path / "config.json" and given_journal is win.journal
+        assert counts == {"psx": 1}  # how many games each system has, so it can list only the ones in use
+        assert win.toast.text() == "" or "Restart" not in win.toast.text()  # nothing happened in it: no side effects
+    finally:
+        win.close()
+
+
+def test_a_restored_backup_makes_the_window_reopen_the_library(qapp, tmp_path, monkeypatch):
+    config = Config.new_install(tmp_path / "Arcadia")
+    config.ensure_layout()
+    win = MainWindow(config, tmp_path / "config.json", Library(config.db_path))
+    flags = {"restored": True}
+    monkeypatch.setattr(ui_module, "SetupDialog", _fake_setup(flags))
+    try:
+        before = win.library
+        win.open_setup()
+        assert win.library is not before  # the file was replaced under the old connection, so it was reopened
+        assert "Backup restored" in win.toast.text()
+    finally:
+        win.close()
+
+
+def test_bringing_a_library_in_saves_the_config_and_says_to_restart(qapp, tmp_path, monkeypatch):
+    legacy = Config(rom_root=str(tmp_path / "OldROMs"), data_dir=str(tmp_path / "olddata"))
+    (tmp_path / "olddata").mkdir()
+    (tmp_path / "OldROMs").mkdir()
+    config_path = tmp_path / "config.json"
+    win = MainWindow(legacy, config_path, Library(legacy.db_path))
+    flags = {"config_changed": True, "act": lambda: adopt_home(legacy, tmp_path / "Arcadia", roms=True, data=True)}
+    monkeypatch.setattr(ui_module, "SetupDialog", _fake_setup(flags))
+    try:
+        win.open_setup()
+        saved = _json.loads(config_path.read_text())
+        assert saved["home_dir"] == str(tmp_path / "Arcadia") and saved["rom_root"] == "" and saved["data_dir"] == ""
+        assert (tmp_path / "Arcadia" / "roms" / "nes").is_dir()  # the new folders were created
+        assert win.journal.path == tmp_path / "Arcadia" / "data" / "imports.json"  # undo now reads the new place
+        assert "Restart Arcadia" in win.toast.text()
+    finally:
+        win.close()

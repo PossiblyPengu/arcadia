@@ -53,6 +53,7 @@ from arcadia.metadata import load_metadata
 from arcadia.presets import PRESETS, accent_for
 from arcadia.savestates import SaveStateError, create_snapshot, list_snapshots, restore_snapshot
 from arcadia.scanner import scan_system
+from arcadia.setup_dialog import SetupDialog
 from arcadia.sorter import Confidence, Journal, Plan, apply_plan, build_plan
 from arcadia.theme import DEFAULT_ACCENT, Backdrop, Toast, build_stylesheet
 from arcadia.util import bundle_summary, fmt_clock, fmt_duration, fmt_timestamp, snapshot_label
@@ -477,6 +478,7 @@ class MainWindow(QMainWindow):
         self.undo_import_action = file_menu.addAction("Undo last import", self.undo_import)
         file_menu.aboutToShow.connect(self._update_undo_action)
         file_menu.addAction("Emulators…", self.open_emulators, "Ctrl+E")
+        file_menu.addAction("Arcadia folder and setup…", self.open_setup, "Ctrl+Shift+S")
         file_menu.addAction("Settings…", self.open_settings)
         file_menu.addSeparator()
         file_menu.addAction("Quit", self.close, "Ctrl+Q")
@@ -1042,6 +1044,28 @@ class MainWindow(QMainWindow):
             self.rescan()
             if self.config.db_path != self._db_path:
                 self.toast.show_message("Restart Arcadia to use the library in its new folder", 6000)
+
+    def open_setup(self) -> None:
+        """The overview of what's ready, plus bringing a library in and backing up."""
+        counts = self.library.summary()["systems"]
+        dialog = SetupDialog(self.config, self.config_path, self.journal, counts, parent=self)
+        dialog.exec()
+        if dialog.config_changed:  # the library was brought into the Arcadia folder
+            self._save_config()
+            self.config.ensure_layout()
+            self.journal = Journal(self.config.journal_path)
+            self._setup_inbox()
+            self.rescan()
+            if self.config.db_path != self._db_path:
+                self.toast.show_message("Restart Arcadia to use your library in the new folder", 6000)
+        if dialog.restored:  # a restore replaced the library file underneath the open one
+            self.library.close()
+            self.library = Library(self.config.db_path)
+            self._db_path = self.config.db_path
+            self._scan_library()
+            self.toast.show_message("Backup restored. Restart Arcadia to use the restored settings.", 6000)
+        if dialog.emulators_changed:
+            self.toast.show_message("Emulators updated")
 
     def open_emulators(self) -> None:
         dialog = EmulatorsDialog(self.config, parent=self)

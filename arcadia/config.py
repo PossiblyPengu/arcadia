@@ -162,6 +162,11 @@ class Config:
         return self.home_path / "emulators" if self.home_path else self.data_path / "emulators"
 
     @property
+    def backups_path(self) -> Path:
+        """Backups of saves and settings are written here."""
+        return self.home_path / "backups" if self.home_path else self.data_path / "backups"
+
+    @property
     def bios_path(self) -> Path:
         return self.home_path / "bios" if self.home_path else self.data_path / "bios"
 
@@ -177,7 +182,7 @@ class Config:
         """Create the folders under the home folder. Returns the ones that were missing.
         A ROM folder per system is only made when the ROM root is inside the home folder, so
         nothing is created in a ROM folder you pointed somewhere else."""
-        wanted = [self.rom_root_path, self.data_path, self.media_path, self.savestate_path, self.emulators_path, self.bios_path]
+        wanted = [self.rom_root_path, self.data_path, self.media_path, self.savestate_path, self.emulators_path, self.bios_path, self.backups_path]
         if not self.rom_root.strip():
             wanted += [self.rom_root_path / s.folder for s in self.systems]
         made = []
