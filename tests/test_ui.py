@@ -17,7 +17,7 @@ from PySide6.QtWidgets import QApplication  # noqa: E402
 from arcadia.config import Config  # noqa: E402
 from arcadia.coverflow import CoverFlow  # noqa: E402
 from arcadia.library import Library  # noqa: E402
-from arcadia.ui import VIEW_FAVORITES, VIEW_RECENT, MainWindow, _shorten  # noqa: E402
+from arcadia.ui import VIEW_ALL, VIEW_FAVORITES, VIEW_RECENT, MainWindow, _shorten  # noqa: E402
 
 
 @pytest.fixture(autouse=True)
@@ -99,9 +99,9 @@ def _pills(win):
 
 
 def test_empty_systems_are_hidden_by_default(window):
-    assert _pills(window) == ["nes", "snes"]
+    assert _pills(window) == [VIEW_ALL, "nes", "snes"]  # "All games" is a collection, not a console
     window.empty_action.setChecked(True)  # View > Show systems with no games
-    assert len(_pills(window)) == len(window.config.systems)
+    assert len(_pills(window)) == len(window.config.systems) + 1
     assert window.config.show_empty_systems is True
 
 
@@ -151,13 +151,13 @@ def test_launch_records_session_and_recent_view(window, qapp):
 
 def test_controller_actions_move_focus_and_selection(window):
     window.systems_list.setCurrentRow(_pills(window).index("snes"))
-    window.coverflow.setFocus()
+    window.show_games()
     window.handle_action("right")
     assert window.coverflow.index() == 1
     window.handle_action("favorite")
     assert window.coverflow.current_title().startswith("★")
-    # Pills are now [favorites, nes, snes]; the left bumper steps back one pill.
-    assert _pills(window) == [VIEW_FAVORITES, "nes", "snes"]
+    # Tiles are now [favorites, all, nes, snes]; the left bumper steps back one console.
+    assert _pills(window) == [VIEW_FAVORITES, VIEW_ALL, "nes", "snes"]
     window.handle_action("prev_system")
     assert window.current_system_id() == "nes"
 
@@ -512,14 +512,11 @@ def test_discs_in_the_downloads_folder_are_joined_automatically(qapp, tmp_path, 
         win.close()
 
 
-def test_mouse_wheel_scrolls_the_system_bar_sideways(qapp, tmp_path):
-    from PySide6.QtCore import QPoint, QPointF
-    from PySide6.QtGui import QWheelEvent
-
+def test_every_console_fits_in_a_scrolling_grid(qapp, tmp_path):
     from arcadia.config import default_systems
 
     roms = tmp_path / "roms"
-    for s in default_systems():  # a game in every system, so every pill shows
+    for s in default_systems():  # a game in every system, so every tile shows
         (roms / s.folder).mkdir(parents=True)
         (roms / s.folder / f"G{s.extensions[0]}").write_text("x")
     cfg = Config(rom_root=str(roms), data_dir=str(tmp_path / "data"))
@@ -528,15 +525,79 @@ def test_mouse_wheel_scrolls_the_system_bar_sideways(qapp, tmp_path):
     win.show()
     try:
         qapp.processEvents()
-        bar = win.systems_list.horizontalScrollBar()
-        assert bar.maximum() > 0  # more pills than fit
-        start = bar.value()
-        down = QWheelEvent(QPointF(50, 20), QPointF(50, 20), QPoint(0, 0), QPoint(0, -120),
-                           Qt.MouseButton.NoButton, Qt.KeyboardModifier.NoModifier, Qt.ScrollPhase.NoScrollPhase, False)
-        win.systems_list.wheelEvent(down)
-        assert bar.value() > start  # wheel down moves right, to later systems
+        grid = win.systems_list
+        assert grid.count() == len(default_systems()) + 1  # every console, and "All games"
+        assert grid.columns() >= 2
+        assert grid.verticalScrollBar().maximum() > 0  # more tiles than fit: it scrolls
+        grid.setCurrentRow(grid.count() - 1)
+        qapp.processEvents()
+        assert grid.verticalScrollBar().value() > 0  # the chosen tile is scrolled into view
     finally:
         win.close()
+
+
+# ---------- the two screens: choose a console, then a game ----------
+
+def test_starts_on_the_console_screen_and_opens_a_console(window):
+    assert window.stack.currentIndex() == 0 and not window.on_games_page()
+    window.systems_list.setCurrentRow(_pills(window).index("snes"))
+    assert window.stack.currentIndex() == 0  # moving between tiles doesn't leave the screen
+    window.systems_list.itemActivated.emit(window.systems_list.currentItem())  # Enter
+    assert window.on_games_page() and window.coverflow.count() == 2
+    assert window.banner.text() == "SUPER NINTENDO"
+
+
+def test_back_returns_to_the_consoles_and_forgets_the_search(window):
+    window.systems_list.setCurrentRow(_pills(window).index("snes"))
+    window.show_games()
+    window.search.setText("zel")
+    assert window.coverflow.titles() == ["The Zelda"]
+    window.search.clearFocus()
+    QTest.keyClick(window, Qt.Key.Key_Escape)
+    assert not window.on_games_page() and window.search.text() == ""
+    window.show_games()
+    assert window.coverflow.count() == 2  # the console is whole again
+
+
+def test_escape_in_the_search_box_does_not_leave_the_screen(window):
+    window.show_games()
+    window.search.setFocus()
+    QTest.keyClick(window.search, Qt.Key.Key_Escape)
+    assert window.on_games_page()
+
+
+def test_ctrl_f_on_the_console_screen_searches_every_game(window):
+    window.focus_search()
+    assert window.on_games_page() and window.current_system_id() == VIEW_ALL
+    window.search.setText("contra")
+    assert window.coverflow.titles() == ["Contra"]  # found in NES while searching all consoles
+
+
+def test_controller_flow_between_the_screens(window):
+    window.systems_list.setCurrentRow(_pills(window).index("nes"))
+    window.handle_action("favorite")  # nothing to favorite on the console screen
+    assert window.library.summary()["favorites"] == 0
+    window.handle_action("confirm")  # A opens the console
+    assert window.on_games_page()
+    window.handle_action("next_system")  # a bumper changes console without going back
+    assert window.on_games_page() and window.current_system_id() == "snes" and window.coverflow.count() == 2
+    window.handle_action("up")  # nothing above the shelf
+    assert window.on_games_page()
+    window.handle_action("back")  # B goes back
+    assert not window.on_games_page()
+    window.handle_action("back")  # and does nothing more
+    assert not window.on_games_page()
+
+
+def test_console_tiles_carry_their_name_count_and_accent(window):
+    from arcadia.consoles_view import ROLE_ACCENT, ROLE_COUNT, ROLE_NAME
+
+    item = window.systems_list.item(_pills(window).index("snes"))
+    assert item.data(ROLE_NAME) == "Super Nintendo" and item.data(ROLE_COUNT) == 2
+    assert item.data(ROLE_ACCENT) == "#7b4fd6"
+    assert "3 consoles" not in window.library_lbl.text() and "2 consoles  ·  3 games" == window.library_lbl.text()
+    pixmap = window.systems_list.viewport().grab()
+    assert not pixmap.isNull()  # the tiles paint
 
 
 # ---------- emulators kept in Arcadia's own folder ----------

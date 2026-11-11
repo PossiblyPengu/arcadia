@@ -14,8 +14,10 @@ written in Python with PySide6 (Qt).
 - Covers and metadata from an optional media folder (sidecar files, see below)
 - Cover-flow shelf with reflections: the selected game sits large in a glowing ring, its
   neighbors shrink and fade, and the whole window takes on the current system's color
-- System pills across the top (systems with no games are hidden), plus virtual
-  **Recently played** and **Favorites** views that span every system
+- **Two screens: choose a console, then choose a game.** The first screen is a grid of big console tiles (name,
+  game count, the console's color); consoles with no games are hidden. **Recently played**, **Favorites** and
+  **All games** sit first as collections that span every console. Open a tile to get that console's cover-flow shelf,
+  and go back with Esc / B / the "Consoles" button. Ctrl+F from the console screen searches every game.
 - Sort by A–Z, recently played, most played, or favorites first (remembered between runs)
 - Type a letter to jump to the next title starting with it; search with Ctrl+F
 - Toast messages instead of dialogs, a live play timer on the Launch button, and a
@@ -482,19 +484,19 @@ media/snes/Super Mario World.png    cover art (png, jpg, jpeg, webp)
 
 ## Controls
 
-| Action         | Keyboard         | Controller (evdev / Steam Input) |
-|----------------|------------------|----------------------------------|
-| Browse         | Left / Right     | D-pad left / right               |
-| Jump to system bar | Up           | D-pad up (down returns to the shelf) |
-| Jump to letter | Type a letter    | —                                |
-| Fullscreen     | F11              | —                                |
-| Launch         | Enter            | A                                |
-| Back           | Esc              | B                                |
-| Favorite       | Ctrl+D           | Y                                |
-| Previous/next system | —          | Left / right bumper              |
-| Surprise me    | —                | —                                |
-| Search         | Ctrl+F           | —                                |
-| Rescan         | Ctrl+R           | —                                |
+| Action | Keyboard | Controller (evdev / Steam Input) |
+|--------|----------|----------------------------------|
+| Move between consoles (console screen) | Arrow keys | D-pad |
+| Open a console | Enter / click | A |
+| Browse games (game screen) | Left / Right | D-pad left / right |
+| Launch the game | Enter | A |
+| Back to the consoles | Esc / Backspace | B |
+| Jump to a console or a game | Type a letter | — |
+| Change console without going back (game screen) | — | Left / right bumper |
+| Favorite | Ctrl+D | Y (game screen) |
+| Search (all games, from the console screen) | Ctrl+F | — |
+| Fullscreen | F11 | — |
+| Rescan | Ctrl+R | — |
 
 ## Tests
 
@@ -533,6 +535,7 @@ arcadia/
   presets.py     launch presets and system accent colors
   theme.py       stylesheet, animated backdrop, toast messages
   coverflow.py   animated cover-flow carousel with lazy cover loading
+  consoles_view.py  the console tile grid (the first screen)
   gamepad.py     optional evdev controller input
   ui.py          Qt windows and dialogs
   main.py        entry point

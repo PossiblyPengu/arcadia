@@ -118,15 +118,16 @@ def window(qapp, tmp_path):
 
 
 def test_an_empty_library_welcomes_and_offers_the_checklist(window):
-    assert window.empty.isVisible() and not window.coverflow.isVisible()
-    assert window.empty.title.text() == "Welcome to Arcadia"
-    assert [b.text() for b in window.empty.buttons] == ["Get started", "Import ROMs…"]
+    assert window.console_empty.isVisible() and not window.grid_holder.isVisible()
+    assert window.console_empty.title.text() == "Welcome to Arcadia"
+    assert [b.text() for b in window.console_empty.buttons] == ["Get started", "Import ROMs…"]
 
 
 def test_an_empty_system_or_search_says_why(window, tmp_path):
     rom = window.config.rom_root_path / "nes" / "Contra.nes"
     rom.write_text("x")
     window.rescan()
+    window.show_games()
     window.search.setText("zzz")
     assert window.empty.isVisible() and "zzz" in window.empty.title.text()
     assert [b.text() for b in window.empty.buttons] == ["Clear search"]

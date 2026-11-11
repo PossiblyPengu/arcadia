@@ -58,6 +58,7 @@ def build_stylesheet(accent: str) -> str:
         padding: 8px 18px; margin: 4px 3px; border-radius: 16px; background: {_white(7)};
     }}
     QListWidget#systems::item:hover {{ background: {_white(14)}; }}
+    QListWidget#consoles {{ background: transparent; border: none; outline: none; }}
     QListWidget#systems::item:selected {{ background: {accent}; color: white; }}
     QMenu {{
         background: #1d1f27; border: 1px solid {_white(12)}; border-radius: 10px; padding: 6px;

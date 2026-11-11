@@ -17,6 +17,7 @@ from pathlib import Path
 from PySide6.QtCore import QEvent, QFileSystemWatcher, QProcess, QProcessEnvironment, QPropertyAnimation, QSize, Qt, QTimer, QUrl
 from PySide6.QtGui import QAction, QColor, QDesktopServices, QFont, QIcon, QKeyEvent, QKeySequence, QPainter, QPixmap, QShortcut
 from PySide6.QtWidgets import (
+    QStackedWidget,
     QApplication,
     QCheckBox,
     QComboBox,
@@ -43,6 +44,7 @@ from PySide6.QtWidgets import (
 )
 
 from arcadia.config import Config, SystemConfig
+from arcadia.consoles_view import ROLE_ACCENT, ROLE_COUNT, ROLE_ID, ROLE_NAME, ConsoleGrid, CenteredGrid
 from arcadia.coverflow import COVER_H, COVER_W, CoverFlow
 from arcadia.empty_state import EmptyState
 from arcadia.welcome_dialog import WelcomeDialog
@@ -73,8 +75,8 @@ COVER_SIZE = QSize(COVER_W, COVER_H)
 
 VIEW_RECENT = "__recent__"
 VIEW_FAVORITES = "__favorites__"
-VIEW_ACCENTS = {VIEW_RECENT: "#f2a33a", VIEW_FAVORITES: "#ff5a7a"}
-VIEW_NAMES = {VIEW_RECENT: "Recently played", VIEW_FAVORITES: "Favorites"}
+VIEW_ACCENTS = {VIEW_RECENT: "#f2a33a", VIEW_FAVORITES: "#ff5a7a", "__all__": "#8a93a6"}
+VIEW_NAMES = {VIEW_RECENT: "Recently played", VIEW_FAVORITES: "Favorites", "__all__": "All games"}
 
 SORT_CHOICES = [
     ("A – Z", "title"),
@@ -92,7 +94,9 @@ ACTION_KEYS = {
     "back": Qt.Key.Key_Escape,
 }
 
-HINTS = "←  →  browse     A–Z  jump to letter     Enter  launch     ↑  systems     Ctrl+D  favorite     Ctrl+F  search     F11  fullscreen"
+HINTS = "←  →  browse     A–Z  jump to letter     Enter  launch     Esc  back to consoles     Ctrl+D  favorite     Ctrl+F  search     F11  fullscreen"
+CONSOLE_HINTS = "←  ↑  ↓  →  choose     Enter  open     A–Z  jump to a console     Ctrl+F  search all games     F11  fullscreen"
+VIEW_ALL = "__all__"
 
 
 def _shorten(text: str, limit: int) -> str:
@@ -126,35 +130,6 @@ def placeholder_pixmap(title: str, size: QSize, base: str | None = None) -> QPix
     )
     painter.end()
     return pix
-
-
-def _dot(color: str) -> QPixmap:
-    pix = QPixmap(14, 14)
-    pix.fill(Qt.GlobalColor.transparent)
-    painter = QPainter(pix)
-    painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-    painter.setBrush(QColor(color))
-    painter.setPen(Qt.PenStyle.NoPen)
-    painter.drawEllipse(1, 1, 12, 12)
-    painter.end()
-    return pix
-
-
-def dot_icon(color: str) -> QIcon:
-    """Colored dot for a system pill; turns white when the pill is selected (the pill takes the color)."""
-    icon = QIcon(_dot(color))
-    icon.addPixmap(_dot("#ffffff"), QIcon.Mode.Selected)
-    return icon
-
-
-class PillList(QListWidget):
-    """The system bar. The mouse wheel scrolls it sideways (there are a lot of systems now)."""
-
-    def wheelEvent(self, event) -> None:
-        bar = self.horizontalScrollBar()
-        delta = event.angleDelta().y() or event.angleDelta().x()
-        bar.setValue(bar.value() - delta)
-        event.accept()
 
 
 class SettingsDialog(QDialog):
@@ -328,16 +303,19 @@ class MainWindow(QMainWindow):
 
         self.backdrop = Backdrop()
         self.setCentralWidget(self.backdrop)
-        root = QVBoxLayout(self.backdrop)
+        outer = QVBoxLayout(self.backdrop)
+        outer.setContentsMargins(0, 0, 0, 0)
+        self.stack = QStackedWidget()  # page 0: choose a console; page 1: choose a game
+        outer.addWidget(self.stack)
+        self.games_page = QWidget()
+        root = QVBoxLayout(self.games_page)
         root.setContentsMargins(32, 14, 32, 10)
         root.setSpacing(6)
 
-        # --- top row: wordmark, search, sort ---
-        self.wordmark = QLabel("ARCADIA")
-        self.wordmark.setObjectName("wordmark")
-        wm_font = self.wordmark.font()
-        wm_font.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, 6.0)
-        self.wordmark.setFont(wm_font)
+        # --- top row: back, search, sort ---
+        self.back_btn = QPushButton("‹   Consoles")
+        self.back_btn.setToolTip("Back to the consoles  (Esc)")
+        self.back_btn.clicked.connect(self.show_consoles)
 
         self.search = QLineEdit()
         self.search.setPlaceholderText("Search  (Ctrl+F)")
@@ -354,26 +332,50 @@ class MainWindow(QMainWindow):
         self.sort_combo.currentIndexChanged.connect(self._on_sort_changed)
 
         top = QHBoxLayout()
-        top.addWidget(self.wordmark)
+        top.addWidget(self.back_btn)
         top.addStretch(1)
         top.addWidget(self.search)
         top.addWidget(self.sort_combo)
         root.addLayout(top)
 
-        # --- system pills ---
-        self.systems_list = PillList()
-        self.systems_list.setObjectName("systems")
-        self.systems_list.setViewMode(QListView.ViewMode.ListMode)
-        self.systems_list.setFlow(QListView.Flow.LeftToRight)
-        self.systems_list.setWrapping(False)
-        self.systems_list.setFixedHeight(58)
-        self.systems_list.setIconSize(QSize(14, 14))
-        self.systems_list.setHorizontalScrollMode(QListWidget.ScrollMode.ScrollPerPixel)
-        self.systems_list.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.systems_list.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        # --- page 0: choose a console ---
+        self.console_page = QWidget()
+        cp = QVBoxLayout(self.console_page)
+        cp.setContentsMargins(40, 18, 40, 12)
+        cp.setSpacing(6)
+        self.wordmark = QLabel("ARCADIA")
+        self.wordmark.setObjectName("wordmark")
+        wm_font = self.wordmark.font()
+        wm_font.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, 6.0)
+        self.wordmark.setFont(wm_font)
+        self.library_lbl = QLabel("")
+        self.library_lbl.setStyleSheet("color: rgba(236, 238, 244, 55%);")
+        console_top = QHBoxLayout()
+        console_top.addWidget(self.wordmark)
+        console_top.addStretch(1)
+        console_top.addWidget(self.library_lbl)
+        cp.addLayout(console_top)
+        self.choose_lbl = QLabel("CHOOSE A CONSOLE")
+        self.choose_lbl.setObjectName("banner")
+        self.choose_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        choose_font = self.choose_lbl.font()
+        choose_font.setLetterSpacing(QFont.SpacingType.AbsoluteSpacing, 4.0)
+        self.choose_lbl.setFont(choose_font)
+        cp.addWidget(self.choose_lbl)
+        self.systems_list = ConsoleGrid()
         self.systems_list.currentRowChanged.connect(self._on_system_changed)
-        self.systems_list.itemActivated.connect(lambda _item: self.coverflow.setFocus())
-        root.addWidget(self.systems_list)
+        self.systems_list.itemActivated.connect(lambda _item: self.show_games())
+        self.systems_list.itemClicked.connect(lambda _item: self.show_games())
+        self.grid_holder = CenteredGrid(self.systems_list)
+        cp.addWidget(self.grid_holder, 1)
+        self.console_empty = EmptyState()
+        self.console_empty.hide()
+        cp.addWidget(self.console_empty, 1)
+        self.console_hint = QLabel(CONSOLE_HINTS)
+        self.console_hint.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.console_hint.setStyleSheet("color: rgba(236, 238, 244, 38%); font-size: 12px;")
+        cp.addWidget(self.console_hint)
+        self.stack.addWidget(self.console_page)
 
         # --- banner ---
         self.banner = QLabel()
@@ -455,6 +457,7 @@ class MainWindow(QMainWindow):
         self.hint_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.hint_lbl.setStyleSheet("color: rgba(236, 238, 244, 38%); font-size: 12px;")
         root.addWidget(self.hint_lbl)
+        self.stack.addWidget(self.games_page)
 
         self.toast = Toast(self)
         self.play_timer = QTimer(self)
@@ -462,7 +465,7 @@ class MainWindow(QMainWindow):
         self.play_timer.timeout.connect(self._update_play_label)
 
         self._build_menu()
-        QShortcut(QKeySequence("Ctrl+F"), self).activated.connect(self.search.setFocus)
+        QShortcut(QKeySequence("Ctrl+F"), self).activated.connect(self.focus_search)
         QShortcut(QKeySequence("Ctrl+D"), self).activated.connect(self.toggle_favorite)
         QShortcut(QKeySequence("Ctrl+R"), self).activated.connect(self.rescan)
         QShortcut(QKeySequence("F11"), self).activated.connect(self.toggle_fullscreen)
@@ -485,7 +488,7 @@ class MainWindow(QMainWindow):
         self._setup_inbox()
 
         self._scan_library(initial=True)
-        QTimer.singleShot(0, self.coverflow.setFocus)
+        QTimer.singleShot(0, self.systems_list.setFocus)
         QTimer.singleShot(800, self.check_inbox)
         QTimer.singleShot(5000, self._startup_update_check)
         QTimer.singleShot(3000, self._auto_sync)
@@ -581,38 +584,102 @@ class MainWindow(QMainWindow):
             self.toast.show_message(f"Found {total} games")
 
     def refresh_systems(self) -> None:
-        """Rebuild the pill bar. Systems with no games are hidden unless they are all empty."""
+        """Rebuild the console grid. Consoles with no games are hidden unless the View menu says otherwise.
+        A library with no games at all shows the welcome instead of a wall of empty tiles."""
         summary = self.library.summary()
         current = self.current_system_id()
+        total = sum(summary["systems"].values())
         entries: list[tuple[str, str, int]] = []
         if summary["played"]:
             entries.append((VIEW_RECENT, VIEW_NAMES[VIEW_RECENT], summary["played"]))
         if summary["favorites"]:
             entries.append((VIEW_FAVORITES, VIEW_NAMES[VIEW_FAVORITES], summary["favorites"]))
+        if total:
+            entries.append((VIEW_ALL, VIEW_NAMES[VIEW_ALL], total))
         systems = [(s.id, s.name, summary["systems"].get(s.id, 0)) for s in self.config.systems]
-        if not self.config.show_empty_systems and any(count for _i, _n, count in systems):
+        if not self.config.show_empty_systems:
             systems = [e for e in systems if e[2]]
         entries += systems
+        if not total and not self.config.show_empty_systems:
+            entries = []
 
         self.systems_list.blockSignals(True)
         self.systems_list.clear()
         selected = None
+        first_console = None
         for view_id, name, count in entries:
-            item = QListWidgetItem(dot_icon(view_accent(view_id)), f"{name}   {count}")
-            item.setData(Qt.ItemDataRole.UserRole, view_id)
+            item = QListWidgetItem(name)
+            item.setData(ROLE_ID, view_id)
+            item.setData(ROLE_NAME, name)
+            item.setData(ROLE_COUNT, count)
+            item.setData(ROLE_ACCENT, view_accent(view_id))
             self.systems_list.addItem(item)
             if view_id == current:
                 selected = item
-        if selected is None and self.systems_list.count():
-            selected = self.systems_list.item(0)
+            if first_console is None and not view_id.startswith("__"):
+                first_console = item
+        if selected is None:
+            selected = first_console or (self.systems_list.item(0) if self.systems_list.count() else None)
         if selected is not None:
             self.systems_list.setCurrentItem(selected)
         self.systems_list.blockSignals(False)
+
+        consoles = sum(1 for e in systems if e[2])
+        self.library_lbl.setText(f"{consoles} console{'s' if consoles != 1 else ''}  ·  {total} game{'s' if total != 1 else ''}" if total else "")
+        welcome = not entries
+        self.grid_holder.setVisible(not welcome)
+        self.choose_lbl.setVisible(not welcome)
+        self.console_empty.setVisible(welcome)
+        if welcome:
+            self.console_empty.show_message(
+                "Welcome to Arcadia",
+                "Your library is empty. Add your games, then install the emulators you need. The checklist walks you through it.",
+                [("Get started", self.show_welcome, True), ("Import ROMs…", self.import_roms, False)],
+            )
+            self.stack.setCurrentIndex(0)
         self._on_system_changed(0)
+
+    # ----- the two screens -----
+
+    def show_games(self) -> None:
+        """Open the highlighted console: from "choose a console" to "choose a game"."""
+        if self.current_system_id() is None:
+            return
+        self.populate_games()
+        self.stack.setCurrentIndex(1)
+        (self.coverflow if self.coverflow.isVisible() else self.back_btn).setFocus()
+
+    def show_consoles(self) -> None:
+        self.search.blockSignals(True)
+        self.search.clear()  # a search belongs to the console you were in
+        self.search.blockSignals(False)
+        self.populate_games()
+        self.stack.setCurrentIndex(0)
+        self.systems_list.setFocus()
+
+    def on_games_page(self) -> bool:
+        return self.stack.currentIndex() == 1
+
+    def focus_search(self) -> None:
+        """Ctrl+F: from the console screen this searches every game."""
+        if not self.on_games_page():
+            for row in range(self.systems_list.count()):
+                if self.systems_list.item(row).data(ROLE_ID) == VIEW_ALL:
+                    self.systems_list.setCurrentRow(row)
+                    break
+            self.show_games()
+        self.search.setFocus()
+        self.search.selectAll()
+
+    def keyPressEvent(self, event) -> None:
+        if self.on_games_page() and event.key() in (Qt.Key.Key_Escape, Qt.Key.Key_Backspace) and not self.search.hasFocus():
+            self.show_consoles()
+            return
+        super().keyPressEvent(event)
 
     def current_system_id(self) -> str | None:
         item = self.systems_list.currentItem()
-        return item.data(Qt.ItemDataRole.UserRole) if item else None
+        return item.data(ROLE_ID) if item else None
 
     def current_game_key(self) -> str | None:
         return self.coverflow.current_key()
@@ -643,6 +710,8 @@ class MainWindow(QMainWindow):
         sort = self.config.sort
         if view is None:
             return []
+        if view == VIEW_ALL:
+            return self.library.games(None, search=search, sort=sort)
         if view == VIEW_RECENT:
             return self.library.games(None, search=search, played_only=True, sort="recent")
         if view == VIEW_FAVORITES:
@@ -996,29 +1065,33 @@ class MainWindow(QMainWindow):
     # ----- controller & keyboard -----
 
     def handle_action(self, name: str) -> None:
+        """Controller buttons. On the console screen the D-pad moves between tiles and A opens one;
+        on the game screen it browses games, A launches, B goes back, and the bumpers change console."""
         if name == "favorite":
-            self.toggle_favorite()
+            if self.on_games_page():
+                self.toggle_favorite()
             return
         if name in ("prev_system", "next_system"):
             step = -1 if name == "prev_system" else 1
             row = max(0, min(self.systems_list.count() - 1, self.systems_list.currentRow() + step))
             self.systems_list.setCurrentRow(row)
             return
+        if name == "back":
+            if self.on_games_page():
+                self.show_consoles()
+            return
         key = ACTION_KEYS.get(name)
         if key is None:
             return
-
-        focus = QApplication.focusWidget()
-        if name in ("up", "back") and focus is self.coverflow:
-            self.systems_list.setFocus()
+        target = self.coverflow if self.on_games_page() and self.coverflow.isVisible() else self.systems_list
+        if not self.on_games_page() and name == "confirm":
+            self.show_games()
             return
-        if name == "down" and focus is self.systems_list:
-            self.coverflow.setFocus()
-            return
-        if focus is not self.systems_list and focus is not self.coverflow:
-            self.coverflow.setFocus()
-            focus = self.coverflow
-        QApplication.sendEvent(focus, QKeyEvent(QEvent.Type.KeyPress, key, Qt.KeyboardModifier.NoModifier))
+        if target is not QApplication.focusWidget():
+            target.setFocus()
+        if self.on_games_page() and name in ("up", "down"):
+            return  # nothing above or below the shelf
+        QApplication.sendEvent(target, QKeyEvent(QEvent.Type.KeyPress, key, Qt.KeyboardModifier.NoModifier))
 
     # ----- sorting ROMs from the downloads folder -----
 
