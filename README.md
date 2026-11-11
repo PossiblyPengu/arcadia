@@ -14,14 +14,19 @@ written in Python with PySide6 (Qt).
 - Covers and metadata from an optional media folder (sidecar files, see below)
 - Cover-flow shelf with reflections: the selected game sits large in a glowing ring, its
   neighbors shrink and fade, and the whole window takes on the current system's color
-- **Two screens: choose a console, then choose a game.** The first screen is a **rotating carousel of 2.5D pixel-art
+- **Two screens: choose a console, then choose a game.** The first screen is a **rotating carousel of pixel-art
   consoles**: the selected one sits large in the middle with its name and game count, the others curve away on both
   sides, and the ring wraps around (after the last comes the first). Hover any console and it glows. Consoles with no
   games are hidden; **Recently played**, **Favorites** and **All games** are on the ring too. Open the middle one to
   get that console's cover-flow shelf, and go back with Esc / B / the "Consoles" button. Ctrl+F from the console
-  screen searches every game. The consoles are small voxel models rendered isometrically in code (`pixelart.py`: front, top and side
-  shaded differently, with a pixel outline, scaled up with hard edges). They're stylised originals, not official
-  artwork; a console you add yourself gets a generic cartridge.
+  screen searches every game.
+- **The console pictures are pixel art made from real photographs** of each console (33 of them), so they look like
+  the real hardware. The photos are from Wikimedia Commons (public domain, CC0 or CC BY-SA 3.0); every source,
+  author and licence is in `arcadia/assets/consoles/ATTRIBUTION.md`, and the pixel art is regenerated with
+  `tools/fetch_console_photos.py` then `tools/make_console_art.py` (needs Pillow and numpy; Arcadia itself doesn't).
+  The arcade cabinet and the Recent / Favorites / All games tiles are drawn 3D renders instead (`pixelart.py`), and so
+  is any console you add yourself. **Use your own pictures** with View → "Use my own console pictures…": a PNG or
+  WebP named after the console (`nes.png`, `snes.png`, …) in that folder replaces Arcadia's.
 - Sort by A–Z, recently played, most played, or favorites first (remembered between runs)
 - Type a letter to jump to the next title starting with it; search with Ctrl+F
 - Toast messages instead of dialogs, a live play timer on the Launch button, and a
@@ -540,7 +545,9 @@ arcadia/
   theme.py       stylesheet, animated backdrop, toast messages
   coverflow.py   animated cover-flow carousel with lazy cover loading
   consoles_view.py  the rotating console carousel (the first screen)
-  pixelart.py    the pixel-art sprites and the glow
+  pixelart.py    console pictures (bundled pixel art, your own, or a drawn render) and the glow
+  assets/consoles/  the bundled pixel-art console pictures and their credits
+  ../tools/      scripts that rebuild those pictures from the source photographs
   gamepad.py     optional evdev controller input
   ui.py          Qt windows and dialogs
   main.py        entry point

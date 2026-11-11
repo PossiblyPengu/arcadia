@@ -48,6 +48,7 @@ from arcadia.consoles_view import ConsoleCarousel, Entry
 from arcadia.coverflow import COVER_H, COVER_W, CoverFlow
 from arcadia.empty_state import EmptyState
 from arcadia.welcome_dialog import WelcomeDialog
+from arcadia import pixelart
 from arcadia.bundles import parse_switch
 from arcadia.emulators import Installer
 from arcadia.emulators_dialog import EmulatorsDialog
@@ -297,6 +298,7 @@ class MainWindow(QMainWindow):
         self.journal = Journal(config.journal_path)
         self._db_path = config.db_path
 
+        pixelart.set_art_dir(config.media_path / "consoles")  # your own console pictures, if you've added any
         self.setWindowTitle("Arcadia")
         self.resize(1360, 860)
         self.setStyleSheet(build_stylesheet(DEFAULT_ACCENT))
@@ -510,6 +512,8 @@ class MainWindow(QMainWindow):
         file_menu.addAction("Quit", self.close, "Ctrl+Q")
 
         view_menu = self.menuBar().addMenu("&View")
+        view_menu.addAction("Use my own console pictures…", self.open_console_art)
+        view_menu.addSeparator()
         self.fullscreen_action = QAction("Fullscreen", self, checkable=True)
         self.fullscreen_action.triggered.connect(lambda _c: self.toggle_fullscreen())
         view_menu.addAction(self.fullscreen_action)
@@ -517,6 +521,19 @@ class MainWindow(QMainWindow):
         self.empty_action.setChecked(self.config.show_empty_systems)
         self.empty_action.toggled.connect(self._on_show_empty_toggled)
         view_menu.addAction(self.empty_action)
+
+    def open_console_art(self) -> None:
+        """Open the folder where console pictures go (nes.png, snes.png, ...), and say how it works."""
+        folder = self.config.media_path / "consoles"
+        folder.mkdir(parents=True, exist_ok=True)
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(folder)))
+        QMessageBox.information(
+            self,
+            "Your own console pictures",
+            f"Put a picture in this folder named after the console and it replaces Arcadia's drawing:\n\n{folder}\n\n"
+            "For example  nes.png, snes.png, n64.png, gc.png, psx.png, genesis.webp.\n"
+            "PNG or WebP with a transparent background looks best. Close and reopen Arcadia (or press Ctrl+R) to see them.",
+        )
 
     def toggle_fullscreen(self) -> None:
         if self.isFullScreen():
@@ -566,6 +583,7 @@ class MainWindow(QMainWindow):
 
     def rescan(self, initial: bool = False) -> None:
         """Sort anything waiting in the downloads folder, then rescan the library."""
+        pixelart.set_art_dir(self.config.media_path / "consoles")  # picks up pictures added since last time
         if not initial:
             self.check_inbox(rescan_after=False)
         self._scan_library(initial)

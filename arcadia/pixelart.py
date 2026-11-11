@@ -12,6 +12,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from functools import lru_cache
+from pathlib import Path
 
 from PySide6.QtCore import QPoint, QSize, Qt
 from PySide6.QtGui import QColor, QImage, QPainter, QPixmap, QPolygon, qRgba
@@ -459,8 +460,108 @@ SPRITES: dict[str, Callable[[], Model]] = {
 }
 
 
+# Your own artwork: a picture named after the console (nes.png, snes.png, psx.webp ...) in this folder is
+# shown instead of the built-in render. Transparent backgrounds are best; any empty border is trimmed.
+ART_TYPES = (".png", ".webp", ".jpg", ".jpeg")
+_art_dir: Path | None = None
+
+
+def _signature(folder: Path | None) -> tuple:
+    """Which of your pictures exist and when they last changed, so nothing is redrawn unless that changes."""
+    if folder is None or not folder.is_dir():
+        return ()
+    try:
+        return tuple(sorted((p.name, p.stat().st_mtime_ns) for p in folder.iterdir() if p.suffix.lower() in ART_TYPES))
+    except OSError:
+        return ()
+
+
+_art_sig: tuple = ()
+
+
+def set_art_dir(folder: Path | None) -> None:
+    """Where to look for your own console pictures (None = just use the built-in renders). Cheap to call
+    again: the caches are only reset when the folder or the pictures in it have changed."""
+    global _art_dir, _art_sig
+    signature = _signature(folder)
+    if folder == _art_dir and signature == _art_sig:
+        return
+    _art_dir, _art_sig = folder, signature
+    for cached in (sprite_image, scaled, glow, _load_custom_cached, _load_bundled):
+        cached.cache_clear()
+
+
+def art_dir() -> Path | None:
+    return _art_dir
+
+
+def custom_file(view_id: str) -> Path | None:
+    if _art_dir is None or "/" in view_id or "\\" in view_id or view_id.startswith("."):
+        return None
+    for ext in ART_TYPES:
+        path = _art_dir / f"{view_id}{ext}"
+        if path.is_file():
+            return path
+    return None
+
+
+def _load_custom(path: Path) -> QImage | None:
+    image = QImage(str(path))
+    if image.isNull():
+        return None
+    image = image.convertToFormat(QImage.Format.Format_ARGB32)
+    # trim empty (transparent) borders so every picture is fitted by what's actually drawn
+    xs = [x for x in range(image.width()) if any(image.pixelColor(x, y).alpha() > 8 for y in range(0, image.height(), 2))]
+    ys = [y for y in range(image.height()) if any(image.pixelColor(x, y).alpha() > 8 for x in range(0, image.width(), 2))]
+    if not xs or not ys:
+        return None
+    return image.copy(min(xs), min(ys), max(xs) - min(xs) + 1, max(ys) - min(ys) + 1)
+
+
+def is_custom(view_id: str) -> bool:
+    return custom_file(view_id) is not None and _load_custom_cached(view_id) is not None
+
+
+@lru_cache(maxsize=None)
+def _load_custom_cached(view_id: str) -> QImage | None:
+    path = custom_file(view_id)
+    return _load_custom(path) if path else None
+
+
+# The pictures that ship with Arcadia: pixel art made from photographs of the real consoles (see
+# tools/make_console_art.py and arcadia/assets/consoles/ATTRIBUTION.md). A console without one falls
+# back to the drawn 3D render above.
+ASSETS = Path(__file__).resolve().parent / "assets" / "consoles"
+
+
+def bundled_file(view_id: str) -> Path | None:
+    if "/" in view_id or "\\" in view_id or view_id.startswith("."):
+        return None
+    path = ASSETS / f"{view_id}.png"
+    return path if path.is_file() else None
+
+
+@lru_cache(maxsize=None)
+def _load_bundled(view_id: str) -> QImage | None:
+    path = bundled_file(view_id)
+    if path is None:
+        return None
+    image = QImage(str(path))
+    return None if image.isNull() else image.convertToFormat(QImage.Format.Format_ARGB32)
+
+
+def is_bundled(view_id: str) -> bool:
+    return not is_custom(view_id) and _load_bundled(view_id) is not None
+
+
 @lru_cache(maxsize=None)
 def sprite_image(view_id: str) -> QImage:
+    custom = _load_custom_cached(view_id)
+    if custom is not None:
+        return custom
+    bundled = _load_bundled(view_id)
+    if bundled is not None:
+        return bundled
     return SPRITES.get(view_id, cartridge)().render()
 
 
@@ -474,7 +575,15 @@ def scaled(view_id: str, width: int) -> QPixmap:
     src = sprite_image(view_id)
     fit = min(box_w * 0.96 / src.width(), box_h * 0.94 / src.height())
     tw, th = max(1, round(src.width() * fit)), max(1, round(src.height() * fit))
-    big = src.scaled(QSize(tw, th), Qt.AspectRatioMode.IgnoreAspectRatio, Qt.TransformationMode.FastTransformation)
+    if is_custom(view_id):  # your own pictures are scaled smoothly
+        big = src.scaled(QSize(tw, th), Qt.AspectRatioMode.IgnoreAspectRatio, Qt.TransformationMode.SmoothTransformation)
+    elif is_bundled(view_id):
+        # pixel art: enlarge by whole pixels first so every pixel stays a clean square, then ease down to the exact size
+        k = max(1, -(-tw // src.width()) + 1)
+        blocky = src.scaled(QSize(src.width() * k, src.height() * k), Qt.AspectRatioMode.IgnoreAspectRatio, Qt.TransformationMode.FastTransformation)
+        big = blocky.scaled(QSize(tw, th), Qt.AspectRatioMode.IgnoreAspectRatio, Qt.TransformationMode.SmoothTransformation)
+    else:
+        big = src.scaled(QSize(tw, th), Qt.AspectRatioMode.IgnoreAspectRatio, Qt.TransformationMode.FastTransformation)
     out = QImage(box_w, box_h, QImage.Format.Format_ARGB32)
     out.fill(0)
     painter = QPainter(out)

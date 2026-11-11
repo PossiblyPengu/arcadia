@@ -1409,3 +1409,67 @@ def test_every_console_has_pixel_art_and_a_glow(qapp):
     img = pixelart.sprite_image("gc")
     shades = {img.pixelColor(x, y).name() for x in range(img.width()) for y in range(img.height()) if img.pixelColor(x, y).alpha()}
     assert len(shades) >= 6
+
+
+def test_your_own_console_picture_replaces_the_builtin_render(qapp, tmp_path):
+    from PySide6.QtGui import QColor, QImage
+
+    from arcadia import pixelart
+
+    folder = tmp_path / "consoles"
+    folder.mkdir()
+    picture = QImage(200, 100, QImage.Format.Format_ARGB32)
+    picture.fill(0)
+    for x in range(40, 160):  # a solid block with an empty transparent border around it
+        for y in range(20, 80):
+            picture.setPixelColor(x, y, QColor("#ff00ff"))
+    picture.save(str(folder / "nes.png"))
+    (folder / "snes.png").write_bytes(b"not a picture")
+    try:
+        builtin = pixelart.sprite_image("nes").size()
+        pixelart.set_art_dir(folder)
+        assert pixelart.is_custom("nes") and pixelart.sprite_image("nes").size().width() == 120  # border trimmed
+        assert pixelart.sprite_image("nes").size() != builtin
+        assert pixelart.scaled("nes", 200).width() == 200
+        assert not pixelart.is_custom("snes") and pixelart.sprite_image("snes").width() > 20  # a broken file is ignored
+        assert not pixelart.is_custom("gc")  # no file: the built-in one
+        assert pixelart.custom_file("../etc/passwd") is None
+    finally:
+        pixelart.set_art_dir(None)
+    assert not pixelart.is_custom("nes")
+
+
+def test_bundled_pixel_art_is_used_and_well_formed(qapp):
+    from pathlib import Path
+
+    from PySide6.QtGui import QImage
+
+    from arcadia import pixelart
+    from arcadia.config import default_systems
+
+    folder = pixelart.ASSETS
+    files = sorted(folder.glob("*.png"))
+    assert len(files) >= 25
+    assert sum(f.stat().st_size for f in files) < 2_000_000  # small enough to keep in the repository
+    for f in files:
+        image = QImage(str(f))
+        assert 30 <= image.width() <= 140 and 30 <= image.height() <= 110, f.name
+        assert image.hasAlphaChannel() and image.pixelColor(0, 0).alpha() == 0, f.name  # cut out, not on a white box
+        assert pixelart.is_bundled(f.stem)
+    # the consoles that have a picture use it; every console still has *something*
+    assert pixelart.sprite_image("nes").size() == QImage(str(folder / "nes.png")).size()
+    for system in default_systems():
+        assert pixelart.sprite_image(system.id).width() > 20
+    # a bundled picture is scaled with crisp pixels into the same box as everything else
+    fitted = pixelart.scaled("nes", 240)
+    assert (fitted.width(), fitted.height()) == (240, 180)
+    # your own picture still wins over the bundled one
+    assert not pixelart.is_custom("nes")
+
+
+def test_every_bundled_picture_is_credited(qapp):
+    from arcadia import pixelart
+
+    text = (pixelart.ASSETS / "ATTRIBUTION.md").read_text(encoding="utf-8")
+    for f in sorted(pixelart.ASSETS.glob("*.png")):
+        assert f"`{f.stem}`" in text, f"{f.stem} is missing from ATTRIBUTION.md"
