@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  TimeUtil.h
 //
 //  Low-level date and time functions.

@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  GuiInfoPopup.h
 //
 //  Popup window used for user notifications.

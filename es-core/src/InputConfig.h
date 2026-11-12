@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  InputConfig.h
 //
 //  Input device configuration functions.

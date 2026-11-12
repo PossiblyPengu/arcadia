@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  LambdaAnimation.h
 //
 //  Custom animations, expressed as lambdas.

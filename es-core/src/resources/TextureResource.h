@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  TextureResource.h
 //
 //  Handles textures including loading, unloading and cache management.

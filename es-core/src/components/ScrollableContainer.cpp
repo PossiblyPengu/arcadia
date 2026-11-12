@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  ScrollableContainer.cpp
 //
 //  Component containing scrollable information, used for the game

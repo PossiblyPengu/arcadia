@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  ThemeData.cpp
 //
 //  Finds available themes on the file system and loads and parses these.
@@ -835,8 +835,8 @@ void ThemeData::populateThemes()
     sThemes.clear();
     LOG(LogInfo) << "Checking for available themes...";
 
-    // Check for themes first under the user theme directory (which is in the ES-DE home directory
-    // by default), then under the data installation directory (Unix only) and last under the ES-DE
+    // Check for themes first under the user theme directory (which is in the Arcadia home directory
+    // by default), then under the data installation directory (Unix only) and last under the Arcadia
     // binary directory.
     const std::string defaultUserThemeDir {Utils::FileSystem::getAppDataDirectory() + "/themes"};
     const std::string userThemeDirSetting {Utils::FileSystem::expandHomePath(

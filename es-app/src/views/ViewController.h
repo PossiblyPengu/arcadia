@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  ViewController.h
 //
 //  Handles overall system navigation including animations and transitions.

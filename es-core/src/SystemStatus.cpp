@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  SystemStatus.cpp
 //
 //  Queries system status information from the operating system.

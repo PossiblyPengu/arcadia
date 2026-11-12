@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  GuiDetectDevice.cpp
 //
 //  Detect input devices (keyboards, joysticks and gamepads).
@@ -147,7 +147,7 @@ bool GuiDetectDevice::input(InputConfig* config, Input input)
 void GuiDetectDevice::update(int deltaTime)
 {
     if (mHoldingConfig) {
-        // If ES-DE starts and if a known device is connected after startup, then skip
+        // If Arcadia starts and if a known device is connected after startup, then skip
         // controller configuration unless the flag to force the configuration was passed
         // on the command line.
         if (!mForcedConfig && mFirstRun &&

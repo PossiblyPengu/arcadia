@@ -1,4 +1,4 @@
-"""Command line: sort ROMs from a folder (usually Downloads) into ES-DE's ROM folders, and undo the last sort.
+"""Command line: sort ROMs from a folder (usually Downloads) into Arcadia's ROM folders, and undo the last sort.
 
   python3 -m romsort --rom-root ~/ROMs --from ~/Downloads [--deep] [--dry-run] [--journal FILE]
   python3 -m romsort --rom-root ~/ROMs --undo --journal FILE

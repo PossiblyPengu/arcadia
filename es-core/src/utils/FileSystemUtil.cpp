@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  FileSystemUtil.cpp
 //
 //  Low-level filesystem functions.
@@ -182,11 +182,11 @@ namespace Utils
                     const std::string envAppDataDir {getenv("ESDE_APPDATA_DIR")};
                     FileSystemVariables::sAppDataDirectory = expandHomePath(envAppDataDir);
                 }
-                else if (Utils::FileSystem::exists(getHomePath() + "/ES-DE")) {
-                    FileSystemVariables::sAppDataDirectory = getHomePath() + "/ES-DE";
+                else if (Utils::FileSystem::exists(getHomePath() + "/Arcadia")) {
+                    FileSystemVariables::sAppDataDirectory = getHomePath() + "/Arcadia";
                 }
                 else {
-                    FileSystemVariables::sAppDataDirectory = getHomePath() + "/ES-DE";
+                    FileSystemVariables::sAppDataDirectory = getHomePath() + "/Arcadia";
                 }
             }
 
@@ -299,13 +299,13 @@ namespace Utils
 
         std::string getEsBinary()
         {
-            // Return the absolute path to the ES-DE binary.
+            // Return the absolute path to the Arcadia binary.
             return esBinary;
         }
 
         std::string getProgramDataPath()
         {
-    return installPrefix + "/share/es-de";
+    return installPrefix + "/share/arcadia";
         }
 
         std::string getPreferredPath(const std::string& path)

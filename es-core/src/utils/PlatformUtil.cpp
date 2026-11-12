@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  PlatformUtil.cpp
 //
 //  Platform utility functions.
@@ -67,14 +67,14 @@ namespace Utils
         {
             std::string command = std::string(cmd_utf8) + " 2>&1 &";
 
-            // Launching games while keeping ES-DE running in the background is very crude as for
+            // Launching games while keeping Arcadia running in the background is very crude as for
             // instance no output from the command is captured and no real error handling is
             // implemented. It should therefore only be used when absolutely necessary.
             if (runInBackground) {
                 if (startDirectory != "")
                     command = "cd " + startDirectory + " && " + command;
                 LOG(LogDebug)
-                    << "Platform::launchGameUnix(): Launching game while keeping ES-DE running "
+                    << "Platform::launchGameUnix(): Launching game while keeping Arcadia running "
                        "in the background, no command output will be written to the log file";
                 return system(command.c_str());
             }

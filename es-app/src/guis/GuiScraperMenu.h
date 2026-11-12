@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  GuiScraperMenu.h
 //
 //  Game media scraper, including settings as well as the scraping start button.

@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  LottieAnimComponent.cpp
 //
 //  Component to play Lottie animations using the rlottie library.

@@ -6,7 +6,7 @@ In Game Mode the Deck's controller reaches every emulator as a standard Xbox-sty
 hotkeys (hold Select: Start quits, X opens the menu, bumpers load / save a state), each only when nothing is set yet.
 
   controls.py            fill in what's missing
-  controls.py --reset    replace those controller settings with these (the old file is copied to ~/ES-DE/backups/controls)
+  controls.py --reset    replace those controller settings with these (the old file is copied to ~/Arcadia/backups/controls)
 
 Nothing else in a settings file is touched. The setting names follow each emulator's documented format and have not
 been run against the emulators themselves.
@@ -23,7 +23,7 @@ from datetime import datetime
 from pathlib import Path
 
 HOME = Path(os.environ.get("HOME", "~")).expanduser()
-BACKUPS = Path(os.environ.get("ES_DE_HOME", HOME / "ES-DE")) / "backups" / "controls"
+BACKUPS = Path(os.environ.get("ARCADIA_HOME", HOME / "Arcadia")) / "backups" / "controls"
 
 _DUALSHOCK = {
     "Up": "DPadUp", "Right": "DPadRight", "Down": "DPadDown", "Left": "DPadLeft",

@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  GuiMediaViewerOptions.h
 //
 //  User interface for the media viewer options.

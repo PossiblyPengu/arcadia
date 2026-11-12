@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  MoveCameraAnimation.h
 //
 //  Animation to play when moving the camera, used by the slide transition style.

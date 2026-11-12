@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  GuiThemeDownloader.cpp
 //
 //  Theme downloader.
@@ -448,7 +448,7 @@ bool GuiThemeDownloader::checkCorruptRepository(git_repository* repository)
 {
     // For the time being we only check if there are no tracked files in the repository. If there
     // are none then it would indicate that it has not been properly cloned (for example if the
-    // ES-DE process was killed during the clone operation).
+    // Arcadia process was killed during the clone operation).
     git_status_list* status {nullptr};
     size_t statusEntryCount {0};
     int errorCode {0};
@@ -682,7 +682,7 @@ void GuiThemeDownloader::parseThemesList()
             LOG(LogWarning) << "Not running the most current application release, theme "
                                "downloading is not recommended";
             mWindow->pushGui(new GuiMsgBox(
-                _("IT SEEMS AS IF YOU'RE NOT RUNNING THE LATEST ES-DE RELEASE, PLEASE UPGRADE "
+                _("IT SEEMS AS IF YOU'RE NOT RUNNING THE LATEST ARCADIA RELEASE, PLEASE UPGRADE "
                   "BEFORE PROCEEDING AS THESE THEMES MAY NOT BE COMPATIBLE WITH YOUR VERSION"),
                 _("OK"), [] { return; }, "", nullptr, "", nullptr, "", nullptr, nullptr, true));
         }
@@ -847,7 +847,7 @@ void GuiThemeDownloader::populateGUI()
                     Utils::String::format(
                         _("IT SEEMS AS IF THIS THEME REPOSITORY IS CORRUPT, WHICH COULD HAVE BEEN "
                           "CAUSED BY AN INTERRUPTION OF A PREVIOUS DOWNLOAD OR UPDATE, FOR EXAMPLE "
-                          "IF THE ES-DE PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE "
+                          "IF THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE "
                           "OLD THEME DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""),
                         std::string {theme.reponame + theme.manualExtension}.c_str(),
                         std::string {theme.reponame + theme.manualExtension}.c_str()),
@@ -1456,7 +1456,7 @@ bool GuiThemeDownloader::fetchThemesList()
             mWindow->pushGui(new GuiMsgBox(
                 _("IT SEEMS AS IF THE THEMES LIST REPOSITORY IS CORRUPT, WHICH COULD HAVE BEEN "
                   "CAUSED BY AN INTERRUPTION OF A PREVIOUS DOWNLOAD OR UPDATE, FOR EXAMPLE IF THE "
-                  "ES-DE PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD DIRECTORY "
+                  "ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD DIRECTORY "
                   "\"themes-list\" WILL BE RENAMED TO \"themes-list_CORRUPT_DISABLED\""),
                 _("PROCEED"),
                 [this, repositoryName, url] {

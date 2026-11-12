@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-# Set up the Steam Deck extras for ES-DE: cloud save sync, emulator install/update, BIOS check.
+# Set up the Steam Deck extras for Arcadia: cloud save sync, emulator install/update, BIOS check.
 #
 #   ./deck/install.sh             install (safe to run again)
-#   ./deck/install.sh --uninstall remove what it added (your ROMs, saves and ES-DE settings are never touched)
+#   ./deck/install.sh --uninstall remove what it added (your ROMs, saves and Arcadia settings are never touched)
 #
-# What it does, all inside your ES-DE folder (~/ES-DE) and ROM folder:
-#   - copies the helper scripts to ~/ES-DE/deck
-#   - links the event scripts into ~/ES-DE/scripts/{startup,game-start,game-end,quit}
-#   - adds a "Setup" system to ES-DE (custom_systems/es_systems.xml) with entries you can pick with the controller:
-#       Sync saves now, Install emulators, Update emulators, Check BIOS files, Set up emulator controls
+# What it does, all inside your Arcadia folder (~/Arcadia) and ROM folder:
+#   - copies the helper scripts to ~/Arcadia/deck
+#   - links the event scripts into ~/Arcadia/scripts/{startup,game-start,game-end,quit}
+#   - the tools are then used from Arcadia's own SETUP menu (main menu): get started, sort ROMs, emulators, BIOS,
+#     controls, folder access, save sync, backup, updates
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
-ESDE="${ES_DE_HOME:-$HOME/ES-DE}"
+ESDE="${ARCADIA_HOME:-$HOME/Arcadia}"
 TARGET="$ESDE/deck"
 SYSTEMS="$ESDE/custom_systems/es_systems.xml"
 SETTINGS="$ESDE/settings/es_settings.xml"
@@ -43,7 +43,7 @@ if [ "${1:-}" = "--uninstall" ]; then
   for ev in "${EVENTS[@]}"; do rm -f "$ESDE/scripts/$ev"/arcadia-*.sh; done
   remove_block
   rm -rf "$TARGET" "$ROMS"
-  echo "Removed the Steam Deck extras (your ROMs, saves and ES-DE settings were not touched)."
+  echo "Removed the Steam Deck extras (your ROMs, saves and Arcadia settings were not touched)."
   exit 0
 fi
 
@@ -66,70 +66,25 @@ if [ ! -f "$ESDE/deck.conf" ]; then
 # Settings for the Steam Deck extras. Lines starting with # are ignored.
 # Cloud save sync uses rclone. Make a Google Drive remote once with:  rclone config   (name it "gdrive")
 SYNC_ENABLED=1
-SYNC_REMOTE="gdrive:ES-DE"      # leave empty to turn save sync off
+SYNC_REMOTE="gdrive:Arcadia"      # leave empty to turn save sync off
 # Folders whose files are synced. Empty = the usual EmuDeck / RetroArch Flatpak save folders that exist.
 # SAVE_DIRS=("\$HOME/Emulation/saves")
 # Where your BIOS files are (for "Check BIOS files").
 BIOS_DIR="\$HOME/Emulation/bios"
-# Where new ROMs land (for "Sort downloads into ROM folders"), and whether to sort them each time ES-DE starts.
+# Where new ROMs land (for "Sort downloads into ROM folders"), and whether to sort them each time Arcadia starts.
 INBOX="\$HOME/Downloads"
 AUTO_SORT=0
-# ROM_ROOT=""        # empty = ES-DE's ROM folder setting
-# APPIMAGE_PATH=""   # where the ES-DE AppImage lives, for "Update ES-DE"
+# ROM_ROOT=""        # empty = Arcadia's ROM folder setting
+# APPIMAGE_PATH=""   # where the Arcadia AppImage lives, for "Update Arcadia"
 CONF
 fi
 
-# ES-DE's own "Setup" system: four entries, each a small script ES-DE launches like a game
-mkdir -p "$ROMS"
-mk_entry() { # entry file name, tool, options...
-  local name="$1" tool="$2"
-  shift 2
-  printf '#!/usr/bin/env bash\nexec "%s/tools/%s" %s\n' "$TARGET" "$tool" "$*" > "$ROMS/$name"
-  chmod +x "$ROMS/$name"
-}
-mk_entry "Sync saves now.sh" save-sync-now.sh
-mk_entry "Install emulators.sh" install-emulators.sh
-mk_entry "Update emulators.sh" update-emulators.sh
-mk_entry "Check BIOS files.sh" check-bios.sh
-mk_entry "Set up emulator controls.sh" setup-controls.sh
-mk_entry "Get started checklist.sh" get-started.sh
-mk_entry "Sort downloads into ROM folders.sh" sort-roms.sh
-mk_entry "Sort downloads and subfolders.sh" sort-roms.sh --deep
-mk_entry "Sort ROMs from a folder you pick.sh" sort-roms.sh --pick
-mk_entry "Undo last ROM sort.sh" sort-roms.sh --undo
-mk_entry "Let emulators see ROM folders.sh" grant-access.sh
-mk_entry "Back up settings.sh" backup.sh
-mk_entry "Restore latest backup.sh" backup.sh --restore
-mk_entry "Update ES-DE.sh" update-es-de.sh
-
-mkdir -p "$(dirname "$SYSTEMS")"
+# Older versions added a "Setup" system made of small scripts; the Setup menu inside Arcadia replaces it.
 remove_block
-if [ ! -f "$SYSTEMS" ]; then
-  printf '<?xml version="1.0"?>\n<systemList>\n</systemList>\n' > "$SYSTEMS"
-fi
-python3 - "$SYSTEMS" "$BLOCK_START" "$BLOCK_END" <<'PY'
-import sys
-p,a,b=sys.argv[1:4]
-block=f"""    {a}
-    <system>
-        <name>arcadia-setup</name>
-        <fullname>Setup</fullname>
-        <systemsortname>zzz-setup</systemsortname>
-        <path>%ROMPATH%/arcadia-setup</path>
-        <extension>.sh</extension>
-        <command>/bin/bash %ROM%</command>
-        <platform>pc</platform>
-        <theme>arcadia-setup</theme>
-    </system>
-    {b}
-"""
-s=open(p).read()
-i=s.rindex("</systemList>")
-open(p,"w").write(s[:i]+block+s[i:])
-PY
+rm -rf "$ROMS"
 
 echo "Done."
 echo "  • Event scripts: $ESDE/scripts/*/arcadia-save-sync.sh   (custom event scripts are on by default in this build;"
-echo "    in stock ES-DE turn on Other settings > Enable custom event scripts)"
-echo "  • Setup system: restart ES-DE and look for \"Setup\" in the system list."
+echo "    in stock Arcadia turn on Other settings > Enable custom event scripts)"
+echo "  • Setup tools: open Arcadia's main menu and choose SETUP."
 echo "  • Config: $ESDE/deck.conf  (set up rclone with a Google Drive remote called gdrive for save sync)"

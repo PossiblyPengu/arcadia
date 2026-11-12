@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  GuiOrphanedDataCleanup.h
 //
 //  Removes orphaned game media, gamelist.xml entries and custom collections entries.

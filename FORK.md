@@ -13,3 +13,8 @@ and separate so upstream updates stay easy to merge:
 - `deck/lib/romsort/`: the ROM sorter from Arcadia, as a command line tool.
 - Trimmed to Linux and the Steam Deck: the Android, macOS, Windows, Haiku, iOS, web and BSD code and files were removed (they stay in git history). The `--no-update-check` option went with the upstream updater.
 - Menus and dialogs use the Arcadia colour schemes (ink, oled, paper) and a white focus ring, see `DESIGN.md`.
+- Renamed to Arcadia (binary, folder `~/Arcadia`, app ID `io.github.PossiblyPengu.Arcadia`). The ScreenScraper account name stays "ES-DE" because
+  that service registers software by name.
+- A native **SETUP** screen at the top of the main menu runs the deck tools (get started, sort ROMs, emulators, BIOS, controls, folder
+  access, saves, backup, update) and shows what they say. The no-games dialog at first start points to it.
+- Build files are Linux only; the program ships its `deck/` folder and installs the tools into the data folder when SETUP opens.

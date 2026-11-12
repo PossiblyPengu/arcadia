@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  Sound.cpp
 //
 //  Higher-level audio functions.
@@ -89,7 +89,7 @@ void Sound::init()
         return;
     }
 
-    // Convert sound file to the format required by ES-DE.
+    // Convert sound file to the format required by Arcadia.
     SDL_AudioStream* conversionStream {
         SDL_NewAudioStream(wave.format, wave.channels, wave.freq, AudioManager::sAudioFormat.format,
                            AudioManager::sAudioFormat.channels, AudioManager::sAudioFormat.freq)};

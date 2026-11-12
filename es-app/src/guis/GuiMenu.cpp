@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  GuiMenu.cpp
 //
 //  Main menu.
@@ -27,6 +27,7 @@
 #include "guis/GuiGameImporter.h"
 #include "guis/GuiMediaViewerOptions.h"
 #include "guis/GuiMsgBox.h"
+#include "guis/GuiToolRunner.h"
 #include "guis/GuiOrphanedDataCleanup.h"
 #include "guis/GuiScraperMenu.h"
 #include "guis/GuiScreensaverOptions.h"
@@ -48,6 +49,9 @@ GuiMenu::GuiMenu()
     , mThemeDownloaderReloadCounter {0}
 {
     const bool isFullUI {UIModeController::getInstance()->isUIModeFull()};
+
+    if (isFullUI)
+        addEntry(_("SETUP"), mMenuColorPrimary, true, [this] { openSetup(); });
 
     if (isFullUI)
         addEntry(_("SCRAPER"), mMenuColorPrimary, true, [this] { openScraperOptions(); });
@@ -76,7 +80,7 @@ GuiMenu::GuiMenu()
         if (Settings::getInstance()->getBool("ShowQuitMenu"))
             addEntry(_("QUIT"), mMenuColorPrimary, true, [this] { openQuitMenu(); });
         else
-            addEntry(_("QUIT ES-DE"), mMenuColorPrimary, false, [this] { openQuitMenu(); });
+            addEntry(_("QUIT ARCADIA"), mMenuColorPrimary, false, [this] { openQuitMenu(); });
     }
 
     addChild(&mMenu);
@@ -1977,6 +1981,67 @@ void GuiMenu::openOtherOptions()
     mWindow->pushGui(s);
 }
 
+// The folder with the setup tools (the deck folder). They are installed into the application data directory
+// the first time they are needed, from the copy that ships with the program.
+std::string GuiMenu::setupToolsDirectory()
+{
+    const std::string installed {Utils::FileSystem::getAppDataDirectory() + "/deck"};
+
+    std::vector<std::string> sources {Utils::FileSystem::getExePath() + "/deck",
+                                      Utils::FileSystem::getExePath() + "/../share/arcadia/deck"};
+    if (const char* appDir {std::getenv("APPDIR")})
+        sources.push_back(std::string {appDir} + "/usr/share/arcadia/deck");
+    for (const std::string& source : sources) {
+        if (Utils::FileSystem::exists(source + "/install.sh")) {
+            // Installing is quick and safe to repeat, and keeps the tools in step with this version.
+            Utils::Platform::runSystemCommand("ARCADIA_HOME=\"" +
+                                              Utils::FileSystem::getAppDataDirectory() +
+                                              "\" bash \"" + source + "/install.sh\" > /dev/null 2>&1");
+            break;
+        }
+    }
+    return installed + "/tools";
+}
+
+void GuiMenu::openSetup()
+{
+    auto s = new GuiSettings(_("SETUP"));
+    const std::string tools {setupToolsDirectory()};
+
+    struct Entry {
+        std::string label;
+        std::string command;
+    };
+    const std::vector<Entry> entries {
+        {_("GET STARTED CHECKLIST"), "\"" + tools + "/get-started.sh\""},
+        {_("SORT DOWNLOADS INTO ROM FOLDERS"), "\"" + tools + "/sort-roms.sh\""},
+        {_("SORT DOWNLOADS AND SUBFOLDERS"), "\"" + tools + "/sort-roms.sh\" --deep"},
+        {_("UNDO LAST ROM SORT"), "\"" + tools + "/sort-roms.sh\" --undo"},
+        {_("INSTALL EMULATORS"), "\"" + tools + "/install-emulators.sh\""},
+        {_("UPDATE EMULATORS"), "\"" + tools + "/update-emulators.sh\""},
+        {_("CHECK BIOS FILES"), "\"" + tools + "/check-bios.sh\""},
+        {_("SET UP EMULATOR CONTROLS"), "\"" + tools + "/setup-controls.sh\""},
+        {_("LET EMULATORS SEE ROM FOLDERS"), "\"" + tools + "/grant-access.sh\""},
+        {_("SYNC SAVES NOW"), "\"" + tools + "/save-sync-now.sh\""},
+        {_("BACK UP SETTINGS"), "\"" + tools + "/backup.sh\""},
+        {_("RESTORE LATEST BACKUP"), "\"" + tools + "/backup.sh\" --restore"},
+        {_("UPDATE ARCADIA"), "\"" + tools + "/update-arcadia.sh\""}};
+
+    for (const Entry& entry : entries) {
+        ComponentListRow row;
+        row.addElement(std::make_shared<TextComponent>(entry.label, Font::get(FONT_SIZE_MEDIUM),
+                                                       mMenuColorPrimary),
+                       true);
+        row.addElement(mMenu.makeArrow(), false);
+        const std::string label {entry.label};
+        const std::string command {entry.command};
+        row.makeAcceptInputHandler(
+            [this, label, command] { mWindow->pushGui(new GuiToolRunner(label, command)); });
+        s->addRow(row);
+    }
+    mWindow->pushGui(s);
+}
+
 void GuiMenu::openUtilities()
 {
     auto s = new GuiSettings(_("UTILITIES"));
@@ -2126,7 +2191,7 @@ void GuiMenu::openQuitMenu()
                 _("NO"), nullptr));
         });
         auto quitText = std::make_shared<TextComponent>(
-            _("QUIT ES-DE"), Font::get(FONT_SIZE_MEDIUM), mMenuColorPrimary);
+            _("QUIT ARCADIA"), Font::get(FONT_SIZE_MEDIUM), mMenuColorPrimary);
         quitText->setSelectable(true);
         row.addElement(quitText, true);
         s->addRow(row);
@@ -2198,14 +2263,9 @@ void GuiMenu::addVersionInfo()
     mVersion.setAutoCalcExtent(glm::ivec2 {0, 0});
     mVersion.setColor(mMenuColorTertiary);
 
-    const std::string applicationName {"ES-DE"};
-
-#if defined(IS_PRERELEASE)
-    mVersion.setText(applicationName + "  " + Utils::String::toUpper(PROGRAM_VERSION_STRING) +
-                     " (Built " + __DATE__ + ")");
-#else
-    mVersion.setText(applicationName + "  " + Utils::String::toUpper(PROGRAM_VERSION_STRING));
-#endif
+    // Arcadia's own version, and the ES-DE release it is based on.
+    mVersion.setText("ARCADIA 0.1   -   BASED ON ES-DE " +
+                     Utils::String::toUpper(PROGRAM_VERSION_STRING));
 
     mVersion.setHorizontalAlignment(ALIGN_CENTER);
     addChild(&mVersion);

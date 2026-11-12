@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  ButtonComponent.cpp
 //
 //  Basic button, used as a GUI element and for the virtual keyboard buttons.

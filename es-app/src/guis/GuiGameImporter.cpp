@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  GuiGameImporter.cpp
 //
 //  Game import utility.
@@ -455,7 +455,7 @@ void GuiGameImporter::fileRule(std::pair<const std::string, ImportRules::ImportR
     for (auto& directory : importRule.second.directories) {
         // Expand ~ to the user home directory.
         std::string expandedDir {Utils::FileSystem::expandHomePath(directory.path, true)};
-        // Expand %ESPATH% to the ES-DE binary directory.
+        // Expand %ESPATH% to the Arcadia binary directory.
         expandedDir =
             Utils::String::replace(expandedDir, "%ESPATH%", Utils::FileSystem::getExePath());
 
@@ -476,7 +476,7 @@ void GuiGameImporter::fileRule(std::pair<const std::string, ImportRules::ImportR
                     continue;
                 }
 
-                if (Utils::FileSystem::getFileName(file) == "org.es_de.frontend.desktop")
+                if (Utils::FileSystem::getFileName(file) == "io.github.PossiblyPengu.Arcadia.desktop")
                     continue;
                 std::string targetFile {file};
                 hasEntries = true;
@@ -546,7 +546,7 @@ void GuiGameImporter::desktopshortcutRule(
                     continue;
                 }
 
-                if (Utils::FileSystem::getFileName(file) == "org.es_de.frontend.desktop")
+                if (Utils::FileSystem::getFileName(file) == "io.github.PossiblyPengu.Arcadia.desktop")
                     continue;
 
                 LOG(LogDebug)

@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  SystemStatusComponent.cpp
 //
 //  Displays system status information (Bluetooth, Wi-Fi, cellular and battery).

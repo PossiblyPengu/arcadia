@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  ResourceManager.cpp
 //
 //  Handles the application resources (fonts, graphics, sounds etc.).
@@ -48,7 +48,7 @@ std::string ResourceManager::getResourcePath(const std::string& path, bool termi
             return testExePath;
         }
         // For missing resources, log an error and terminate the application. This should
-        // indicate that we have a broken ES-DE installation. If the argument
+        // indicate that we have a broken Arcadia installation. If the argument
         // terminateOnFailure is set to false though, then skip this step.
         else {
             if (terminateOnFailure) {
@@ -59,7 +59,7 @@ std::string ResourceManager::getResourcePath(const std::string& path, bool termi
             LOG(LogError) << testDataPath;
 #endif
                 LOG(LogError) << testExePath;
-                LOG(LogError) << "Has ES-DE been properly installed?";
+                LOG(LogError) << "Has Arcadia been properly installed?";
                 Utils::Platform::emergencyShutdown();
             }
             else {

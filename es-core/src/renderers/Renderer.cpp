@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  Renderer.cpp
 //
 //  Generic rendering functions.
@@ -180,7 +180,7 @@ bool Renderer::createWindow()
     else
         windowFlags = SDL_WINDOW_OPENGL;
 
-    if ((mSDLWindow = SDL_CreateWindow("ES-DE", SDL_WINDOWPOS_UNDEFINED_DISPLAY(displayIndex),
+    if ((mSDLWindow = SDL_CreateWindow("Arcadia", SDL_WINDOWPOS_UNDEFINED_DISPLAY(displayIndex),
                                        SDL_WINDOWPOS_UNDEFINED_DISPLAY(displayIndex), mWindowWidth,
                                        mWindowHeight, windowFlags)) == nullptr) {
         LOG(LogError) << "Couldn't create SDL window. " << SDL_GetError();

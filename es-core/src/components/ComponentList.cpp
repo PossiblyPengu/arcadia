@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  ComponentList.cpp
 //
 //  Used to lay out and navigate lists in GUI menus.

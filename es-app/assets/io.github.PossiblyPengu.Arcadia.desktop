@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Exec=arcadia
+Icon=arcadia
+Terminal=false
+Type=Application
+StartupNotify=true
+Hidden=false
+Categories=Game;Emulator;
+Name=Arcadia
+GenericName=Game launcher
+Keywords=emulator;emulation;front-end;frontend;launcher;

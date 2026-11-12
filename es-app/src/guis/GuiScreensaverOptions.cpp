@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  GuiScreensaverOptions.cpp
 //
 //  User interface for the screensaver options.

@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  GIFAnimComponent.cpp
 //
 //  Component to play GIF animations.

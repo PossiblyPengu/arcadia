@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  FileData.cpp
 //
 //  Provides game file data structures and functions to access and sort this information.
@@ -284,7 +284,7 @@ const std::string FileData::getROMDirectory()
     }
 
     // If %ESPATH% is used for the ROM path configuration, then expand it to the binary
-    // directory of ES-DE.
+    // directory of Arcadia.
     romDirPath = Utils::String::replace(romDirPath, "%ESPATH%", Utils::FileSystem::getExePath());
 
     return romDirPath;
@@ -305,7 +305,7 @@ const std::string FileData::getMediaDirectory()
         mediaDirPath = Utils::FileSystem::expandHomePath(mediaDirPath);
 
         // If %ESPATH% is used for the media directory configuration, then expand it to the
-        // binary directory of ES-DE.
+        // binary directory of Arcadia.
         mediaDirPath =
             Utils::String::replace(mediaDirPath, "%ESPATH%", Utils::FileSystem::getExePath());
 
@@ -1670,7 +1670,7 @@ void FileData::launchGame()
         Log::flush();
     }
 
-    // Possibly keep ES-DE running in the background while the game is launched.
+    // Possibly keep Arcadia running in the background while the game is launched.
 
     Settings::getInstance()->setInt(
         "GameLaunchTime", static_cast<int>(Utils::Time::DateTime(Utils::Time::now()).getTime()));
@@ -1702,7 +1702,7 @@ returnValue = Utils::Platform::launchGameUnix(command, startDirectory, runInBack
     else {
         // Stop showing the game launch notification.
         window->stopInfoPopup();
-        // For some game systems we need to keep ES-DE running while the game is launched.
+        // For some game systems we need to keep Arcadia running while the game is launched.
         // This blocks the video player, stops the scrolling of game names and descriptions and
         // keeps the screensaver from getting activated.
         if (runInBackground)
@@ -1829,7 +1829,7 @@ const std::pair<std::string, FileData::findEmulatorResult> FileData::findEmulato
         }
 
         path = Utils::FileSystem::expandHomePath(path);
-        // If %ESPATH% is used for the rule, then expand it to the binary directory of ES-DE.
+        // If %ESPATH% is used for the rule, then expand it to the binary directory of Arcadia.
         path = Utils::String::replace(path, "%ESPATH%", Utils::FileSystem::getExePath());
         // Likewise for the %ROMPATH% variable which expands to the configured ROM directory.
         path = Utils::String::replace(path, "%ROMPATH%", getROMDirectory());
@@ -1860,7 +1860,7 @@ const std::pair<std::string, FileData::findEmulatorResult> FileData::findEmulato
 
     // Method 2, exact emulator name:
 
-    // If %ESPATH% is used, then expand it to the binary directory of ES-DE.
+    // If %ESPATH% is used, then expand it to the binary directory of Arcadia.
     command = Utils::String::replace(command, "%ESPATH%", Utils::FileSystem::getExePath());
 
     // If the first character is a quotation mark, then we need to extract up to the

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Sort ROMs from your downloads folder into ES-DE's ROM folders. Files are matched by header, extension and disc contents;
+# Sort ROMs from your downloads folder into Arcadia's ROM folders. Files are matched by header, extension and disc contents;
 # anything uncertain is left where it is. Nothing is overwritten or deleted, and "Undo last ROM sort" puts files back.
 #   sort-roms.sh               sort the inbox (Downloads)
 #   sort-roms.sh --deep        also look in the folders inside it

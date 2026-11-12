@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  Font.h
 //
 //  Font management and text shaping and rendering.
@@ -56,10 +56,10 @@ public:
     static float getMediumFont(bool forceUpdate = false)
     {
         static float sMediumFont {
-            (Renderer::getIsVerticalOrientation() ? 0.040f : 0.045f) *
+            (Renderer::getIsVerticalOrientation() ? 0.040f : 0.041f) *
             std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth())};
         if (forceUpdate)
-            sMediumFont = (Renderer::getIsVerticalOrientation() ? 0.040f : 0.045f) *
+            sMediumFont = (Renderer::getIsVerticalOrientation() ? 0.040f : 0.041f) *
                           std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth());
         return sMediumFont;
     }
@@ -75,10 +75,10 @@ public:
     }
     static float getLargeFont(bool forceUpdate = false)
     {
-        static float sLargeFont {(Renderer::getIsVerticalOrientation() ? 0.080f : 0.085f) *
+        static float sLargeFont {(Renderer::getIsVerticalOrientation() ? 0.062f : 0.065f) *
                                  std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth())};
         if (forceUpdate)
-            sLargeFont = (Renderer::getIsVerticalOrientation() ? 0.080f : 0.085f) *
+            sLargeFont = (Renderer::getIsVerticalOrientation() ? 0.062f : 0.065f) *
                          std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth());
         return sLargeFont;
     }

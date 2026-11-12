@@ -1,7 +1,7 @@
 # Arcadia design language
 
 Arcadia is a full fork of ES-DE for the Steam Deck. Every screen, menu and dialog follows one design language. This file is the
-reference; the theme (`themes/arcadia-es-de`) and the program's own screens both take their values from it.
+reference; the theme (`themes/arcadia`) and the program's own screens both take their values from it.
 
 ## Principles
 
@@ -29,7 +29,7 @@ reference; the theme (`themes/arcadia-es-de`) and the program's own screens both
 | console tint | per console | per console | per console | glow, console-specific highlights |
 | ok / warn / error | `#6fcf97` / `#f2a33a` / `#e5645f` | same | same | status only, never decoration |
 
-Console tints are generated, one per system, by `themes/arcadia-es-de/tools/make_assets.py` (a familiar colour for well-known
+Console tints are generated, one per system, by `themes/arcadia/tools/make_assets.py` (a familiar colour for well-known
 consoles, a stable hue from the name for the rest).
 
 ## Type
@@ -46,6 +46,10 @@ height so they scale from the Deck to a TV:
 | Caption | 2.6% | SemiBold | hints, the clock (minimum size anywhere) |
 
 Upper case only for system names and short labels, never for sentences.
+
+Menus, dialogs and the Setup screens are drawn by the program, not the theme, and use these sizes (as a share of the shorter
+screen side): title 6.5%, row 4.1%, small text 3.5%, mini text 3.0%. Messages from the setup tools are shown at the small size
+in a scrolling panel.
 
 ## Space and shape
 

@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  AsyncHandle.h
 //
 //  Asynchronous operations used by GuiScraperSearch and Scraper.

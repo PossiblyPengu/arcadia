@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  GuiTextEditKeyboardPopup.h
 //
 //  Text edit popup with a virtual keyboard.

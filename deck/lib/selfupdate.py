@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Update this fork of ES-DE (the AppImage) and the deck extras from the project's GitHub releases.
+"""Update this fork of Arcadia (the AppImage) and the deck extras from the project's GitHub releases.
 
   selfupdate.py            check, then update if there is a newer release
   selfupdate.py --check    only say whether there is one
 
 The AppImage is replaced in place after the old one is kept next to it as <name>.previous, and the extras are
-reinstalled with their own install.sh. Nothing in your ROMs, saves or ES-DE settings is touched.
+reinstalled with their own install.sh. Nothing in your ROMs, saves or Arcadia settings is touched.
 """
 
 from __future__ import annotations
@@ -23,9 +23,9 @@ from urllib.parse import urlparse
 
 API = os.environ.get("DECK_RELEASE_API", "https://api.github.com/repos/PossiblyPengu/arcadia/releases/latest")
 HOSTS = {"api.github.com", "github.com", "objects.githubusercontent.com", "release-assets.githubusercontent.com"}
-ESDE = Path(os.environ.get("ES_DE_HOME", Path.home() / "ES-DE"))
+ESDE = Path(os.environ.get("ARCADIA_HOME", Path.home() / "Arcadia"))
 VERSION_FILE = ESDE / "deck" / "version"
-APPIMAGE_NAME = "ES-DE_x64_SteamDeck.AppImage"
+APPIMAGE_NAME = "Arcadia_x64_SteamDeck.AppImage"
 EXTRAS_NAME = "arcadia-deck-extras.tar.gz"
 TEST_MODE = "DECK_RELEASE_API" in os.environ  # a local test server may use http://127.0.0.1
 
@@ -40,7 +40,7 @@ def _open(url: str):
     if not local and (p.scheme != "https" or p.hostname not in HOSTS):
         raise UpdateError(f"refusing to use {url}")
     try:
-        return urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "es-de-deck-update"}), timeout=60)
+        return urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "arcadia-deck-update"}), timeout=60)
     except OSError as exc:
         raise UpdateError(f"couldn't reach {p.hostname}: {exc}") from exc
 
@@ -119,7 +119,7 @@ def update(check_only: bool = False) -> str:
             if target.exists():
                 shutil.copy2(target, target.with_name(target.name + ".previous"))
             os.replace(new_image, target)
-            messages.append(f"ES-DE updated ({target}); the old one is kept as {target.name}.previous.")
+            messages.append(f"Arcadia updated ({target}); the old one is kept as {target.name}.previous.")
         if extras_dir is not None and (extras_dir / "deck" / "install.sh").is_file():
             done = subprocess.run(["bash", str(extras_dir / "deck" / "install.sh")], capture_output=True, text=True)
             messages.append("Deck extras reinstalled." if done.returncode == 0 else f"The deck extras couldn't be reinstalled: {done.stderr.strip()[:200]}")
@@ -127,7 +127,7 @@ def update(check_only: bool = False) -> str:
     VERSION_FILE.write_text(tag + "\n")
     if not messages:
         messages.append("The release has nothing to install.")
-    return f"Updated to {tag}. " + " ".join(messages) + " Restart ES-DE to use it."
+    return f"Updated to {tag}. " + " ".join(messages) + " Restart Arcadia to use it."
 
 
 def main(argv: list[str]) -> int:

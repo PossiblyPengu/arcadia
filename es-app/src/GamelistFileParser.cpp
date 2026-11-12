@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  GamelistFileParser.cpp
 //
 //  Parses and updates the gamelist.xml files.

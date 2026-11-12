@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  Screensaver.cpp
 //
 //  Screensaver, supporting the following types:
@@ -590,7 +590,7 @@ void Screensaver::generateCustomImageList()
     if (imageDir.empty())
         imageDir = Utils::FileSystem::getAppDataDirectory() + "/screensavers/custom_slideshow";
 
-    // This makes it possible to set the custom image directory relative to the ES-DE binary
+    // This makes it possible to set the custom image directory relative to the Arcadia binary
     // directory or the ROM directory.
     imageDir = Utils::String::replace(imageDir, "%ESPATH%", Utils::FileSystem::getExePath());
     imageDir = Utils::String::replace(imageDir, "%ROMPATH%", FileData::getROMDirectory());

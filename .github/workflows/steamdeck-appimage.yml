@@ -1,4 +1,4 @@
-# Builds the Steam Deck AppImage of this fork (ES-DE with the Deck defaults) and the "deck extras" archive.
+# Builds the Steam Deck AppImage of this fork (Arcadia with the Deck defaults) and the "deck extras" archive.
 # Run it from the Actions tab (workflow_dispatch), or push a tag like v1.0.0 to also publish a release.
 name: Steam Deck AppImage
 
@@ -37,7 +37,7 @@ jobs:
         with:
           name: steamdeck-appimage
           path: |
-            ES-DE_x64_SteamDeck.AppImage
+            Arcadia_x64_SteamDeck.AppImage
             arcadia-deck-extras.tar.gz
 
       - name: Publish a release (tags only)
@@ -45,5 +45,5 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ES-DE_x64_SteamDeck.AppImage
+            Arcadia_x64_SteamDeck.AppImage
             arcadia-deck-extras.tar.gz

@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  SystemData.h
 //
 //  Provides data structures for the game systems and populates and indexes them based

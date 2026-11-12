@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  RendererOpenGL.cpp
 //
 //  OpenGL / OpenGL ES renderering functions.

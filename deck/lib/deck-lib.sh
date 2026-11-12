@@ -1,26 +1,27 @@
 #!/usr/bin/env bash
-# Shared helpers for the Steam Deck setup around ES-DE: config, logging, messages, Google Drive save sync, emulators, BIOS.
+# Shared helpers for the Steam Deck setup around Arcadia: config, logging, messages, Google Drive save sync, emulators, BIOS.
 # Sourced by the event scripts and the tools; never run on its own.
 
-DECK_HOME="${ES_DE_HOME:-$HOME/ES-DE}"
+DECK_HOME="${ARCADIA_HOME:-$HOME/Arcadia}"
 DECK_CONF="${DECK_CONF:-$DECK_HOME/deck.conf}"
 DECK_LOG="${DECK_LOG:-$DECK_HOME/logs/deck.log}"
 
 # --- defaults, overridden by deck.conf -------------------------------------------------------------------------------
-SYNC_REMOTE="gdrive:ES-DE"        # an rclone remote and folder; empty turns save sync off
+SYNC_REMOTE="gdrive:Arcadia"        # an rclone remote and folder; empty turns save sync off
 SYNC_ENABLED=1
 BIOS_DIR="$HOME/Emulation/bios"   # where BIOS files live (the EmuDeck layout; change it if yours differs)
 SAVE_DIRS=()                      # empty = look for the usual save folders below
-ROM_ROOT=""                       # empty = ES-DE's own ROM folder setting, else ~/Emulation/roms or ~/ROMs
+ROM_ROOT=""                       # empty = Arcadia's own ROM folder setting, else ~/Emulation/roms or ~/ROMs
 INBOX="$HOME/Downloads"           # where new ROMs land, for "Sort downloads into ROM folders"
-AUTO_SORT=0                       # 1 = sort the inbox into ROM folders each time ES-DE starts
-APPIMAGE_PATH=""                  # where the ES-DE AppImage lives (for "Update ES-DE"); empty = the running one or ~/Applications
+AUTO_SORT=0                       # 1 = sort the inbox into ROM folders each time Arcadia starts
+APPIMAGE_PATH=""                  # where the Arcadia AppImage lives (for "Update Arcadia"); empty = the running one or ~/Applications
 
 deck_rom_root() {
-  local v="$ROM_ROOT" settings="$DECK_HOME/settings/es_settings.xml"
+  local v="${ARCADIA_ROMS:-$ROM_ROOT}" settings="$DECK_HOME/settings/es_settings.xml"
   if [ -z "$v" ] && [ -f "$settings" ]; then v="$(sed -n 's/.*name="ROMDirectory" value="\([^"]*\)".*/\1/p' "$settings" | head -n 1)"; fi
   if [ -z "$v" ]; then if [ -d "$HOME/Emulation/roms" ]; then v="$HOME/Emulation/roms"; else v="$HOME/ROMs"; fi; fi
-  printf '%s\n' "${v/#\~/$HOME}"
+  v="${v/#\~/$HOME}"
+  printf '%s\n' "${v%/}"
 }
 
 deck_load_conf() {
@@ -48,6 +49,8 @@ deck_log() {
 # deck_say TITLE TEXT: show a message the best way this machine can (a dialog, else a notification), and log it.
 deck_say() {
   deck_log "$1: $2"
+  # Run from Arcadia's SETUP menu: the app shows the text itself, so just print it.
+  if [ "${ARCADIA_OUTPUT:-}" = stdout ]; then printf '%s\n' "$2"; return 0; fi
   [ "${DECK_QUIET:-}" = 1 ] && return 0
   if command -v zenity >/dev/null 2>&1 && [ -n "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ]; then
     zenity --info --title "$1" --text "$2" --width 420 2>/dev/null || true
@@ -62,7 +65,7 @@ deck_say() {
 
 # ---- save sync (rclone, to Google Drive or anything rclone supports) ---------------------------------------------------
 # Nothing is ever deleted: files are copied only where they're newer, and a file that would be overwritten is kept first
-# in ~/ES-DE/backups/sync (locally) or in a dated folder next to the saves on the remote.
+# in ~/Arcadia/backups/sync (locally) or in a dated folder next to the saves on the remote.
 
 _deck_key() { printf '%s' "${1#"$HOME"/}" | tr '/ ' '__'; }
 
@@ -87,7 +90,7 @@ deck_sync() {
   return 0
 }
 
-# ---- emulators (Flatpak, which is what ES-DE finds on a Steam Deck) --------------------------------------------------
+# ---- emulators (Flatpak, which is what Arcadia finds on a Steam Deck) --------------------------------------------------
 # name|flatpak id|systems
 DECK_EMULATORS=(
   "RetroArch|org.libretro.RetroArch|most classic consoles"

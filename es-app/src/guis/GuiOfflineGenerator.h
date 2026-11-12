@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  GuiOfflineGenerator.h
 //
 //  User interface for the miximage offline generator.

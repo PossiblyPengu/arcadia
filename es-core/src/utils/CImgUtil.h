@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  CImgUtil.h
 //
 //  Utility functions using the CImg image processing library.

@@ -1,87 +1,35 @@
-# ES-DE Frontend
+# Arcadia
 
-ES-DE (EmulationStation Desktop Edition) is a frontend for browsing and launching games from your multi-platform collection.
+A game launcher for the Steam Deck (and any Linux PC): browse your consoles and games with a controller, launch them in the
+right emulator, keep your saves in the cloud, and set it all up from inside the app.
 
-It's officially supported on Android, Linux, macOS, Windows and Haiku. There is also an unofficial ES-DE package in the FreeBSD ports collection.
+Arcadia is a full fork of [ES-DE](https://es-de.org) (MIT licence). It keeps ES-DE's engine (scanning, scraping, launching,
+themes, controller input) and has its own look (`DESIGN.md`), its own defaults for the Deck, and its own setup tools.
 
-Website:\
-https://es-de.org
+- **Console ring and game shelf** with a design language of its own. `DESIGN.md`
+- **Windowed on the desktop, full screen in Game Mode**, controller works with no Steam layout
+- **Setup tools:** sort downloaded ROMs into the right folders (with undo), install and update emulators, check BIOS files,
+  starter controller settings, cloud save sync (rclone / Google Drive), backup and restore, self-update. `deck/README.md`
+- Linux and Steam Deck only
 
-Patreon:\
-https://www.patreon.com/es_de
+## Build
 
-YouTube:\
-https://www.youtube.com/@ES-DE_Frontend
+```bash
+sudo apt install build-essential cmake gettext libharfbuzz-dev libicu-dev libsdl2-dev libavcodec-dev libavfilter-dev \
+  libavformat-dev libavutil-dev libfreeimage-dev libfreetype6-dev libgit2-dev libcurl4-openssl-dev libpugixml-dev \
+  libasound2-dev libbluetooth-dev libgl1-mesa-dev libpoppler-cpp-dev
+cmake -G Ninja -DCMAKE_BUILD_TYPE=Release . && ninja
+./arcadia
+```
 
-Discord:\
-https://discord.gg/42jqqNcHf9
+The Steam Deck AppImage is built by `.github/workflows/steamdeck-appimage.yml` (or `tools/create_AppImage_SteamDeck.sh`).
+After first start, run `./deck/install.sh` to add the setup tools.
 
-The goal of this project is to create a high quality frontend that is easy to use, requires minimal setup and configuration, looks nice, and is available across a wide range of operating systems.
+## Documents
 
-It comes preconfigured for use with a large selection of emulators, game engines, game managers and gaming services and it can also run locally installed games and applications. It's fully customizable, so you can easily expand it with support for additional systems and applications.
+- `DESIGN.md` the design language
+- `FORK.md` what differs from ES-DE
+- `deck/README.md` the Deck setup tools
+- `USERGUIDE.md`, `INSTALL.md`, `THEMES.md` and the rest are ES-DE's documents, kept for reference until they are rewritten
 
-You can find the complete list of supported game systems in the [User guide](USERGUIDE.md#supported-game-systems) and in the [Android](ANDROID.md#supported-game-systems), [Linux on AArch64](LINUX-AARCH64.md#supported-game-systems) and [Haiku](HAIKU.md#supported-game-systems) documentation.
-
-There are many high-quality themes that can be installed using the built-in theme downloader. You can also find the web version of the themes list here: \
-https://gitlab.com/es-de/themes/themes-list
-
-## Download
-
-Visit https://es-de.org to download the latest ES-DE release.
-
-The Android port of ES-DE is a paid app, which you can get on [Patreon](https://www.patreon.com/es_de), the [Samsung Galaxy Store](https://galaxystore.samsung.com/detail/org.es_de.frontend.galaxy) and [Huawei AppGallery](https://appgallery.huawei.com/#/app/C111315115).
-
-## Additional information
-
-[FAQ.md](FAQ.md) -  Frequently Asked Questions
-
-[FAQ-ANDROID.md](FAQ-ANDROID.md) -  Frequently Asked Questions specifically for Android
-
-[USERGUIDE.md](USERGUIDE.md) / [USERGUIDE-DEV.md](USERGUIDE-DEV.md) - Comprehensive guide and reference for all application settings
-
-[ANDROID.md](ANDROID.md) / [ANDROID-DEV.md](ANDROID-DEV.md) - Documentation specifically for Android
-
-[LINUX-AARCH64.md](LINUX-AARCH64.md) / [LINUX-AARCH64-DEV.md](LINUX-AARCH64-DEV.md) - Documentation specifically for Linux on AArch64/ARM64
-
-[HAIKU.md](HAIKU.md) - Documentation specifically for Haiku
-
-[INSTALL.md](INSTALL.md) / [INSTALL-DEV.md](INSTALL-DEV.md) - Building from source code and advanced configuration topics
-
-[THEMES.md](THEMES.md) / [THEMES-DEV.md](THEMES-DEV.md) - Guide and reference for theme development
-
-[CHANGELOG.md](CHANGELOG.md) - Detailed list of changes for all past releases and the in-development version
-
-[ROADMAP.md](ROADMAP.md) - List of major features planned to be added in the future
-
-[CREDITS.md](CREDITS.md) - An attempt to credit the individuals and projects which made ES-DE possible
-
-## Some feature highlights
-
-Here are some highlights, displayed using the default Linear theme.
-
-![alt text](images/es-de_system_view.png "ES-DE System View")
-_The **System view**, which is the default starting point for the application, it's here that you browse through your game systems._
-
-![alt text](images/es-de_gamelist_view.png "ES-DE Gamelist View")
-_The **Gamelist view**, it's here that you browse the actual games per system._
-
-![alt text](images/es-de_folder_support.png "ES-DE Folder Support")
-_Another example of the gamelist view, displaying advanced folder support. You can scrape folders for game info and game media, sort folders as you would files, mark them as favorites etc._
-
-![alt text](images/es-de_custom_collections.png "ES-DE Custom Collections")
-_Games can be grouped into your own custom collections, in this example they're defined as genres._
-
-![alt text](images/es-de_scraper_running.png "ES-DE Scraper Running")
-_This is a view of the built-in scraper which downloads game info and game media from either [screenscraper.fr](https://screenscraper.fr) or [thegamesdb.net](https://thegamesdb.net). It's possible to scrape a single game, or to run the multi-scraper which can scrape a complete game system or even your entire collection._
-
-![alt text](images/es-de_scraper_settings.png "ES-DE Scraper Settings")
-_There are many settings for the scraper including options to define which type of info and media to download. The above screenshot shows only a portion of these settings._
-
-![alt text](images/es-de_metadata_editor.png "ES-DE Metadata Editor")
-_In addition to the scraper there is a fully-featured metadata editor that can be used to modify information on a per-game basis._
-
-![alt text](images/es-de_screensaver.png "ES-DE Screensaver")
-_There are four built-in screensavers, including a slideshow and a video screensaver that display random games from your collection._
-
-![alt text](images/es-de_ui_theme_support.png "ES-DE Theme Support")
-_ES-DE is fully themeable, in case you prefer another look than what the default theme Linear offers. The screenshot above shows the Slate theme that is bundled with the application for the desktop ports._
+Arcadia is based on ES-DE by Leon Styhre and contributors; see `CREDITS.md` and `LICENSE`.

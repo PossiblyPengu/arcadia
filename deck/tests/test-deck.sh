@@ -9,7 +9,7 @@ check() { if eval "$2"; then ok "$1"; else bad "$1"; fi; }
 
 TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
 export HOME="$TMP/home"; mkdir -p "$HOME" "$TMP/bin"
-export ES_DE_HOME="$HOME/ES-DE" DECK_QUIET=1 PATH="$TMP/bin:$PATH"
+export ARCADIA_HOME="$HOME/Arcadia" DECK_QUIET=1 PATH="$TMP/bin:$PATH"
 cat > "$TMP/bin/rclone" <<'R'
 #!/usr/bin/env bash
 echo "$*" >> "$HOME/rclone.calls"
@@ -23,38 +23,39 @@ F
 chmod +x "$TMP/bin/rclone" "$TMP/bin/flatpak"
 
 echo "install"
+SYS="$ARCADIA_HOME/custom_systems/es_systems.xml"
+mkdir -p "$(dirname "$SYS")" "$HOME/ROMs/arcadia-setup"; touch "$HOME/ROMs/arcadia-setup/Old entry.sh"
+printf '<?xml version="1.0"?>\n<systemList>\n    <system><name>nes</name></system>\n    <!-- arcadia-setup:begin -->\n    <system><name>arcadia-setup</name></system>\n    <!-- arcadia-setup:end -->\n</systemList>\n' > "$SYS"
 bash "$HERE/install.sh" >/dev/null
-bash "$HERE/install.sh" >/dev/null   # again: no duplicates
-SYS="$ES_DE_HOME/custom_systems/es_systems.xml"
-check "setup system added once" '[ "$(grep -c "<name>arcadia-setup</name>" "$SYS")" = 1 ]'
-check "es_systems.xml is valid XML" 'python3 -c "import xml.dom.minidom,sys; xml.dom.minidom.parse(sys.argv[1])" "$SYS"'
-for ev in startup game-start game-end quit; do check "event script in $ev" '[ -x "$ES_DE_HOME/scripts/'$ev'/arcadia-save-sync.sh" ]'; done
-check "fourteen entries to pick" '[ "$(ls "$HOME/ROMs/arcadia-setup" | wc -l)" = 14 ]'
-check "config written once and kept" '[ -f "$ES_DE_HOME/deck.conf" ] && echo "# mine" >> "$ES_DE_HOME/deck.conf" && bash "$HERE/install.sh" >/dev/null && grep -q "# mine" "$ES_DE_HOME/deck.conf"'
-printf '<?xml version="1.0"?>\n<systemList>\n    <system><name>nes</name></system>\n</systemList>\n' > "$SYS"
-bash "$HERE/install.sh" >/dev/null
-check "an existing custom systems file keeps its systems" 'grep -q "<name>nes</name>" "$SYS" && grep -q "arcadia-setup" "$SYS"'
+bash "$HERE/install.sh" >/dev/null   # again: nothing doubles up
+check "the old Setup system is removed, other systems are kept" '! grep -q arcadia-setup "$SYS" && grep -q "<name>nes</name>" "$SYS" && [ ! -d "$HOME/ROMs/arcadia-setup" ]'
+check "es_systems.xml is still valid XML" 'python3 -c "import xml.dom.minidom,sys; xml.dom.minidom.parse(sys.argv[1])" "$SYS"'
+for ev in startup game-start game-end quit; do check "event script in $ev" '[ -x "$ARCADIA_HOME/scripts/'$ev'/arcadia-save-sync.sh" ]'; done
+for t in get-started sort-roms install-emulators update-emulators check-bios setup-controls grant-access save-sync-now backup update-arcadia; do check "tool $t is installed" '[ -x "$ARCADIA_HOME/deck/tools/'$t'.sh" ]'; done
+check "config written once and kept" '[ -f "$ARCADIA_HOME/deck.conf" ] && echo "# mine" >> "$ARCADIA_HOME/deck.conf" && bash "$HERE/install.sh" >/dev/null && grep -q "# mine" "$ARCADIA_HOME/deck.conf"'
+out="$(ARCADIA_OUTPUT=stdout bash "$HERE/tools/get-started.sh")"
+check "run from Arcadia's Setup menu a tool prints its message instead of opening a dialog" '[[ "$out" == *"Games"* && "$out" == *"Emulators"* ]]'
 
 echo "save sync"
 mkdir -p "$HOME/Emulation/saves"; echo x > "$HOME/Emulation/saves/a.sav"
-for ev in startup game-start; do "$ES_DE_HOME/scripts/$ev/arcadia-save-sync.sh" a b c d; done
-check "pull copies down with --update and a backup folder" 'grep -q "^copy gdrive:ES-DE/Emulation_saves $HOME/Emulation/saves --update" "$HOME/rclone.calls" && grep -q -- "--backup-dir $ES_DE_HOME/backups/sync/" "$HOME/rclone.calls"'
+for ev in startup game-start; do "$ARCADIA_HOME/scripts/$ev/arcadia-save-sync.sh" a b c d; done
+check "pull copies down with --update and a backup folder" 'grep -q "^copy gdrive:Arcadia/Emulation_saves $HOME/Emulation/saves --update" "$HOME/rclone.calls" && grep -q -- "--backup-dir $ARCADIA_HOME/backups/sync/" "$HOME/rclone.calls"'
 : > "$HOME/rclone.calls"
-for ev in game-end quit; do "$ES_DE_HOME/scripts/$ev/arcadia-save-sync.sh"; done
-check "push copies up, backing up what it replaces" 'grep -q "^copy $HOME/Emulation/saves gdrive:ES-DE/Emulation_saves --update" "$HOME/rclone.calls" && grep -q -- "--backup-dir gdrive:ES-DE/.backups/" "$HOME/rclone.calls"'
+for ev in game-end quit; do "$ARCADIA_HOME/scripts/$ev/arcadia-save-sync.sh"; done
+check "push copies up, backing up what it replaces" 'grep -q "^copy $HOME/Emulation/saves gdrive:Arcadia/Emulation_saves --update" "$HOME/rclone.calls" && grep -q -- "--backup-dir gdrive:Arcadia/.backups/" "$HOME/rclone.calls"'
 check "nothing is ever deleted or mirrored" '! grep -Eq "^(sync|delete|purge|move|bisync)" "$HOME/rclone.calls"'
-: > "$HOME/rclone.calls"; sed -i 's/^SYNC_REMOTE=.*/SYNC_REMOTE=""/' "$ES_DE_HOME/deck.conf"
-"$ES_DE_HOME/scripts/game-end/arcadia-save-sync.sh"
+: > "$HOME/rclone.calls"; sed -i 's/^SYNC_REMOTE=.*/SYNC_REMOTE=""/' "$ARCADIA_HOME/deck.conf"
+"$ARCADIA_HOME/scripts/game-end/arcadia-save-sync.sh"
 check "an empty remote turns sync off" '[ ! -s "$HOME/rclone.calls" ]'
-sed -i 's/^SYNC_REMOTE=.*/SYNC_REMOTE="gdrive:ES-DE"/' "$ES_DE_HOME/deck.conf"
+sed -i 's/^SYNC_REMOTE=.*/SYNC_REMOTE="gdrive:Arcadia"/' "$ARCADIA_HOME/deck.conf"
 mv "$TMP/bin/rclone" "$TMP/bin/rclone.off"
-check "no rclone is not an error" '"$ES_DE_HOME/scripts/game-end/arcadia-save-sync.sh"; [ $? = 0 ] && grep -q "rclone isn.t installed" "$ES_DE_HOME/logs/deck.log"'
+check "no rclone is not an error" '"$ARCADIA_HOME/scripts/game-end/arcadia-save-sync.sh"; [ $? = 0 ] && grep -q "rclone isn.t installed" "$ARCADIA_HOME/logs/deck.log"'
 mv "$TMP/bin/rclone.off" "$TMP/bin/rclone"
 
 echo "BIOS"
 mkdir -p "$HOME/Emulation/bios/sub"
 bash "$HERE/tools/check-bios.sh"
-check "missing BIOS files are listed" 'grep -q "BIOS check: Missing" "$ES_DE_HOME/logs/deck.log" && grep -q "PlayStation BIOS" "$ES_DE_HOME/logs/deck.log"'
+check "missing BIOS files are listed" 'grep -q "BIOS check: Missing" "$ARCADIA_HOME/logs/deck.log" && grep -q "PlayStation BIOS" "$ARCADIA_HOME/logs/deck.log"'
 touch "$HOME/Emulation/bios/SCPH5501.BIN" "$HOME/Emulation/bios/sub/dc_boot.bin"
 . "$HERE/lib/deck-lib.sh"
 report="$(deck_bios_report)"
@@ -84,7 +85,7 @@ bash "$HERE/tools/setup-controls.sh"
 check "DuckStation gets a pad section and keeps its other settings" 'grep -q "^Cross = SDL-0/A" "$DS" && grep -q "Renderer = Vulkan" "$DS" && grep -q "SetupWizardIncomplete" "$DS" && [ "$(grep -c "^\[Pad1\]" "$DS")" = 1 ]'
 check "PCSX2 settings are created in its own folder" 'grep -q "Type = DualShock2" "$PX" && grep -q "^Triangle = SDL-0/Y" "$PX"'
 check "RetroArch hotkeys fill unset keys but keep ones you chose" 'grep -q "input_exit_emulator_btn = \"7\"" "$RA" && grep -q "input_menu_toggle_btn = \"9\"" "$RA" && grep -q "input_enable_hotkey_btn = \"6\"" "$RA"'
-check "the old files were backed up first" '[ "$(ls "$ES_DE_HOME/backups/controls" | wc -l)" -ge 2 ]'
+check "the old files were backed up first" '[ "$(ls "$ARCADIA_HOME/backups/controls" | wc -l)" -ge 2 ]'
 sed -i 's/^Cross = .*/Cross = Keyboard\/Z/' "$DS"
 bash "$HERE/tools/setup-controls.sh"
 check "your own bindings are kept on a normal run" 'grep -q "^Cross = Keyboard/Z" "$DS"'
@@ -93,7 +94,7 @@ check "reset replaces just the controller section" 'grep -q "^Cross = SDL-0/A" "
 check "reset also sets RetroArch's keys" 'grep -q "input_menu_toggle_btn = \"2\"" "$RA"'
 export FAKE_INSTALLED="none"
 bash "$HERE/tools/setup-controls.sh"
-check "nothing installed means nothing to do" 'grep -q "nothing to set up" "$ES_DE_HOME/logs/deck.log"'
+check "nothing installed means nothing to do" 'grep -q "nothing to set up" "$ARCADIA_HOME/logs/deck.log"'
 export FAKE_INSTALLED="org.libretro.RetroArch"
 
 echo "sort ROMs"
@@ -105,7 +106,7 @@ head -c 300 /dev/zero > "$HOME/Downloads/Mystery.gba"
 echo hi > "$HOME/Downloads/readme.txt"
 touch -d '1 hour ago' "$HOME"/Downloads/*.* "$HOME"/Downloads/sub/*
 bash "$HERE/tools/sort-roms.sh"
-check "the inbox is sorted into ES-DE folders by system" '[ -f "$HOME/ROMs/nes/Contra.nes" ] && [ -f "$HOME/ROMs/gba/Mystery.gba" ] && [ ! -e "$HOME/Downloads/Contra.nes" ]'
+check "the inbox is sorted into Arcadia folders by system" '[ -f "$HOME/ROMs/nes/Contra.nes" ] && [ -f "$HOME/ROMs/gba/Mystery.gba" ] && [ ! -e "$HOME/Downloads/Contra.nes" ]'
 check "a ROM in a subfolder waits unless told to look deeper" '[ -f "$HOME/Downloads/sub/Deep.nes" ] && [ ! -e "$HOME/ROMs/nes/Deep.nes" ]'
 check "other files are left alone" '[ -f "$HOME/Downloads/readme.txt" ]'
 bash "$HERE/tools/sort-roms.sh" --deep
@@ -113,23 +114,23 @@ check "--deep also sorts the subfolders" '[ -f "$HOME/ROMs/nes/Deep.nes" ]'
 bash "$HERE/tools/sort-roms.sh" --undo
 check "undo puts the last sort back" '[ -f "$HOME/Downloads/sub/Deep.nes" ] && [ ! -e "$HOME/ROMs/nes/Deep.nes" ] && [ -f "$HOME/ROMs/nes/Contra.nes" ]'
 printf 'NES\x1a\x02\x01' > "$HOME/Downloads/Auto.nes"; touch -d '1 hour ago' "$HOME/Downloads/Auto.nes"
-"$ES_DE_HOME/scripts/startup/arcadia-auto-sort.sh"
+"$ARCADIA_HOME/scripts/startup/arcadia-auto-sort.sh"
 check "the startup hook leaves the inbox alone when AUTO_SORT is off" '[ -f "$HOME/Downloads/Auto.nes" ]'
-echo 'AUTO_SORT=1' >> "$ES_DE_HOME/deck.conf"
-"$ES_DE_HOME/scripts/startup/arcadia-auto-sort.sh"
-check "the startup hook sorts when AUTO_SORT=1" '[ -f "$HOME/ROMs/nes/Auto.nes" ] && grep -q "auto sort" "$ES_DE_HOME/logs/deck.log"'
-sed -i '/^AUTO_SORT=1/d' "$ES_DE_HOME/deck.conf"
+echo 'AUTO_SORT=1' >> "$ARCADIA_HOME/deck.conf"
+"$ARCADIA_HOME/scripts/startup/arcadia-auto-sort.sh"
+check "the startup hook sorts when AUTO_SORT=1" '[ -f "$HOME/ROMs/nes/Auto.nes" ] && grep -q "auto sort" "$ARCADIA_HOME/logs/deck.log"'
+sed -i '/^AUTO_SORT=1/d' "$ARCADIA_HOME/deck.conf"
 . "$HERE/lib/deck-lib.sh"; deck_load_conf
-check "the ROM folder comes from ES-DE's setting when there is one" 'mkdir -p "$ES_DE_HOME/settings" && echo "<string name=\"ROMDirectory\" value=\"$HOME/MyGames\" />" > "$ES_DE_HOME/settings/es_settings.xml" && [ "$(deck_rom_root)" = "$HOME/MyGames" ]'
-rm -f "$ES_DE_HOME/settings/es_settings.xml"
+check "the ROM folder comes from Arcadia's setting when there is one" 'mkdir -p "$ARCADIA_HOME/settings" && echo "<string name=\"ROMDirectory\" value=\"$HOME/MyGames\" />" > "$ARCADIA_HOME/settings/es_settings.xml" && [ "$(deck_rom_root)" = "$HOME/MyGames" ]'
+rm -f "$ARCADIA_HOME/settings/es_settings.xml"
 
 echo "backup"
-mkdir -p "$ES_DE_HOME/settings" "$ES_DE_HOME/gamelists/nes"; echo "<settings/>" > "$ES_DE_HOME/settings/es_settings.xml"; echo "<gameList/>" > "$ES_DE_HOME/gamelists/nes/gamelist.xml"
+mkdir -p "$ARCADIA_HOME/settings" "$ARCADIA_HOME/gamelists/nes"; echo "<settings/>" > "$ARCADIA_HOME/settings/es_settings.xml"; echo "<gameList/>" > "$ARCADIA_HOME/gamelists/nes/gamelist.xml"
 bash "$HERE/tools/backup.sh"
-check "a backup archive is made" 'ls "$ES_DE_HOME"/backups/es-de-backup-*.tar.gz >/dev/null 2>&1 && tar -tzf "$(ls -1t "$ES_DE_HOME"/backups/es-de-backup-*.tar.gz | head -n 1)" | grep -q "gamelists/nes/gamelist.xml"'
-echo "<gameList>changed</gameList>" > "$ES_DE_HOME/gamelists/nes/gamelist.xml"
+check "a backup archive is made" 'ls "$ARCADIA_HOME"/backups/arcadia-backup-*.tar.gz >/dev/null 2>&1 && tar -tzf "$(ls -1t "$ARCADIA_HOME"/backups/arcadia-backup-*.tar.gz | head -n 1)" | grep -q "gamelists/nes/gamelist.xml"'
+echo "<gameList>changed</gameList>" > "$ARCADIA_HOME/gamelists/nes/gamelist.xml"
 bash "$HERE/tools/backup.sh" --restore
-check "restore brings the old files back and keeps the current ones first" 'grep -q "^<gameList/>" "$ES_DE_HOME/gamelists/nes/gamelist.xml" && ls "$ES_DE_HOME"/backups/before-restore-*.tar.gz >/dev/null 2>&1'
+check "restore brings the old files back and keeps the current ones first" 'grep -q "^<gameList/>" "$ARCADIA_HOME/gamelists/nes/gamelist.xml" && ls "$ARCADIA_HOME"/backups/before-restore-*.tar.gz >/dev/null 2>&1'
 
 echo "folder access"
 export FAKE_INSTALLED="org.libretro.RetroArch org.duckstation.DuckStation"
@@ -140,37 +141,37 @@ export FAKE_INSTALLED="org.libretro.RetroArch"
 
 echo "get started"
 bash "$HERE/tools/get-started.sh"
-check "the checklist reports games, emulators and rclone" 'grep -q "Get started: Games" "$ES_DE_HOME/logs/deck.log" && grep -q "Cloud saves" "$ES_DE_HOME/logs/deck.log"'
+check "the checklist reports games, emulators and rclone" 'grep -q "Get started: Games" "$ARCADIA_HOME/logs/deck.log" && grep -q "Cloud saves" "$ARCADIA_HOME/logs/deck.log"'
 
-echo "update ES-DE"
+echo "update Arcadia"
 SRV="$TMP/srv"; mkdir -p "$SRV/dl" "$HOME/Applications"
-printf 'NEW-APPIMAGE' > "$SRV/dl/ES-DE_x64_SteamDeck.AppImage"
+printf 'NEW-APPIMAGE' > "$SRV/dl/Arcadia_x64_SteamDeck.AppImage"
 mkdir -p "$TMP/pack/deck"; cp -r "$HERE/lib" "$HERE/tools" "$HERE/scripts" "$HERE/install.sh" "$TMP/pack/deck/"; tar -C "$TMP/pack" -czf "$SRV/dl/arcadia-deck-extras.tar.gz" deck
 PORT=$((20000 + RANDOM % 20000))
 python3 - "$SRV" "$PORT" <<'PY'
 import json,os,sys
 d,port=sys.argv[1:3]
 a=lambda n:{"name":n,"size":os.path.getsize(f"{d}/dl/{n}"),"browser_download_url":f"http://127.0.0.1:{port}/dl/{n}"}
-json.dump({"tag_name":"v9.9.9","assets":[a("ES-DE_x64_SteamDeck.AppImage"),a("arcadia-deck-extras.tar.gz")]},open(f"{d}/latest","w"))
+json.dump({"tag_name":"v9.9.9","assets":[a("Arcadia_x64_SteamDeck.AppImage"),a("arcadia-deck-extras.tar.gz")]},open(f"{d}/latest","w"))
 PY
 (cd "$SRV" && python3 -m http.server $PORT --bind 127.0.0.1 >/dev/null 2>&1) & SRVPID=$!
 sleep 1
-printf 'OLD-APPIMAGE' > "$HOME/Applications/ES-DE_x64_SteamDeck.AppImage"
+printf 'OLD-APPIMAGE' > "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage"
 export DECK_RELEASE_API="http://127.0.0.1:$PORT/latest"
-DECK_APPIMAGE="$HOME/Applications/ES-DE_x64_SteamDeck.AppImage" bash "$HERE/tools/update-es-de.sh" --check
-check "check says a newer release exists without changing anything" 'grep -q "newer release is available: v9.9.9" "$ES_DE_HOME/logs/deck.log" && grep -q OLD-APPIMAGE "$HOME/Applications/ES-DE_x64_SteamDeck.AppImage"'
-DECK_APPIMAGE="$HOME/Applications/ES-DE_x64_SteamDeck.AppImage" bash "$HERE/tools/update-es-de.sh"
-check "update replaces the AppImage and keeps the old one" 'grep -q NEW-APPIMAGE "$HOME/Applications/ES-DE_x64_SteamDeck.AppImage" && grep -q OLD-APPIMAGE "$HOME/Applications/ES-DE_x64_SteamDeck.AppImage.previous" && [ -x "$HOME/Applications/ES-DE_x64_SteamDeck.AppImage" ]'
-check "it reinstalls the extras and records the version" '[ "$(cat "$ES_DE_HOME/deck/version")" = v9.9.9 ] && [ -x "$ES_DE_HOME/deck/tools/sort-roms.sh" ]'
-DECK_APPIMAGE="$HOME/Applications/ES-DE_x64_SteamDeck.AppImage" bash "$HERE/tools/update-es-de.sh"
-check "a second run says it's up to date" 'tail -n 1 "$ES_DE_HOME/logs/deck.log" | grep -q "Already up to date"'
+DECK_APPIMAGE="$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" bash "$HERE/tools/update-arcadia.sh" --check
+check "check says a newer release exists without changing anything" 'grep -q "newer release is available: v9.9.9" "$ARCADIA_HOME/logs/deck.log" && grep -q OLD-APPIMAGE "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage"'
+DECK_APPIMAGE="$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" bash "$HERE/tools/update-arcadia.sh"
+check "update replaces the AppImage and keeps the old one" 'grep -q NEW-APPIMAGE "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" && grep -q OLD-APPIMAGE "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage.previous" && [ -x "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" ]'
+check "it reinstalls the extras and records the version" '[ "$(cat "$ARCADIA_HOME/deck/version")" = v9.9.9 ] && [ -x "$ARCADIA_HOME/deck/tools/sort-roms.sh" ]'
+DECK_APPIMAGE="$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" bash "$HERE/tools/update-arcadia.sh"
+check "a second run says it's up to date" 'tail -n 1 "$ARCADIA_HOME/logs/deck.log" | grep -q "Already up to date"'
 kill $SRVPID 2>/dev/null; pkill -f "http.server $PORT" 2>/dev/null; unset DECK_RELEASE_API
-DECK_APPIMAGE="$HOME/Applications/ES-DE_x64_SteamDeck.AppImage" bash "$HERE/tools/update-es-de.sh" --check
-check "an unreachable server is reported, not fatal" 'grep -q "Not updated" "$ES_DE_HOME/logs/deck.log" || grep -q "Update ES-DE: Not updated" "$ES_DE_HOME/logs/deck.log"'
+DECK_APPIMAGE="$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" bash "$HERE/tools/update-arcadia.sh" --check
+check "an unreachable server is reported, not fatal" 'grep -q "Not updated" "$ARCADIA_HOME/logs/deck.log" || grep -q "Update Arcadia: Not updated" "$ARCADIA_HOME/logs/deck.log"'
 
 echo "uninstall"
 bash "$HERE/install.sh" --uninstall >/dev/null
-check "uninstall removes the block, scripts and entries" '! grep -q arcadia-setup "$SYS" && [ ! -e "$ES_DE_HOME/scripts/game-end/arcadia-save-sync.sh" ] && [ ! -d "$HOME/ROMs/arcadia-setup" ]'
+check "uninstall removes the scripts and tools" '[ ! -e "$ARCADIA_HOME/scripts/game-end/arcadia-save-sync.sh" ] && [ ! -d "$ARCADIA_HOME/deck" ]'
 check "uninstall leaves the other systems and your saves" 'grep -q "<name>nes</name>" "$SYS" && [ -f "$HOME/Emulation/saves/a.sav" ]'
 
 echo

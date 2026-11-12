@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  GuiAlternativeEmulators.cpp
 //
 //  User interface to select between alternative emulators per system

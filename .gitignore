@@ -19,7 +19,7 @@
 *.d
 
 # Compiled executable
-/es-de
+/arcadia
 /ES-DE
 /ES-DE.exe
 /es-pdf-convert

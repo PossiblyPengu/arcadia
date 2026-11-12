@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  ShaderOpenGL.h
 //
 //  OpenGL / OpenGL ES shader functions.

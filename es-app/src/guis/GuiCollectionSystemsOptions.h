@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  GuiCollectionSystemsOptions.h
 //
 //  User interface for the game collection settings.

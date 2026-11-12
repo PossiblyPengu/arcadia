@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  AudioManager.h
 //
 //  Low-level audio functions (using SDL2).

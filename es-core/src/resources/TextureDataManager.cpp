@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  TextureDataManager.cpp
 //
 //  Loading and unloading of texture data.

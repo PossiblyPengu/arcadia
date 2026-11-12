@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  GuiDetectDevice.h
 //
 //  Detect input devices (keyboards, joysticks and gamepads).

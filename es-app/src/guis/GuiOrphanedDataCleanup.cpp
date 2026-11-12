@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  GuiOrphanedDataCleanup.cpp
 //
 //  Removes orphaned game media, gamelist.xml entries and custom collections entries.
@@ -825,7 +825,7 @@ void GuiOrphanedDataCleanup::cleanupCollections()
             // If there is a %ROMPATH% variable set for the game, expand it. By doing this
             // it's possible to use either absolute ROM paths in the collection files or using
             // the path variable. The absolute ROM paths are only used for backward compatibility
-            // with old custom collections. All custom collections saved by ES-DE will use the
+            // with old custom collections. All custom collections saved by Arcadia will use the
             // %ROMPATH% variable instead.
             std::string expandedKey {
                 Utils::String::replace(gameKey, "%ROMPATH%", FileData::getROMDirectory())};

@@ -1,9 +1,9 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE is a frontend for browsing and launching games from your multi-platform collection.
+//  Arcadia is a frontend for browsing and launching games from your multi-platform collection.
 //
 //  The column limit is 100 characters.
-//  All ES-DE C++ source code is formatted using clang-format.
+//  All Arcadia C++ source code is formatted using clang-format.
 //
 //  main.cpp
 //
@@ -76,7 +76,7 @@ namespace
 } // namespace
 
 
-// Steam Deck: in Game Mode (gamescope) ES-DE runs fullscreen as usual, but on a desktop (including
+// Steam Deck: in Game Mode (gamescope) Arcadia runs fullscreen as usual, but on a desktop (including
 // the Deck's Desktop Mode) it opens in a normal window so it can be moved, closed and left alone.
 // --fullscreen and --windowed override this, as does --resolution (which is always windowed).
 void applyDisplayDefaults(bool forceFullscreen, bool forceWindowed)
@@ -102,17 +102,17 @@ bool parseArguments(const std::vector<std::string>& arguments)
     Utils::FileSystem::setExePath(arguments[0]);
     const std::string portableFilePath {Utils::FileSystem::getExePath() + "/portable.txt"};
 
-    // This is primarily intended for portable ES-DE installations on Windows (for example
+    // This is primarily intended for portable Arcadia installations on Windows (for example
     // placed on a USB memory stick) but it may be usable for other operating systems too.
     if (Utils::FileSystem::exists(portableFilePath)) {
-        std::cout << "Found portable.txt in the ES-DE executable directory\n";
+        std::cout << "Found portable.txt in the Arcadia executable directory\n";
         std::ifstream portableFile;
         std::string homePath;
         portableFile.open(portableFilePath.c_str());
         if (!portableFile.fail()) {
             std::string relativePath;
             getline(portableFile, relativePath);
-            // If the file is empty, use the ES-DE executable directory as home.
+            // If the file is empty, use the Arcadia executable directory as home.
             if (relativePath == "")
                 homePath = Utils::FileSystem::getExePath();
             else
@@ -340,15 +340,15 @@ bool parseArguments(const std::vector<std::string>& arguments)
             Log::setReportingLevel(LogDebug);
         }
         else if (arguments[i] == "--version" || arguments[i] == "-v") {
-            std::cout << "ES-DE " << PROGRAM_VERSION_STRING << " (r" << PROGRAM_RELEASE_NUMBER
+            std::cout << "Arcadia " << PROGRAM_VERSION_STRING << " (r" << PROGRAM_RELEASE_NUMBER
                       << ")\n";
             return false;
         }
         else if (arguments[i] == "--help" || arguments[i] == "-h") {
             std::cout <<
                 // clang-format off
-"Usage: es-de [options]\n"
-"ES-DE Frontend\n\n"
+"Usage: arcadia [options]\n"
+"Arcadia Frontend\n\n"
 "Options:\n"
 "  --display [1 to 4]                    Display/monitor to use\n"
 "  --resolution [width] [height]         Application resolution\n"
@@ -385,7 +385,7 @@ bool parseArguments(const std::vector<std::string>& arguments)
         else {
             const std::string argUnknown {arguments[i]};
             std::cout << "Unknown option '" << argUnknown << "'.\n";
-            std::cout << "Try 'es-de --help' for more information.\n";
+            std::cout << "Try 'arcadia --help' for more information.\n";
             return false;
         }
     }
@@ -471,7 +471,7 @@ int main(int argc, char* argv[])
 
     std::locale::global(std::locale("C"));
 
-    SDL_SetHint(SDL_HINT_APP_NAME, "ES-DE");
+    SDL_SetHint(SDL_HINT_APP_NAME, "Arcadia");
 
 
 
@@ -523,7 +523,7 @@ int main(int argc, char* argv[])
     Log::init();
     Log::open();
     {
-        const std::string applicationName {"ES-DE"};
+        const std::string applicationName {"Arcadia"};
         LOG(LogInfo) << applicationName << " " << PROGRAM_VERSION_STRING << " (r"
                      << PROGRAM_RELEASE_NUMBER << "), built " << PROGRAM_BUILT_STRING;
         if (portableMode) {
@@ -541,7 +541,7 @@ int main(int argc, char* argv[])
     if (createSystemDirectories) {
         if (!SystemData::createSystemDirectories() && !Settings::getInstance()->getBool("Debug"))
             std::cout << "System directories successfully created" << std::endl;
-        LOG(LogInfo) << "ES-DE cleanly shutting down";
+        LOG(LogInfo) << "Arcadia cleanly shutting down";
         return 0;
     }
 
@@ -763,7 +763,7 @@ int main(int argc, char* argv[])
 
     if (version.major > 2 || (version.major == 2 && version.minor >= 28)) {
         // This will prevent the popup virtual keyboard of any handheld device from being
-        // automatically displayed on top of the ES-DE virtual keyboard.
+        // automatically displayed on top of the Arcadia virtual keyboard.
 #define SDL_HINT_ENABLE_SCREEN_KEYBOARD "SDL_ENABLE_SCREEN_KEYBOARD"
         SDL_SetHint(SDL_HINT_ENABLE_SCREEN_KEYBOARD, "0");
     }
@@ -871,7 +871,7 @@ int main(int argc, char* argv[])
 
     Utils::Platform::processQuitMode();
 
-    LOG(LogInfo) << "ES-DE cleanly shutting down";
+    LOG(LogInfo) << "Arcadia cleanly shutting down";
 
 
 

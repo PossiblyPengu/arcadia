@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  GuiGamelistFilter.cpp
 //
 //  User interface for the gamelist filters.

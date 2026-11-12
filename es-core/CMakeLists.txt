@@ -174,23 +174,8 @@ set(CORE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/utils/TimeUtil.cpp
 )
 
-if(ANDROID)
-    set(CORE_HEADERS ${CORE_HEADERS} ${CMAKE_CURRENT_SOURCE_DIR}/src/InputOverlay.h)
-    set(CORE_HEADERS ${CORE_HEADERS} ${CMAKE_CURRENT_SOURCE_DIR}/src/utils/PlatformUtilAndroid.h)
-    set(CORE_HEADERS ${CORE_HEADERS} ${CMAKE_CURRENT_SOURCE_DIR}/src/InputOverlay.cpp)
-    set(CORE_SOURCES ${CORE_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/src/utils/PlatformUtilAndroid.cpp)
-endif()
 
-if(APPLE AND NOT IOS)
-    set(CORE_HEADERS ${CORE_HEADERS} ${CMAKE_CURRENT_SOURCE_DIR}/src/BluetoothStatusApple.m)
-endif()
 
-if(IOS)
-    set(CORE_HEADERS ${CORE_HEADERS} ${CMAKE_CURRENT_SOURCE_DIR}/src/InputOverlay.h)
-    set(CORE_HEADERS ${CORE_HEADERS} ${CMAKE_CURRENT_SOURCE_DIR}/src/utils/PlatformUtilIOS.h)
-    set(CORE_HEADERS ${CORE_HEADERS} ${CMAKE_CURRENT_SOURCE_DIR}/src/InputOverlay.cpp)
-    set(CORE_SOURCES ${CORE_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/src/utils/PlatformUtilIOS.cpp)
-endif()
 
 #---------------------------------------------------------------------------------------------------
 # Miscellaneous configuration.
@@ -199,7 +184,3 @@ include_directories(${COMMON_INCLUDE_DIRS})
 add_library(es-core STATIC ${CORE_SOURCES} ${CORE_HEADERS})
 target_link_libraries(es-core ${COMMON_LIBRARIES})
 
-if(ANDROID)
-    set_target_properties(es-core PROPERTIES ARCHIVE_OUTPUT_DIRECTORY
-                          ${PROJECT_SOURCE_DIR}/../android_${ANDROID_ABI})
-endif()

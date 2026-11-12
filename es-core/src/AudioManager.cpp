@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  AudioManager.cpp
 //
 //  Low-level audio functions (using SDL2).
@@ -50,7 +50,7 @@ void AudioManager::init()
 
     // Set up format and callback. SDL will negotiate these settings with the audio driver, so
     // if for instance the driver/hardware does not support 32-bit floating point output, 16-bit
-    // integer may be selected instead. ES-DE will handle this automatically as there are no
+    // integer may be selected instead. Arcadia will handle this automatically as there are no
     // hardcoded audio settings elsewhere in the code.
     sRequestedAudioFormat.freq = 44100;
     sRequestedAudioFormat.format = AUDIO_F32;

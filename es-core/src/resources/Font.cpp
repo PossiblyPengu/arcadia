@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  Font.cpp
 //
 //  Font management and text shaping and rendering.
@@ -358,7 +358,7 @@ TextCache* Font::buildTextCache(const std::string& text,
                     // TODO: This is a temporary workaround for a problem that only seems to be
                     // present on Android, and that is that non-character input from a physical
                     // keyboard generates SDL_TEXTINPUT events even though it shouldn't. This
-                    // workaround is not a proper fix, it's only there to prevent ES-DE from
+                    // workaround is not a proper fix, it's only there to prevent Arcadia from
                     // crashing if such input is received when editing text. The issue has been
                     // reported to the SDL developers as it needs to be addressed there.
                     if (glyphPositions.size() > 0)

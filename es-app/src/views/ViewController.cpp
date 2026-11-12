@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  ViewController.cpp
 //
 //  Handles overall system navigation including animations and transitions.
@@ -161,7 +161,7 @@ void ViewController::setMenuColors()
 void ViewController::migratedAppDataFilesDialog()
 {
     const std::string message {"SETTINGS HAVE BEEN MIGRATED FROM A LEGACY APPLICATION DATA "
-                               "DIRECTORY STRUCTURE, YOU NEED TO RESTART ES-DE TO APPLY "
+                               "DIRECTORY STRUCTURE, YOU NEED TO RESTART ARCADIA TO APPLY "
                                "THE CONFIGURATION"};
 
     mWindow->pushGui(new GuiMsgBox(
@@ -184,7 +184,7 @@ void ViewController::unsafeUpgradeDialog()
           "UNPACKING THE NEW RELEASE ON TOP OF THE OLD ONE? THIS MAY CAUSE "
           "VARIOUS PROBLEMS, SOME OF WHICH MAY NOT BE APPARENT IMMEDIATELY. "
           "MAKE SURE TO ALWAYS FOLLOW THE UPGRADE INSTRUCTIONS IN THE "
-          "README.TXT FILE THAT CAN BE FOUND IN THE ES-DE DIRECTORY.")};
+          "README.TXT FILE THAT CAN BE FOUND IN THE ARCADIA DIRECTORY.")};
 
     mWindow->pushGui(new GuiMsgBox(
         upgradeMessage.c_str(), _("OK"), [] {}, "", nullptr, "", nullptr, "", nullptr, nullptr,
@@ -200,7 +200,7 @@ void ViewController::invalidSystemsFileDialog()
                                       "IF YOU HAVE A CUSTOMIZED es_systems.xml FILE, THEN "
                                       "SOMETHING IS LIKELY WRONG WITH YOUR XML SYNTAX. "
                                       "IF YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE "
-                                      "ES-DE INSTALLATION IS BROKEN. SEE THE APPLICATION "
+                                      "ARCADIA INSTALLATION IS BROKEN. SEE THE APPLICATION "
                                       "LOG FILE es_log.txt FOR ADDITIONAL INFO")};
 
     mWindow->pushGui(new GuiMsgBox(
@@ -218,25 +218,18 @@ void ViewController::invalidSystemsFileDialog()
 
 void ViewController::noGamesDialog()
 {
-    mNoGamesErrorMessage = _("NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR "
-                             "PLACE THEM MANUALLY IN THE CURRENTLY CONFIGURED ROM "
-                             "DIRECTORY. YOU CAN ALSO CHANGE THE ROM PATH AND "
-                             "OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE "
-                             "WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING "
-                             "SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. "
-                             "THIS IS THE CONFIGURED ROM DIRECTORY:\n");
+    mNoGamesErrorMessage = _("WELCOME TO ARCADIA. NO GAME FILES WERE FOUND YET. PUT YOUR GAMES IN THE "
+                             "ROM DIRECTORY BELOW, ONE FOLDER PER SYSTEM (CREATE THE FOLDERS WITH THE "
+                             "CREATE BUTTON), OR OPEN SETUP AND CHOOSE SORT DOWNLOADS INTO ROM FOLDERS "
+                             "TO MOVE THEM THERE AUTOMATICALLY. THIS IS THE CONFIGURED ROM DIRECTORY:\n");
 
     mRomDirectory = FileData::getROMDirectory();
 
-    auto gameImporterUpdateFunc = [&]() {
-        delete mNoGamesMessageBox;
-        ViewController::getInstance()->rescanROMDirectory();
-    };
-
     mNoGamesMessageBox = new GuiMsgBox(
-        mNoGamesErrorMessage + mRomDirectory, _("IMPORT"),
-        [this, gameImporterUpdateFunc] {
-            mWindow->pushGui(new GuiGameImporter(_("GAME IMPORTER"), gameImporterUpdateFunc));
+        mNoGamesErrorMessage + mRomDirectory, _("SETUP"),
+        [this] {
+            // The main menu, with SETUP as its first entry.
+            mWindow->pushGui(new GuiMenu());
         },
         _("CHANGE"),
         [this] {
@@ -1162,15 +1155,15 @@ std::shared_ptr<SystemView> ViewController::getSystemListView()
 bool ViewController::input(InputConfig* config, Input input)
 {
     // If using the %RUNINBACKGROUND% variable in a launch command or if enabling the
-    // RunInBackground setting, ES-DE will run in the background while a game is launched.
-    // If we're in this state and then register some input, it means that the user is back in ES-DE.
+    // RunInBackground setting, Arcadia will run in the background while a game is launched.
+    // If we're in this state and then register some input, it means that the user is back in Arcadia.
     // Therefore unset the game launch flag and update all the GUI components. This will re-enable
     // the video player and scrolling of game names and game descriptions as well as letting the
     // screensaver start on schedule. On Android the onResume() method will normally call the native
     // onResume function which will perform the same steps as shown below (on Android we always keep
     // running when launching games). But there is a special case when using Samsung DeX or when
     // launching apps to another screen on multi-screen devices, in this case there will be no
-    // onResume() call as ES-DE was technically still running in the foreground, so we need to
+    // onResume() call as Arcadia was technically still running in the foreground, so we need to
     // handle the launch state here in a similar manner as on desktop operating systems.
     if (mWindow->getGameLaunchedState()) {
         mWindow->setAllowTextScrolling(true);
@@ -1429,7 +1422,7 @@ void ViewController::reloadGamelistView(GamelistView* view, bool reloadTheme)
     }
 
     // If using the %RUNINBACKGROUND% variable in a launch command or if enabling the
-    // RunInBackground setting, ES-DE will run in the background while a game is launched.
+    // RunInBackground setting, Arcadia will run in the background while a game is launched.
     // If this flag has been set, then update all the GUI components. This will block the
     // video player, prevent scrolling of game names and game descriptions and prevent the
     // screensaver from starting on schedule.

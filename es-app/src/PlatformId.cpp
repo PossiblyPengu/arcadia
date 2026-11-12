@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  PlatformId.cpp
 //
 //  Index of all supported systems/platforms.

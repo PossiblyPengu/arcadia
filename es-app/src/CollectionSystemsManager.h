@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  CollectionSystemsManager.h
 //
 //  Manages collections of the following two types:

@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  ImageComponent.h
 //
 //  Handles images: loading, resizing, cropping, color shifting etc.

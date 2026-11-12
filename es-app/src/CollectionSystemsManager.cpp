@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  CollectionSystemsManager.cpp
 //
 //  Manages collections of the following two types:
@@ -1329,7 +1329,7 @@ void CollectionSystemsManager::populateCustomCollection(CollectionSystemData* sy
         // If there is a %ROMPATH% variable set for the game, expand it. By doing this
         // it's possible to use either absolute ROM paths in the collection files or using
         // the path variable. The absolute ROM paths are only used for backward compatibility
-        // with old custom collections. All custom collections saved by ES-DE will use the
+        // with old custom collections. All custom collections saved by Arcadia will use the
         // %ROMPATH% variable instead. Also remove Windows carriage return characters.
         gameKey = Utils::String::replace(gameKey, "\r", "");
         gameKey = Utils::String::replace(gameKey, "%ROMPATH%", rompath);
@@ -1453,7 +1453,7 @@ std::vector<std::string> CollectionSystemsManager::getSystemsFromConfig()
 
     // Here we don't honor the <loadExclusive> tag which may be present in the custom es_systems.xml
     // file under <application data>/custom_systems as we really want to include all the themes
-    // supported by ES-DE. Otherwise a user may accidentally create a custom collection that
+    // supported by Arcadia. Otherwise a user may accidentally create a custom collection that
     // corresponds to a supported theme.
     for (auto path : configPaths) {
         if (!Utils::FileSystem::exists(path))

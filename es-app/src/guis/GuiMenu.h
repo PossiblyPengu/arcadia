@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  GuiMenu.h
 //
 //  Main menu.
@@ -45,6 +45,8 @@ private:
     void openCollectionSystemOptions();
     void openOtherOptions();
     void openUtilities();
+    void openSetup();
+    std::string setupToolsDirectory();
     void openQuitMenu();
 
     Renderer* mRenderer;

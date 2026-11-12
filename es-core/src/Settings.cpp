@@ -1,6 +1,6 @@
 //  SPDX-License-Identifier: MIT
 //
-//  ES-DE Frontend
+//  Arcadia Frontend
 //  Settings.cpp
 //
 //  Functions to read from and write to the configuration file es_settings.xml.
@@ -161,7 +161,7 @@ void Settings::setDefaults()
     mBoolMap["ScraperRegionFallback"] = {true, true};
 
     // UI settings.
-    mStringMap["Theme"] = {"linear-es-de", "linear-es-de"};
+    mStringMap["Theme"] = {"arcadia", "arcadia"};
     mStringMap["ThemeVariant"] = {"", ""};
     mStringMap["ThemeColorScheme"] = {"", ""};
     mStringMap["ThemeFontSize"] = {"", ""};
