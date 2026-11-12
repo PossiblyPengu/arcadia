@@ -6,3 +6,4 @@ and separate so upstream updates stay easy to merge:
 - `es-app/src/main.cpp`: `--fullscreen` / `--windowed`, windowed on a desktop and fullscreen in Game Mode by default.
 - `es-core/src/Settings.cpp`: custom event scripts on by default.
 - `deck/`: save sync, emulator install/update, BIOS check and the "Setup" system. See `deck/README.md`.
+- `themes/linear-es-de` and `themes/modern-es-de`: an "Arcadia" colour scheme (deep navy, blue accent), first in the list so it is the default. Choose another under UI settings > Theme set options > Color scheme.

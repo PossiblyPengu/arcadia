@@ -1,4 +1,21 @@
 <theme>
+    <!-- Arcadia: deep navy instead of grey, for a Steam Deck screen -->
+    <colorScheme name="arcadia">
+        <variables>
+            <helpsystemPanelColor>0b0c10</helpsystemPanelColor>
+            <backgroundColor>14151b</backgroundColor>
+            <primaryColor>F4F6FB</primaryColor>
+            <secondaryColor>AEB6C8</secondaryColor>
+            <tertiaryColor>AEB6C8</tertiaryColor>
+
+            <gamelistTextlistSelectorColor>3E89D6</gamelistTextlistSelectorColor>
+            <gamelistTextlistPrimaryColor>7B8498</gamelistTextlistPrimaryColor>
+            <gamelistTextlistSecondaryColor>C5CCDB</gamelistTextlistSecondaryColor>
+            <gamelistMetadataPanelColor>1b1d26</gamelistMetadataPanelColor>
+            <gamelistMetadataLabelColor>8A90A0</gamelistMetadataLabelColor>
+            <gamelistWatermarkLogoColor>2a2e3b</gamelistWatermarkLogoColor>
+        </variables>
+    </colorScheme>
     <colorScheme name="dark">
         <variables>
             <!-- Both system and gamelist views -->

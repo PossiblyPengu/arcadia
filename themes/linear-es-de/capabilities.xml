@@ -37,6 +37,11 @@
     <fontSize>medium</fontSize>
     <fontSize>large</fontSize>
 
+    <colorScheme name="arcadia">
+        <label language="en_US">Arcadia</label>
+        <label language="en_GB">Arcadia</label>
+    </colorScheme>
+
     <colorScheme name="dark">
         <label language="en_US">Dark</label>
         <label language="en_GB">Dark</label>

@@ -1,4 +1,19 @@
 <theme>
+    <!-- Arcadia: the dark scheme in deep navy with a blue accent. It borrows the dark scheme's artwork (colorSchemeName). -->
+    <colorScheme name="arcadia">
+        <variables>
+            <colorSchemeName>dark</colorSchemeName>
+            <backgroundColor>14151b</backgroundColor>
+            <backgroundColor2>1b1d26</backgroundColor2>
+            <mainColor>5aa9ff</mainColor>
+            <highlightColor>a8d0ff</highlightColor>
+            <secondaryColor>eceef4</secondaryColor>
+            <tertiaryColor>8a90a0</tertiaryColor>
+            <systemColor>3e89d6</systemColor>
+            <placeholderColor>262a35</placeholderColor>
+        </variables>
+    </colorScheme>
+
     <colorScheme name="dark">
         <variables>
             <colorSchemeName>dark</colorSchemeName>
