@@ -11,6 +11,9 @@
 
 
 #include "ApplicationVersion.h"
+#ifndef ARCADIA_VERSION
+#define ARCADIA_VERSION "dev"
+#endif
 #include "CollectionSystemsManager.h"
 #include "FileFilterIndex.h"
 #include "FileSorts.h"
@@ -2313,7 +2316,7 @@ void GuiMenu::addVersionInfo()
     mVersion.setColor(mMenuColorTertiary);
 
     // Arcadia's own version, and the ES-DE release it is based on.
-    mVersion.setText("Arcadia 0.1  ·  ES-DE " + std::string(PROGRAM_VERSION_STRING));
+    mVersion.setText("Arcadia " ARCADIA_VERSION "  ·  ES-DE " + std::string(PROGRAM_VERSION_STRING));
 
     mVersion.setHorizontalAlignment(mRailMode ? ALIGN_LEFT : ALIGN_CENTER);
     addChild(&mVersion);

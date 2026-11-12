@@ -15,6 +15,11 @@ project(arcadia)
 # Application version, update this when making a new release.
 set(ES_VERSION 3.4.1)
 
+# Arcadia's own version: the VERSION file. Bumping it and pushing to main publishes a release (see the workflow).
+file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/VERSION" ARCADIA_VERSION LIMIT_COUNT 1)
+add_compile_definitions(ARCADIA_VERSION="${ARCADIA_VERSION}")
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/VERSION")
+
 # Set this to ON to show verbose compiler output (e.g. compiler flags, include directories etc.)
 set(CMAKE_VERBOSE_MAKEFILE OFF CACHE BOOL "Show verbose compiler output" FORCE)
 

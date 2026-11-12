@@ -1,19 +1,15 @@
-# Builds the Steam Deck AppImage of this fork (Arcadia with the Deck defaults) and the "deck extras" archive.
-# Every push to main builds it (download it from the run's Artifacts in the Actions tab); you can also run it by hand
-# from the Actions tab. Pushing a tag like v1.0.0 additionally publishes it as a release; so does running it by hand with
-# "release_tag" filled in (GitHub then creates that tag on the commit it runs for).
+# Builds the Steam Deck AppImage of this fork (Arcadia with the Deck defaults) and the "deck extras" archive, and
+# publishes releases the same way Deckhand does.
 name: Steam Deck AppImage
 
+# Every push to main tests and builds the AppImage (download it from the run's Artifacts). Releasing works like Deckhand's:
+# bump the version in the VERSION file, write what changed in RELEASE_NOTES.md, push to main, and when there is no release
+# for that version yet this publishes v<version> with the AppImage and the deck extras. It can also be run by hand from the
+# Actions tab, to only build.
 on:
   workflow_dispatch:
-    inputs:
-      release_tag:
-        description: "Publish a release with this tag (for example v0.1.0); leave empty to only build"
-        required: false
-        default: ""
   push:
     branches: [main]
-    tags: ["v*"]
 
 jobs:
   build:
@@ -22,6 +18,15 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+
+      - name: Version
+        run: |
+          VERSION="$(tr -d '[:space:]' < VERSION)"
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "VERSION must look like 1.2.3, not '$VERSION'"; exit 1; }
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Test the setup tools
+        run: bash deck/tests/test-deck.sh
 
       - name: Install build dependencies
         run: |
@@ -48,12 +53,21 @@ jobs:
             Arcadia_x64_SteamDeck.AppImage
             arcadia-deck-extras.tar.gz
 
-      - name: Publish a release (tags, or a release_tag given by hand)
-        if: startsWith(github.ref, 'refs/tags/') || inputs.release_tag != ''
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ inputs.release_tag != '' && inputs.release_tag || github.ref_name }}
-          target_commitish: ${{ github.sha }}
-          files: |
-            Arcadia_x64_SteamDeck.AppImage
-            arcadia-deck-extras.tar.gz
+      - name: Already released?
+        id: existing
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "v$VERSION" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "v$VERSION is already released."
+            echo "released=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish the release
+        if: github.event_name == 'push' && steps.existing.outputs.released != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v$VERSION" Arcadia_x64_SteamDeck.AppImage arcadia-deck-extras.tar.gz \
+            --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "Arcadia $VERSION" --notes-file RELEASE_NOTES.md
