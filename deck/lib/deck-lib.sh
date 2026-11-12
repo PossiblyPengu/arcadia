@@ -111,6 +111,16 @@ DECK_EMULATORS=(
   "xemu|app.xemu.xemu|Xbox"
 )
 
+# ---- Deckhand, the sister app (Windows programs, game stores, streaming, add-ons) --------------------------------------
+DECKHAND_GET_URL="${DECKHAND_GET_URL:-https://raw.githubusercontent.com/PossiblyPengu/deckhand/main/get.sh}"
+# deck_deckhand_bin: where Deckhand is installed (its get.sh puts it in ~/.local/bin), or nothing.
+deck_deckhand_bin() {
+  if [ -x "$HOME/.local/bin/deckhand" ]; then printf '%s\n' "$HOME/.local/bin/deckhand"; else command -v deckhand 2>/dev/null || true; fi
+}
+DECKHAND_BROKEN="$DECK_HOME/.deckhand-broken"  # its last launch failed: Setup reinstalls it
+# deck_deckhand_ok: 1 if Deckhand is installed and its last launch from Setup didn't fail, else 0.
+deck_deckhand_ok() { [ -n "$(deck_deckhand_bin)" ] && [ ! -e "$DECKHAND_BROKEN" ] && echo 1 || echo 0; }
+
 deck_flatpak_installed() { flatpak info "$1" >/dev/null 2>&1; }
 
 # ---- BIOS -------------------------------------------------------------------------------------------------------------

@@ -33,7 +33,8 @@ namespace
         {"controls", "setup-controls.sh", "Set up"},
         {"access", "grant-access.sh", "Allow"},
         {"saves", "get-started.sh", "How to connect"},
-        {"bios", "check-bios.sh", "See which"}};
+        {"bios", "check-bios.sh", "See which"},
+        {"deckhand", "get-deckhand.sh", "Get Deckhand"}};
 
     struct Tool {
         const char* label;
@@ -272,8 +273,9 @@ void GuiSetup::showStatus()
     else {
         mHeadline.setText(done == 0 ? "Let's get you set up" : "Almost ready");
         const std::vector<std::string> counts {"One thing", "Two things", "Three things",
-                                               "Four things", "Five things", "Six things"};
-        mSubline.setText((left <= 6 ? counts.at(left - 1) : std::to_string(left) + " things") +
+                                               "Four things", "Five things", "Six things",
+                                               "Seven things"};
+        mSubline.setText((left <= 7 ? counts.at(left - 1) : std::to_string(left) + " things") +
                          " left to do.");
     }
     setFocusColumn(mColumn);

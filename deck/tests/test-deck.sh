@@ -31,7 +31,7 @@ bash "$HERE/install.sh" >/dev/null   # again: nothing doubles up
 check "the old Setup system is removed, other systems are kept" '! grep -q arcadia-setup "$SYS" && grep -q "<name>nes</name>" "$SYS" && [ ! -d "$HOME/ROMs/arcadia-setup" ]'
 check "es_systems.xml is still valid XML" 'python3 -c "import xml.dom.minidom,sys; xml.dom.minidom.parse(sys.argv[1])" "$SYS"'
 for ev in startup game-start game-end quit; do check "event script in $ev" '[ -x "$ARCADIA_HOME/scripts/'$ev'/arcadia-save-sync.sh" ]'; done
-for t in get-started sort-roms install-emulators update-emulators check-bios setup-controls grant-access save-sync-now backup update-arcadia; do check "tool $t is installed" '[ -x "$ARCADIA_HOME/deck/tools/'$t'.sh" ]'; done
+for t in get-started get-deckhand sort-roms install-emulators update-emulators check-bios setup-controls grant-access save-sync-now backup update-arcadia; do check "tool $t is installed" '[ -x "$ARCADIA_HOME/deck/tools/'$t'.sh" ]'; done
 check "config written once and kept" '[ -f "$ARCADIA_HOME/deck.conf" ] && echo "# mine" >> "$ARCADIA_HOME/deck.conf" && bash "$HERE/install.sh" >/dev/null && grep -q "# mine" "$ARCADIA_HOME/deck.conf"'
 out="$(ARCADIA_OUTPUT=stdout bash "$HERE/tools/get-started.sh")"
 check "run from Arcadia's Setup menu a tool prints its message instead of opening a dialog" '[[ "$out" == *"Games"* && "$out" == *"Emulators"* ]]'
@@ -168,6 +168,29 @@ check "a second run says it's up to date" 'tail -n 1 "$ARCADIA_HOME/logs/deck.lo
 kill $SRVPID 2>/dev/null; pkill -f "http.server $PORT" 2>/dev/null; unset DECK_RELEASE_API
 DECK_APPIMAGE="$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" bash "$HERE/tools/update-arcadia.sh" --check
 check "an unreachable server is reported, not fatal" 'grep -q "Not updated" "$ARCADIA_HOME/logs/deck.log" || grep -q "Update Arcadia: Not updated" "$ARCADIA_HOME/logs/deck.log"'
+
+echo "deckhand"
+check "the checklist says Deckhand isn't installed yet" 'ARCADIA_OUTPUT=stdout bash "$HERE/tools/get-started.sh" --status | grep -q "^deckhand|0|Windows games and stores|"'
+cat > "$TMP/get.sh" <<'G'
+#!/bin/bash
+mkdir -p "$HOME/.local/bin"
+printf '#!/bin/bash\necho opened >> "$HOME/deckhand.calls"\n' > "$HOME/.local/bin/deckhand"
+chmod +x "$HOME/.local/bin/deckhand"
+G
+out="$(DECKHAND_GET_URL="file://$TMP/get.sh" ARCADIA_OUTPUT=stdout bash "$HERE/tools/get-deckhand.sh")"
+check "Deckhand is installed with its own installer, then opened" '[ -x "$HOME/.local/bin/deckhand" ] && [ "$(cat "$HOME/deckhand.calls")" = opened ] && [[ "$out" == *"Deckhand is installed"* ]]'
+check "the checklist then counts it as done" 'ARCADIA_OUTPUT=stdout bash "$HERE/tools/get-started.sh" --status | grep -q "^deckhand|1|"'
+out="$(DECKHAND_GET_URL="file://$TMP/nothing-here" ARCADIA_OUTPUT=stdout bash "$HERE/tools/get-deckhand.sh")"
+check "once installed it's just opened" '[ "$(wc -l < "$HOME/deckhand.calls")" = 2 ] && [[ "$out" != *"Deckhand is installed"* ]]'
+printf '#!/bin/bash\nexit 3\n' > "$HOME/.local/bin/deckhand"
+out="$(DECKHAND_GET_URL="file://$TMP/nothing-here" ARCADIA_OUTPUT=stdout bash "$HERE/tools/get-deckhand.sh")"; rc=$?
+check "a Deckhand that won't start is reported, not called closed" '[ "$rc" = 1 ] && [[ "$out" == *"didn"*"start properly"*"code 3"* ]]'
+check "and the checklist offers it again" 'ARCADIA_OUTPUT=stdout bash "$HERE/tools/get-started.sh" --status | grep -q "^deckhand|0|"'
+out="$(DECKHAND_GET_URL="file://$TMP/get.sh" ARCADIA_OUTPUT=stdout bash "$HERE/tools/get-deckhand.sh")"
+check "picking it again reinstalls it and opens it" '[[ "$out" == *"Deckhand is installed"* ]] && [ "$(wc -l < "$HOME/deckhand.calls")" = 3 ] && ARCADIA_OUTPUT=stdout bash "$HERE/tools/get-started.sh" --status | grep -q "^deckhand|1|"'
+rm -rf "$HOME/.local/bin/deckhand"
+DECKHAND_GET_URL="file://$TMP/nothing-here" ARCADIA_OUTPUT=stdout bash "$HERE/tools/get-deckhand.sh" >/dev/null; rc=$?
+check "an installer that can't be fetched is reported" '[ "$rc" = 1 ] && grep -q "Deckhand couldn.t be installed" "$ARCADIA_HOME/logs/deck.log"'
 
 echo "uninstall"
 bash "$HERE/install.sh" --uninstall >/dev/null
