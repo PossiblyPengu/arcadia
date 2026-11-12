@@ -35,7 +35,7 @@ def build_stylesheet(accent: str) -> str:
         background: {_white(8)}; border: 1px solid {_white(12)};
         border-radius: 18px; padding: 8px 16px;
     }}
-    QLineEdit:focus, QComboBox:focus {{ border: 1px solid {accent}; }}
+    QLineEdit:focus, QComboBox:focus {{ border: 3px solid #ffffff; padding: 6px 14px; background: {_white(16)}; }}
     QComboBox::drop-down {{ border: none; width: 24px; }}
     QComboBox QAbstractItemView {{
         background: #1d1f27; selection-background-color: {accent}; padding: 4px;
@@ -45,12 +45,13 @@ def build_stylesheet(accent: str) -> str:
         border-radius: 18px; padding: 9px 20px; font-weight: 600;
     }}
     QPushButton:hover {{ background: {_white(18)}; }}
-    QPushButton:focus {{ border: 2px solid {accent}; }}
+    QPushButton:focus {{ border: 3px solid #ffffff; padding: 7px 18px; background: {_white(28)}; }}
     QPushButton:disabled {{ color: rgba(236, 238, 244, 40%); background: {_white(5)}; }}
     QPushButton#primary {{
         background: {accent}; border: none; font-size: 16px; padding: 12px 34px;
     }}
     QPushButton#primary:hover {{ background: {bright}; }}
+    QPushButton#primary:focus {{ background: {bright}; border: 3px solid #ffffff; padding: 9px 31px; }}
     QPushButton#primary:disabled {{ background: {_white(10)}; }}
     QPushButton::menu-indicator {{ width: 0px; }}
     QListWidget#systems {{ background: transparent; border: none; outline: none; }}
@@ -77,12 +78,16 @@ def build_stylesheet(accent: str) -> str:
     QTabBar::tab {{ background: {_white(6)}; padding: 8px 18px; margin-right: 4px; border-top-left-radius: 10px; border-top-right-radius: 10px; }}
     QTabBar::tab:hover {{ background: {_white(12)}; }}
     QTabBar::tab:selected {{ background: {accent}; color: white; font-weight: 600; }}
-    QCheckBox {{ background: transparent; spacing: 8px; }}
+    QCheckBox {{ background: transparent; spacing: 8px; padding: 4px 6px; }}
     QCheckBox::indicator {{ width: 16px; height: 16px; border-radius: 5px; border: 1px solid {_white(35)}; background: {_white(6)}; }}
-    QCheckBox:focus {{ color: white; }}
-    QCheckBox::indicator:focus {{ border: 2px solid {accent}; }}
-    QTabBar::tab:focus {{ border: 2px solid {accent}; }}
-    QTableWidget:focus, QListWidget:focus {{ border: 1px solid {accent}; }}
+    QCheckBox:focus {{ color: white; background: {_white(16)}; border-radius: 8px; }}
+    QCheckBox::indicator:focus {{ border: 3px solid #ffffff; }}
+    QTabBar::tab:focus {{ border: 3px solid #ffffff; }}
+    QTableWidget:focus, QListWidget:focus {{ border: 2px solid #ffffff; }}
+    QListWidget, QTableWidget {{ background: {_white(5)}; border: 1px solid {_white(12)}; border-radius: 10px; outline: none; }}
+    QListWidget::item, QTableWidget::item {{ padding: 6px; color: #eceef4; }}
+    QListWidget::item:hover, QTableWidget::item:hover {{ background: {_white(10)}; }}
+    QListWidget::item:selected, QTableWidget::item:selected {{ background: {accent}; color: white; }}
     QCheckBox::indicator:checked {{ background: {accent}; border: 1px solid {accent}; }}
     QScrollBar:vertical {{ background: transparent; width: 12px; margin: 0; }}
     QScrollBar::handle:vertical {{ background: {_white(22)}; border-radius: 5px; min-height: 28px; }}
