@@ -165,12 +165,13 @@ check "update replaces the AppImage and keeps the old one" 'grep -q NEW-APPIMAGE
 check "it reinstalls the extras and records the version" '[ "$(cat "$ARCADIA_HOME/deck/version")" = v9.9.9 ] && [ -x "$ARCADIA_HOME/deck/tools/sort-roms.sh" ]'
 DECK_APPIMAGE="$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" bash "$HERE/tools/update-arcadia.sh"
 check "a second run says it's up to date" 'tail -n 1 "$ARCADIA_HOME/logs/deck.log" | grep -q "Already up to date"'
-kill $SRVPID 2>/dev/null; pkill -f "http.server $PORT" 2>/dev/null; unset DECK_RELEASE_API
+kill $SRVPID 2>/dev/null; pkill -f "http.server $PORT" 2>/dev/null
+export DECK_RELEASE_API="http://127.0.0.1:1/latest"  # nothing listens there: an unreachable server (never the real GitHub)
 DECK_APPIMAGE="$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" bash "$HERE/tools/update-arcadia.sh" --check
 check "an unreachable server is reported, not fatal" 'grep -q "Not updated" "$ARCADIA_HOME/logs/deck.log" || grep -q "Update Arcadia: Not updated" "$ARCADIA_HOME/logs/deck.log"'
 
 echo "deckhand"
-check "the checklist says Deckhand isn't installed yet" 'ARCADIA_OUTPUT=stdout bash "$HERE/tools/get-started.sh" --status | grep -q "^deckhand|0|Windows games and stores|"'
+check "the checklist says Deckhand isn't installed yet" 'ARCADIA_OUTPUT=stdout bash "$HERE/tools/get-started.sh" --status | grep -q "^deckhand|0|Windows games|"'
 cat > "$TMP/get.sh" <<'G'
 #!/bin/bash
 mkdir -p "$HOME/.local/bin"

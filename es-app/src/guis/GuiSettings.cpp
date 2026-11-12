@@ -45,7 +45,6 @@ GuiSettings::GuiSettings(std::string title)
     addChild(&mMenu);
     // Arcadia: a card on the settings screen needs no Back button (B goes back), and one opened straight
     // from the rail can step to the next section with the shoulder buttons.
-    mRailSection = GuiMenu::sRail != nullptr && mWindow->peekGui() == GuiMenu::sRail;
     if (!MenuComponent::sRailOpen)
         mMenu.addButton(_("BACK"), _("back"), [this] { delete this; });
 
@@ -294,16 +293,6 @@ bool GuiSettings::input(InputConfig* config, Input input)
         return true;
     }
 
-    if (mRailSection && input.value != 0 &&
-        (config->isMappedTo("leftshoulder", input) || config->isMappedTo("rightshoulder", input))) {
-        const int direction {config->isMappedTo("leftshoulder", input) ? -1 : 1};
-        delete this;
-        // Saving can close the whole settings screen (a new colour scheme does), so look again.
-        if (GuiMenu::sRail != nullptr)
-            GuiMenu::sRail->stepSection(direction);
-        return true;
-    }
-
     return GuiComponent::input(config, input);
 }
 
@@ -311,7 +300,5 @@ std::vector<HelpPrompt> GuiSettings::getHelpPrompts()
 {
     std::vector<HelpPrompt> prompts {mMenu.getHelpPrompts()};
     prompts.push_back(HelpPrompt("b", _("back")));
-    if (mRailSection)
-        prompts.push_back(HelpPrompt("lr", _("sections")));
     return prompts;
 }

@@ -28,25 +28,25 @@ namespace
         const char* todo;
     };
     const std::vector<StepAction> sStepActions {
-        {"games", "get-started.sh", "Where do they go?"},
+        {"games", "get-started.sh", "Show me"},
         {"emulators", "install-emulators.sh", "Install"},
         {"controls", "setup-controls.sh", "Set up"},
         {"access", "grant-access.sh", "Allow"},
-        {"saves", "get-started.sh", "How to connect"},
-        {"bios", "check-bios.sh", "See which"},
-        {"deckhand", "get-deckhand.sh", "Get Deckhand"}};
+        {"saves", "get-started.sh", "Connect"},
+        {"bios", "check-bios.sh", "Check"},
+        {"deckhand", "get-deckhand.sh", "Get it"}};
 
     struct Tool {
         const char* label;
         const char* command;
     };
     const std::vector<Tool> sTools {{"Sort downloads", "sort-roms.sh"},
-                                    {"Sort downloads and subfolders", "sort-roms.sh\" --deep \""},
+                                    {"Sort inside folders", "sort-roms.sh\" --deep \""},
                                     {"Undo the last sort", "sort-roms.sh\" --undo \""},
                                     {"Update emulators", "update-emulators.sh"},
                                     {"Sync saves now", "save-sync-now.sh"},
                                     {"Back up settings", "backup.sh"},
-                                    {"Restore the latest backup", "backup.sh\" --restore \""},
+                                    {"Restore a backup", "backup.sh\" --restore \""},
                                     {"Update Arcadia", "update-arcadia.sh"}};
 } // namespace
 
@@ -54,11 +54,9 @@ GuiSetup::GuiSetup(const std::string& toolsDirectory)
     : mRenderer {Renderer::getInstance()}
     , mToolsDirectory {toolsDirectory}
     , mColumn {0}
-    , mRailSection {false}
     , mReading {false}
     , mStatusReady {false}
 {
-    mRailSection = GuiMenu::sRail != nullptr && mWindow->peekGui() == GuiMenu::sRail;
 
     mStepsCard.setFrameColor(mMenuColorFrame);
     mToolsCard.setFrameColor(mMenuColorFrame);
@@ -325,14 +323,6 @@ bool GuiSetup::input(InputConfig* config, Input input)
         delete this;
         return true;
     }
-    if (mRailSection && input.value != 0 &&
-        (config->isMappedTo("leftshoulder", input) || config->isMappedTo("rightshoulder", input))) {
-        const int direction {config->isMappedTo("leftshoulder", input) ? -1 : 1};
-        delete this;
-        if (GuiMenu::sRail != nullptr)
-            GuiMenu::sRail->stepSection(direction);
-        return true;
-    }
     if (input.value != 0 && config->isMappedTo("left", input) && mColumn == 1) {
         setFocusColumn(0);
         return true;
@@ -351,7 +341,5 @@ std::vector<HelpPrompt> GuiSetup::getHelpPrompts()
     prompts.push_back(HelpPrompt("left/right", _("switch side")));
     prompts.push_back(HelpPrompt("a", _("do it")));
     prompts.push_back(HelpPrompt("b", _("back")));
-    if (mRailSection)
-        prompts.push_back(HelpPrompt("lr", _("sections")));
     return prompts;
 }

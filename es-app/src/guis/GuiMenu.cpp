@@ -179,19 +179,6 @@ void GuiMenu::render(const glm::mat4& parentTrans)
     GuiComponent::render(parentTrans);
 }
 
-void GuiMenu::stepSection(int direction)
-{
-    if (mSections.empty())
-        return;
-    auto list = mMenu.getList();
-    const int current {list->getCursorId()};
-    const int target {std::clamp(current + direction, 0, static_cast<int>(mSections.size()) - 1)};
-    if (target == current)
-        return;
-    list->moveCursor(target - current);
-    mSections.at(target)();
-}
-
 void GuiMenu::openScraperOptions()
 {
     // Open the scraper menu.

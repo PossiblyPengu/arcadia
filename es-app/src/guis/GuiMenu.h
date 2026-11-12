@@ -29,7 +29,6 @@ public:
     // Arcadia: the open settings screen, so a section card can step to its neighbour with the shoulder
     // buttons (L/R). Null when the settings screen is closed.
     static inline GuiMenu* sRail {nullptr};
-    void stepSection(int direction);
 
 private:
     void close(bool closeAllWindows);

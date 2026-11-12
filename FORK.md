@@ -15,8 +15,8 @@ and separate so upstream updates stay easy to merge:
 - A cozy look of its own (`DESIGN.md`): Nunito and Fraunces, pastel colour schemes (cloud, light and the default, and dusk), rounded rows with
   an accent focus ring, pill switches and buttons, sentence-case labels, and the `arcadia` theme (pastel console cards and a
   cover carousel, both ringed in the accent).
-- The main menu is the settings screen: a rail of sections on the left, each opening as a card beside it (L1 / R1 step
-  between them). `MenuComponent` lays out the rail and the cards; `Window` keeps the rail drawn under the card.
+- The main menu is the settings screen: a rail of sections on the left, each opening as a card beside it (up and down
+  choose a section, A opens it, B goes back). `MenuComponent` lays out the rail and the cards; `Window` keeps the rail drawn under the card.
 - Renamed to Arcadia (binary, folder `~/Arcadia`, app ID `io.github.PossiblyPengu.Arcadia`). The ScreenScraper account name stays "ES-DE" because
   that service registers software by name.
 - A native **Setup** screen (`GuiSetup`), first in Settings: a progress ring and checklist read from `get-started.sh --status`,
