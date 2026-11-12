@@ -1511,6 +1511,10 @@ def test_the_console_name_shows_its_era(window, qapp):
     assert era_of("snes") == "16-bit"
 
 
+def _click(box, start):
+    return next(b for b in box.buttons() if b.text().startswith(start))
+
+
 def test_import_with_nothing_found_lets_you_pick_another_folder(qapp, tmp_path, asked, monkeypatch):
     """Finding nothing used to be a dead end: now it offers another folder, and looks one level down too."""
     from PySide6.QtWidgets import QMessageBox
@@ -1527,10 +1531,33 @@ def test_import_with_nothing_found_lets_you_pick_another_folder(qapp, tmp_path, 
         os.utime(other / "stuff" / "Contra.nes", (old, old))
         picks = []
         monkeypatch.setattr(QMessageBox, "exec", lambda self: picks.append(self.text()) or 0)
-        monkeypatch.setattr(QMessageBox, "clickedButton", lambda self: next(b for b in self.buttons() if b.text().startswith("Choose another")))
+        answers = iter(["Choose another", "Search subfolders"])  # first another folder, then look deeper in it
+        monkeypatch.setattr(QMessageBox, "clickedButton", lambda self, want=None: _click(self, next(answers)))
         monkeypatch.setattr("arcadia.ui.choose_folder", lambda *a, **k: str(other))
         win.import_roms()
-        assert picks and "No ROMs to import" in picks[0]
+        assert len(picks) == 2 and "No ROMs to import" in picks[0]
         assert asked == [["Contra.nes"]]
+    finally:
+        win.close()
+
+
+def test_import_searches_subfolders_when_told(qapp, tmp_path, asked):
+    import time
+
+    win, inbox = _make_inbox_window(tmp_path)
+    try:
+        top = tmp_path / "pile"
+        deep = top / "a" / "b" / "c"
+        deep.mkdir(parents=True)
+        old = time.time() - 60
+        for name in ("Deep.nes", "Shallow.nes"):
+            path = (deep if name == "Deep.nes" else top) / name
+            path.write_bytes(b"NES\x1a" + b"\0" * 20)
+            os.utime(path, (old, old))
+        win.import_roms(top)  # not told: only the top folder
+        assert asked == [["Shallow.nes"]]
+        asked.clear()
+        win.import_roms(top, subfolders=True)
+        assert asked == [["Deep.nes", "Shallow.nes"]]
     finally:
         win.close()

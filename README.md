@@ -109,6 +109,11 @@ Limits: `.7z` and `.rar` archives can't be inspected (they're only offered if th
 system), `.chd` and `.cue` images can't be fully verified, multi-disc `.m3u` playlists aren't handled, and
 a zip is moved as one file rather than extracted, so a zip of 50 ROMs is treated as one game.
 
+Import ROMs normally looks only at the files directly in your downloads folder. To search deeper, use
+**File → Import ROMs from a folder and its subfolders…** (Ctrl+Shift+I) and pick a folder; everything under it is
+searched (game folders such as PS3 or Wii U count as one game). If a normal import finds nothing, it also offers
+"Search subfolders too" and "Choose another folder…".
+
 ## Multi-disc games
 
 A multi-disc game is one entry in the library, backed by an `.m3u` playlist that lists its discs.
