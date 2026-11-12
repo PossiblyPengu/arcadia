@@ -9,3 +9,5 @@ and separate so upstream updates stay easy to merge:
 - `themes/linear-es-de` and `themes/modern-es-de`: an "Arcadia" colour scheme (deep navy, blue accent), first in the list so it is the default. Choose another under UI settings > Theme set options > Color scheme.
 - `themes/linear-es-de`: the console carousel dims the consoles you're not on, so the selected one stands out.
 - `.github/workflows/steamdeck-appimage.yml`: builds the Steam Deck AppImage and the deck extras.
+- `CMakeLists.txt`: the upstream application updater is off by default (it would replace the fork with stock ES-DE); use the deck's *Update ES-DE* instead.
+- `deck/lib/romsort/`: the ROM sorter from Arcadia, as a command line tool.

@@ -20,7 +20,7 @@ scripts are on by default in this build.
 
 **A "Setup" system inside ES-DE**, so you can do the chores with the controller: *Sync saves now*, *Install emulators*,
 *Update emulators* (Flatpak, the same ones ES-DE finds on a Deck), *Check BIOS files* (names only; bring your own dumps),
-*Set up emulator controls* (below).
+*Set up emulator controls* (below), plus the tools ported from Arcadia (below).
 Results show in a dialog (zenity or kdialog, else a notification) and in `~/ES-DE/logs/deck.log`.
 
 **Starter emulator controls.** *Set up emulator controls* writes the Deck gamepad's buttons into DuckStation and PCSX2
@@ -29,6 +29,27 @@ the menu, the bumpers load / save a state) for keys that are still unset. Your o
 that controller section is touched, and the old file is copied to `~/ES-DE/backups/controls` first. Run
 `deck/tools/setup-controls.sh --reset` to replace them with these. The setting names follow the emulators' documented
 formats and haven't been run against the emulators themselves.
+
+## Ported from Arcadia
+
+Things ES-DE doesn't do, brought over from the Arcadia app. All of them are entries in the Setup system:
+
+- **Sort downloads into ROM folders**: looks at the file's header, extension and disc contents (the same sorter as
+  Arcadia: iNES / GBA / N64 / Sega headers, PlayStation / GameCube / Wii / Saturn discs, cue sheets and their tracks,
+  multi-disc games joined by an `.m3u`, Switch updates and DLC grouped with their game) and moves what it is sure of
+  into the right folder under your ROM folder. Anything unclear is listed and left alone; nothing is ever overwritten
+  or deleted. *Undo last ROM sort* puts the files back. Variants: include subfolders, or pick a folder with a dialog.
+  Set `AUTO_SORT=1` in `~/ES-DE/deck.conf` to sort the inbox (`INBOX`, default `~/Downloads`) every time ES-DE starts.
+- **Get started checklist**: what's ready (games, emulators, BIOS files, rclone and your Drive remote) and the next step.
+- **Let emulators see ROM folders**: the Flatpak permission change that stops emulators saying a game "can't be found".
+- **Back up settings** / **Restore latest backup**: ES-DE's settings, game lists (favorites, play counts), custom
+  systems and collections, and `deck.conf`; a restore first backs up the current state. `backup.sh --saves` adds saves.
+- **Update ES-DE**: updates this fork's AppImage and the deck extras from the project's GitHub releases (the old
+  AppImage is kept as `.previous`). The upstream ES-DE updater is turned off in this build, because it would offer the
+  stock ES-DE instead of this fork. `AppImage` location: the running one, else `~/Applications`, or `APPIMAGE_PATH`.
+
+Not brought over: Arcadia's own library and interface (ES-DE has these), its console pictures and logo downloads
+(ES-DE's themes cover that), save-state snapshots, and Delta sync (dropped earlier).
 
 ## Building the AppImage
 

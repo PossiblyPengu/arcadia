@@ -11,8 +11,20 @@ SYNC_REMOTE="gdrive:ES-DE"        # an rclone remote and folder; empty turns sav
 SYNC_ENABLED=1
 BIOS_DIR="$HOME/Emulation/bios"   # where BIOS files live (the EmuDeck layout; change it if yours differs)
 SAVE_DIRS=()                      # empty = look for the usual save folders below
+ROM_ROOT=""                       # empty = ES-DE's own ROM folder setting, else ~/Emulation/roms or ~/ROMs
+INBOX="$HOME/Downloads"           # where new ROMs land, for "Sort downloads into ROM folders"
+AUTO_SORT=0                       # 1 = sort the inbox into ROM folders each time ES-DE starts
+APPIMAGE_PATH=""                  # where the ES-DE AppImage lives (for "Update ES-DE"); empty = the running one or ~/Applications
+
+deck_rom_root() {
+  local v="$ROM_ROOT" settings="$DECK_HOME/settings/es_settings.xml"
+  if [ -z "$v" ] && [ -f "$settings" ]; then v="$(sed -n 's/.*name="ROMDirectory" value="\([^"]*\)".*/\1/p' "$settings" | head -n 1)"; fi
+  if [ -z "$v" ]; then if [ -d "$HOME/Emulation/roms" ]; then v="$HOME/Emulation/roms"; else v="$HOME/ROMs"; fi; fi
+  printf '%s\n' "${v/#\~/$HOME}"
+}
 
 deck_load_conf() {
+  mkdir -p "$(dirname "$DECK_LOG")" 2>/dev/null || true
   # shellcheck disable=SC1090
   [ -f "$DECK_CONF" ] && . "$DECK_CONF"
   if [ "${#SAVE_DIRS[@]}" -eq 0 ]; then

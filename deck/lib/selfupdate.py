@@ -1,0 +1,143 @@
+#!/usr/bin/env python3
+"""Update this fork of ES-DE (the AppImage) and the deck extras from the project's GitHub releases.
+
+  selfupdate.py            check, then update if there is a newer release
+  selfupdate.py --check    only say whether there is one
+
+The AppImage is replaced in place after the old one is kept next to it as <name>.previous, and the extras are
+reinstalled with their own install.sh. Nothing in your ROMs, saves or ES-DE settings is touched.
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import shutil
+import subprocess
+import sys
+import tarfile
+import tempfile
+import urllib.request
+from pathlib import Path
+from urllib.parse import urlparse
+
+API = os.environ.get("DECK_RELEASE_API", "https://api.github.com/repos/PossiblyPengu/arcadia/releases/latest")
+HOSTS = {"api.github.com", "github.com", "objects.githubusercontent.com", "release-assets.githubusercontent.com"}
+ESDE = Path(os.environ.get("ES_DE_HOME", Path.home() / "ES-DE"))
+VERSION_FILE = ESDE / "deck" / "version"
+APPIMAGE_NAME = "ES-DE_x64_SteamDeck.AppImage"
+EXTRAS_NAME = "arcadia-deck-extras.tar.gz"
+TEST_MODE = "DECK_RELEASE_API" in os.environ  # a local test server may use http://127.0.0.1
+
+
+class UpdateError(Exception):
+    pass
+
+
+def _open(url: str):
+    p = urlparse(url)
+    local = TEST_MODE and p.hostname in ("127.0.0.1", "localhost")
+    if not local and (p.scheme != "https" or p.hostname not in HOSTS):
+        raise UpdateError(f"refusing to use {url}")
+    try:
+        return urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "es-de-deck-update"}), timeout=60)
+    except OSError as exc:
+        raise UpdateError(f"couldn't reach {p.hostname}: {exc}") from exc
+
+
+def latest() -> dict:
+    with _open(API) as r:
+        try:
+            data = json.loads(r.read(4 * 1024 * 1024))
+        except ValueError as exc:
+            raise UpdateError("the release information couldn't be read") from exc
+    if not isinstance(data, dict) or not data.get("tag_name"):
+        raise UpdateError("there is no release to update to yet")
+    return data
+
+
+def installed_version() -> str:
+    try:
+        return VERSION_FILE.read_text().strip()
+    except OSError:
+        return ""
+
+
+def appimage_path() -> Path:
+    for candidate in (os.environ.get("DECK_APPIMAGE"), os.environ.get("APPIMAGE"), str(Path.home() / "Applications" / APPIMAGE_NAME)):
+        if candidate:
+            return Path(candidate)
+    return Path.home() / "Applications" / APPIMAGE_NAME
+
+
+def download(url: str, dest: Path, size: int) -> None:
+    done = 0
+    with _open(url) as r, open(dest, "wb") as out:
+        while True:
+            chunk = r.read(1024 * 1024)
+            if not chunk:
+                break
+            out.write(chunk)
+            done += len(chunk)
+    if size and done != size:
+        dest.unlink(missing_ok=True)
+        raise UpdateError(f"the download was cut short ({done} of {size} bytes), so nothing was changed")
+
+
+def update(check_only: bool = False) -> str:
+    release = latest()
+    tag = release["tag_name"]
+    if tag == installed_version():
+        return f"Already up to date ({tag})."
+    assets = {a.get("name"): a for a in release.get("assets", []) if isinstance(a, dict)}
+    if check_only:
+        return f"A newer release is available: {tag} (installed: {installed_version() or 'unknown'})."
+    messages = []
+    with tempfile.TemporaryDirectory(prefix="deck-update-") as tmp:
+        tmp_dir = Path(tmp)
+        extras_dir = None
+        if EXTRAS_NAME in assets:
+            a = assets[EXTRAS_NAME]
+            archive = tmp_dir / EXTRAS_NAME
+            download(a["browser_download_url"], archive, int(a.get("size") or 0))
+            extras_dir = tmp_dir / "extras"
+            with tarfile.open(archive) as tf:
+                for m in tf.getmembers():  # never write outside the folder
+                    if m.name.startswith(("/", "..")) or ".." in Path(m.name).parts or m.issym() or m.islnk():
+                        raise UpdateError("the extras archive contained an unsafe path, so nothing was changed")
+                tf.extractall(extras_dir)
+        new_image = None
+        if APPIMAGE_NAME in assets:
+            a = assets[APPIMAGE_NAME]
+            target = appimage_path()
+            target.parent.mkdir(parents=True, exist_ok=True)
+            new_image = target.with_name(target.name + ".new")
+            download(a["browser_download_url"], new_image, int(a.get("size") or 0))
+            new_image.chmod(0o755)
+        if new_image is not None:
+            target = appimage_path()
+            if target.exists():
+                shutil.copy2(target, target.with_name(target.name + ".previous"))
+            os.replace(new_image, target)
+            messages.append(f"ES-DE updated ({target}); the old one is kept as {target.name}.previous.")
+        if extras_dir is not None and (extras_dir / "deck" / "install.sh").is_file():
+            done = subprocess.run(["bash", str(extras_dir / "deck" / "install.sh")], capture_output=True, text=True)
+            messages.append("Deck extras reinstalled." if done.returncode == 0 else f"The deck extras couldn't be reinstalled: {done.stderr.strip()[:200]}")
+    VERSION_FILE.parent.mkdir(parents=True, exist_ok=True)
+    VERSION_FILE.write_text(tag + "\n")
+    if not messages:
+        messages.append("The release has nothing to install.")
+    return f"Updated to {tag}. " + " ".join(messages) + " Restart ES-DE to use it."
+
+
+def main(argv: list[str]) -> int:
+    try:
+        print(update("--check" in argv))
+        return 0
+    except UpdateError as exc:
+        print(f"Not updated: {exc}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

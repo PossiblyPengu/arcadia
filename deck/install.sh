@@ -40,7 +40,7 @@ PY
 }
 
 if [ "${1:-}" = "--uninstall" ]; then
-  for ev in "${EVENTS[@]}"; do rm -f "$ESDE/scripts/$ev/arcadia-save-sync.sh"; done
+  for ev in "${EVENTS[@]}"; do rm -f "$ESDE/scripts/$ev"/arcadia-*.sh; done
   remove_block
   rm -rf "$TARGET" "$ROMS"
   echo "Removed the Steam Deck extras (your ROMs, saves and ES-DE settings were not touched)."
@@ -55,8 +55,10 @@ chmod +x "$TARGET"/tools/*.sh
 
 for ev in "${EVENTS[@]}"; do
   mkdir -p "$ESDE/scripts/$ev"
-  cp "$HERE/scripts/$ev/arcadia-save-sync.sh" "$ESDE/scripts/$ev/arcadia-save-sync.sh"
-  chmod +x "$ESDE/scripts/$ev/arcadia-save-sync.sh"
+  for f in "$HERE/scripts/$ev"/arcadia-*.sh; do
+    cp "$f" "$ESDE/scripts/$ev/"
+    chmod +x "$ESDE/scripts/$ev/$(basename "$f")"
+  done
 done
 
 if [ ! -f "$ESDE/deck.conf" ]; then
@@ -69,20 +71,36 @@ SYNC_REMOTE="gdrive:ES-DE"      # leave empty to turn save sync off
 # SAVE_DIRS=("\$HOME/Emulation/saves")
 # Where your BIOS files are (for "Check BIOS files").
 BIOS_DIR="\$HOME/Emulation/bios"
+# Where new ROMs land (for "Sort downloads into ROM folders"), and whether to sort them each time ES-DE starts.
+INBOX="\$HOME/Downloads"
+AUTO_SORT=0
+# ROM_ROOT=""        # empty = ES-DE's ROM folder setting
+# APPIMAGE_PATH=""   # where the ES-DE AppImage lives, for "Update ES-DE"
 CONF
 fi
 
 # ES-DE's own "Setup" system: four entries, each a small script ES-DE launches like a game
 mkdir -p "$ROMS"
-mk_entry() { # file name, tool
-  printf '#!/usr/bin/env bash\nexec "%s/tools/%s"\n' "$TARGET" "$2" > "$ROMS/$1"
-  chmod +x "$ROMS/$1"
+mk_entry() { # entry file name, tool, options...
+  local name="$1" tool="$2"
+  shift 2
+  printf '#!/usr/bin/env bash\nexec "%s/tools/%s" %s\n' "$TARGET" "$tool" "$*" > "$ROMS/$name"
+  chmod +x "$ROMS/$name"
 }
 mk_entry "Sync saves now.sh" save-sync-now.sh
 mk_entry "Install emulators.sh" install-emulators.sh
 mk_entry "Update emulators.sh" update-emulators.sh
 mk_entry "Check BIOS files.sh" check-bios.sh
 mk_entry "Set up emulator controls.sh" setup-controls.sh
+mk_entry "Get started checklist.sh" get-started.sh
+mk_entry "Sort downloads into ROM folders.sh" sort-roms.sh
+mk_entry "Sort downloads and subfolders.sh" sort-roms.sh --deep
+mk_entry "Sort ROMs from a folder you pick.sh" sort-roms.sh --pick
+mk_entry "Undo last ROM sort.sh" sort-roms.sh --undo
+mk_entry "Let emulators see ROM folders.sh" grant-access.sh
+mk_entry "Back up settings.sh" backup.sh
+mk_entry "Restore latest backup.sh" backup.sh --restore
+mk_entry "Update ES-DE.sh" update-es-de.sh
 
 mkdir -p "$(dirname "$SYSTEMS")"
 remove_block

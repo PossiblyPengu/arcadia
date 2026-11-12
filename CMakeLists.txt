@@ -37,7 +37,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake/Utils
 # Define the options.
 option(GL "Set to ON if targeting Desktop OpenGL" ON)
 option(GLES "Set to ON if targeting OpenGL ES" OFF)
-option(APPLICATION_UPDATER "Set to OFF to build without the application updater" ON)
+option(APPLICATION_UPDATER "Set to ON to build with the upstream ES-DE application updater (off in this fork, which updates itself from its own releases, see deck/)" OFF)
 option(COMPILE_LOCALIZATIONS "Set to OFF to skip compilation of localization message catalogs" ON)
 option(APPIMAGE_BUILD "Set to ON when building as an AppImage" OFF)
 option(AUR_BUILD "Set to ON when building for the AUR" OFF)
