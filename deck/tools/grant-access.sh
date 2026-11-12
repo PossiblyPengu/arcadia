@@ -11,4 +11,4 @@ for row in "${DECK_EMULATORS[@]}"; do
   args=(); for d in "${dirs[@]}"; do [ -d "$d" ] && args+=("--filesystem=$d"); done
   flatpak override --user "${args[@]}" "$id" >> "$DECK_LOG" 2>&1 && { n=$((n + 1)); list+="  • $name"$'\n'; }
 done
-if [ "$n" -eq 0 ]; then deck_say "Folder access" "No Flatpak emulators are installed yet."; else deck_say "Folder access" "These can now see ${dirs[*]}:"$'\n'"$list"; fi
+if [ "$n" -eq 0 ]; then deck_say "Folder access" "No Flatpak emulators are installed yet."; else deck_mark_done folder-access; deck_say "Folder access" "These can now see ${dirs[*]}:"$'\n'"$list"; fi

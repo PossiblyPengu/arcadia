@@ -27,6 +27,7 @@
 #include "guis/GuiGameImporter.h"
 #include "guis/GuiMediaViewerOptions.h"
 #include "guis/GuiMsgBox.h"
+#include "guis/GuiSetup.h"
 #include "guis/GuiToolRunner.h"
 #include "guis/GuiOrphanedDataCleanup.h"
 #include "guis/GuiScraperMenu.h"
@@ -2060,41 +2061,8 @@ std::string GuiMenu::setupToolsDirectory()
 
 void GuiMenu::openSetup()
 {
-    auto s = new GuiSettings(_("SETUP"));
-    const std::string tools {setupToolsDirectory()};
-
-    struct Entry {
-        std::string label;
-        std::string command;
-    };
-    const std::vector<Entry> entries {
-        {_("GET STARTED CHECKLIST"), "\"" + tools + "/get-started.sh\""},
-        {_("SORT DOWNLOADS INTO ROM FOLDERS"), "\"" + tools + "/sort-roms.sh\""},
-        {_("SORT DOWNLOADS AND SUBFOLDERS"), "\"" + tools + "/sort-roms.sh\" --deep"},
-        {_("UNDO LAST ROM SORT"), "\"" + tools + "/sort-roms.sh\" --undo"},
-        {_("INSTALL EMULATORS"), "\"" + tools + "/install-emulators.sh\""},
-        {_("UPDATE EMULATORS"), "\"" + tools + "/update-emulators.sh\""},
-        {_("CHECK BIOS FILES"), "\"" + tools + "/check-bios.sh\""},
-        {_("SET UP EMULATOR CONTROLS"), "\"" + tools + "/setup-controls.sh\""},
-        {_("LET EMULATORS SEE ROM FOLDERS"), "\"" + tools + "/grant-access.sh\""},
-        {_("SYNC SAVES NOW"), "\"" + tools + "/save-sync-now.sh\""},
-        {_("BACK UP SETTINGS"), "\"" + tools + "/backup.sh\""},
-        {_("RESTORE LATEST BACKUP"), "\"" + tools + "/backup.sh\" --restore"},
-        {_("UPDATE ARCADIA"), "\"" + tools + "/update-arcadia.sh\""}};
-
-    for (const Entry& entry : entries) {
-        ComponentListRow row;
-        row.addElement(std::make_shared<TextComponent>(entry.label, Font::get(FONT_SIZE_MEDIUM),
-                                                       mMenuColorPrimary),
-                       true);
-        row.addElement(mMenu.makeArrow(), false);
-        const std::string label {entry.label};
-        const std::string command {entry.command};
-        row.makeAcceptInputHandler(
-            [this, label, command] { mWindow->pushGui(new GuiToolRunner(label, command)); });
-        s->addRow(row);
-    }
-    mWindow->pushGui(s);
+    // Arcadia's Setup screen: the checklist with its progress ring, and the setup tools (GuiSetup).
+    mWindow->pushGui(new GuiSetup(setupToolsDirectory()));
 }
 
 void GuiMenu::openUtilities()

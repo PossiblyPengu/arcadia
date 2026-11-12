@@ -1,52 +1,61 @@
 <theme>
-    <!-- Ink: the default. Deep navy, one blue accent, soft white text. -->
-    <colorScheme name="ink">
+    <!-- Ember: the default. A warm dark ground, cream text, one amber accent (DESIGN.md). -->
+    <colorScheme name="ember">
         <variables>
-            <inkColor>10121a</inkColor>
-            <surfaceColor>1b1e2b</surfaceColor>
-            <raisedColor>20232f</raisedColor>
-            <lineColor>2d3140</lineColor>
-            <textColor>f1f3f9</textColor>
-            <mutedColor>9aa1b4</mutedColor>
-            <faintColor>5d6477</faintColor>
-            <accentColor>5aa9ff</accentColor>
-            <accentSoftColor>5aa9ff33</accentSoftColor>
-            <glowTint>ffffffff</glowTint>
-            <scrimColor>0e0f14e6</scrimColor>
-        </variables>
-    </colorScheme>
-
-    <!-- Light: for bright rooms. Same structure, inverted values. -->
-    <colorScheme name="paper">
-        <variables>
-            <inkColor>eef0f5</inkColor>
-            <surfaceColor>e2e5ee</surfaceColor>
-            <raisedColor>d6dae6</raisedColor>
-            <lineColor>c2c7d6</lineColor>
-            <textColor>14151b</textColor>
-            <mutedColor>4d5468</mutedColor>
-            <faintColor>7d8498</faintColor>
-            <accentColor>1f6fd1</accentColor>
-            <accentSoftColor>1f6fd133</accentSoftColor>
-            <glowTint>ffffff99</glowTint>
-            <scrimColor>eef0f5e6</scrimColor>
-        </variables>
-    </colorScheme>
-
-    <!-- OLED: true black, so unlit pixels stay off. -->
-    <colorScheme name="oled">
-        <variables>
-            <inkColor>000000</inkColor>
-            <surfaceColor>0a0b0f</surfaceColor>
-            <raisedColor>14161d</raisedColor>
-            <lineColor>23262f</lineColor>
-            <textColor>f1f3f9</textColor>
-            <mutedColor>9aa1b4</mutedColor>
-            <faintColor>5d6477</faintColor>
-            <accentColor>5aa9ff</accentColor>
-            <accentSoftColor>5aa9ff33</accentSoftColor>
+            <groundColor>1c1613</groundColor>
+            <surfaceColor>2a211c</surfaceColor>
+            <raisedColor>362a23</raisedColor>
+            <lineColor>3a2e27</lineColor>
+            <textColor>f7ecde</textColor>
+            <mutedColor>c9b8a6</mutedColor>
+            <faintColor>8a7666</faintColor>
+            <accentColor>f4a259</accentColor>
             <glowTint>ffffffcc</glowTint>
-            <scrimColor>000000e6</scrimColor>
+        </variables>
+    </colorScheme>
+
+    <!-- Moss: the same ground with a sage accent. -->
+    <colorScheme name="moss">
+        <variables>
+            <groundColor>1c1613</groundColor>
+            <surfaceColor>2a211c</surfaceColor>
+            <raisedColor>362a23</raisedColor>
+            <lineColor>3a2e27</lineColor>
+            <textColor>f7ecde</textColor>
+            <mutedColor>c9b8a6</mutedColor>
+            <faintColor>8a7666</faintColor>
+            <accentColor>a8c69f</accentColor>
+            <glowTint>ffffffcc</glowTint>
+        </variables>
+    </colorScheme>
+
+    <!-- Dusk: the same ground with a lavender accent. -->
+    <colorScheme name="dusk">
+        <variables>
+            <groundColor>1c1613</groundColor>
+            <surfaceColor>2a211c</surfaceColor>
+            <raisedColor>362a23</raisedColor>
+            <lineColor>3a2e27</lineColor>
+            <textColor>f7ecde</textColor>
+            <mutedColor>c9b8a6</mutedColor>
+            <faintColor>8a7666</faintColor>
+            <accentColor>b9a6dc</accentColor>
+            <glowTint>ffffffcc</glowTint>
+        </variables>
+    </colorScheme>
+
+    <!-- Linen: for bright rooms. Warm paper, dark brown text, a deeper amber. -->
+    <colorScheme name="linen">
+        <variables>
+            <groundColor>f4ebdf</groundColor>
+            <surfaceColor>fbf5ec</surfaceColor>
+            <raisedColor>efe2d2</raisedColor>
+            <lineColor>e6d8c7</lineColor>
+            <textColor>2a1f19</textColor>
+            <mutedColor>6e5b4c</mutedColor>
+            <faintColor>a89280</faintColor>
+            <accentColor>c8621e</accentColor>
+            <glowTint>ffffff99</glowTint>
         </variables>
     </colorScheme>
 </theme>

@@ -32,18 +32,19 @@ SliderComponent::SliderComponent(float min, float max, float increment, const st
 
     mSliderText = std::make_unique<TextComponent>("", Font::get(FONT_SIZE_SMALL, FONT_PATH_LIGHT),
                                                   mMenuColorPrimary);
-    setSize(mWindow->peekGui()->getSize().x * 0.26f,
-            Font::get(FONT_SIZE_MEDIUM)->getLetterHeight());
+    // Arcadia: sized from the screen, since the menu on top may be the narrow settings rail.
+    setSize(std::max(mWindow->peekGui()->getSize().x * 0.26f, mRenderer->getScreenWidth() * 0.2f),
+            std::round(Font::get(FONT_SIZE_MEDIUM)->getLetterHeight() * 1.4f));
 
     // Some reasonable default value.
     mValue = (max + min) / 2.0f;
 
-    mKnob.setResize(0.0f, std::round(mSize.y * 0.7f));
+    mKnob.setResize(0.0f, std::round(mSize.y * 0.9f));
     mKnob.setOrigin(0.5f, 0.0f);
     mKnob.setImage(":/graphics/slider_knob.svg");
     mKnob.setColorShift(mMenuColorPill);
 
-    mKnobDisabled.setResize(0.0f, std::round(mSize.y * 0.7f));
+    mKnobDisabled.setResize(0.0f, std::round(mSize.y * 0.9f));
     mKnobDisabled.setOrigin(0.5f, 0.0f);
     mKnobDisabled.setImage(":/graphics/slider_knob.svg");
     mKnobDisabled.setColorShift(mMenuColorSliderKnobDisabled);
@@ -170,7 +171,7 @@ void SliderComponent::onValueChanged()
         mSliderText->setPosition(mSize.x - mSliderTextSize.x, (mSize.y - mSliderTextSize.y) / 2.0f);
     }
 
-    mKnob.setResize(0.0f, std::round(mSize.y * 0.7f));
+    mKnob.setResize(0.0f, std::round(mSize.y * 0.9f));
 
     if (mRenderer->getScreenWidth() > mRenderer->getScreenHeight())
         mBarHeight = std::round(6.0f * mRenderer->getScreenHeightModifier());

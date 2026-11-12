@@ -63,7 +63,7 @@ GuiMsgBox::GuiMsgBox(const std::string& text,
     // Put the buttons into a ComponentGrid.
     mButtonGrid = MenuComponent::makeButtonGrid(mButtons);
     mGrid.setEntry(mButtonGrid, glm::ivec2 {0, 1}, true, false, glm::ivec2 {1, 1},
-                   GridFlags::BORDER_TOP);
+                   GridFlags::BORDER_NONE);
 
     calculateSize();
 
@@ -85,8 +85,9 @@ void GuiMsgBox::calculateSize()
 
     float width {std::floor(glm::clamp(0.60f * aspectValue, 0.60f, mMaxWidthMultiplier) *
                             mRenderer->getScreenWidth())};
+    // Arcadia: dialogs get room to breathe (DESIGN.md).
     const float minWidth {
-        floorf(glm::clamp(0.30f * aspectValue, 0.10f, 0.50f) * mRenderer->getScreenWidth())};
+        floorf(glm::clamp(0.38f * aspectValue, 0.10f, 0.55f) * mRenderer->getScreenWidth())};
 
     // Decide final width.
     if (mMsg->getSize().x < width && mButtonGrid->getSize().x < width) {
@@ -103,11 +104,12 @@ void GuiMsgBox::calculateSize()
     mMsg->setAutoCalcExtent(glm::vec2 {0, 1});
     mMsg->setSize(width, 0.0f);
 
-    const float msgHeight {std::max(Font::get(FONT_SIZE_LARGE)->getHeight(),
-                                    mMsg->getSize().y * VERTICAL_PADDING_MODIFIER)};
+    const float msgHeight {std::max(Font::get(FONT_SIZE_LARGE)->getHeight() * 1.8f,
+                                    mMsg->getSize().y * VERTICAL_PADDING_MODIFIER * 1.3f)};
     setSize(std::round(width + std::ceil(HORIZONTAL_PADDING_PX * 2.0f *
                                          mRenderer->getScreenWidthModifier())),
-            std::round(msgHeight + mButtonGrid->getSize().y));
+            std::round(msgHeight + mButtonGrid->getSize().y +
+                       mRenderer->getScreenHeight() * 0.03f));
 }
 
 void GuiMsgBox::changeText(const std::string& newText)
@@ -133,7 +135,8 @@ bool GuiMsgBox::input(InputConfig* config, Input input)
 void GuiMsgBox::onSizeChanged()
 {
     mGrid.setSize(mSize);
-    mGrid.setRowHeightPerc(1, mButtonGrid->getSize().y / mSize.y);
+    mGrid.setRowHeightPerc(
+        1, (mButtonGrid->getSize().y + mRenderer->getScreenHeight() * 0.03f) / mSize.y);
 
     mMsg->setSize(mSize.x -
                       std::ceil(HORIZONTAL_PADDING_PX * 2.0f * Renderer::getScreenWidthModifier()),

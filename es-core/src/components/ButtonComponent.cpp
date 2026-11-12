@@ -92,7 +92,7 @@ void ButtonComponent::setText(const std::string& text,
         setSize(
             std::max(mButtonText->getSize().x + (40.0f * mRenderer->getScreenResolutionModifier()),
                      mMinWidth),
-            mButtonText->getSize().y);
+            std::round(mButtonText->getSize().y * 1.5f));
     }
 
     updateHelpPrompts();
@@ -144,7 +144,14 @@ void ButtonComponent::render(const glm::mat4& parentTrans)
         }
     }
     else {
-        mBox.render(trans);
+        // Arcadia (DESIGN.md): buttons are pills, the focused one filled with the accent.
+        const float w {mSize.x - mPadding.x - mPadding.z};
+        const float h {mSize.y - mPadding.y - mPadding.w};
+        const unsigned int fill {mFocused ? mMenuColorAccent : mMenuColorButtonFlatUnfocused};
+        mRenderer->drawRoundedRect(trans, mPadding.x, mPadding.y, w, h,
+                                   (fill & 0xFFFFFF00) |
+                                       static_cast<unsigned int>((fill & 0xFF) * mOpacity),
+                                   std::round(h / 2.0f));
     }
 
     const glm::vec3 centerOffset {(mSize.x - mButtonText->getSize().x) / 2.0f,

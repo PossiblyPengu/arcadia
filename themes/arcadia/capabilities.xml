@@ -7,23 +7,48 @@
 
     <language>en_US</language>
     <language>en_GB</language>
+    <language>bs_BA</language>
+    <language>ca_ES</language>
+    <language>de_DE</language>
+    <language>es_ES</language>
+    <language>fr_FR</language>
+    <language>hr_HR</language>
+    <language>it_IT</language>
+    <language>nl_NL</language>
+    <language>pl_PL</language>
+    <language>pt_BR</language>
+    <language>pt_PT</language>
+    <language>ro_RO</language>
+    <language>ru_RU</language>
+    <language>sr_RS</language>
+    <language>sv_SE</language>
+    <language>vi_VN</language>
+    <language>ar_SA</language>
+    <language>ja_JP</language>
+    <language>ko_KR</language>
+    <language>zh_CN</language>
+    <language>zh_TW</language>
 
     <aspectRatio>16:9</aspectRatio>
     <aspectRatio>16:10</aspectRatio>
     <aspectRatio>4:3</aspectRatio>
     <aspectRatio>21:9</aspectRatio>
 
-    <colorScheme name="ink">
-        <label language="en_US">Ink (dark)</label>
-        <label language="en_GB">Ink (dark)</label>
+    <colorScheme name="ember">
+        <label language="en_US">Ember</label>
+        <label language="en_GB">Ember</label>
     </colorScheme>
-    <colorScheme name="oled">
-        <label language="en_US">OLED black</label>
-        <label language="en_GB">OLED black</label>
+    <colorScheme name="moss">
+        <label language="en_US">Moss</label>
+        <label language="en_GB">Moss</label>
     </colorScheme>
-    <colorScheme name="paper">
-        <label language="en_US">Paper (light)</label>
-        <label language="en_GB">Paper (light)</label>
+    <colorScheme name="dusk">
+        <label language="en_US">Dusk</label>
+        <label language="en_GB">Dusk</label>
+    </colorScheme>
+    <colorScheme name="linen">
+        <label language="en_US">Linen (light)</label>
+        <label language="en_GB">Linen (light)</label>
     </colorScheme>
 
     <variant name="shelf">

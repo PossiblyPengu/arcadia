@@ -7,6 +7,7 @@
 //
 
 #include "components/HelpComponent.h"
+#include "utils/LocalizationUtil.h"
 
 #include "Settings.h"
 #include "Window.h"
@@ -675,6 +676,9 @@ void HelpComponent::updateGrid()
             lblInput = Utils::String::toLower(lblInput);
         else if (mLetterCase == "capitalize")
             lblInput = Utils::String::toCapitalized(lblInput);
+        else if (mLetterCase == "sentence")
+            // Arcadia: "Close menu", with names and acronyms kept (Utils::Localization::readable).
+            lblInput = Utils::Localization::readable(Utils::String::toUpper(lblInput));
         else
             lblInput = Utils::String::toUpper(lblInput);
         auto lbl = std::make_shared<TextComponent>(lblInput, font,

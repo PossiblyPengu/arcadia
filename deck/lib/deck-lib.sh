@@ -16,6 +16,10 @@ INBOX="$HOME/Downloads"           # where new ROMs land, for "Sort downloads int
 AUTO_SORT=0                       # 1 = sort the inbox into ROM folders each time Arcadia starts
 APPIMAGE_PATH=""                  # where the Arcadia AppImage lives (for "Update Arcadia"); empty = the running one or ~/Applications
 
+# deck_mark_done NAME / deck_is_done NAME: remember that a one-off setup step has been done (for the Setup checklist).
+deck_mark_done() { mkdir -p "$DECK_HOME/state" 2>/dev/null && : > "$DECK_HOME/state/$1"; }
+deck_is_done() { [ -f "$DECK_HOME/state/$1" ]; }
+
 deck_rom_root() {
   local v="${ARCADIA_ROMS:-$ROM_ROOT}" settings="$DECK_HOME/settings/es_settings.xml"
   if [ -z "$v" ] && [ -f "$settings" ]; then v="$(sed -n 's/.*name="ROMDirectory" value="\([^"]*\)".*/\1/p' "$settings" | head -n 1)"; fi
