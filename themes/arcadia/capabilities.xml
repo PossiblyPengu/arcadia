@@ -35,12 +35,12 @@
     <aspectRatio>21:9</aspectRatio>
 
     <colorScheme name="cloud">
-        <label language="en_US">Cloud (light pastels)</label>
-        <label language="en_GB">Cloud (light pastels)</label>
+        <label language="en_US">Cloud (light)</label>
+        <label language="en_GB">Cloud (light)</label>
     </colorScheme>
     <colorScheme name="dusk">
-        <label language="en_US">Dusk (pastels in the dark)</label>
-        <label language="en_GB">Dusk (pastels in the dark)</label>
+        <label language="en_US">Dusk (dark)</label>
+        <label language="en_GB">Dusk (dark)</label>
     </colorScheme>
 
     <variant name="shelf">
