@@ -1,0 +1,68 @@
+<!--
+    Theme capabilities for arcadia
+-->
+
+<themeCapabilities>
+    <themeName>Arcadia</themeName>
+
+    <language>en_US</language>
+    <language>en_GB</language>
+
+    <aspectRatio>16:9</aspectRatio>
+    <aspectRatio>16:10</aspectRatio>
+    <aspectRatio>4:3</aspectRatio>
+    <aspectRatio>21:9</aspectRatio>
+
+    <colorScheme name="ink">
+        <label language="en_US">Ink (dark)</label>
+        <label language="en_GB">Ink (dark)</label>
+    </colorScheme>
+    <colorScheme name="oled">
+        <label language="en_US">OLED black</label>
+        <label language="en_GB">OLED black</label>
+    </colorScheme>
+    <colorScheme name="paper">
+        <label language="en_US">Paper (light)</label>
+        <label language="en_GB">Paper (light)</label>
+    </colorScheme>
+
+    <variant name="shelf">
+        <label language="en_US">Cover shelf</label>
+        <label language="en_GB">Cover shelf</label>
+        <selectable>true</selectable>
+    </variant>
+    <variant name="list">
+        <label language="en_US">Plain list</label>
+        <label language="en_GB">Plain list</label>
+        <selectable>true</selectable>
+    </variant>
+
+    <transitions name="slide">
+        <label language="en_US">Slide</label>
+        <label language="en_GB">Slide</label>
+        <selectable>true</selectable>
+        <systemToSystem>instant</systemToSystem>
+        <systemToGamelist>slide</systemToGamelist>
+        <gamelistToGamelist>instant</gamelistToGamelist>
+        <gamelistToSystem>slide</gamelistToSystem>
+        <startupToSystem>slide</startupToSystem>
+        <startupToGamelist>slide</startupToGamelist>
+    </transitions>
+    <transitions name="fade">
+        <label language="en_US">Fade</label>
+        <label language="en_GB">Fade</label>
+        <selectable>true</selectable>
+        <systemToSystem>instant</systemToSystem>
+        <systemToGamelist>fade</systemToGamelist>
+        <gamelistToGamelist>instant</gamelistToGamelist>
+        <gamelistToSystem>fade</gamelistToSystem>
+        <startupToSystem>fade</startupToSystem>
+        <startupToGamelist>fade</startupToGamelist>
+    </transitions>
+
+    <suppressTransitionProfiles>
+        <entry>builtin-instant</entry>
+        <entry>builtin-slide</entry>
+        <entry>builtin-fade</entry>
+    </suppressTransitionProfiles>
+</themeCapabilities>

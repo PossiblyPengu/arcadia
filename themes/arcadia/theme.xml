@@ -1,0 +1,399 @@
+<!--
+    Arcadia for ES-DE Frontend (arcadia)
+
+    A theme with its own design language, see DESIGN.md. Two views:
+      system   a ring of console logos: the one you're on is large and lit by a glow in its own colour,
+               the others are dimmed; its name, era and game count sit below.
+      gamelist a shelf of covers (or a plain list, as a variant): the selected game is large, with its details
+               underneath; games without art get a labelled tile.
+
+    Console logos and pictures come from the Linear theme bundled with ES-DE (../linear-es-de/system).
+-->
+
+<theme>
+    <include>./colors.xml</include>
+
+    <variables>
+        <titleFont>./assets/fonts/Akrobat-Bold.ttf</titleFont>
+        <labelFont>./assets/fonts/Akrobat-SemiBold.ttf</labelFont>
+        <bodyFont>./assets/fonts/Akrobat-Regular.ttf</bodyFont>
+        <pixel>./assets/pixel.png</pixel>
+        <logos>./../linear-es-de/system/logos</logos>
+        <systemart>./../linear-es-de/system/systemart</systemart>
+    </variables>
+
+    <variant name="all">
+        <!-- ===== both views: ground, clock, status, help ===== -->
+        <view name="system, gamelist">
+            <image name="ground">
+                <pos>0 0</pos>
+                <size>1 1</size>
+                <origin>0 0</origin>
+                <path>${pixel}</path>
+                <color>${inkColor}</color>
+                <zIndex>0</zIndex>
+            </image>
+            <image name="floorFade">
+                <pos>0 1</pos>
+                <size>1 0.3</size>
+                <origin>0 1</origin>
+                <path>./assets/fade-down.png</path>
+                <color>${surfaceColor}</color>
+                <zIndex>1</zIndex>
+            </image>
+            <clock name="clock">
+                <pos>0.035 0.045</pos>
+                <origin>0 0.5</origin>
+                <fontPath>${labelFont}</fontPath>
+                <fontSize>0.034</fontSize>
+                <color>${mutedColor}</color>
+                <format>%H:%M</format>
+            </clock>
+            <systemstatus name="status">
+                <pos>0.965 0.045</pos>
+                <origin>1 0.5</origin>
+                <height>0.036</height>
+                <fontPath>${labelFont}</fontPath>
+                <textRelativeScale>0.8</textRelativeScale>
+                <color>${mutedColor}</color>
+                <entrySpacing>0.006</entrySpacing>
+            </systemstatus>
+            <helpsystem name="help">
+                <pos>0.5 0.968</pos>
+                <origin>0.5 1</origin>
+                <fontPath>${labelFont}</fontPath>
+                <textColor>${mutedColor}</textColor>
+                <textColorDimmed>${faintColor}</textColorDimmed>
+                <iconColor>${mutedColor}</iconColor>
+                <iconColorDimmed>${faintColor}</iconColorDimmed>
+                <entryRelativeScale>0.95</entryRelativeScale>
+                <letterCase>capitalize</letterCase>
+            </helpsystem>
+        </view>
+
+        <!-- ===== system view: a ring of consoles ===== -->
+        <view name="system">
+            <image name="systemGlow">
+                <pos>0.5 0.36</pos>
+                <maxSize>1.15 0.95</maxSize>
+                <origin>0.5 0.5</origin>
+                <path>./assets/glow/${system.theme}.png</path>
+                <default>./assets/glow/default.png</default>
+                <color>${glowTint}</color>
+                <interpolation>linear</interpolation>
+                <zIndex>2</zIndex>
+            </image>
+            <image name="systemPicture">
+                <pos>0.5 0.33</pos>
+                <maxSize>0.62 0.46</maxSize>
+                <origin>0.5 0.5</origin>
+                <path>${systemart}/${system.theme}.webp</path>
+                <interpolation>linear</interpolation>
+                <zIndex>8</zIndex>
+            </image>
+            <carousel name="systemCarousel">
+                <pos>0.5 0.665</pos>
+                <size>1 0.15</size>
+                <origin>0.5 0.5</origin>
+                <type>horizontal</type>
+                <staticImage>${logos}/${system.theme}.svg</staticImage>
+                <maxItemCount>7.4</maxItemCount>
+                <itemSize>0.12 0.085</itemSize>
+                <itemScale>1.5</itemScale>
+                <itemVerticalAlignment>center</itemVerticalAlignment>
+                <imageFit>contain</imageFit>
+                <unfocusedItemOpacity>0.35</unfocusedItemOpacity>
+                <unfocusedItemSaturation>0.2</unfocusedItemSaturation>
+                <fastScrolling>true</fastScrolling>
+                <color>00000000</color>
+                <text>${system.fullName}</text>
+                <textRelativeScale>0.9</textRelativeScale>
+                <textColor>${textColor}</textColor>
+                <textBackgroundColor>00000000</textBackgroundColor>
+                <fontPath>${titleFont}</fontPath>
+                <fontSize>0.03</fontSize>
+                <letterCase>none</letterCase>
+                <letterCaseAutoCollections>capitalize</letterCaseAutoCollections>
+                <zIndex>10</zIndex>
+            </carousel>
+            <text name="systemName, autoCollectionName, customCollectionName">
+                <pos>0.5 0.8</pos>
+                <size>0.9 0.06</size>
+                <origin>0.5 0.5</origin>
+                <fontPath>${titleFont}</fontPath>
+                <fontSize>0.036</fontSize>
+                <horizontalAlignment>center</horizontalAlignment>
+                <color>${mutedColor}</color>
+                <letterCase>uppercase</letterCase>
+                <zIndex>20</zIndex>
+            </text>
+            <text name="systemName">
+                <text>${system.fullName.noCollections}</text>
+            </text>
+            <text name="autoCollectionName">
+                <text>${system.fullName.autoCollections}</text>
+            </text>
+            <text name="customCollectionName">
+                <text>${system.fullName.customCollections}</text>
+            </text>
+            <text name="gameCounter">
+                <pos>0.5 0.865</pos>
+                <size>0.9 0.045</size>
+                <origin>0.5 0.5</origin>
+                <systemdata>gamecount</systemdata>
+                <fontPath>${labelFont}</fontPath>
+                <fontSize>0.034</fontSize>
+                <horizontalAlignment>center</horizontalAlignment>
+                <color>${accentColor}</color>
+                <letterCase>capitalize</letterCase>
+                <zIndex>20</zIndex>
+            </text>
+        </view>
+
+        <!-- ===== gamelist view: the shelf ===== -->
+        <view name="gamelist">
+            <image name="gameGlow">
+                <pos>0.5 0.4</pos>
+                <maxSize>1.2 0.95</maxSize>
+                <origin>0.5 0.5</origin>
+                <path>./assets/glow/${system.theme}.png</path>
+                <default>./assets/glow/default.png</default>
+                <color>${glowTint}</color>
+                <interpolation>linear</interpolation>
+                <zIndex>2</zIndex>
+            </image>
+            <text name="systemName, autoCollectionName, customCollectionName">
+                <pos>0.5 0.045</pos>
+                <size>0.5 0.05</size>
+                <origin>0.5 0.5</origin>
+                <fontPath>${labelFont}</fontPath>
+                <fontSize>0.034</fontSize>
+                <horizontalAlignment>center</horizontalAlignment>
+                <color>${mutedColor}</color>
+                <letterCase>uppercase</letterCase>
+                <zIndex>60</zIndex>
+            </text>
+            <text name="systemName">
+                <text>${system.fullName.noCollections}</text>
+            </text>
+            <text name="autoCollectionName">
+                <text>${system.fullName.autoCollections}</text>
+            </text>
+            <text name="customCollectionName">
+                <text>${system.fullName.customCollections}</text>
+            </text>
+            <gamelistinfo name="gamelistInfo">
+                <pos>0.965 0.105</pos>
+                <size>0.3 0.04</size>
+                <origin>1 0.5</origin>
+                <fontPath>${labelFont}</fontPath>
+                <fontSize>0.03</fontSize>
+                <horizontalAlignment>right</horizontalAlignment>
+                <color>${accentColor}</color>
+                <zIndex>60</zIndex>
+            </gamelistinfo>
+
+            <!-- details under the selected game -->
+            <text name="gameName">
+                <pos>0.5 0.715</pos>
+                <size>0.86 0.075</size>
+                <origin>0.5 0.5</origin>
+                <metadata>name</metadata>
+                <fontPath>${titleFont}</fontPath>
+                <fontSize>0.056</fontSize>
+                <horizontalAlignment>center</horizontalAlignment>
+                <color>${textColor}</color>
+                <zIndex>30</zIndex>
+            </text>
+            <!-- one quiet line of facts: year, genre, players, last played -->
+            <text name="labelYear">
+                <pos>0.29 0.765</pos>
+                <size>0.18 0.03</size>
+                <origin>0.5 0.5</origin>
+                <text>RELEASED</text>
+                <metadataElement>true</metadataElement>
+                <fontPath>${labelFont}</fontPath>
+                <fontSize>0.022</fontSize>
+                <horizontalAlignment>center</horizontalAlignment>
+                <color>${faintColor}</color>
+                <zIndex>30</zIndex>
+            </text>
+            <text name="labelGenre">
+                <pos>0.43 0.765</pos>
+                <size>0.18 0.03</size>
+                <origin>0.5 0.5</origin>
+                <text>GENRE</text>
+                <metadataElement>true</metadataElement>
+                <fontPath>${labelFont}</fontPath>
+                <fontSize>0.022</fontSize>
+                <horizontalAlignment>center</horizontalAlignment>
+                <color>${faintColor}</color>
+                <zIndex>30</zIndex>
+            </text>
+            <text name="labelPlayers">
+                <pos>0.57 0.765</pos>
+                <size>0.18 0.03</size>
+                <origin>0.5 0.5</origin>
+                <text>PLAYERS</text>
+                <metadataElement>true</metadataElement>
+                <fontPath>${labelFont}</fontPath>
+                <fontSize>0.022</fontSize>
+                <horizontalAlignment>center</horizontalAlignment>
+                <color>${faintColor}</color>
+                <zIndex>30</zIndex>
+            </text>
+            <text name="labelLastPlayed">
+                <pos>0.71 0.765</pos>
+                <size>0.18 0.03</size>
+                <origin>0.5 0.5</origin>
+                <text>LAST PLAYED</text>
+                <metadataElement>true</metadataElement>
+                <fontPath>${labelFont}</fontPath>
+                <fontSize>0.022</fontSize>
+                <horizontalAlignment>center</horizontalAlignment>
+                <color>${faintColor}</color>
+                <zIndex>30</zIndex>
+            </text>
+            <datetime name="releasedate">
+                <pos>0.29 0.8</pos>
+                <size>0.18 0.045</size>
+                <origin>0.5 0.5</origin>
+                <metadata>releasedate</metadata>
+                <format>%Y</format>
+                <defaultValue>—</defaultValue>
+                <fontPath>${labelFont}</fontPath>
+                <fontSize>0.03</fontSize>
+                <horizontalAlignment>center</horizontalAlignment>
+                <color>${accentColor}</color>
+                <zIndex>30</zIndex>
+            </datetime>
+            <text name="genre">
+                <pos>0.43 0.8</pos>
+                <size>0.18 0.045</size>
+                <origin>0.5 0.5</origin>
+                <metadata>genre</metadata>
+                <defaultValue>—</defaultValue>
+                <fontPath>${labelFont}</fontPath>
+                <fontSize>0.03</fontSize>
+                <horizontalAlignment>center</horizontalAlignment>
+                <color>${accentColor}</color>
+                <letterCase>uppercase</letterCase>
+                <zIndex>30</zIndex>
+            </text>
+            <text name="players">
+                <pos>0.57 0.8</pos>
+                <size>0.18 0.045</size>
+                <origin>0.5 0.5</origin>
+                <metadata>players</metadata>
+                <defaultValue>—</defaultValue>
+                <fontPath>${labelFont}</fontPath>
+                <fontSize>0.03</fontSize>
+                <horizontalAlignment>center</horizontalAlignment>
+                <color>${accentColor}</color>
+                <zIndex>30</zIndex>
+            </text>
+            <datetime name="lastplayed">
+                <pos>0.71 0.8</pos>
+                <size>0.18 0.045</size>
+                <origin>0.5 0.5</origin>
+                <metadata>lastplayed</metadata>
+                <displayRelative>true</displayRelative>
+                <fontPath>${labelFont}</fontPath>
+                <fontSize>0.03</fontSize>
+                <horizontalAlignment>center</horizontalAlignment>
+                <color>${mutedColor}</color>
+                <zIndex>30</zIndex>
+            </datetime>
+            <text name="description">
+                <pos>0.5 0.885</pos>
+                <size>0.66 0.075</size>
+                <origin>0.5 0.5</origin>
+                <metadata>description</metadata>
+                <container>true</container>
+                <containerScrollSpeed>1</containerScrollSpeed>
+                <containerStartDelay>4.5</containerStartDelay>
+                <containerResetDelay>7</containerResetDelay>
+                <fontPath>${bodyFont}</fontPath>
+                <fontSize>0.03</fontSize>
+                <lineSpacing>1.15</lineSpacing>
+                <horizontalAlignment>center</horizontalAlignment>
+                <color>${mutedColor}</color>
+                <zIndex>30</zIndex>
+            </text>
+            <badges name="badges">
+                <pos>0.035 0.105</pos>
+                <size>0.14 0.045</size>
+                <origin>0 0.5</origin>
+                <direction>row</direction>
+                <slots>favorite, completed, broken, altemulator</slots>
+                <zIndex>60</zIndex>
+            </badges>
+        </view>
+    </variant>
+
+    <!-- cover shelf (default) -->
+    <variant name="shelf">
+        <view name="gamelist">
+            <carousel name="gameShelf">
+                <pos>0.5 0.37</pos>
+                <size>1 0.5</size>
+                <origin>0.5 0.5</origin>
+                <type>horizontal</type>
+                <imageType>cover</imageType>
+                <maxItemCount>5.2</maxItemCount>
+                <itemSize>0.155 0.28</itemSize>
+                <itemScale>1.5</itemScale>
+                <itemVerticalAlignment>center</itemVerticalAlignment>
+                <imageFit>contain</imageFit>
+                <imageCornerRadius>0.006</imageCornerRadius>
+                <unfocusedItemOpacity>0.45</unfocusedItemOpacity>
+                <unfocusedItemSaturation>0.4</unfocusedItemSaturation>
+                <fastScrolling>true</fastScrolling>
+                <color>00000000</color>
+                <textRelativeScale>0.92</textRelativeScale>
+                <textColor>${textColor}</textColor>
+                <textBackgroundColor>${raisedColor}</textBackgroundColor>
+                <fontPath>${labelFont}</fontPath>
+                <fontSize>0.04</fontSize>
+                <lineSpacing>1.1</lineSpacing>
+                <zIndex>10</zIndex>
+            </carousel>
+        </view>
+    </variant>
+
+    <!-- plain list, for big libraries -->
+    <variant name="list">
+        <view name="gamelist">
+            <textlist name="gamelistTextlist">
+                <pos>0.035 0.17</pos>
+                <size>0.45 0.52</size>
+                <origin>0 0</origin>
+                <selectorColor>${accentSoftColor}</selectorColor>
+                <selectedColor>${textColor}</selectedColor>
+                <primaryColor>${mutedColor}</primaryColor>
+                <secondaryColor>${faintColor}</secondaryColor>
+                <fontPath>${labelFont}</fontPath>
+                <fontSize>0.04</fontSize>
+                <horizontalAlignment>left</horizontalAlignment>
+                <horizontalMargin>0.012</horizontalMargin>
+                <lineSpacing>1.5</lineSpacing>
+                <letterCase>none</letterCase>
+                <zIndex>20</zIndex>
+            </textlist>
+            <image name="gameCover">
+                <pos>0.76 0.42</pos>
+                <maxSize>0.34 0.5</maxSize>
+                <origin>0.5 0.5</origin>
+                <imageType>cover</imageType>
+                <defaultImage>./assets/placeholder.png</defaultImage>
+                <cornerRadius>0.006</cornerRadius>
+                <interpolation>linear</interpolation>
+                <zIndex>20</zIndex>
+            </image>
+            <text name="gameName">
+                <pos>0.76 0.715</pos>
+                <size>0.4 0.075</size>
+            </text>
+        </view>
+    </variant>
+</theme>

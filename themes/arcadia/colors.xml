@@ -1,0 +1,52 @@
+<theme>
+    <!-- Ink: the default. Deep navy, one blue accent, soft white text. -->
+    <colorScheme name="ink">
+        <variables>
+            <inkColor>10121a</inkColor>
+            <surfaceColor>1b1e2b</surfaceColor>
+            <raisedColor>20232f</raisedColor>
+            <lineColor>2d3140</lineColor>
+            <textColor>f1f3f9</textColor>
+            <mutedColor>9aa1b4</mutedColor>
+            <faintColor>5d6477</faintColor>
+            <accentColor>5aa9ff</accentColor>
+            <accentSoftColor>5aa9ff33</accentSoftColor>
+            <glowTint>ffffffff</glowTint>
+            <scrimColor>0e0f14e6</scrimColor>
+        </variables>
+    </colorScheme>
+
+    <!-- Light: for bright rooms. Same structure, inverted values. -->
+    <colorScheme name="paper">
+        <variables>
+            <inkColor>eef0f5</inkColor>
+            <surfaceColor>e2e5ee</surfaceColor>
+            <raisedColor>d6dae6</raisedColor>
+            <lineColor>c2c7d6</lineColor>
+            <textColor>14151b</textColor>
+            <mutedColor>4d5468</mutedColor>
+            <faintColor>7d8498</faintColor>
+            <accentColor>1f6fd1</accentColor>
+            <accentSoftColor>1f6fd133</accentSoftColor>
+            <glowTint>ffffff99</glowTint>
+            <scrimColor>eef0f5e6</scrimColor>
+        </variables>
+    </colorScheme>
+
+    <!-- OLED: true black, so unlit pixels stay off. -->
+    <colorScheme name="oled">
+        <variables>
+            <inkColor>000000</inkColor>
+            <surfaceColor>0a0b0f</surfaceColor>
+            <raisedColor>14161d</raisedColor>
+            <lineColor>23262f</lineColor>
+            <textColor>f1f3f9</textColor>
+            <mutedColor>9aa1b4</mutedColor>
+            <faintColor>5d6477</faintColor>
+            <accentColor>5aa9ff</accentColor>
+            <accentSoftColor>5aa9ff33</accentSoftColor>
+            <glowTint>ffffffcc</glowTint>
+            <scrimColor>000000e6</scrimColor>
+        </variables>
+    </colorScheme>
+</theme>
