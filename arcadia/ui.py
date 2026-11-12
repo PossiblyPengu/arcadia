@@ -885,9 +885,9 @@ class MainWindow(QMainWindow):
         elif search:
             self.empty.show_message(f"Nothing matches “{search}”", "Try a different search, or clear it to see everything.", [("Clear search", self.search.clear, True)])
         elif view == VIEW_FAVORITES:
-            self.empty.show_message("No favorites yet", "Select a game and press Ctrl+D (or the Favorite button) to keep it here.", [])
+            self.empty.show_message("No favorites yet", "Select a game and press Ctrl+D (or the Favorite button) to keep it here.", [("Choose a console", self.show_consoles, True)])
         elif view == VIEW_RECENT:
-            self.empty.show_message("Nothing played yet", "Games you play show up here, most recent first.", [])
+            self.empty.show_message("Nothing played yet", "Games you play show up here, most recent first.", [("Choose a console", self.show_consoles, True)])
         else:
             name = self._system_name(view) if view else "this system"
             folder = self.config.rom_root_path
@@ -1005,7 +1005,7 @@ class MainWindow(QMainWindow):
         try:
             plan = resolve_launch(self.config, system, Path(row["path"]), self._launch_extras(key))
         except LaunchError as exc:
-            QMessageBox.warning(self, "Cannot launch", str(exc))
+            self._launch_problem(str(exc))
             return
         args = plan.args
 
@@ -1027,11 +1027,26 @@ class MainWindow(QMainWindow):
         self.toast.show_message(f"Launching {row['title']}…" + (" with your installed copy" if plan.via.startswith("local:") else ""))
         self._update_running_state()
 
+    def _launch_problem(self, text: str) -> None:
+        """A game couldn't start: say why, and put the likely fixes one press away instead of leaving a dead end."""
+        box = QMessageBox(self)
+        box.setIcon(QMessageBox.Icon.Warning)
+        box.setWindowTitle("Cannot launch")
+        box.setText(text)
+        emulators = box.addButton("Install or update emulators…", QMessageBox.ButtonRole.AcceptRole)
+        settings = box.addButton("Launch commands (Settings)…", QMessageBox.ButtonRole.ActionRole)
+        box.addButton("Close", QMessageBox.ButtonRole.RejectRole)
+        box.exec()
+        if box.clickedButton() is emulators:
+            self.open_emulators()
+        elif box.clickedButton() is settings:
+            self.open_settings()
+
     def _on_process_error(self, error) -> None:
         if error == QProcess.ProcessError.FailedToStart and self.process is not None:
             cmd = " ".join([self.process.program()] + self.process.arguments())
-            QMessageBox.warning(self, "Cannot launch", f"Could not start:\n{cmd}\n\nCheck the launch command in Settings.")
             self._end_session(record=False)
+            self._launch_problem(f"Could not start:\n{cmd}\n\nThe emulator may not be installed, or the launch command is wrong.")
 
     def _on_finished(self, _exit_code, _exit_status) -> None:
         if self.process is not None:

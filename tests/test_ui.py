@@ -1561,3 +1561,18 @@ def test_import_searches_subfolders_when_told(qapp, tmp_path, asked):
         assert asked == [["Deep.nes", "Shallow.nes"]]
     finally:
         win.close()
+
+
+def test_launch_problem_offers_the_fixes(window, monkeypatch):
+    from PySide6.QtWidgets import QMessageBox
+
+    opened = []
+    monkeypatch.setattr(window, "open_emulators", lambda: opened.append("emulators"))
+    monkeypatch.setattr(window, "open_settings", lambda: opened.append("settings"))
+    seen = []
+    monkeypatch.setattr(QMessageBox, "exec", lambda self: seen.append([b.text() for b in self.buttons()]) or 0)
+    for want in ("Install", "Launch commands", "Close"):
+        monkeypatch.setattr(QMessageBox, "clickedButton", lambda self, w=want: _click(self, w))
+        window._launch_problem("nope")
+    assert opened == ["emulators", "settings"] and len(seen[0]) == 3
+
