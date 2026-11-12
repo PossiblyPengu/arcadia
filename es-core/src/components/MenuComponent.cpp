@@ -198,6 +198,10 @@ void MenuComponent::addButton(const std::string& name,
     mButtons.push_back(std::make_shared<ButtonComponent>(name, helpText, callback));
     updateGrid();
     updateSize();
+    // A card keeps its size when buttons are added, so setSize() does nothing and the button row would
+    // keep the height it had without buttons, leaving the buttons half outside the card.
+    if (mSize.y > 0.0f)
+        mGrid.setRowHeightPerc(3, getButtonGridHeight() / mSize.y);
 }
 
 void MenuComponent::updateGrid()
