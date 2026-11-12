@@ -2,7 +2,9 @@
 
 Arcadia is a full fork of ES-DE for the Steam Deck. Every screen, menu and dialog follows one cozy design language: a pale
 pastel ground, white cards, soft pastel colour everywhere, rounded shapes, one accent for focus, and plain sentence-case words. This file is the reference; the
-theme (`themes/arcadia`) and the program's own screens both take their values from it.
+theme (`themes/arcadia`) and the program's own screens both take their values from it. Its sister app
+[Deckhand](https://github.com/PossiblyPengu/deckhand) uses the same colours, fonts and shapes (its `deckhand/theme.py`), so a change here
+should be mirrored there.
 
 ## Principles
 
