@@ -88,10 +88,10 @@ void applyDisplayDefaults(bool forceFullscreen, bool forceWindowed)
                          std::getenv("GAMESCOPE_WAYLAND_DISPLAY") != nullptr ||
                          (desktop != nullptr && std::string(desktop) == "gamescope")};
     if (forceWindowed || (!forceFullscreen && !gameMode)) {
-        if (Settings::getInstance()->getInt("ScreenWidth") == 0) {
-            Settings::getInstance()->setInt("ScreenWidth", 1280);
-            Settings::getInstance()->setInt("ScreenHeight", 800);
-        }
+        // The window size is worked out once the display size is known (see Renderer), so that it
+        // stays a window even on a screen the same size as the Deck's.
+        if (Settings::getInstance()->getInt("ScreenWidth") == 0)
+            Settings::getInstance()->setBool("DesktopWindow", true);
     }
 }
 
@@ -353,7 +353,7 @@ bool parseArguments(const std::vector<std::string>& arguments)
 "  --display [1 to 4]                    Display/monitor to use\n"
 "  --resolution [width] [height]         Application resolution\n"
 "  --fullscreen                          Always start fullscreen (the default in Game Mode)\n"
-"  --windowed                            Always start in a 1280x800 window (the default on a desktop)\n"
+"  --windowed                            Always start in a window (the default on a desktop)\n"
 "  --screenoffset [horiz.] [vert.]       Offset screen contents within application window\n"
 "  --screenrotate [0, 90, 180 or 270]    Rotate screen contents within application window\n"
 "  --fullscreen-padding [1/on or 0/off]  Padding if --resolution is lower than display resolution\n"

@@ -94,6 +94,13 @@ bool Renderer::createWindow()
                         Settings::getInstance()->getInt("ScreenHeight") :
                         displayMode.h;
 
+    // Arcadia: on a desktop the window takes 80% of the screen, keeping the screen's shape.
+    if (Settings::getInstance()->getBool("DesktopWindow") &&
+        Settings::getInstance()->getInt("ScreenWidth") == 0) {
+        sScreenWidth = static_cast<int>(std::round(displayMode.w * 0.8f));
+        sScreenHeight = static_cast<int>(std::round(displayMode.h * 0.8f));
+    }
+
     mScreenOffsetX = glm::clamp((Settings::getInstance()->getInt("ScreenOffsetX") ?
                                      Settings::getInstance()->getInt("ScreenOffsetX") :
                                      0),

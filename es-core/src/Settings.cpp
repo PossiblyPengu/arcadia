@@ -29,6 +29,7 @@ namespace
         // These options can be set using command-line arguments:
         "ScreenWidth",          // Set via --resolution [width] [height]
         "ScreenHeight",         // set via --resolution [width] [height]
+        "DesktopWindow",        // Arcadia: open in a window (desktop session or --windowed)
         "ScreenOffsetX",        // Set via --screenoffset [horiz.] [vert.]
         "ScreenOffsetY",        // Set via --screenoffset [horiz.] [vert.]
         "FullscreenPadding",    // Set via --fullscreen-padding [1/on or 0/off]
@@ -309,6 +310,7 @@ void Settings::setDefaults()
     mBoolMap["SplashScreen"] = {true, true};
     mBoolMap["VSync"] = {true, true};
     mBoolMap["FullscreenPadding"] = {false, false};
+    mBoolMap["DesktopWindow"] = {false, false};
     mIntMap["ScreenWidth"] = {0, 0};
     mIntMap["ScreenHeight"] = {0, 0};
     mIntMap["ScreenOffsetX"] = {0, 0};
