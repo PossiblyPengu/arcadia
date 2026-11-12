@@ -83,7 +83,14 @@ cd ../../..
 
 ./linuxdeploy-x86_64.AppImage -l /lib/x86_64-linux-gnu/libOpenGL.so.0 -l /lib/x86_64-linux-gnu/libGLdispatch.so.0 -l /lib/x86_64-linux-gnu/libgio-2.0.so.0 --appdir AppDir
 cp external/SDL/build/${SDL_SHARED_LIBRARY} AppDir/usr/lib/libSDL2-2.0.so.0
+# appimagetool names its output after $VERSION when that is set, which would break the name used below.
+unset VERSION
 ./appimagetool-x86_64.AppImage AppDir
 
-mv Arcadia-x86_64.AppImage Arcadia_x64_SteamDeck.AppImage
+BUILT="$(ls Arcadia*-x86_64.AppImage 2>/dev/null | head -n 1)"
+if [ -z "$BUILT" ]; then
+    echo -e "\nERROR: appimagetool did not produce an AppImage."
+    exit 1
+fi
+mv "$BUILT" Arcadia_x64_SteamDeck.AppImage
 echo -e "\nCreated AppImage Arcadia_x64_SteamDeck.AppImage"
