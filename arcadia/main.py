@@ -28,6 +28,35 @@ def apply_dark_theme(app: QApplication) -> None:
     app.setPalette(palette)
 
 
+def update_from_terminal(home: Path | None = None) -> int:
+    """`arcadia --update`: the same update as File > Check for Arcadia updates, with no window, printed to the terminal."""
+    from arcadia import appupdate
+    from arcadia.emulators import EmulatorError
+
+    home = home or (Path(os.environ["ARCADIA_HOME"]) if os.environ.get("ARCADIA_HOME") else None)
+    try:
+        branch = Config.load(home.expanduser().resolve() / "config.json" if home else CONFIG_PATH, home=home).app_update_branch
+    except (OSError, ValueError):
+        branch = ""
+    root = appupdate.app_root()
+    try:
+        status = appupdate.check(root, branch)
+        if not status.available:
+            print(f"Arcadia is up to date ({status.short}, branch {status.branch}).")
+            return 0
+        print(f"Updating Arcadia to {status.short} (branch {status.branch}) ...")
+        for line in status.changes[:12]:
+            print("  •", line)
+        done = appupdate.apply(root, status)
+    except EmulatorError as exc:
+        print(f"Arcadia wasn't updated: {exc}", file=sys.stderr)
+        return 1
+    print(f"Done: Arcadia is now at {done.version}. Start it again.")
+    if done.requirements_changed:
+        print("This update changes Arcadia's requirements: run ./install.sh once.")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     from arcadia.ui import MainWindow
 
@@ -39,7 +68,11 @@ def main(argv: list[str] | None = None) -> int:
         help="run entirely from this folder: its config.json, ROMs, emulators and saves, so it can be moved or "
         "carried on a drive (also read from the ARCADIA_HOME environment variable)",
     )
+    parser.add_argument("--update", action="store_true", help="update Arcadia from GitHub and exit (no window; works when the app can't be opened)")
     args, qt_args = parser.parse_known_args(sys.argv[1:] if argv is None else argv)
+
+    if args.update:
+        return update_from_terminal(args.home)
 
     app = QApplication([sys.argv[0], *qt_args])
     app.setApplicationName("Arcadia")

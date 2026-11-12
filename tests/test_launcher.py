@@ -47,3 +47,18 @@ def test_install_and_uninstall(tmp_path):
     assert (tmp_path / "venv" / "bin" / "python").exists()
     assert run("install.sh", "--uninstall", **env).returncode == 0
     assert not (tmp_path / "venv").exists() and not (tmp_path / "apps" / "arcadia.desktop").exists()
+
+
+def test_update_flag_runs_without_a_window(tmp_path, monkeypatch):
+    from arcadia import appupdate, main
+    from arcadia.emulators import EmulatorError
+
+    out = []
+    monkeypatch.setattr(appupdate, "check", lambda root, branch="": appupdate.Status(False, "main", "a" * 40, "a" * 40))
+    assert main.update_from_terminal(tmp_path) == 0
+    monkeypatch.setattr(appupdate, "check", lambda root, branch="": (_ for _ in ()).throw(EmulatorError("offline")))
+    assert main.update_from_terminal(tmp_path) == 1
+    status = appupdate.Status(True, "main", "a" * 40, "b" * 40, ["Fix things"])
+    monkeypatch.setattr(appupdate, "check", lambda root, branch="": status)
+    monkeypatch.setattr(appupdate, "apply", lambda root, st: out.append(st) or appupdate.Applied("bbbbbbb", False))
+    assert main.update_from_terminal(tmp_path) == 0 and out == [status]

@@ -4,6 +4,7 @@
 #   ./arcadia.sh                  full screen in Game Mode, an ordinary window on the desktop
 #   ./arcadia.sh --fullscreen     full screen, wherever you are
 #   ./arcadia.sh --windowed       an ordinary window, even in Game Mode
+#   ./arcadia.sh --update         update Arcadia from GitHub and exit (works even if the app won't open)
 #   ./arcadia.sh --home DIR       run entirely from this folder (portable mode); other options pass through
 #
 # Set ARCADIA_DRY_RUN=1 to print what would be run instead of running it.

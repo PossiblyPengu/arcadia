@@ -474,6 +474,9 @@ an emulator shows speed and time left and has a Cancel button.
 
 ## Updating Arcadia
 
+If the app won't open, or an old version is stuck full screen with no menu: quit it with **Ctrl+Q** (F11 leaves full
+screen), open a terminal in the Arcadia folder and run `git pull`, or `./arcadia.sh --update` (works with or without git).
+
 File > Check for Arcadia updates… asks GitHub whether the branch you follow has newer commits, lists what changed,
 and updates when you say so, then offers to restart. A copy installed with `git clone` is fast-forwarded with git
 (it refuses if you've edited files); a copy without git is replaced from GitHub's zip, with the old files kept in
