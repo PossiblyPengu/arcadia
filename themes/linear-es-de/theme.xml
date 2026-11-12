@@ -123,10 +123,10 @@
                 <selectedItemMargins>0.12 0.12</selectedItemMargins>
                 <maxItemCount>9.2</maxItemCount>
                 <itemSize>0.115 0.25</itemSize>
-                <itemScale>3</itemScale>
+                <itemScale>3.4</itemScale>
                 <itemVerticalAlignment>center</itemVerticalAlignment>
-                <unfocusedItemOpacity>1</unfocusedItemOpacity>
-                <unfocusedItemSaturation>0.8</unfocusedItemSaturation>
+                <unfocusedItemOpacity>0.5</unfocusedItemOpacity>
+                <unfocusedItemSaturation>0.45</unfocusedItemSaturation>
                 <fastScrolling>true</fastScrolling>
                 <color>00000000</color>
                 <textRelativeScale>0.9</textRelativeScale>

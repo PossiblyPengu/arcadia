@@ -17,7 +17,7 @@ R
 cat > "$TMP/bin/flatpak" <<'F'
 #!/usr/bin/env bash
 echo "$*" >> "$HOME/flatpak.calls"
-case "$1" in info) [ "$2" = "org.libretro.RetroArch" ] && exit 0 || exit 1;; esac
+case "$1" in info) grep -qw -- "$2" <<<"${FAKE_INSTALLED:-org.libretro.RetroArch}" && exit 0 || exit 1;; esac
 exit 0
 F
 chmod +x "$TMP/bin/rclone" "$TMP/bin/flatpak"
@@ -29,7 +29,7 @@ SYS="$ES_DE_HOME/custom_systems/es_systems.xml"
 check "setup system added once" '[ "$(grep -c "<name>arcadia-setup</name>" "$SYS")" = 1 ]'
 check "es_systems.xml is valid XML" 'python3 -c "import xml.dom.minidom,sys; xml.dom.minidom.parse(sys.argv[1])" "$SYS"'
 for ev in startup game-start game-end quit; do check "event script in $ev" '[ -x "$ES_DE_HOME/scripts/'$ev'/arcadia-save-sync.sh" ]'; done
-check "four entries to pick" '[ "$(ls "$HOME/ROMs/arcadia-setup" | wc -l)" = 4 ]'
+check "five entries to pick" '[ "$(ls "$HOME/ROMs/arcadia-setup" | wc -l)" = 5 ]'
 check "config written once and kept" '[ -f "$ES_DE_HOME/deck.conf" ] && echo "# mine" >> "$ES_DE_HOME/deck.conf" && bash "$HERE/install.sh" >/dev/null && grep -q "# mine" "$ES_DE_HOME/deck.conf"'
 printf '<?xml version="1.0"?>\n<systemList>\n    <system><name>nes</name></system>\n</systemList>\n' > "$SYS"
 bash "$HERE/install.sh" >/dev/null
@@ -71,6 +71,30 @@ bash "$HERE/tools/install-emulators.sh" retroarch >/dev/null
 check "something already installed is skipped" '! grep -q "^install" "$HOME/flatpak.calls"'
 bash "$HERE/tools/update-emulators.sh" >/dev/null
 check "update only touches installed emulators" 'grep -q "^update --user -y --noninteractive org.libretro.RetroArch$" "$HOME/flatpak.calls"'
+
+echo "emulator controls"
+export FAKE_INSTALLED="org.duckstation.DuckStation net.pcsx2.PCSX2 org.libretro.RetroArch"
+DS="$HOME/.var/app/org.duckstation.DuckStation/data/duckstation/settings.ini"
+PX="$HOME/.var/app/net.pcsx2.PCSX2/config/PCSX2/inis/PCSX2.ini"
+RA="$HOME/.var/app/org.libretro.RetroArch/config/retroarch/retroarch.cfg"
+mkdir -p "$(dirname "$DS")" "$(dirname "$RA")"
+printf '[Main]\nSetupWizardIncomplete = false\n\n[GPU]\nRenderer = Vulkan\n' > "$DS"
+printf 'video_fullscreen = "true"\ninput_exit_emulator_btn = "nul"\ninput_menu_toggle_btn = "9"\n' > "$RA"
+bash "$HERE/tools/setup-controls.sh"
+check "DuckStation gets a pad section and keeps its other settings" 'grep -q "^Cross = SDL-0/A" "$DS" && grep -q "Renderer = Vulkan" "$DS" && grep -q "SetupWizardIncomplete" "$DS" && [ "$(grep -c "^\[Pad1\]" "$DS")" = 1 ]'
+check "PCSX2 settings are created in its own folder" 'grep -q "Type = DualShock2" "$PX" && grep -q "^Triangle = SDL-0/Y" "$PX"'
+check "RetroArch hotkeys fill unset keys but keep ones you chose" 'grep -q "input_exit_emulator_btn = \"7\"" "$RA" && grep -q "input_menu_toggle_btn = \"9\"" "$RA" && grep -q "input_enable_hotkey_btn = \"6\"" "$RA"'
+check "the old files were backed up first" '[ "$(ls "$ES_DE_HOME/backups/controls" | wc -l)" -ge 2 ]'
+sed -i 's/^Cross = .*/Cross = Keyboard\/Z/' "$DS"
+bash "$HERE/tools/setup-controls.sh"
+check "your own bindings are kept on a normal run" 'grep -q "^Cross = Keyboard/Z" "$DS"'
+bash "$HERE/tools/setup-controls.sh" --reset
+check "reset replaces just the controller section" 'grep -q "^Cross = SDL-0/A" "$DS" && ! grep -q "Keyboard/Z" "$DS" && grep -q "Renderer = Vulkan" "$DS" && [ "$(grep -c "^\[Pad1\]" "$DS")" = 1 ]'
+check "reset also sets RetroArch's keys" 'grep -q "input_menu_toggle_btn = \"2\"" "$RA"'
+export FAKE_INSTALLED="none"
+bash "$HERE/tools/setup-controls.sh"
+check "nothing installed means nothing to do" 'grep -q "nothing to set up" "$ES_DE_HOME/logs/deck.log"'
+export FAKE_INSTALLED="org.libretro.RetroArch"
 
 echo "uninstall"
 bash "$HERE/install.sh" --uninstall >/dev/null

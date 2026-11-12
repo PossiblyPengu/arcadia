@@ -8,7 +8,7 @@
 #   - copies the helper scripts to ~/ES-DE/deck
 #   - links the event scripts into ~/ES-DE/scripts/{startup,game-start,game-end,quit}
 #   - adds a "Setup" system to ES-DE (custom_systems/es_systems.xml) with entries you can pick with the controller:
-#       Sync saves now, Install emulators, Update emulators, Check BIOS files
+#       Sync saves now, Install emulators, Update emulators, Check BIOS files, Set up emulator controls
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
@@ -50,6 +50,7 @@ fi
 mkdir -p "$TARGET" "$ESDE/logs"
 rm -rf "$TARGET/lib" "$TARGET/tools"
 cp -r "$HERE/lib" "$HERE/tools" "$TARGET/"
+chmod +x "$TARGET"/lib/controls.py
 chmod +x "$TARGET"/tools/*.sh
 
 for ev in "${EVENTS[@]}"; do
@@ -81,6 +82,7 @@ mk_entry "Sync saves now.sh" save-sync-now.sh
 mk_entry "Install emulators.sh" install-emulators.sh
 mk_entry "Update emulators.sh" update-emulators.sh
 mk_entry "Check BIOS files.sh" check-bios.sh
+mk_entry "Set up emulator controls.sh" setup-controls.sh
 
 mkdir -p "$(dirname "$SYSTEMS")"
 remove_block
