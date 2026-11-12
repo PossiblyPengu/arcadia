@@ -11,7 +11,18 @@ themes, controller input) and has its own look (`DESIGN.md`), its own defaults f
 - **Windowed on the desktop, full screen in Game Mode**, controller works with no Steam layout
 - **Setup tools:** sort downloaded ROMs into the right folders (with undo), install and update emulators, check BIOS files,
   starter controller settings, cloud save sync (rclone / Google Drive), backup and restore, self-update. `deck/README.md`
+- **A sister app, Deckhand,** for everything that isn't retro: Windows programs and games, game stores, streaming and
+  Deck add-ons. See below.
 - Linux and Steam Deck only
+
+## Sister app: Deckhand
+
+Arcadia and [Deckhand](https://github.com/PossiblyPengu/deckhand) are a pair for getting started on a Steam Deck. Arcadia
+does retro games (ROMs, emulators, BIOS files, emulator saves); Deckhand installs Windows programs and games, game stores
+(Epic, GOG, Battle.net…), game streaming and Deck add-ons, and adds them to Steam. Each installs the other:
+Arcadia's Setup screen has a "Windows games and stores" step (`deck/tools/get-deckhand.sh`) that runs Deckhand's
+checksum-checked installer or opens Deckhand if it's there, and Arcadia is first in Deckhand's Add-ons, which downloads
+this repo's AppImage release and adds it to Steam.
 
 ## Screenshots
 

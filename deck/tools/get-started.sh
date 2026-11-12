@@ -32,6 +32,8 @@ if [ "${1:-}" = "--status" ]; then
   printf 'saves|%s|Cloud saves|%s\n' "$remote_ok" "$d"
   if [ "$bios_missing" -eq 0 ]; then d="all the ones needed are there"; else d="$bios_missing missing"; fi
   printf 'bios|%s|BIOS files|%s\n' "$([ "$bios_missing" -eq 0 ] && echo 1 || echo 0)" "$d"
+  if [ -n "$(deck_deckhand_bin)" ]; then d="Deckhand is installed"; else d="not installed yet: Arcadia's sister app"; fi
+  printf 'deckhand|%s|Windows games and stores|%s\n' "$([ -n "$(deck_deckhand_bin)" ] && echo 1 || echo 0)" "$d"
   printf 'inbox|%s|Downloads|%s\n' "$inbox_n" "$INBOX"
   exit 0
 fi
@@ -48,6 +50,9 @@ fi
   mark "$rclone_ok" "rclone installed"
   mark "$remote_ok" "remote “${SYNC_REMOTE%%:*}” set up in rclone"
   [ "$remote_ok" -eq 0 ] && echo "   → run  rclone config  once and create a Google Drive remote called gdrive"
+  echo; echo "Windows games, stores and streaming"
+  mark "$([ -n "$(deck_deckhand_bin)" ] && echo 1 || echo 0)" "Deckhand, Arcadia's sister app"
+  [ -z "$(deck_deckhand_bin)" ] && echo "   → pick “Windows games and stores” to install it"
 } > "${TMPDIR:-/tmp}/deck-started.$$"
 deck_say "Get started" "$(cat "${TMPDIR:-/tmp}/deck-started.$$")"
 rm -f "${TMPDIR:-/tmp}/deck-started.$$"
