@@ -119,6 +119,33 @@ check "the startup hook leaves the inbox alone when AUTO_SORT is off" '[ -f "$HO
 echo 'AUTO_SORT=1' >> "$ARCADIA_HOME/deck.conf"
 "$ARCADIA_HOME/scripts/startup/arcadia-auto-sort.sh"
 check "the startup hook sorts when AUTO_SORT=1" '[ -f "$HOME/ROMs/nes/Auto.nes" ] && grep -q "auto sort" "$ARCADIA_HOME/logs/deck.log"'
+
+
+echo "sort ROMs into the folder you already use"
+SORTROOT="$TMP/alias-roms"; SORTIN="$TMP/alias-in"; SORTJ="$TMP/alias-journal.json"
+sortone() {  # sortone <file name>: sort one file from a fresh inbox
+  rm -rf "$SORTIN"; mkdir -p "$SORTIN"; head -c 300 /dev/zero > "$SORTIN/$1"
+  touch -d '1 hour ago' "$SORTIN/$1"  # (the sorter leaves files that were just written: they may still be downloading)
+  (cd "$HERE/lib" && python3 -m romsort --rom-root "$SORTROOT" --journal "$SORTJ" --from "$SORTIN" >/dev/null 2>&1)
+}
+rm -rf "$SORTROOT"; mkdir -p "$SORTROOT/megadrive"; touch "$SORTROOT/megadrive/Old.md"
+sortone "Sonic.md"
+check "a Mega Drive game goes to the megadrive folder you already have" '[ -f "$SORTROOT/megadrive/Sonic.md" ] && [ ! -e "$SORTROOT/genesis" ]'
+rm -rf "$SORTROOT"; mkdir -p "$SORTROOT"
+sortone "Sonic.md"
+check "with neither folder it uses genesis (the default)" '[ -f "$SORTROOT/genesis/Sonic.md" ] && [ ! -e "$SORTROOT/megadrive" ]'
+rm -rf "$SORTROOT"; mkdir -p "$SORTROOT/genesis" "$SORTROOT/megadrive"; touch "$SORTROOT/genesis/a.md" "$SORTROOT/genesis/b.md" "$SORTROOT/megadrive/c.md"
+sortone "New.md"
+check "with both folders it uses the one with more games" '[ -f "$SORTROOT/genesis/New.md" ]'
+rm -rf "$SORTROOT"; mkdir -p "$SORTROOT/genesis" "$SORTROOT/megadrive"; touch "$SORTROOT/genesis/a.md" "$SORTROOT/megadrive/b.md" "$SORTROOT/megadrive/c.md"
+sortone "New.md"
+check "...whichever it is" '[ -f "$SORTROOT/megadrive/New.md" ]'
+rm -rf "$SORTROOT"; mkdir -p "$SORTROOT/tg16"
+sortone "Bonk.pce"
+check "other equivalent names work too (PC Engine / TG-16)" '[ -f "$SORTROOT/tg16/Bonk.pce" ] && [ ! -e "$SORTROOT/pcengine" ]'
+rm -rf "$SORTROOT"; mkdir -p "$SORTROOT/megadrive"
+sortone "Mario.nes"
+check "systems without an alias are unaffected" '[ -f "$SORTROOT/nes/Mario.nes" ]'
 sed -i '/^AUTO_SORT=1/d' "$ARCADIA_HOME/deck.conf"
 . "$HERE/lib/deck-lib.sh"; deck_load_conf
 check "the ROM folder comes from Arcadia's setting when there is one" 'mkdir -p "$ARCADIA_HOME/settings" && echo "<string name=\"ROMDirectory\" value=\"$HOME/MyGames\" />" > "$ARCADIA_HOME/settings/es_settings.xml" && [ "$(deck_rom_root)" = "$HOME/MyGames" ]'
