@@ -509,6 +509,7 @@ class MainWindow(QMainWindow):
 
         self.controller = ControllerReader(self)
         self.controller.action.connect(self.handle_action)
+        self.controller.problem.connect(lambda text: self.toast.show_message(text, 12000))
         self.controller.start()
 
         # Watch the downloads folder: new files trigger a check after they've settled, and a
@@ -1231,6 +1232,8 @@ class MainWindow(QMainWindow):
     def handle_action(self, name: str) -> None:
         """Controller buttons. On the console screen the D-pad moves between tiles and A opens one;
         on the game screen it browses games, A launches, B goes back, and the bumpers change console."""
+        if self.process is not None:  # a game is running: its emulator has the controller, not Arcadia
+            return
         if self._pad_in_dialog(name):  # a dialog is open: the controller drives it, not the window behind
             return
         if name == "options":

@@ -56,8 +56,8 @@ written in Python with PySide6 (Qt).
   where they exist and RetroArch otherwise
 - "Surprise me" picks a random game from the current system
 - Its own app: Arcadia never adds games to your Steam library (deliberately; no Steam shortcuts).
-- Controller-friendly: keyboard navigation works, and Steam Input maps a Steam Deck to it.
-  A gamepad can also be read directly through evdev if the `evdev` package is installed.
+- Controller-friendly: Arcadia reads gamepads (including a Steam Deck in Game Mode) straight from Linux, with no
+  Steam layout to set up and no extra packages, and the keyboard works everywhere.
 
 ## Getting started
 
@@ -493,12 +493,15 @@ In Desktop Mode, open a terminal in the Arcadia folder and run:
 
 Arcadia is its own app: nothing is added to Steam and your games never appear in the Steam library. To start it
 from Game Mode, add `arcadia.sh` yourself (Steam > Add a Non-Steam Game > browse to it). The launcher then asks
-Qt for gamescope's X11 display automatically. A Steam Input layout with the gamepad template works for the
-controls. Not yet tried on real Deck hardware.
+Qt for gamescope's X11 display automatically.
 
-In Steam's controller settings for Arcadia, bind: D-pad to the arrow keys, **A** to Enter, **B** to Escape,
-**Y** to Ctrl+D, **Menu (≡)** to F10 (Options), left/right bumper to Page Up / Page Down, and the left stick to the arrow keys too. That covers
-every control in the table below. `docs/steam-input.md` has the same list to follow button by button.
+**Controls need no setup in Game Mode.** Arcadia reads the controller itself, so you don't rebind anything in Steam:
+D-pad or left stick to move, **A** choose, **B** back, **X or Y** favorite, bumpers change console, **Menu (≡)**
+opens Options. Keep Steam's default layout for the shortcut (a plain gamepad); it passes the buttons straight
+through. New controllers are noticed while Arcadia runs. While an emulator is running it has the controller and
+Arcadia ignores it. If Arcadia says it isn't allowed to read the controller, add your user to the `input` group.
+Only if you chose a keyboard-and-mouse layout in Steam do you need the key table in `docs/steam-input.md`. Not yet
+tried on real Deck hardware.
 
 ## Install (development)
 
@@ -538,7 +541,7 @@ media/snes/Super Mario World.png    cover art (png, jpg, jpeg, webp)
 
 ## Controls
 
-| Action | Keyboard | Controller (evdev / Steam Input) |
+| Action | Keyboard | Controller |
 |--------|----------|----------------------------------|
 | Rotate the consoles (console screen) | Left / Right (Up / Down too), mouse wheel, or click one | D-pad |
 | Open the middle console | Enter / click it | A |
@@ -603,7 +606,7 @@ arcadia/
   sounds.py      the small sound effects (assets/sounds/*.wav)
   assets/consoles/  the Recent / Favorites / All tiles and the generic cartridge
   ../tools/      scripts that rebuild those tiles and the app icon and sounds
-  gamepad.py     optional evdev controller input
+  gamepad.py     reads the controller from /dev/input
   ui.py          Qt windows and dialogs
   main.py        entry point
 tests/

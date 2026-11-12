@@ -1567,3 +1567,16 @@ def test_controller_menu_button_and_header_button_open_options(window, monkeypat
     window.options_btn.click()
     window.console_options_btn.click()
     assert opened == [1, 1, 1]
+
+
+def test_controller_is_ignored_while_a_game_runs(window, monkeypatch):
+    opened = []
+    monkeypatch.setattr("arcadia.ui.show_options", lambda *a, **k: opened.append(1))
+    window.process = object()  # a game is running
+    try:
+        window.handle_action("options")
+        assert opened == []
+    finally:
+        window.process = None
+    window.handle_action("options")
+    assert opened == [1]

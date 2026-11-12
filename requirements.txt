@@ -1,4 +1,2 @@
 PySide6>=6.6
-# Optional: direct gamepad input on Linux (Steam Input already maps controls to keyboard)
-evdev>=1.6; sys_platform == "linux"
 pytest>=8

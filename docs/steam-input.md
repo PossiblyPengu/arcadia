@@ -1,5 +1,9 @@
 # Controller layout for Game Mode (Steam Input)
 
+**You normally don't need this.** Arcadia reads the Deck's controller by itself in Game Mode, so keep Steam's
+default layout for the shortcut (a plain gamepad) and everything works. The table below is only for the case where
+you've set the shortcut to a keyboard-and-mouse layout, or you're on the desktop with Steam's own desktop controls.
+
 Arcadia reads the keyboard, so in Game Mode you only need Steam Input to turn Deck buttons into keys.
 Select Arcadia in your Steam library > controller icon > Edit layout (or start from "Gamepad with ... " and change these):
 

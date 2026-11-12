@@ -31,9 +31,6 @@ if [ "${ARCADIA_SKIP_PIP:-}" != 1 ]; then
   "$VENV/bin/python" -m pip install --upgrade pip >/dev/null
   echo "Installing PySide6 (the interface; a large download, so it takes a minute) ..."
   "$VENV/bin/python" -m pip install "PySide6>=6.6"
-  echo "Installing evdev (optional: direct controller input) ..."
-  "$VENV/bin/python" -m pip install "evdev>=1.6" \
-    || echo "evdev couldn't be installed (it needs a compiler); that's fine, Steam Input still maps the controls to the keyboard."
 fi
 
 chmod +x "$HERE/arcadia.sh"
