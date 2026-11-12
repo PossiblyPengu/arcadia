@@ -8,6 +8,7 @@
 
 #include "FileData.h"
 #include "Log.h"
+#include "guis/GuiMsgBox.h"
 #include "utils/FileSystemUtil.h"
 #include "utils/LocalizationUtil.h"
 
@@ -40,6 +41,8 @@ GuiToolRunner::GuiToolRunner(const std::string& title,
         mMenuColorTitle, ALIGN_CENTER);
     mGrid.setEntry(mTitle, glm::ivec2 {0, 0}, false, true, glm::ivec2 {3, 1},
                    GridFlags::BORDER_NONE);
+    mBadge = std::make_shared<ImageComponent>();
+    mBadge->setVisible(false);
 
     mContainer = std::make_shared<ScrollableContainer>();
     mBody = std::make_shared<TextComponent>("", Font::get(FONT_SIZE_SMALL), mMenuColorPrimary,
@@ -94,7 +97,8 @@ GuiToolRunner::~GuiToolRunner()
 // and every program a tool starts would print "cannot be preloaded (wrong ELF class)" for the one that doesn't fit,
 // burying the tool's real output. (Games are launched elsewhere and keep the overlay.)
 bool GuiToolRunner::runWithoutPreload(const std::string& cmd,
-                                      const std::function<void(const std::string&)>& onOutput)
+                                      const std::function<void(const std::string&)>& onOutput,
+                                      int* exitCode)
 {
     int fds[2];
     if (pipe(fds) != 0)
@@ -135,6 +139,8 @@ bool GuiToolRunner::runWithoutPreload(const std::string& cmd,
     close(fds[0]);
     int status {0};
     waitpid(pid, &status, 0);
+    if (exitCode != nullptr)
+        *exitCode = WIFEXITED(status) ? WEXITSTATUS(status) : 1;
     return true;
 }
 
@@ -147,11 +153,16 @@ std::string GuiToolRunner::toolEnvironment()
 void GuiToolRunner::run()
 {
     // What the tool prints is shown as it comes, so a long job (installing emulators) shows where it is.
-    const bool started {runWithoutPreload(toolEnvironment() + mCommand, [this](const std::string& chunk) {
-        std::unique_lock<std::mutex> lock {mMutex};
-        mOutput += chunk;
-        mChanged = true;
-    })};
+    int code {0};
+    const bool started {runWithoutPreload(
+        toolEnvironment() + mCommand,
+        [this](const std::string& chunk) {
+            std::unique_lock<std::mutex> lock {mMutex};
+            mOutput += chunk;
+            mChanged = true;
+        },
+        &code)};
+    mExitCode = started ? code : 1;
     LOG(LogInfo) << "GuiToolRunner: finished \"" << mCommand << "\"";
     if (!started) {
         std::unique_lock<std::mutex> lock {mMutex};
@@ -189,6 +200,23 @@ void GuiToolRunner::update(int deltaTime)
     else if (mFinished) {
         showOutput();
         mCloseButton->setText(_("CLOSE"), _("close"));
+        // Beside the title: whether it worked (the tools exit with an error when something didn't).
+        const std::shared_ptr<Font>& font {mTitle->getFont()};
+        const float side {std::round(font->getLetterHeight() * 1.9f)};
+        std::string said;
+        {
+            std::unique_lock<std::mutex> lock {mMutex};
+            said = mOutput;
+        }
+        // (Some tools say what went wrong but still exit normally: their words count too.)
+        const bool worked {mExitCode == 0 && MessageTone::of(said) != "warning"};
+        mBadge->setImage(MessageTone::badge(worked ? "success" : "warning"));
+        mBadge->setResize(side, side);
+        const float textWidth {font->sizeText(mTitle->getValue()).x};
+        const float rowHeight {mGrid.getRowHeight(0)};
+        mBadge->setPosition(std::round((mSize.x - textWidth) / 2.0f - side - font->getLetterHeight() * 0.7f),
+                            std::round((rowHeight - side) / 2.0f));
+        mBadge->setVisible(true);
         mFinished = false;
         updateHelpPrompts();
     }
@@ -199,6 +227,8 @@ void GuiToolRunner::render(const glm::mat4& parentTrans)
 {
     glm::mat4 trans {parentTrans * getTransform()};
     renderChildren(trans);
+    if (mBadge->isVisible())
+        mBadge->render(trans);
 
     // The busy box until the tool says something; then its words show where it is.
     if (mRunning && mBody->getValue().empty())

@@ -13,8 +13,9 @@
 #include "components/BackgroundComponent.h"
 #include "renderers/Renderer.h"
 
-class ComponentGrid;
 class BackgroundComponent;
+class ImageComponent;
+class TextComponent;
 
 class GuiInfoPopup : public GuiComponent
 {
@@ -30,8 +31,10 @@ private:
     bool updateState();
 
     Renderer* mRenderer;
-    ComponentGrid* mGrid;
     BackgroundComponent* mBackground;
+    ImageComponent* mBadge;
+    TextComponent* mText;
+    float mRestY; // where it settles; it slides down to there as it fades in
 
     std::string mMessage;
     int mDuration;

@@ -83,7 +83,9 @@ keeps names and acronyms such as ROM, BIOS and RetroArch); other languages are s
 | Games | theme | the console's name on top; a carousel of covers (cropped to one shape) or named tiles; the name, fact chips (year, genre, players, last played), the description and a Play button below; a plain-list variant for big libraries |
 | Settings | program | "Settings" over a rail of sections on the left (Setup, Look and feel, Sound, Controllers, Covers and info, Collections, Advanced, Tools, Quit); each section opens as a card beside it, and L/R step between sections |
 | Setup | program | a progress ring and a checklist (games, emulators, controls, folder access, cloud saves, BIOS files), each step running its tool when chosen, beside a card of tools |
-| Dialogs | program | a centred card with room round the message and pill buttons |
+| Dialogs | program | a centred card: a pastel badge that says what it is about (question lavender, done mint, problem peach, removing something coral, information sky; picked from the words and the main button), the first sentence as a Fraunces title, the rest quieter below, pill buttons |
+| Notifications | program | a card at the top with the same badge beside the message, in sentence case; it slides down as it fades in. A problem says where to fix it (a missing emulator points to Setup → Emulators) |
+| Setup tools | program | their output appears line by line as they work; when done, a badge beside the title says whether it worked |
 | Boot, launch, screensaver | program | the scheme's ground; the boot screen is the lavender mark over the Fraunces wordmark with a pink progress bar (`tools/make_splash.py`, one for each scheme); the screensaver dims |
 
 ## Controls

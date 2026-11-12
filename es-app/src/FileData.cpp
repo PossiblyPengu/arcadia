@@ -31,6 +31,15 @@
 #include <assert.h>
 #include <regex>
 
+namespace
+{
+    // Arcadia: an emulator or core that isn't there is installed from Setup's Emulators screen; say so.
+    std::string withEmulatorsHint(const std::string& message)
+    {
+        return message + "\n" + _("OPEN SETUP → EMULATORS TO INSTALL IT");
+    }
+} // namespace
+
 FileData::FileData(FileType type,
                    const std::string& path,
                    SystemEnvironmentData* envData,
@@ -1198,14 +1207,13 @@ void FileData::launchGame()
         else {
             if (emulatorName == "") {
                 window->queueInfoPopup(
-                    _("ERROR: COULDN'T FIND EMULATOR, HAS IT BEEN PROPERLY INSTALLED?"), 6000);
+                    withEmulatorsHint(_("ERROR: COULDN'T FIND EMULATOR, HAS IT BEEN PROPERLY INSTALLED?")), 6000);
             }
             else {
                 window->queueInfoPopup(
-                    Utils::String::format(
+                    withEmulatorsHint(Utils::String::format(
                         _("ERROR: COULDN'T FIND EMULATOR '%s', HAS IT BEEN PROPERLY INSTALLED?"),
-                        emulatorName.c_str()),
-                    6000);
+                        emulatorName.c_str())), 6000);
             }
         }
 
@@ -1248,10 +1256,9 @@ void FileData::launchGame()
                 LOG(LogError) << commandRaw;
 
                 window->queueInfoPopup(
-                    Utils::String::format(
+                    withEmulatorsHint(Utils::String::format(
                         _("ERROR: COULDN'T FIND EMULATOR CORE FILE '%s'"),
-                        Utils::String::toUpper(Utils::FileSystem::getFileName(coreFile)).c_str()),
-                    6000);
+                        Utils::String::toUpper(Utils::FileSystem::getFileName(coreFile)).c_str())), 6000);
                 window->setAllowTextScrolling(true);
                 window->setAllowFileAnimation(true);
                 return;
@@ -1359,10 +1366,9 @@ void FileData::launchGame()
         LOG(LogError) << Utils::String::vectorToDelimitedString(emulatorCorePaths, ", ");
 
         window->queueInfoPopup(
-            Utils::String::format(
+            withEmulatorsHint(Utils::String::format(
                 _("ERROR: COULDN'T FIND EMULATOR CORE FILE '%s'"),
-                Utils::String::toUpper(coreName.substr(0, coreName.size())).c_str()),
-            6000);
+                Utils::String::toUpper(coreName.substr(0, coreName.size())).c_str())), 6000);
         window->setAllowTextScrolling(true);
         window->setAllowFileAnimation(true);
         return;

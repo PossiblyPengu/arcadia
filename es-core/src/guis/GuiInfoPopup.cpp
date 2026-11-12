@@ -8,11 +8,16 @@
 
 #include "guis/GuiInfoPopup.h"
 
-#include "components/ComponentGrid.h"
+#include "components/ImageComponent.h"
 #include "components/TextComponent.h"
+#include "guis/GuiMsgBox.h"
+#include "utils/LocalizationUtil.h"
+#include "utils/StringUtil.h"
 
 #include <SDL2/SDL_timer.h>
 
+// Arcadia: a notification is a card at the top of the screen with a badge that says what it is about (done, a
+// problem, information) beside the message, in sentence case. It slides down a little as it fades in.
 GuiInfoPopup::GuiInfoPopup(std::string message, int duration)
     : mRenderer {Renderer::getInstance()}
     , mMessage {message}
@@ -21,54 +26,53 @@ GuiInfoPopup::GuiInfoPopup(std::string message, int duration)
     , mRunning {true}
 {
     mBackground = new BackgroundComponent(glm::vec2 {24.0f, 24.0f});
-    float maxWidth {Renderer::getScreenWidth() * 0.9f};
-    float maxHeight {Renderer::getScreenHeight() * 0.2f};
+    const float maxWidth {Renderer::getScreenWidth() * 0.7f};
+    const float padX {std::round(Renderer::getScreenWidth() * 0.016f)};
+    const float padY {std::round(Renderer::getScreenHeight() * 0.018f)};
 
-    std::shared_ptr<TextComponent> s {std::make_shared<TextComponent>(
-        "", Font::get(FONT_SIZE_MINI), mMenuColorPopupText, ALIGN_CENTER)};
+    const std::shared_ptr<Font> font {Font::get(FONT_SIZE_SMALL)};
+    mText = new TextComponent("", font, mMenuColorPrimary, ALIGN_LEFT, ALIGN_CENTER);
+    mText->setSize(0.0f, 0.0f); // (grow to fit the words, then wrap if too wide)
+    // The badge says it's a problem, so the words needn't start with "Error:".
+    std::string shown {Utils::Localization::readable(message)};
+    if (shown.rfind("Error: ", 0) == 0)
+        shown = Utils::String::toUpper(shown.substr(7, 1)) + shown.substr(8);
+    mText->setText(shown);
 
-    // We do this to force the text container to resize and return the actual expected popup size.
-    s->setSize(0.0f, 0.0f);
-    s->setText(message);
-    mSize = s->getSize();
+    const float side {std::round(font->getHeight() * 1.5f)};
+    mBadge = new ImageComponent();
+    mBadge->setImage(MessageTone::badge(MessageTone::of(message)));
+    mBadge->setResize(side, side);
 
-    // Confirm that the size isn't larger than the screen width, otherwise cap it.
-    if (mSize.x > maxWidth) {
-        s->setSize(maxWidth, mSize.y);
-        mSize.x = maxWidth;
+    const float textRoom {maxWidth - side - padX * 3.0f};
+    if (mText->getSize().x > textRoom) {
+        mText->setAutoCalcExtent(glm::ivec2 {0, 1});
+        mText->setSize(textRoom, 0.0f);
     }
-    if (mSize.y > maxHeight) {
-        s->setSize(mSize.x, maxHeight);
-        mSize.y = maxHeight;
-    }
+    const float textHeight {std::min(mText->getSize().y, Renderer::getScreenHeight() * 0.2f)};
+    mText->setSize(mText->getSize().x, textHeight);
 
-    // Add a padding to the box.
-    int paddingX {static_cast<int>(Renderer::getScreenWidth() * 0.03f)};
-    int paddingY {static_cast<int>(Renderer::getScreenHeight() * 0.02f)};
-    mSize.x += paddingX;
-    mSize.y += paddingY;
+    mSize = {padX + side + padX * 0.8f + mText->getSize().x + padX * 1.2f,
+             std::max(side, textHeight) + padY * 2.0f};
+    mBadge->setPosition(padX, std::round((mSize.y - side) / 2.0f));
+    mText->setPosition(padX + side + padX * 0.8f, std::round((mSize.y - textHeight) / 2.0f));
 
-    float posX {Renderer::getScreenWidth() * 0.5f - mSize.x * 0.5f};
-    float posY {Renderer::getScreenHeight() * 0.02f};
-
-    setPosition(posX, posY, 0);
+    mRestY = std::round(Renderer::getScreenHeight() * 0.025f);
+    setPosition(std::round(Renderer::getScreenWidth() * 0.5f - mSize.x * 0.5f), mRestY, 0);
 
     mBackground->fitTo(mSize);
     addChild(mBackground);
+    addChild(mBadge);
+    addChild(mText);
 
     // We only initialize the actual time when we first start to render.
     mStartTime = 0;
-
-    mGrid = new ComponentGrid(glm::ivec2 {1, 3});
-    mGrid->setEntry(s, glm::ivec2 {0, 1}, false, true);
-    mGrid->setRowHeightPerc(1, s->getSize().y / mSize.y);
-    mGrid->setSize(mSize);
-    addChild(mGrid);
 }
 
 GuiInfoPopup::~GuiInfoPopup()
 {
-    delete mGrid;
+    delete mText;
+    delete mBadge;
     delete mBackground;
 }
 
@@ -111,7 +115,11 @@ bool GuiInfoPopup::updateState()
     else {
         mAlpha = static_cast<float>((-(curTime - mStartTime - mDuration)) / 500.0f);
     }
-    mGrid->setOpacity(mAlpha);
+    mText->setOpacity(mAlpha);
+    mBadge->setOpacity(mAlpha);
+    // Slide down into place as it appears (and back up as it goes).
+    const float slide {(1.0f - mAlpha) * Renderer::getScreenHeight() * 0.03f};
+    setPosition(getPosition().x, mRestY - slide, 0.0f);
 
     // Apply fade-in effect to popup frame.
     mBackground->setFrameColor((mMenuColorFrame & 0xFFFFFF00) |

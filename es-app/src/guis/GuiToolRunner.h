@@ -15,6 +15,7 @@
 #include "components/BusyComponent.h"
 #include "components/ButtonComponent.h"
 #include "components/ComponentGrid.h"
+#include "components/ImageComponent.h"
 #include "components/MenuComponent.h"
 #include "components/ScrollableContainer.h"
 #include "components/TextComponent.h"
@@ -41,8 +42,10 @@ public:
     static std::string toolEnvironment();
     // Runs a command through sh without Steam's LD_PRELOAD, handing what it prints (both streams) to onOutput as it
     // comes. False if it couldn't be started.
+    // exitCode (if given) gets the command's exit status.
     static bool runWithoutPreload(const std::string& cmd,
-                                  const std::function<void(const std::string&)>& onOutput);
+                                  const std::function<void(const std::string&)>& onOutput,
+                                  int* exitCode = nullptr);
 
 private:
     void run();
@@ -58,6 +61,8 @@ private:
     std::shared_ptr<ComponentGrid> mButtons;
     std::shared_ptr<ButtonComponent> mCloseButton;
     std::shared_ptr<TextComponent> mTitle;
+    std::shared_ptr<ImageComponent> mBadge; // when it's done: worked (a tick) or not (an exclamation mark)
+    std::atomic<int> mExitCode {0};
     std::shared_ptr<ScrollableContainer> mContainer;
     std::shared_ptr<TextComponent> mBody;
 

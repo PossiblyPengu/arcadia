@@ -16,7 +16,17 @@
 #include "utils/LocalizationUtil.h"
 
 class ButtonComponent;
+class ImageComponent;
 class TextComponent;
+
+namespace MessageTone
+{
+    // What a message is about, from its words and its buttons: "warning" (something went wrong), "danger" (a choice
+    // that removes something), "question", "success" or "info". Dialogs and notifications show it as a pastel badge.
+    std::string of(const std::string& text, const std::vector<std::string>& buttons = {});
+    // The badge for a tone (":/graphics/msgbox/<tone>.svg").
+    std::string badge(const std::string& tone);
+} // namespace MessageTone
 
 class GuiMsgBox : public GuiComponent
 {
@@ -46,12 +56,18 @@ public:
 
 private:
     void deleteMeAndCall(const std::function<void()>& func);
+    void setMessage(const std::string& text);
+    float headerHeight() const;
 
     Renderer* mRenderer;
     BackgroundComponent mBackground;
     ComponentGrid mGrid;
 
     std::shared_ptr<TextComponent> mMsg;
+    // The heading: a badge that says what the message is about, and its first sentence as a title.
+    std::shared_ptr<ImageComponent> mBadge;
+    std::shared_ptr<TextComponent> mTitle;
+    std::vector<std::string> mButtonNames;
     std::vector<std::shared_ptr<ButtonComponent>> mButtons;
     std::shared_ptr<ComponentGrid> mButtonGrid;
     const std::function<void()> mBackFunc;

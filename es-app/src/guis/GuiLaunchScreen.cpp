@@ -52,8 +52,9 @@ void GuiLaunchScreen::displayLaunchScreen(FileData* game)
                    glm::ivec2 {1, 1});
 
     // Title.
+    // Arcadia (DESIGN.md): words in sentence case, the game's name as written in the title face.
     mTitle = std::make_shared<TextComponent>(
-        _("LAUNCHING GAME"),
+        Utils::Localization::readable(_("LAUNCHING GAME")),
         Font::get(titleFontSize *
                   std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth())),
         mMenuColorTertiary, ALIGN_CENTER);
@@ -73,9 +74,9 @@ void GuiLaunchScreen::displayLaunchScreen(FileData* game)
 
     // Game name.
     mGameName = std::make_shared<TextComponent>(
-        "GAME NAME",
-        Font::get(gameNameFontSize *
-                  std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth())),
+        "Game name",
+        Font::get(gameNameFontSize * std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth()),
+                  FONT_PATH_TITLE),
         mMenuColorTitle, ALIGN_CENTER);
     mGrid.setEntry(mGameName, glm::ivec2 {1, 5}, false, true, glm::ivec2 {1, 1});
 
@@ -109,8 +110,9 @@ void GuiLaunchScreen::displayLaunchScreen(FileData* game)
     float minWidth {mRenderer->getScreenWidth() * minWidthModifier};
 
     float fontWidth {Font::get(gameNameFontSize *
-                               std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth()))
-                         ->sizeText(Utils::String::toUpper(game->getName()))
+                                   std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth()),
+                               FONT_PATH_TITLE)
+                         ->sizeText(game->getName())
                          .x};
 
     // Add a bit of width to compensate for the left and right spacers.
@@ -160,8 +162,8 @@ void GuiLaunchScreen::displayLaunchScreen(FileData* game)
 
     setSize(mSize.x, totalRowHeight);
 
-    mGameName->setText(Utils::String::toUpper(game->getName()));
-    mSystemName->setText(Utils::String::toUpper(game->getSystem()->getFullName()));
+    mGameName->setText(game->getName());
+    mSystemName->setText(game->getSystem()->getFullName());
 
     // For the marquee we strip away any transparent padding around the actual image.
     // When doing this, we restrict the scale-up to a certain percentage of the screen
