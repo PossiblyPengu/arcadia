@@ -175,12 +175,20 @@ SRV="$TMP/srv"; mkdir -p "$SRV/dl" "$HOME/Applications"
 printf 'NEW-APPIMAGE' > "$SRV/dl/Arcadia_x64_SteamDeck.AppImage"
 mkdir -p "$TMP/pack/deck"; cp -r "$HERE/lib" "$HERE/tools" "$HERE/scripts" "$HERE/install.sh" "$TMP/pack/deck/"; tar -C "$TMP/pack" -czf "$SRV/dl/arcadia-deck-extras.tar.gz" deck
 PORT=$((20000 + RANDOM % 20000))
-python3 - "$SRV" "$PORT" <<'PY'
-import json,os,sys
-d,port=sys.argv[1:3]
-a=lambda n:{"name":n,"size":os.path.getsize(f"{d}/dl/{n}"),"browser_download_url":f"http://127.0.0.1:{port}/dl/{n}"}
-json.dump({"tag_name":"v9.9.9","assets":[a("Arcadia_x64_SteamDeck.AppImage"),a("arcadia-deck-extras.tar.gz")]},open(f"{d}/latest","w"))
+publish_release() {  # publish_release <tag> [nodigest|nosize]: what GitHub's "latest release" would say about the files in $SRV/dl
+  python3 - "$SRV" "$PORT" "$1" "${2:-}" <<'PY'
+import hashlib,json,os,sys
+d,port,tag,mode=sys.argv[1:5]
+def a(n):
+    f=f"{d}/dl/{n}"
+    asset={"name":n,"size":0 if mode=="nosize" else os.path.getsize(f),"browser_download_url":f"http://127.0.0.1:{port}/dl/{n}"}
+    if mode!="nodigest":
+        asset["digest"]="sha256:"+hashlib.sha256(open(f,"rb").read()).hexdigest()
+    return asset
+json.dump({"tag_name":tag,"assets":[a("Arcadia_x64_SteamDeck.AppImage"),a("arcadia-deck-extras.tar.gz")]},open(f"{d}/latest","w"))
 PY
+}
+publish_release v9.9.9
 (cd "$SRV" && python3 -m http.server $PORT --bind 127.0.0.1 >/dev/null 2>&1) & SRVPID=$!
 sleep 1
 printf 'OLD-APPIMAGE' > "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage"
@@ -192,6 +200,45 @@ check "update replaces the AppImage and keeps the old one" 'grep -q NEW-APPIMAGE
 check "it reinstalls the extras and records the version" '[ "$(cat "$ARCADIA_HOME/deck/version")" = v9.9.9 ] && [ -x "$ARCADIA_HOME/deck/tools/sort-roms.sh" ]'
 DECK_APPIMAGE="$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" bash "$HERE/tools/update-arcadia.sh"
 check "a second run says it's up to date" 'tail -n 1 "$ARCADIA_HOME/logs/deck.log" | grep -q "Already up to date"'
+
+echo "update Arcadia: only what the release says it is"
+UPD="DECK_APPIMAGE=$HOME/Applications/Arcadia_x64_SteamDeck.AppImage"
+GOODIMG="$(cat "$SRV/dl/Arcadia_x64_SteamDeck.AppImage")"
+publish_release v9.9.10
+printf 'EVIL-APPIMAGE' > "$SRV/dl/Arcadia_x64_SteamDeck.AppImage"; cp "$SRV/dl/Arcadia_x64_SteamDeck.AppImage" "$TMP/evil.img"
+publish_release v9.9.10 nosize  # (the size is not what is tested here: the checksum is)
+python3 - "$SRV" <<'PY'
+import hashlib,json,sys
+d=sys.argv[1]; j=json.load(open(f"{d}/latest"))
+for a in j["assets"]:  # the listed checksum is for the real file; the served file is different
+    if a["name"].startswith("Arcadia_x64"): a["digest"]="sha256:"+hashlib.sha256(b"NEW-APPIMAGE").hexdigest()
+json.dump(j,open(f"{d}/latest","w"))
+PY
+env $UPD bash "$HERE/tools/update-arcadia.sh"
+check "a download that is not the listed file is refused" 'grep -q "Not updated" "$ARCADIA_HOME/logs/deck.log" && grep -q "checksum" "$ARCADIA_HOME/logs/deck.log"'
+check "...and nothing was replaced or recorded" 'grep -q NEW-APPIMAGE "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" && ! grep -q EVIL "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" && [ "$(cat "$ARCADIA_HOME/deck/version")" = v9.9.9 ] && [ ! -e "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage.new" ]'
+printf 'NEW-APPIMAGE' > "$SRV/dl/Arcadia_x64_SteamDeck.AppImage"
+
+# a tampered extras archive must not get to run anything
+mkdir -p "$TMP/evilpack/deck"; printf '#!/bin/bash\ntouch "$HOME/PWNED"\n' > "$TMP/evilpack/deck/install.sh"
+cp "$SRV/dl/arcadia-deck-extras.tar.gz" "$TMP/good-extras.tar.gz"
+tar -C "$TMP/evilpack" -czf "$SRV/dl/arcadia-deck-extras.tar.gz" deck
+publish_release v9.9.10 nosize
+python3 - "$SRV" "$TMP/good-extras.tar.gz" <<'PY'
+import hashlib,json,sys
+d,good=sys.argv[1:3]; j=json.load(open(f"{d}/latest"))
+for a in j["assets"]:
+    if a["name"].startswith("arcadia-deck-extras"): a["digest"]="sha256:"+hashlib.sha256(open(good,"rb").read()).hexdigest()
+json.dump(j,open(f"{d}/latest","w"))
+PY
+env $UPD bash "$HERE/tools/update-arcadia.sh"
+check "a tampered extras archive is refused before anything in it runs" '[ ! -e "$HOME/PWNED" ] && grep -q "Not updated" "$ARCADIA_HOME/logs/deck.log" && [ "$(cat "$ARCADIA_HOME/deck/version")" = v9.9.9 ]'
+cp "$TMP/good-extras.tar.gz" "$SRV/dl/arcadia-deck-extras.tar.gz"
+
+publish_release v9.9.10 nodigest
+env $UPD bash "$HERE/tools/update-arcadia.sh"
+check "a release that lists no checksum is not used" 'grep -q "doesn.t list a checksum" "$ARCADIA_HOME/logs/deck.log" && [ "$(cat "$ARCADIA_HOME/deck/version")" = v9.9.9 ]'
+publish_release v9.9.9  # (back to the real release for the checks that follow)
 kill $SRVPID 2>/dev/null; pkill -f "http.server $PORT" 2>/dev/null
 export DECK_RELEASE_API="http://127.0.0.1:1/latest"  # nothing listens there: an unreachable server (never the real GitHub)
 DECK_APPIMAGE="$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" bash "$HERE/tools/update-arcadia.sh" --check

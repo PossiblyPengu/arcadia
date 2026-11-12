@@ -10,8 +10,10 @@ reinstalled with their own install.sh. Nothing in your ROMs, saves or Arcadia se
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -70,18 +72,43 @@ def appimage_path() -> Path:
     return Path.home() / "Applications" / APPIMAGE_NAME
 
 
-def download(url: str, dest: Path, size: int) -> None:
+def expected_sha256(asset: dict) -> str:
+    """The SHA-256 GitHub lists for a release file ("sha256:<hex>"), or "" if it lists none."""
+    kind, _, digest = str(asset.get("digest") or "").partition(":")
+    digest = digest.lower()
+    return digest if kind.lower() == "sha256" and re.fullmatch(r"[0-9a-f]{64}", digest) else ""
+
+
+def download(url: str, dest: Path, size: int, sha256: str) -> None:
+    """Download to `dest`, and keep it only if it is whole and is the file the release says it is."""
     done = 0
-    with _open(url) as r, open(dest, "wb") as out:
-        while True:
-            chunk = r.read(1024 * 1024)
-            if not chunk:
-                break
-            out.write(chunk)
-            done += len(chunk)
-    if size and done != size:
+    digest = hashlib.sha256()
+    try:
+        with _open(url) as r, open(dest, "wb") as out:
+            while True:
+                chunk = r.read(1024 * 1024)
+                if not chunk:
+                    break
+                out.write(chunk)
+                digest.update(chunk)
+                done += len(chunk)
+        if size and done != size:
+            raise UpdateError(f"the download was cut short ({done} of {size} bytes), so nothing was changed")
+        if digest.hexdigest() != sha256:
+            raise UpdateError("the download doesn't match the checksum the release lists, so nothing was changed")
+    except BaseException:
         dest.unlink(missing_ok=True)
-        raise UpdateError(f"the download was cut short ({done} of {size} bytes), so nothing was changed")
+        raise
+
+
+def checked_asset(assets: dict, name: str) -> tuple[dict, str]:
+    """The release file and the checksum it must have. A release that lists no checksum for a file isn't used:
+    one of these files is run after it is downloaded, so it is never taken on trust."""
+    asset = assets[name]
+    sha = expected_sha256(asset)
+    if not sha:
+        raise UpdateError(f"the release doesn't list a checksum for {name}, so nothing was changed")
+    return asset, sha
 
 
 def update(check_only: bool = False) -> str:
@@ -97,9 +124,9 @@ def update(check_only: bool = False) -> str:
         tmp_dir = Path(tmp)
         extras_dir = None
         if EXTRAS_NAME in assets:
-            a = assets[EXTRAS_NAME]
+            a, sha = checked_asset(assets, EXTRAS_NAME)
             archive = tmp_dir / EXTRAS_NAME
-            download(a["browser_download_url"], archive, int(a.get("size") or 0))
+            download(a["browser_download_url"], archive, int(a.get("size") or 0), sha)
             extras_dir = tmp_dir / "extras"
             with tarfile.open(archive) as tf:
                 for m in tf.getmembers():  # never write outside the folder
@@ -108,11 +135,11 @@ def update(check_only: bool = False) -> str:
                 tf.extractall(extras_dir)
         new_image = None
         if APPIMAGE_NAME in assets:
-            a = assets[APPIMAGE_NAME]
+            a, sha = checked_asset(assets, APPIMAGE_NAME)
             target = appimage_path()
             target.parent.mkdir(parents=True, exist_ok=True)
             new_image = target.with_name(target.name + ".new")
-            download(a["browser_download_url"], new_image, int(a.get("size") or 0))
+            download(a["browser_download_url"], new_image, int(a.get("size") or 0), sha)
             new_image.chmod(0o755)
         if new_image is not None:
             target = appimage_path()
