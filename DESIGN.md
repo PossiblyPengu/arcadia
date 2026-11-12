@@ -81,7 +81,7 @@ in a scrolling panel.
 | Game shelf / list | theme | selected cover large, details underneath; plain-list variant for big libraries |
 | Menus and dialogs | program | the colour, type and focus rules above, as the default (and only dark) scheme |
 | Setup hub | program | native screens: first run, sort ROMs, emulators, BIOS, saves and sync, backup, updates |
-| Launch, screensaver, boot | program | the same ground, glow and type |
+| Launch, screensaver, boot | program | the same ground, glow and type; the boot screen is the mark over the wordmark with an accent progress bar (`tools/make_splash.py`); the screensaver dims by default |
 
 ## Not part of the language
 

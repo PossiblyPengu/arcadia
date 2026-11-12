@@ -161,7 +161,7 @@ bool Window::init(bool resized)
     progressBarRect.barPosX =
         (mRenderer->getScreenWidth() / 2.0f) - (progressBarRect.barWidth / 2.0f);
     progressBarRect.barPosY = mSplashTextPositions.y + (progressBarRect.barHeight * 2.0f);
-    progressBarRect.color = 0x777777FF;
+    progressBarRect.color = 0x2D3140FF;
     mProgressBarRectangles.emplace_back(progressBarRect);
 
     const float borderThickness {std::ceil(2.0f * mRenderer->getScreenResolutionModifier())};
@@ -170,14 +170,14 @@ bool Window::init(bool resized)
     progressBarRect.barHeight -= borderThickness * 2.0f;
     progressBarRect.barPosX += borderThickness;
     progressBarRect.barPosY += borderThickness;
-    progressBarRect.color = 0x000000FF;
+    progressBarRect.color = 0x10121AFF;
     mProgressBarRectangles.emplace_back(progressBarRect);
 
     progressBarRect.barWidth -= borderThickness * 2.0f;
     progressBarRect.barHeight -= borderThickness * 2.0f;
     progressBarRect.barPosX += borderThickness;
     progressBarRect.barPosY += borderThickness;
-    progressBarRect.color = 0x79010FFF;
+    progressBarRect.color = 0x5AA9FFFF;
     mProgressBarRectangles.emplace_back(progressBarRect);
 
     mBackgroundOverlay->setResize(mRenderer->getScreenWidth(), mRenderer->getScreenHeight());
@@ -752,15 +752,15 @@ void Window::render()
 void Window::updateSplashScreenText()
 {
     mSplashTextScanning = std::make_unique<TextComponent>(_("Searching for games..."),
-                                                          Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+                                                          Font::get(FONT_SIZE_MEDIUM), 0x9AA1B4FF);
     mSplashTextPopulating = std::make_unique<TextComponent>(
-        _("Loading systems..."), Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+        _("Loading systems..."), Font::get(FONT_SIZE_MEDIUM), 0x9AA1B4FF);
     mSplashTextReloading =
-        std::make_unique<TextComponent>(_("Reloading..."), Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+        std::make_unique<TextComponent>(_("Reloading..."), Font::get(FONT_SIZE_MEDIUM), 0x9AA1B4FF);
     mSplashTextResourceCopy = std::make_unique<TextComponent>(
-        _("Copying resources..."), Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+        _("Copying resources..."), Font::get(FONT_SIZE_MEDIUM), 0x9AA1B4FF);
     mSplashTextDirCreation = std::make_unique<TextComponent>(
-        _("Creating system directories..."), Font::get(FONT_SIZE_MEDIUM), 0x777777FF);
+        _("Creating system directories..."), Font::get(FONT_SIZE_MEDIUM), 0x9AA1B4FF);
 
     mSplashTextPositions.x =
         (mRenderer->getScreenWidth() - mSplashTextScanning->getSize().x) / 2.0f;
@@ -777,7 +777,7 @@ void Window::renderSplashScreen(SplashScreenState state, float progress)
     glm::mat4 trans {mRenderer->getIdentity()};
     mRenderer->setMatrix(trans);
     mRenderer->drawRect(0.0f, 0.0f, mRenderer->getScreenWidth(), mRenderer->getScreenHeight(),
-                        0x000000FF, 0x000000FF);
+                        0x10121AFF, 0x10121AFF);
     mSplash->render(trans);
     mRenderer->setMatrix(trans);
 
