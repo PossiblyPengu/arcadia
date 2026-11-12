@@ -182,6 +182,12 @@ check "Deckhand is installed with its own installer, then opened" '[ -x "$HOME/.
 check "the checklist then counts it as done" 'ARCADIA_OUTPUT=stdout bash "$HERE/tools/get-started.sh" --status | grep -q "^deckhand|1|"'
 out="$(DECKHAND_GET_URL="file://$TMP/nothing-here" ARCADIA_OUTPUT=stdout bash "$HERE/tools/get-deckhand.sh")"
 check "once installed it's just opened" '[ "$(wc -l < "$HOME/deckhand.calls")" = 2 ] && [[ "$out" != *"Deckhand is installed"* ]]'
+printf '#!/bin/bash\nexit 3\n' > "$HOME/.local/bin/deckhand"
+out="$(DECKHAND_GET_URL="file://$TMP/nothing-here" ARCADIA_OUTPUT=stdout bash "$HERE/tools/get-deckhand.sh")"; rc=$?
+check "a Deckhand that won't start is reported, not called closed" '[ "$rc" = 1 ] && [[ "$out" == *"didn"*"start properly"*"code 3"* ]]'
+check "and the checklist offers it again" 'ARCADIA_OUTPUT=stdout bash "$HERE/tools/get-started.sh" --status | grep -q "^deckhand|0|"'
+out="$(DECKHAND_GET_URL="file://$TMP/get.sh" ARCADIA_OUTPUT=stdout bash "$HERE/tools/get-deckhand.sh")"
+check "picking it again reinstalls it and opens it" '[[ "$out" == *"Deckhand is installed"* ]] && [ "$(wc -l < "$HOME/deckhand.calls")" = 3 ] && ARCADIA_OUTPUT=stdout bash "$HERE/tools/get-started.sh" --status | grep -q "^deckhand|1|"'
 rm -rf "$HOME/.local/bin/deckhand"
 DECKHAND_GET_URL="file://$TMP/nothing-here" ARCADIA_OUTPUT=stdout bash "$HERE/tools/get-deckhand.sh" >/dev/null; rc=$?
 check "an installer that can't be fetched is reported" '[ "$rc" = 1 ] && grep -q "Deckhand couldn.t be installed" "$ARCADIA_HOME/logs/deck.log"'
