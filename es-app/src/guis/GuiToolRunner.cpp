@@ -13,6 +13,14 @@
 
 #include <array>
 #include <cstdio>
+#include <cstring>
+#include <spawn.h>
+#include <string>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <vector>
+
+extern char** environ;
 
 GuiToolRunner::GuiToolRunner(const std::string& title,
                              const std::string& command,
@@ -80,21 +88,62 @@ GuiToolRunner::~GuiToolRunner()
     }
 }
 
+// Runs a command through sh and collects what it prints (both streams). The command gets Arcadia's environment
+// without LD_PRELOAD: started from Steam, Arcadia carries Steam's overlay libraries there (one 32-bit, one 64-bit),
+// and every program a tool starts would print "cannot be preloaded (wrong ELF class)" for the one that doesn't fit,
+// burying the tool's real output. (Games are launched elsewhere and keep the overlay.)
+static bool runWithoutPreload(const std::string& cmd, std::string& output)
+{
+    int fds[2];
+    if (pipe(fds) != 0)
+        return false;
+
+    posix_spawn_file_actions_t actions;
+    posix_spawn_file_actions_init(&actions);
+    posix_spawn_file_actions_adddup2(&actions, fds[1], STDOUT_FILENO);
+    posix_spawn_file_actions_adddup2(&actions, fds[1], STDERR_FILENO);
+    posix_spawn_file_actions_addclose(&actions, fds[0]);
+    posix_spawn_file_actions_addclose(&actions, fds[1]);
+
+    std::vector<std::string> env;
+    for (char** e {environ}; e != nullptr && *e != nullptr; ++e) {
+        if (std::strncmp(*e, "LD_PRELOAD=", 11) != 0)
+            env.emplace_back(*e);
+    }
+    std::vector<char*> envp;
+    for (std::string& entry : env)
+        envp.push_back(entry.data());
+    envp.push_back(nullptr);
+
+    char* argv[] {const_cast<char*>("sh"), const_cast<char*>("-c"), const_cast<char*>(cmd.c_str()),
+                  nullptr};
+    pid_t pid {0};
+    const int result {posix_spawn(&pid, "/bin/sh", &actions, nullptr, argv, envp.data())};
+    posix_spawn_file_actions_destroy(&actions);
+    close(fds[1]);
+    if (result != 0) {
+        close(fds[0]);
+        return false;
+    }
+
+    std::array<char, 512> buffer {};
+    ssize_t count {0};
+    while ((count = read(fds[0], buffer.data(), buffer.size())) > 0)
+        output.append(buffer.data(), static_cast<size_t>(count));
+    close(fds[0]);
+    int status {0};
+    waitpid(pid, &status, 0);
+    return true;
+}
+
 void GuiToolRunner::run()
 {
     std::string output;
     const std::string cmd {"ARCADIA_OUTPUT=stdout ARCADIA_HOME=\"" +
                            Utils::FileSystem::getAppDataDirectory() + "\" ARCADIA_ROMS=\"" +
-                           FileData::getROMDirectory() + "\" " + mCommand + " 2>&1"};
-    if (FILE* pipe = popen(cmd.c_str(), "r")) {
-        std::array<char, 512> buffer {};
-        while (fgets(buffer.data(), static_cast<int>(buffer.size()), pipe) != nullptr)
-            output += buffer.data();
-        pclose(pipe);
-    }
-    else {
+                           FileData::getROMDirectory() + "\" " + mCommand};
+    if (!runWithoutPreload(cmd, output))
         output = "The tool couldn't be started.";
-    }
     LOG(LogInfo) << "GuiToolRunner: finished \"" << mCommand << "\"";
     {
         std::unique_lock<std::mutex> lock {mMutex};
