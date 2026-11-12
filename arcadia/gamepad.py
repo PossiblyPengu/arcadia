@@ -18,6 +18,8 @@ BUTTON_ACTIONS = {
     "BTN_NORTH": "favorite",  # Y / Triangle
     "BTN_TL": "prev_system",  # left bumper
     "BTN_TR": "next_system",  # right bumper
+    "BTN_START": "options",  # Menu / Start: the Options list
+    "BTN_SELECT": "options",  # View / Select
 }
 HAT_ACTIONS = {
     ("ABS_HAT0X", -1): "left",

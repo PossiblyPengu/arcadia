@@ -50,6 +50,7 @@ from PySide6.QtWidgets import (
 )
 
 from arcadia.folder_picker import choose_folder
+from arcadia.options_menu import show_options
 from arcadia.config import Config, SystemConfig
 from arcadia.consoles_view import ConsoleCarousel, Entry
 from arcadia.coverflow import COVER_H, COVER_W, CoverFlow
@@ -104,8 +105,8 @@ ACTION_KEYS = {
     "back": Qt.Key.Key_Escape,
 }
 
-HINTS = "←  →  browse     A–Z  jump to letter     Enter  launch     Esc  back to consoles     Ctrl+D  favorite     Ctrl+F  search     F11  fullscreen"
-CONSOLE_HINTS = "←  ↑  ↓  →  choose     Enter  open     A–Z  jump to a console     Ctrl+F  search all games     F11  fullscreen"
+HINTS = "←  →  browse     A–Z  jump to letter     Enter  launch     Esc  back to consoles     Ctrl+D  favorite     Ctrl+F  search     F10  options     F11  fullscreen"
+CONSOLE_HINTS = "←  ↑  ↓  →  choose     Enter  open     A–Z  jump to a console     Ctrl+F  search all games     F10  options     F11  fullscreen"
 VIEW_ALL = "__all__"
 
 
@@ -358,11 +359,16 @@ class MainWindow(QMainWindow):
         self.sort_combo.setCurrentIndex(max(0, index))
         self.sort_combo.currentIndexChanged.connect(self._on_sort_changed)
 
+        self.options_btn = QPushButton("☰  Options")
+        self.options_btn.setToolTip("Settings, emulators, sync, updates … (F10, or Menu on the controller)")
+        self.options_btn.clicked.connect(lambda _c=False: self.open_options())
+
         top = QHBoxLayout()
         top.addWidget(self.back_btn)
         top.addStretch(1)
         top.addWidget(self.search)
         top.addWidget(self.sort_combo)
+        top.addWidget(self.options_btn)
         root.addLayout(top)
 
         # --- page 0: choose a console ---
@@ -381,6 +387,10 @@ class MainWindow(QMainWindow):
         console_top.addWidget(self.wordmark)
         console_top.addStretch(1)
         console_top.addWidget(self.library_lbl)
+        self.console_options_btn = QPushButton("☰  Options")
+        self.console_options_btn.setToolTip("Settings, emulators, sync, updates … (F10, or Menu on the controller)")
+        self.console_options_btn.clicked.connect(lambda _c=False: self.open_options())
+        console_top.addWidget(self.console_options_btn)
         cp.addLayout(console_top)
         self.choose_lbl = QLabel("CHOOSE A CONSOLE")
         self.choose_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -525,6 +535,10 @@ class MainWindow(QMainWindow):
     # ----- menu, fullscreen, persistence -----
 
     def _build_menu(self) -> None:
+        self.options_action = QAction("Options…", self)
+        self.options_action.setShortcut("F10")
+        self.options_action.triggered.connect(lambda _c=False: self.open_options())
+        self.addAction(self.options_action)
         file_menu = self.menuBar().addMenu("&File")
         file_menu.addAction("Get started…", self.show_welcome)
         file_menu.addSeparator()
@@ -625,6 +639,12 @@ class MainWindow(QMainWindow):
         else:
             text = "Your pictures all look fine."
         QMessageBox.information(self, "Your console pictures", text)
+
+    def open_options(self) -> None:
+        """Every menu-bar item as a list a controller can use (the menu bar is hidden in full screen)."""
+        if QApplication.activeModalWidget() is not None:
+            return
+        show_options(self.menuBar(), self, skip=self.options_action)
 
     def toggle_fullscreen(self) -> None:
         if self.isFullScreen():
@@ -1212,6 +1232,9 @@ class MainWindow(QMainWindow):
         """Controller buttons. On the console screen the D-pad moves between tiles and A opens one;
         on the game screen it browses games, A launches, B goes back, and the bumpers change console."""
         if self._pad_in_dialog(name):  # a dialog is open: the controller drives it, not the window behind
+            return
+        if name == "options":
+            self.open_options()
             return
         if name == "favorite":
             if self.on_games_page():

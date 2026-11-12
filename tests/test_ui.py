@@ -1539,3 +1539,31 @@ def test_launch_problem_offers_the_fixes(window, monkeypatch):
         window._launch_problem("nope")
     assert opened == ["emulators", "settings"] and len(seen[0]) == 3
 
+
+
+def test_options_list_holds_the_menu_items_and_runs_them(window, monkeypatch):
+    from arcadia.options_menu import OptionsMenu, collect
+
+    groups = dict(collect(window.menuBar(), skip=window.options_action))
+    assert "File" in groups and "View" in groups
+    names = [a.text().replace("&", "") for _, entries in groups.items() for a, _ in entries]
+    assert "Settings…" in names and "Emulators…" in names and "Options…" not in names
+    dialog = OptionsMenu(window.menuBar(), window, window.options_action)
+    texts = [dialog.listing.item(i).text() for i in range(dialog.listing.count())]
+    assert "FILE" in texts and any("Settings…" in t for t in texts)
+    assert dialog.listing.currentItem().data(0x100) is not None  # starts on a real item, not a heading
+    item = next(dialog.listing.item(i) for i in range(dialog.listing.count()) if "Settings…" in dialog.listing.item(i).text())
+    dialog._choose(item)
+    assert dialog.chosen is not None and dialog.chosen.text().replace("&", "") == "Settings…"
+
+
+def test_controller_menu_button_and_header_button_open_options(window, monkeypatch):
+    from arcadia import gamepad
+
+    assert gamepad.BUTTON_ACTIONS["BTN_START"] == "options"
+    opened = []
+    monkeypatch.setattr("arcadia.ui.show_options", lambda *a, **k: opened.append(1))
+    window.handle_action("options")
+    window.options_btn.click()
+    window.console_options_btn.click()
+    assert opened == [1, 1, 1]

@@ -497,7 +497,7 @@ Qt for gamescope's X11 display automatically. A Steam Input layout with the game
 controls. Not yet tried on real Deck hardware.
 
 In Steam's controller settings for Arcadia, bind: D-pad to the arrow keys, **A** to Enter, **B** to Escape,
-**Y** to Ctrl+D, left/right bumper to Page Up / Page Down, and the left stick to the arrow keys too. That covers
+**Y** to Ctrl+D, **Menu (≡)** to F10 (Options), left/right bumper to Page Up / Page Down, and the left stick to the arrow keys too. That covers
 every control in the table below. `docs/steam-input.md` has the same list to follow button by button.
 
 ## Install (development)
@@ -549,6 +549,7 @@ media/snes/Super Mario World.png    cover art (png, jpg, jpeg, webp)
 | Change console without going back (game screen) | Page Up / Page Down | Left / right bumper |
 | Favorite | Ctrl+D | Y (game screen) |
 | Search (all games, from the console screen) | Ctrl+F | — |
+| **Options** (every menu item, as a list; the menu bar is hidden in full screen) | F10, or the ☰ Options button | Menu / Start (or View / Select) |
 | Fullscreen | F11 | — |
 | Rescan | Ctrl+R | — |
 
