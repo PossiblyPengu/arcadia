@@ -8,7 +8,7 @@ PY = "/usr/bin/python3" if Path("/usr/bin/python3").exists() else "python3"
 
 
 def run(script, *args, **env):
-    e = {k: v for k, v in os.environ.items() if k not in ("QT_QPA_PLATFORM", "SteamGameId")}
+    e = {k: v for k, v in os.environ.items() if k not in ("QT_QPA_PLATFORM", "SteamGameId", "XDG_CURRENT_DESKTOP", "GAMESCOPE_WAYLAND_DISPLAY", "ARCADIA_FULLSCREEN")}
     e.update(env)
     return subprocess.run(["bash", str(ROOT / script), *args], env=e, capture_output=True, text=True)
 
@@ -18,10 +18,14 @@ def test_syntax():
         assert subprocess.run(["bash", "-n", str(ROOT / s)]).returncode == 0
 
 
-def test_fullscreen_default_and_windowed(tmp_path):
-    env = dict(ARCADIA_DRY_RUN="1", ARCADIA_PYTHON=PY, ARCADIA_VENV=str(tmp_path / "none"), XDG_DATA_HOME=str(tmp_path))
-    assert "--fullscreen" in run("arcadia.sh", **env).stdout
-    out = run("arcadia.sh", "--windowed", "--home", "/tmp/x", **env).stdout
+def test_window_on_the_desktop_full_screen_in_game_mode(tmp_path):
+    env = dict(ARCADIA_DRY_RUN="1", ARCADIA_PYTHON=PY, ARCADIA_VENV=str(tmp_path / "none"), XDG_DATA_HOME=str(tmp_path), XDG_CURRENT_DESKTOP="KDE")
+    assert "--fullscreen" not in run("arcadia.sh", **env).stdout  # desktop: a normal window
+    assert "--fullscreen" in run("arcadia.sh", "--fullscreen", **env).stdout  # asked for
+    assert "--fullscreen" in run("arcadia.sh", **env, SteamGameId="123").stdout  # started from Steam: Game Mode
+    assert "--fullscreen" in run("arcadia.sh", **{**env, "XDG_CURRENT_DESKTOP": "gamescope"}).stdout
+    assert "--fullscreen" in run("arcadia.sh", **env, ARCADIA_FULLSCREEN="1").stdout
+    out = run("arcadia.sh", "--windowed", "--home", "/tmp/x", **env, SteamGameId="123").stdout
     assert "--fullscreen" not in out and "--windowed" not in out and "--home /tmp/x" in out
 
 

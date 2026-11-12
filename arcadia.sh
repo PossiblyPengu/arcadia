@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Start Arcadia full screen, using its own Python environment (made by ./install.sh).
 #
-#   ./arcadia.sh                  full screen (what you want in Game Mode)
-#   ./arcadia.sh --windowed       an ordinary window
+#   ./arcadia.sh                  full screen in Game Mode, an ordinary window on the desktop
+#   ./arcadia.sh --fullscreen     full screen, wherever you are
+#   ./arcadia.sh --windowed       an ordinary window, even in Game Mode
 #   ./arcadia.sh --home DIR       run entirely from this folder (portable mode); other options pass through
 #
 # Set ARCADIA_DRY_RUN=1 to print what would be run instead of running it.
@@ -13,7 +14,11 @@ DATA="${XDG_DATA_HOME:-$HOME/.local/share}"
 VENV="${ARCADIA_VENV:-$DATA/arcadia-env}"
 LOG="$DATA/arcadia/launch.log"
 
-fullscreen=(--fullscreen)
+# Game Mode (a Steam game, or the gamescope session) starts full screen; the desktop starts in a window.
+fullscreen=()
+if [ -n "${SteamGameId:-}" ] || [ "${XDG_CURRENT_DESKTOP:-}" = "gamescope" ] || [ -n "${GAMESCOPE_WAYLAND_DISPLAY:-}" ] || [ "${ARCADIA_FULLSCREEN:-}" = 1 ]; then
+  fullscreen=(--fullscreen)
+fi
 extra=()
 for arg in "$@"; do
   if [ "$arg" = "--windowed" ]; then fullscreen=(); else extra+=("$arg"); fi

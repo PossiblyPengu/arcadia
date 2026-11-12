@@ -487,7 +487,7 @@ In Desktop Mode, open a terminal in the Arcadia folder and run:
 
 ```bash
 ./install.sh        # private Python environment + an "Arcadia" entry in the application menu
-./arcadia.sh        # start it full screen   (./arcadia.sh --windowed for a normal window)
+./arcadia.sh        # full screen in Game Mode, a normal window on the desktop (--fullscreen / --windowed force one)
 ./install.sh --uninstall   # remove the environment and menu entry (never your ROMs or saves)
 ```
 
