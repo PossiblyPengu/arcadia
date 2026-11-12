@@ -1314,8 +1314,25 @@ class MainWindow(QMainWindow):
             lines = "\n".join(f"• {item.source.name}: {why}" for item, why in result.skipped)
             QMessageBox.warning(self, "Some ROMs were not moved", lines)
 
+    def _plan_with_subfolders(self, folder: Path) -> Plan:
+        """What's in a folder; if nothing is directly in it, also what's one folder down (ROMs are often in a subfolder)."""
+        plan = build_plan(folder, self.config)
+        if plan.items:
+            return plan
+        try:
+            subs = sorted(p for p in folder.iterdir() if p.is_dir() and not p.name.startswith("."))[:200]
+        except OSError:
+            return plan
+        for sub in subs:
+            deeper = build_plan(sub, self.config)
+            plan.items += deeper.items
+            plan.waiting += deeper.waiting
+            plan.ignored += deeper.ignored
+        return plan
+
     def import_roms(self) -> None:
-        """File > Import ROMs: review everything in the downloads folder, including sure matches."""
+        """File > Import ROMs: review everything in the downloads folder (or any folder you pick), including sure
+        matches. If nothing is found you can pick a different folder straight away."""
         inbox = self.config.inbox_path
         if inbox is None or not inbox.is_dir():
             start = str(inbox) if inbox else str(Path.home() / "Downloads")
@@ -1326,13 +1343,28 @@ class MainWindow(QMainWindow):
             self._save_config()
             self._setup_inbox()
             inbox = self.config.inbox_path
-        plan = build_plan(inbox, self.config)
-        if not plan.items:
+        folder = inbox
+        while True:
+            plan = self._plan_with_subfolders(folder)
+            if plan.items:
+                break
             extra = f" ({len(plan.waiting)} still downloading)" if plan.waiting else ""
-            self.toast.show_message(f"No ROMs to import in {inbox}{extra}")
-            return
+            box = QMessageBox(self)
+            box.setIcon(QMessageBox.Icon.Information)
+            box.setWindowTitle("Import ROMs")
+            box.setText(f"No ROMs to import in {folder}{extra}.")
+            box.setInformativeText("Choose a different folder to look in?")
+            another = box.addButton("Choose another folder…", QMessageBox.ButtonRole.AcceptRole)
+            box.addButton("Close", QMessageBox.ButtonRole.RejectRole)
+            box.exec()
+            if box.clickedButton() is not another:
+                return
+            chosen = choose_folder(self, "Look for ROMs in", str(folder))
+            if not chosen:
+                return
+            folder = Path(chosen)
         self._asked.update(str(i.source) for i in plan.items)
-        self._show_import_dialog(plan, inbox)
+        self._show_import_dialog(plan, folder)
 
     def _update_undo_action(self) -> None:
         n = self.journal.last_count()

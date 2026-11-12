@@ -1509,3 +1509,28 @@ def test_the_console_name_shows_its_era(window, qapp):
     from arcadia.eras import era_of
 
     assert era_of("snes") == "16-bit"
+
+
+def test_import_with_nothing_found_lets_you_pick_another_folder(qapp, tmp_path, asked, monkeypatch):
+    """Finding nothing used to be a dead end: now it offers another folder, and looks one level down too."""
+    from PySide6.QtWidgets import QMessageBox
+
+    win, inbox = _make_inbox_window(tmp_path)
+    try:
+        for f in list(inbox.iterdir()):
+            f.unlink()
+        other = tmp_path / "elsewhere"
+        (other / "stuff").mkdir(parents=True)
+        (other / "stuff" / "Contra.nes").write_bytes(b"NES\x1a" + b"\0" * 20)
+        import time
+        old = time.time() - 60
+        os.utime(other / "stuff" / "Contra.nes", (old, old))
+        picks = []
+        monkeypatch.setattr(QMessageBox, "exec", lambda self: picks.append(self.text()) or 0)
+        monkeypatch.setattr(QMessageBox, "clickedButton", lambda self: next(b for b in self.buttons() if b.text().startswith("Choose another")))
+        monkeypatch.setattr("arcadia.ui.choose_folder", lambda *a, **k: str(other))
+        win.import_roms()
+        assert picks and "No ROMs to import" in picks[0]
+        assert asked == [["Contra.nes"]]
+    finally:
+        win.close()
