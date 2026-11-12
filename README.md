@@ -12,6 +12,18 @@ themes, controller input) and has its own look (`DESIGN.md`), its own defaults f
   starter controller settings, cloud save sync (rclone / Google Drive), backup and restore, self-update. `deck/README.md`
 - Linux and Steam Deck only
 
+## Screenshots
+
+Taken from the program itself at 1280x800 (the Deck's screen), with test games that have no art yet:
+
+| | |
+|---|---|
+| ![Boot](docs/screenshots/boot.png) | ![Consoles](docs/screenshots/consoles.png) |
+| ![Game shelf](docs/screenshots/games-shelf.png) | ![Game list](docs/screenshots/games-list.png) |
+| ![Main menu](docs/screenshots/main-menu.png) | ![Setup](docs/screenshots/setup.png) |
+| ![Get started](docs/screenshots/setup-checklist.png) | ![Sorting ROMs](docs/screenshots/setup-sort.png) |
+| ![First start](docs/screenshots/first-start.png) | |
+
 ## Build
 
 ```bash
