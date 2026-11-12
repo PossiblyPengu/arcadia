@@ -30,7 +30,7 @@ MenuComponent::MenuComponent(std::string title, const std::shared_ptr<Font>& tit
     // Set up title.
     mTitle = std::make_shared<TextComponent>();
     mTitle->setAutoCalcExtent(glm::ivec2 {0, 0});
-    mTitle->setHorizontalAlignment(ALIGN_CENTER);
+    mTitle->setHorizontalAlignment(ALIGN_LEFT);
     mTitle->setColor(mMenuColorTitle);
     setTitle(title, titleFont);
     mGrid.setEntry(mTitle, glm::ivec2 {0, 0}, false, true, glm::ivec2 {2, 2});
@@ -94,29 +94,30 @@ float MenuComponent::getButtonGridHeight() const
 
 void MenuComponent::updateSize()
 {
-    const float maxHeight {mRenderer->getScreenHeight() *
-                           (mRenderer->getIsVerticalOrientation() ? 0.70f : 0.80f)};
-    float height {TITLE_HEIGHT + mList->getTotalRowHeight() + getButtonGridHeight() +
-                  (2.0f * mRenderer->getScreenResolutionModifier())};
-    if (height > maxHeight) {
-        height = TITLE_HEIGHT + getButtonGridHeight();
-        int i {0};
-        while (i < mList->size()) {
-            // Add the separator height to the row height so that it also gets properly rendered.
-            float rowHeight {mList->getRowHeight() + mRenderer->getScreenResolutionModifier()};
-            if (height + rowHeight < maxHeight)
-                height += rowHeight;
-            else
-                break;
-            ++i;
-        }
-    }
-
-    float width {std::min(mRenderer->getScreenHeight() * 1.05f,
-                          mRenderer->getScreenWidth() *
-                              (mRenderer->getIsVerticalOrientation() ? 0.94f : 0.90f))};
-
+    // Arcadia (DESIGN.md): every menu is a sheet down the left side of the screen, the full height
+    // apart from a small margin, so the game or console you came from stays in view on the right.
+    // The bottom margin leaves the button hints visible below the sheet.
+    const glm::vec2 margin {sheetMargin()};
+    const float height {mRenderer->getScreenHeight() - margin.y - mRenderer->getScreenHeight() * 0.1f};
+    const float width {mRenderer->getIsVerticalOrientation() ?
+                           mRenderer->getScreenWidth() - 2.0f * margin.x :
+                           std::max(mRenderer->getScreenWidth() * 0.52f,
+                                    std::min(mRenderer->getScreenHeight() * 0.95f,
+                                             mRenderer->getScreenWidth() * 0.9f))};
     setSize(width, height);
+}
+
+glm::vec2 MenuComponent::sheetMargin()
+{
+    Renderer* renderer {Renderer::getInstance()};
+    return glm::vec2 {std::round(renderer->getScreenWidth() * 0.025f),
+                      std::round(renderer->getScreenHeight() * 0.04f)};
+}
+
+glm::vec3 MenuComponent::sheetPosition()
+{
+    const glm::vec2 margin {sheetMargin()};
+    return glm::vec3 {margin.x, margin.y, 0.0f};
 }
 
 void MenuComponent::onSizeChanged()
@@ -132,14 +133,16 @@ void MenuComponent::onSizeChanged()
 
     mGrid.setSize(mSize);
 
-    // Limit the title size to reserve space for the scroll indicators.
-    float indicatorsSize {mSize.x * 0.09f};
+    // The title sits on the left like the rows below it, leaving room on the right for the
+    // scroll indicators.
+    const float indent {mSize.x * 0.028f};
+    const float indicatorsSize {mSize.x * 0.09f};
 
     glm::vec2 titleSize {mTitle->getSize()};
-    mTitle->setSize(titleSize.x - indicatorsSize, titleSize.y);
+    mTitle->setSize(titleSize.x - indicatorsSize - indent, titleSize.y);
 
     glm::vec3 titlePos {mTitle->getPosition()};
-    mTitle->setPosition(titlePos.x + indicatorsSize / 2.0f, titlePos.y, titlePos.z);
+    mTitle->setPosition(titlePos.x + indent, titlePos.y, titlePos.z);
 }
 
 void MenuComponent::addButton(const std::string& name,

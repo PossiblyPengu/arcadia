@@ -45,7 +45,7 @@ GuiSettings::GuiSettings(std::string title)
     mMenu.addButton(_("BACK"), _("back"), [this] { delete this; });
 
     setSize(Renderer::getScreenWidth(), Renderer::getScreenHeight());
-    mMenu.setPosition((mSize.x - mMenu.getSize().x) / 2.0f, Renderer::getScreenHeight() * 0.13f);
+    mMenu.setPosition(MenuComponent::sheetPosition());
 }
 
 GuiSettings::~GuiSettings()

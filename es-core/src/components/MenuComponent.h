@@ -90,6 +90,13 @@ private:
     void updateGrid();
     float getButtonGridHeight() const;
 
+public:
+    // Where menu sheets sit on screen (DESIGN.md), for the menus that place themselves.
+    static glm::vec2 sheetMargin();
+    static glm::vec3 sheetPosition();
+
+private:
+
     Renderer* mRenderer;
     BackgroundComponent mBackground;
     ComponentGrid mGrid;

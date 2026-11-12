@@ -176,7 +176,7 @@ void Settings::setDefaults()
     mStringMap["SystemsSorting"] = {"default", "default"};
     mStringMap["DefaultSortOrder"] = {"name, ascending", "name, ascending"};
     mStringMap["MenuColorScheme"] = {"ink", "ink"};
-    mStringMap["MenuOpeningEffect"] = {"scale-up", "scale-up"};
+    mStringMap["MenuOpeningEffect"] = {"slide", "slide"};
     mStringMap["LaunchScreenDuration"] = {"normal", "normal"};
     mStringMap["UIMode"] = {"full", "full"};
     mStringMap["RandomEntryButton"] = {"games", "games"};

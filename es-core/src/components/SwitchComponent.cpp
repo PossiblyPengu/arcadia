@@ -79,9 +79,14 @@ void SwitchComponent::onStateChanged()
     mImage.setResize(mSize);
     mImage.setImage(mState ? ":/graphics/on.svg" : ":/graphics/off.svg");
 
-    // Change the color of the switch to reflect the changes.
-    if (mState == mOriginalValue)
+    // Change the color of the switch to reflect the changes. Arcadia: an ordinary switch is the accent
+    // colour when on and muted when off (menus that mark changed values keep their own colours).
+    if (mState == mOriginalValue && mColorOriginalValue == mMenuColorPrimary)
+        mImage.setColorShift(mState ? mMenuColorBlue : mMenuColorSecondary);
+    else if (mState == mOriginalValue)
         mImage.setColorShift(mColorOriginalValue);
+    else if (mColorChangedValue == mMenuColorPrimary)
+        mImage.setColorShift(mState ? mMenuColorBlue : mMenuColorSecondary);
     else
         mImage.setColorShift(mColorChangedValue);
 }

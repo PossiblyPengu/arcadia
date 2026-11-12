@@ -30,7 +30,8 @@ private:
     void addEntry(const std::string& name,
                   unsigned int color,
                   bool add_arrow,
-                  const std::function<void()>& func);
+                  const std::function<void()>& func,
+                  const std::string& icon = "");
     void addVersionInfo();
 
     void openScraperOptions();

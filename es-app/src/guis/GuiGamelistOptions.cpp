@@ -262,9 +262,9 @@ GuiGamelistOptions::GuiGamelistOptions(SystemData* system)
         });
     }
 
-    // Center the menu.
+    // The menu sheet on the left (DESIGN.md).
     setSize(Renderer::getScreenWidth(), Renderer::getScreenHeight());
-    mMenu.setPosition((mSize.x - mMenu.getSize().x) / 2.0f, (mSize.y - mMenu.getSize().y) / 2.0f);
+    mMenu.setPosition(MenuComponent::sheetPosition());
 }
 
 GuiGamelistOptions::~GuiGamelistOptions()

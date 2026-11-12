@@ -11,7 +11,7 @@
 #include "resources/Font.h"
 #include "utils/LocalizationUtil.h"
 
-#define TOTAL_HORIZONTAL_PADDING_PX 20.0f
+#define TOTAL_HORIZONTAL_PADDING_PX 56.0f // Arcadia: rows line up with the menu title
 
 ComponentList::ComponentList()
     : IList<ComponentListRow, void*> {LIST_SCROLL_STYLE_SLOW, ListLoopType::LIST_NEVER_LOOP}

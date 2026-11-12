@@ -51,43 +51,42 @@ GuiMenu::GuiMenu()
     const bool isFullUI {UIModeController::getInstance()->isUIModeFull()};
 
     if (isFullUI)
-        addEntry(_("SETUP"), mMenuColorPrimary, true, [this] { openSetup(); });
+        addEntry(_("SETUP"), mMenuColorPrimary, true, [this] { openSetup(); }, "setup");
 
     if (isFullUI)
-        addEntry(_("SCRAPER"), mMenuColorPrimary, true, [this] { openScraperOptions(); });
+        addEntry(_("SCRAPER"), mMenuColorPrimary, true, [this] { openScraperOptions(); }, "scraper");
 
     if (isFullUI)
-        addEntry(_("UI SETTINGS"), mMenuColorPrimary, true, [this] { openUIOptions(); });
+        addEntry(_("UI SETTINGS"), mMenuColorPrimary, true, [this] { openUIOptions(); }, "ui");
 
-    addEntry(_("SOUND SETTINGS"), mMenuColorPrimary, true, [this] { openSoundOptions(); });
+    addEntry(_("SOUND SETTINGS"), mMenuColorPrimary, true, [this] { openSoundOptions(); }, "sound");
 
     if (isFullUI)
         addEntry(_("INPUT DEVICE SETTINGS"), mMenuColorPrimary, true,
-                 [this] { openInputDeviceOptions(); });
+                 [this] { openInputDeviceOptions(); }, "input");
 
     if (isFullUI)
         addEntry(_("GAME COLLECTION SETTINGS"), mMenuColorPrimary, true,
-                 [this] { openCollectionSystemOptions(); });
+                 [this] { openCollectionSystemOptions(); }, "collections");
 
     if (isFullUI)
-        addEntry(_("OTHER SETTINGS"), mMenuColorPrimary, true, [this] { openOtherOptions(); });
+        addEntry(_("OTHER SETTINGS"), mMenuColorPrimary, true, [this] { openOtherOptions(); }, "other");
 
     if (isFullUI)
-        addEntry(_("UTILITIES"), mMenuColorPrimary, true, [this] { openUtilities(); });
+        addEntry(_("UTILITIES"), mMenuColorPrimary, true, [this] { openUtilities(); }, "utilities");
 
     if (!Settings::getInstance()->getBool("ForceKiosk") &&
         Settings::getInstance()->getString("UIMode") != "kiosk") {
         if (Settings::getInstance()->getBool("ShowQuitMenu"))
-            addEntry(_("QUIT"), mMenuColorPrimary, true, [this] { openQuitMenu(); });
+            addEntry(_("QUIT"), mMenuColorPrimary, true, [this] { openQuitMenu(); }, "quit");
         else
-            addEntry(_("QUIT ARCADIA"), mMenuColorPrimary, false, [this] { openQuitMenu(); });
+            addEntry(_("QUIT ARCADIA"), mMenuColorPrimary, false, [this] { openQuitMenu(); }, "quit");
     }
 
     addChild(&mMenu);
     addVersionInfo();
     setSize(mMenu.getSize());
-    setPosition((mRenderer->getScreenWidth() - mSize.x) / 2.0f,
-                std::round(mRenderer->getScreenHeight() * 0.13f));
+    setPosition(MenuComponent::sheetPosition());
 }
 
 GuiMenu::~GuiMenu()
@@ -775,10 +774,11 @@ void GuiMenu::openUIOptions()
     auto menuOpeningEffect =
         std::make_shared<OptionListComponent<std::string>>(_("MENU OPENING ANIMATION"), false);
     std::string selectedMenuEffect {Settings::getInstance()->getString("MenuOpeningEffect")};
+    menuOpeningEffect->add(_("SLIDE"), "slide", selectedMenuEffect == "slide");
     menuOpeningEffect->add(_("SCALE-UP"), "scale-up", selectedMenuEffect == "scale-up");
     menuOpeningEffect->add(_("NONE"), "none", selectedMenuEffect == "none");
     // If there are no objects returned, then there must be a manually modified entry in the
-    // configuration file. Simply set the opening effect to "scale-up" in this case.
+    // configuration file. Simply set the opening effect to "slide" in this case.
     if (menuOpeningEffect->getSelectedObjects().size() == 0)
         menuOpeningEffect->selectEntry(0);
     s->addWithLabel(_("MENU OPENING ANIMATION"), menuOpeningEffect);
@@ -2319,12 +2319,23 @@ void GuiMenu::onSizeChanged()
 void GuiMenu::addEntry(const std::string& name,
                        unsigned int color,
                        bool add_arrow,
-                       const std::function<void()>& func)
+                       const std::function<void()>& func,
+                       const std::string& icon)
 {
     std::shared_ptr<Font> font {Font::get(FONT_SIZE_MEDIUM)};
 
-    // Populate the list.
+    // Populate the list. Arcadia: each main menu entry starts with a line icon (resources/graphics/menu).
     ComponentListRow row;
+    if (!icon.empty()) {
+        auto image = std::make_shared<ImageComponent>();
+        image->setResize(0.0f, std::round(font->getLetterHeight() * 1.35f));
+        image->setImage(":/graphics/menu/" + icon + ".svg");
+        image->setColorShift(mMenuColorSecondary);
+        row.addElement(image, false);
+        auto spacer = std::make_shared<GuiComponent>();
+        spacer->setSize(std::round(font->getLetterHeight() * 0.9f), 0.0f);
+        row.addElement(spacer, false);
+    }
     row.addElement(std::make_shared<TextComponent>(name, font, color), true);
 
     if (add_arrow) {

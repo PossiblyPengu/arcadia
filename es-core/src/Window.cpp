@@ -392,7 +392,7 @@ void Window::update(int deltaTime)
     }
 
     if (mGuiStack.size() > 1 && mTopScale < 1.0f &&
-        Settings::getInstance()->getString("MenuOpeningEffect") == "scale-up")
+        Settings::getInstance()->getString("MenuOpeningEffect") != "none")
         mScaleAccumulator += deltaTime;
 
     mFrameTimeElapsed += deltaTime;
@@ -534,9 +534,9 @@ void Window::render()
         // playing. If the background is invalidated rendering will be enabled briefly until
         // a new cached background has been generated.
         if (mGuiStack.size() > 1 && mCachedBackground) {
-            if ((Settings::getInstance()->getString("MenuOpeningEffect") == "scale-up" &&
+            if ((Settings::getInstance()->getString("MenuOpeningEffect") != "none" &&
                  mBackgroundOverlayOpacity == 1.0f) ||
-                Settings::getInstance()->getString("MenuOpeningEffect") != "scale-up")
+                Settings::getInstance()->getString("MenuOpeningEffect") == "none")
                 renderBottom = false;
         }
 
@@ -625,8 +625,8 @@ void Window::render()
                               << " ms";
 #endif
             }
-            // Fade in the cached background if the menu opening effect has been set to scale-up.
-            if (Settings::getInstance()->getString("MenuOpeningEffect") == "scale-up") {
+            // Fade in the cached background unless the menu opening effect is turned off.
+            if (Settings::getInstance()->getString("MenuOpeningEffect") != "none") {
                 mBackgroundOverlay->setOpacity(mBackgroundOverlayOpacity);
                 if (mBackgroundOverlayOpacity < 1.0f)
                     mBackgroundOverlayOpacity =
@@ -649,6 +649,21 @@ void Window::render()
                     mScaleAccumulator = 0;
             }
 
+            // Arcadia's slide-in (DESIGN.md: 220 ms, ease-out): the menu sheet glides in from the left.
+            glm::mat4 topTrans {trans};
+            if (Settings::getInstance()->getString("MenuOpeningEffect") == "slide" &&
+                mTopScale < 1.0f) {
+                const float progress {
+                    glm::clamp(static_cast<float>(mScaleAccumulator) / 220.0f, 0.0f, 1.0f)};
+                const float eased {1.0f - (1.0f - progress) * (1.0f - progress) * (1.0f - progress)};
+                topTrans = glm::translate(
+                    trans,
+                    glm::vec3 {-(1.0f - eased) * mRenderer->getScreenWidth() * 0.06f, 0.0f, 0.0f});
+                mTopScale = progress >= 1.0f ? 1.0f : 0.5f + 0.5f * progress;
+                if (mTopScale == 1.0f)
+                    mScaleAccumulator = 0;
+            }
+
             if (!mRenderedHelpPrompts) {
                 if (mHelpComponents != nullptr) {
                     for (auto& helpComponent : *mHelpComponents) {
@@ -666,7 +681,7 @@ void Window::render()
             }
 
             if (!mRenderLaunchScreen)
-                top->render(trans);
+                top->render(topTrans);
         }
         else {
             mCachedBackground = false;

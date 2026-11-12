@@ -64,12 +64,23 @@ in a scrolling panel.
 - **Menus and dialogs:** the focused row or button has a 3-pixel white ring and a lighter fill, and keeps its size so nothing shifts.
 - **Controller-only:** every control is reachable with the D-pad and A/B. Anything that needs a mouse is a bug.
 
+## Menus
+
+- **Menus are a sheet on the left.** Every menu and settings screen is a panel down the left side (52% of the width on a
+  landscape screen, the full height apart from a small margin and the button hints), so what you came from stays in view on
+  the right. It slides in from the left. Dialogs that ask for a decision stay centred cards.
+- **Titles and rows share one left edge.** The title sits top left in the title size; rows start at the same indent.
+- **Main menu entries carry a line icon** (`resources/graphics/menu/`), muted, drawn with a 2-unit stroke on a 24-unit grid.
+- **Controls:** a switch is a filled accent pill when on and an outlined muted pill when off; a slider is a thin muted track
+  with an accent knob; choices show thin chevrons either side; checkboxes are rounded squares (filled with a cut-out tick when
+  on); buttons are rounded outlines that fill with the accent when focused.
+
 ## Motion
 
 | What | Duration | Curve |
 |---|---|---|
 | Moving between items | 200 ms | ease-out |
-| Opening a screen or menu | 220 ms | ease-out, slide plus fade |
+| Opening a screen or menu | 220 ms | ease-out; menus slide in from the left while the background dims |
 | Closing | 150 ms | ease-in |
 | Glow change on a new console | 250 ms | linear cross-fade |
 

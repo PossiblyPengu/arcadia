@@ -143,8 +143,7 @@ GuiScraperMenu::GuiScraperMenu(std::string title)
 
     setSize(mMenu.getSize());
 
-    setPosition((mRenderer->getScreenWidth() - mSize.x) / 2.0f,
-                mRenderer->getScreenHeight() * 0.13f);
+    setPosition(MenuComponent::sheetPosition());
 
     // Make sure that the hash searching max file size is within the allowed range.
     if (Settings::getInstance()->getInt("ScraperSearchFileHashMaxSize") < 32)

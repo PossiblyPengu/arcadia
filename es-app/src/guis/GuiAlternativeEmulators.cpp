@@ -122,7 +122,7 @@ GuiAlternativeEmulators::GuiAlternativeEmulators()
     }
 
     setSize(mMenu.getSize());
-    setPosition((Renderer::getScreenWidth() - mSize.x) / 2.0f, Renderer::getScreenHeight() * 0.13f);
+    setPosition(MenuComponent::sheetPosition());
 }
 
 void GuiAlternativeEmulators::updateMenu(const std::string& systemName,
