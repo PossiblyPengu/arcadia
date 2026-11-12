@@ -1,10 +1,12 @@
 # Builds the Steam Deck AppImage of this fork (Arcadia with the Deck defaults) and the "deck extras" archive.
-# Run it from the Actions tab (workflow_dispatch), or push a tag like v1.0.0 to also publish a release.
+# Every push to main builds it (download it from the run's Artifacts in the Actions tab); you can also run it by hand
+# from the Actions tab. Pushing a tag like v1.0.0 additionally publishes it as a release.
 name: Steam Deck AppImage
 
 on:
   workflow_dispatch:
   push:
+    branches: [main]
     tags: ["v*"]
 
 jobs:
