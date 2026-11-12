@@ -84,7 +84,6 @@ remove_block
 rm -rf "$ROMS"
 
 echo "Done."
-echo "  • Event scripts: $ESDE/scripts/*/arcadia-save-sync.sh   (custom event scripts are on by default in this build;"
-echo "    in stock Arcadia turn on Other settings > Enable custom event scripts)"
+echo "  • Event scripts: $ESDE/scripts/*/arcadia-*.sh   (custom event scripts are on by default in Arcadia)"
 echo "  • Setup tools: open Arcadia's main menu and choose SETUP."
 echo "  • Config: $ESDE/deck.conf  (set up rclone with a Google Drive remote called gdrive for save sync)"

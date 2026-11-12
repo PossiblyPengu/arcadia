@@ -1,63 +1,57 @@
-# Steam Deck extras for this Arcadia fork
+# The setup tools (`deck/`)
 
-Everything here is plain scripts around Arcadia, installed with `./deck/install.sh` and removed with
-`./deck/install.sh --uninstall`. Nothing touches your ROMs, saves or Arcadia settings.
+These scripts do the work behind Arcadia's **SETUP** menu and the cloud save sync. They are plain Bash and Python, so they
+can be tested and changed without rebuilding the program. To use them, see [`USERGUIDE.md`](../USERGUIDE.md).
 
-## What you get
+## How the program uses them
 
-**Controls need no setup.** Arcadia reads controllers through SDL's standard gamepad layer, which is what a Steam Deck
-presents in Game Mode, so the buttons work without a Steam layout.
+- The program ships this folder (in the AppImage it is at `usr/share/arcadia/deck`). Each time SETUP opens, it runs
+  `install.sh`, which copies `lib/` and `tools/` into `~/Arcadia/deck` and the event scripts into `~/Arcadia/scripts`.
+  Installing is quick and safe to repeat, so the tools always match the program's version.
+- A SETUP entry runs one tool with `ARCADIA_OUTPUT=stdout`, `ARCADIA_HOME` (the data folder) and `ARCADIA_ROMS` (the ROM
+  directory) set. The tool prints its message, and the program shows it in a scrolling panel
+  (`es-app/src/guis/GuiToolRunner.cpp`).
+- Run anywhere else (a terminal, or a file manager), a tool shows its message in a zenity or kdialog dialog, or failing
+  that a notification. Every message also goes to `~/Arcadia/logs/deck.log`.
+- The event scripts (`scripts/<event>/arcadia-*.sh`) run through ES-DE's custom event scripts, which are on by default in
+  Arcadia: save sync at startup, before and after a game and at quit, and the optional ROM sort at startup.
 
-**Windowed on the desktop, fullscreen in Game Mode.** This fork starts in a 1280x800 window on a desktop (including
-the Deck's Desktop Mode) and fullscreen in Game Mode (it checks for gamescope / Steam). `--fullscreen` and `--windowed`
-force one; `--resolution` still works as in stock Arcadia.
+## What's here
 
-**Cloud save sync (rclone, Google Drive by default).** Arcadia's custom event scripts run `arcadia-save-sync.sh` at
-startup and before a game (pull), and after a game and at quit (push). It only ever copies a file where it is newer and
-keeps whatever it would overwrite (locally in `~/Arcadia/backups/sync`, on the remote in `.backups/`); it never deletes or
-mirrors. Set it up once: `rclone config`, make a remote called `gdrive`, and check `~/Arcadia/deck.conf`. Custom event
-scripts are on by default in this build.
+| Path | What |
+|---|---|
+| `install.sh` | Installs the tools and event scripts into the data folder, writes `deck.conf` the first time, and removes the "Setup" game system that older versions added. `--uninstall` removes them again (never ROMs, saves or settings). |
+| `lib/deck-lib.sh` | Shared settings, logging, messages, save sync (rclone), the emulator list and the BIOS list |
+| `lib/romsort/` | The ROM sorter, ported from the earlier Arcadia app: headers, extensions, disc images, cue sheets, multi-disc playlists, Switch updates and DLC. Run with `python3 -m romsort --help`. |
+| `lib/controls.py` | Starter controller settings for DuckStation, PCSX2 and RetroArch (Flatpak) |
+| `lib/selfupdate.py` | Updates the AppImage and these tools from the project's GitHub releases |
+| `tools/*.sh` | One script per SETUP entry |
+| `scripts/` | The event scripts |
+| `tests/test-deck.sh` | The tests |
 
-**A "Setup" system inside Arcadia**, so you can do the chores with the controller: *Sync saves now*, *Install emulators*,
-*Update emulators* (Flatpak, the same ones Arcadia finds on a Deck), *Check BIOS files* (names only; bring your own dumps),
-*Set up emulator controls* (below), plus the tools ported from Arcadia (below).
-Results show in a dialog (zenity or kdialog, else a notification) and in `~/Arcadia/logs/deck.log`.
+## Settings (`~/Arcadia/deck.conf`)
 
-**Starter emulator controls.** *Set up emulator controls* writes the Deck gamepad's buttons into DuckStation and PCSX2
-(Flatpak) when they have no controller bindings yet, and sets RetroArch's hotkeys (hold Select: Start quits, X opens
-the menu, the bumpers load / save a state) for keys that are still unset. Your own bindings are never overwritten, only
-that controller section is touched, and the old file is copied to `~/Arcadia/backups/controls` first. Run
-`deck/tools/setup-controls.sh --reset` to replace them with these. The setting names follow the emulators' documented
-formats and haven't been run against the emulators themselves.
+| Setting | Default | Meaning |
+|---|---|---|
+| `SYNC_REMOTE` | `gdrive:Arcadia` | rclone remote and folder for saves; empty turns sync off |
+| `SAVE_DIRS` | the EmuDeck and RetroArch save folders that exist | folders whose files are synced |
+| `INBOX` | `~/Downloads` | where *Sort downloads into ROM folders* looks |
+| `AUTO_SORT` | `0` | `1` sorts the inbox every time Arcadia starts |
+| `BIOS_DIR` | `~/Emulation/bios` | where *Check BIOS files* looks |
+| `ROM_ROOT` | the program's ROM directory | where sorted ROMs go, when the tools run outside the program |
+| `APPIMAGE_PATH` | the running AppImage, else `~/Applications` | the AppImage *Update Arcadia* replaces |
 
-## Ported from Arcadia
-
-Things Arcadia doesn't do, brought over from the Arcadia app. All of them are entries in the Setup system:
-
-- **Sort downloads into ROM folders**: looks at the file's header, extension and disc contents (the same sorter as
-  Arcadia: iNES / GBA / N64 / Sega headers, PlayStation / GameCube / Wii / Saturn discs, cue sheets and their tracks,
-  multi-disc games joined by an `.m3u`, Switch updates and DLC grouped with their game) and moves what it is sure of
-  into the right folder under your ROM folder. Anything unclear is listed and left alone; nothing is ever overwritten
-  or deleted. *Undo last ROM sort* puts the files back. Variants: include subfolders, or pick a folder with a dialog.
-  Set `AUTO_SORT=1` in `~/Arcadia/deck.conf` to sort the inbox (`INBOX`, default `~/Downloads`) every time Arcadia starts.
-- **Get started checklist**: what's ready (games, emulators, BIOS files, rclone and your Drive remote) and the next step.
-- **Let emulators see ROM folders**: the Flatpak permission change that stops emulators saying a game "can't be found".
-- **Back up settings** / **Restore latest backup**: Arcadia's settings, game lists (favorites, play counts), custom
-  systems and collections, and `deck.conf`; a restore first backs up the current state. `backup.sh --saves` adds saves.
-- **Update Arcadia**: updates this fork's AppImage and the deck extras from the project's GitHub releases (the old
-  AppImage is kept as `.previous`). The upstream Arcadia updater is turned off in this build, because it would offer the
-  stock Arcadia instead of this fork. `AppImage` location: the running one, else `~/Applications`, or `APPIMAGE_PATH`.
-
-Not brought over: Arcadia's own library and interface (Arcadia has these), its console pictures and logo downloads
-(Arcadia's themes cover that), save-state snapshots, and Delta sync (dropped earlier).
-
-## Building the AppImage
-
-`.github/workflows/steamdeck-appimage.yml` builds the Steam Deck AppImage (plus `arcadia-deck-extras.tar.gz`, this
-folder) on GitHub: Actions tab > *Steam Deck AppImage* > Run workflow, or push a tag such as `v1.0.0` to also make a
-release. Locally, `tools/create_AppImage_SteamDeck.sh` does the same on Ubuntu 22.04.
+Save sync only ever copies a file where it is newer, and keeps whatever it would replace (in `~/Arcadia/backups/sync`
+locally, in `.backups/` on the remote). It never deletes or mirrors.
 
 ## Tests
 
-`bash deck/tests/test-deck.sh` runs the scripts in a temporary home with a stand-in `rclone` and `flatpak`.
-These haven't been run on a real Deck; the C++ change was built and started here under a virtual display.
+`bash deck/tests/test-deck.sh` runs everything in a temporary home with stand-ins for `rclone` and `flatpak`, and a local
+web server standing in for GitHub releases. The emulator controller settings follow each emulator's documented format but
+haven't been run against the emulators themselves.
+
+## Building the AppImage
+
+`.github/workflows/steamdeck-appimage.yml` builds the Steam Deck AppImage on every push to `main` (download it from the
+run's *Artifacts*). Pushing a tag such as `v0.1.0` also publishes it, with `arcadia-deck-extras.tar.gz`, as a release, which
+is what *Update Arcadia* installs from. Locally, `tools/create_AppImage_SteamDeck.sh` does the same.

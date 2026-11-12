@@ -235,7 +235,7 @@ std::vector<HelpPrompt> SystemView::getHelpPrompts()
         prompts.push_back(HelpPrompt("up/down", _("choose")));
     }
 
-    prompts.push_back(HelpPrompt("a", _("select")));
+    prompts.push_back(HelpPrompt("a", _("open")));
 
     if (Settings::getInstance()->getString("RandomEntryButton") == "gamessystems")
         prompts.push_back(HelpPrompt("thumbstickclick", _("random")));

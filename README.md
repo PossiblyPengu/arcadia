@@ -39,9 +39,10 @@ After first start, run `./deck/install.sh` to add the setup tools.
 
 ## Documents
 
+- `USERGUIDE.md` how to install and use Arcadia
 - `DESIGN.md` the design language
 - `FORK.md` what differs from ES-DE
-- `deck/README.md` the Deck setup tools
-- `USERGUIDE.md`, `INSTALL.md`, `THEMES.md` and the rest are ES-DE's documents, kept for reference until they are rewritten
+- `deck/README.md` the setup tools behind the SETUP menu
+- `docs/es-de/` ES-DE's own documents (user guide, install and theme guides, changelog), kept for reference
 
 Arcadia is based on ES-DE by Leon Styhre and contributors; see `CREDITS.md` and `LICENSE`.

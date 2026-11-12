@@ -569,15 +569,8 @@ std::vector<HelpPrompt> GamelistView::getHelpPrompts()
 
     std::vector<HelpPrompt> prompts;
 
-    if (Settings::getInstance()->getString("QuickSystemSelect") != "disabled") {
-        if (getQuickSystemSelectLeftButton() == "leftshoulder")
-            prompts.push_back(HelpPrompt("lr", _("system")));
-        else if (getQuickSystemSelectLeftButton() == "lefttrigger")
-            prompts.push_back(HelpPrompt("ltrt", _("system")));
-        else if (getQuickSystemSelectLeftButton() == "left")
-            prompts.push_back(HelpPrompt("left/right", _("system")));
-    }
-
+    // Arcadia keeps the button hints short (DESIGN.md: quiet chrome). Changing system with the
+    // shoulders and the random-game button still work; they just aren't spelled out here.
     if (mRoot->getSystem()->getThemeFolder() == "custom-collections" && mCursorStack.empty() &&
         ViewController::getInstance()->getState().viewing == ViewController::ViewMode::GAMELIST)
         prompts.push_back(HelpPrompt("a", _("select")));
@@ -585,14 +578,10 @@ std::vector<HelpPrompt> GamelistView::getHelpPrompts()
         prompts.push_back(HelpPrompt("a", _("select")));
 
     prompts.push_back(HelpPrompt("b", _("back")));
-    prompts.push_back(HelpPrompt("x", _("view media")));
+    prompts.push_back(HelpPrompt("x", _("media")));
 
     if (!UIModeController::getInstance()->isUIModeKid())
         prompts.push_back(HelpPrompt("back", _("options")));
-    if (mRoot->getSystem()->isGameSystem() &&
-        (Settings::getInstance()->getString("RandomEntryButton") == "games" ||
-         Settings::getInstance()->getString("RandomEntryButton") == "gamessystems"))
-        prompts.push_back(HelpPrompt("thumbstickclick", _("random")));
 
     if (mRoot->getSystem()->getThemeFolder() == "custom-collections" &&
         !CollectionSystemsManager::getInstance()->isEditing() && mCursorStack.empty() &&

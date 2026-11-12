@@ -18,3 +18,6 @@ and separate so upstream updates stay easy to merge:
 - A native **SETUP** screen at the top of the main menu runs the deck tools (get started, sort ROMs, emulators, BIOS, controls, folder
   access, saves, backup, update) and shows what they say. The no-games dialog at first start points to it.
 - Build files are Linux only; the program ships its `deck/` folder and installs the tools into the data folder when SETUP opens.
+- Button hints are shorter (the game screen shows six instead of eight), the empty screen behind dialogs is the ink colour instead of black,
+  the boot screen and window icon are Arcadia's, and the screensaver dims by default.
+- Documents: `USERGUIDE.md` is Arcadia's own guide; ES-DE's documents moved to `docs/es-de/`.

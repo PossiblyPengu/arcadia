@@ -1,6 +1,7 @@
 """The little bit of configuration the sorter needs: where the ROM folders are and what each system's folder is called.
 
-Arcadia's own system ids are used inside the sorter; Arcadia names two of them differently (the folder is what matters here).
+The sorter's own system ids (from the earlier Arcadia app) are used inside it; the ROM folders are named after ES-DE's systems,
+which call two of them differently.
 """
 
 from __future__ import annotations
@@ -8,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-# Arcadia system id -> Arcadia folder name (everything not listed uses the same name)
+# sorter system id -> ROM folder name (everything not listed uses the same name)
 FOLDER_NAMES = {"sms": "mastersystem", "lynx": "atarilynx"}
 
 SYSTEM_IDS = (
