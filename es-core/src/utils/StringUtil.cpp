@@ -16,6 +16,9 @@
 #endif
 
 #include "utils/StringUtil.h"
+
+#include <cctype>
+#include <map>
 #include "Log.h"
 #include "utils/PlatformUtil.h"
 
@@ -203,6 +206,85 @@ namespace Utils
 
             convert.toUpper();
             return convert.toUTF8String(stringUpper);
+        }
+
+        std::string toSentenceCase(const std::string& stringArg)
+        {
+            static const std::map<std::string, std::string> keep {
+                {"ROM", "ROM"}, {"ROMS", "ROMs"}, {"BIOS", "BIOS"}, {"ES-DE", "ES-DE"},
+                {"ARCADIA", "Arcadia"}, {"XML", "XML"}, {"M3U", "M3U"}, {"MAME", "MAME"},
+                {"RETROARCH", "RetroArch"}, {"SCREENSCRAPER", "ScreenScraper"},
+                {"THEGAMESDB", "TheGamesDB"}, {"ID", "ID"}, {"IDS", "IDs"}, {"OK", "OK"},
+                {"PDF", "PDF"}, {"USB", "USB"}, {"UI", "UI"}, {"CPU", "CPU"}, {"GPU", "GPU"},
+                {"VRAM", "VRAM"}, {"SVG", "SVG"}, {"PNG", "PNG"}, {"JPG", "JPG"}, {"FPS", "FPS"},
+                {"OLED", "OLED"}, {"URL", "URL"}, {"API", "API"}, {"DLC", "DLC"},
+                {"HTTP", "HTTP"}, {"HTTPS", "HTTPS"}, {"I", "I"}, {"FAQ", "FAQ"},
+                {"APPIMAGE", "AppImage"}, {"FLATPAK", "Flatpak"}, {"STEAM", "Steam"},
+                {"LINUX", "Linux"}, {"GAMELIST", "game list"}, {"GAMELISTS", "game lists"}};
+            // Only text written in capitals is changed: if anything other than a path has lower case
+            // letters, the text was written that way on purpose.
+            {
+                size_t start {0};
+                while (start < stringArg.size()) {
+                    size_t end {stringArg.find_first_of(" \n\t", start)};
+                    if (end == std::string::npos)
+                        end = stringArg.size();
+                    const std::string token {stringArg.substr(start, end - start)};
+                    if (token.find('/') == std::string::npos) {
+                        for (const char ch : token)
+                            if (std::islower(static_cast<unsigned char>(ch)))
+                                return stringArg;
+                    }
+                    start = end + 1;
+                }
+            }
+            std::string out;
+            out.reserve(stringArg.size());
+            bool sentenceStart {true};
+            size_t i {0};
+            while (i < stringArg.size()) {
+                const unsigned char c {static_cast<unsigned char>(stringArg[i])};
+                if (std::isalpha(c) || (c >= 0x80)) {
+                    size_t j {i};
+                    while (j < stringArg.size() &&
+                           (std::isalnum(static_cast<unsigned char>(stringArg[j])) ||
+                            static_cast<unsigned char>(stringArg[j]) >= 0x80 || stringArg[j] == '-' ||
+                            stringArg[j] == '\'' || stringArg[j] == '_'))
+                        ++j;
+                    // Words with an apostrophe ("DON'T") are split at it by the check below.
+                    std::string word {stringArg.substr(i, j - i)};
+                    bool hasLower {false};
+                    for (const char ch : word)
+                        if (std::islower(static_cast<unsigned char>(ch)))
+                            hasLower = true;
+                    const auto known = keep.find(word);
+                    if (known != keep.end()) {
+                        word = known->second;
+                    }
+                    else if (!hasLower) {
+                        std::string lower {toLower(word)};
+                        if (sentenceStart && !lower.empty())
+                            lower[0] = static_cast<char>(std::toupper(static_cast<unsigned char>(lower[0])));
+                        word = lower;
+                    }
+                    else if (sentenceStart && std::islower(static_cast<unsigned char>(word[0]))) {
+                        word[0] = static_cast<char>(std::toupper(static_cast<unsigned char>(word[0])));
+                    }
+                    out += word;
+                    sentenceStart = false;
+                    i = j;
+                    continue;
+                }
+                const bool endsWord {i + 1 >= stringArg.size() ||
+                                     std::isspace(static_cast<unsigned char>(stringArg[i + 1]))};
+                if (((c == '.' || c == '?' || c == '!' || c == ':') && endsWord) || c == '\n')
+                    sentenceStart = true;
+                else if (!std::isspace(c) && c != '"' && c != '(' && c != '\'')
+                    sentenceStart = false;
+                out += static_cast<char>(c);
+                ++i;
+            }
+            return out;
         }
 
         std::string toCapitalized(const std::string& stringArg)

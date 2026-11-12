@@ -218,10 +218,10 @@ void ViewController::invalidSystemsFileDialog()
 
 void ViewController::noGamesDialog()
 {
-    mNoGamesErrorMessage = _("WELCOME TO ARCADIA. NO GAME FILES WERE FOUND YET. PUT YOUR GAMES IN THE "
-                             "ROM DIRECTORY BELOW, ONE FOLDER PER SYSTEM (CREATE THE FOLDERS WITH THE "
-                             "CREATE BUTTON), OR OPEN SETUP AND CHOOSE SORT DOWNLOADS INTO ROM FOLDERS "
-                             "TO MOVE THEM THERE AUTOMATICALLY. THIS IS THE CONFIGURED ROM DIRECTORY:\n");
+    mNoGamesErrorMessage = _("Welcome to Arcadia. No games were found yet.\n\nPut your games in the ROM "
+                             "directory below, one folder per system (CREATE makes the folders), or "
+                             "choose SETUP and then Sort downloads into ROM folders to move them there "
+                             "for you.\n\nThe ROM directory is ");
 
     mRomDirectory = FileData::getROMDirectory();
 

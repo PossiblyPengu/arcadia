@@ -12,7 +12,7 @@
 #include "components/ButtonComponent.h"
 
 #define BUTTON_GRID_VERT_PADDING Font::get(FONT_SIZE_MEDIUM)->getLetterHeight() * 0.915f
-#define BUTTON_GRID_HORIZ_PADDING Font::get(FONT_SIZE_MEDIUM)->getLetterHeight() * 0.283f
+#define BUTTON_GRID_HORIZ_PADDING Font::get(FONT_SIZE_MEDIUM)->getLetterHeight() * 0.9f
 
 #define TITLE_HEIGHT                                                                               \
     (mTitle->getFont()->getLetterHeight() + (Renderer::getIsVerticalOrientation() ?                \

@@ -40,10 +40,10 @@ ButtonComponent::ButtonComponent(const std::string& text,
         const glm::vec2 textCacheSize {mButtonText->getTextCache() == nullptr ?
                                            glm::vec2 {0.0f, 0.0f} :
                                            mButtonText->getTextCache()->metrics.size};
-        mMinWidth = textCacheSize.x + (12.0f * mRenderer->getScreenResolutionModifier());
+        mMinWidth = textCacheSize.x + (40.0f * mRenderer->getScreenResolutionModifier());
     }
 
-    mBox.setSharpCorners(true);
+    mBox.setSharpCorners(false); // Arcadia: rounded buttons
     setPressedFunc(func);
     setText(text, helpText, upperCase);
 
@@ -88,7 +88,7 @@ void ButtonComponent::setText(const std::string& text,
 
     if (resize) {
         setSize(
-            std::max(mButtonText->getSize().x + (12.0f * mRenderer->getScreenResolutionModifier()),
+            std::max(mButtonText->getSize().x + (40.0f * mRenderer->getScreenResolutionModifier()),
                      mMinWidth),
             mButtonText->getSize().y);
     }

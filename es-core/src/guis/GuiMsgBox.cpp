@@ -9,11 +9,23 @@
 
 #include "guis/GuiMsgBox.h"
 
+#include "utils/LocalizationUtil.h"
+#include "utils/StringUtil.h"
+
 #include "components/ButtonComponent.h"
 #include "components/MenuComponent.h"
 
 #define HORIZONTAL_PADDING_PX 20.0f
 #define VERTICAL_PADDING_MODIFIER 1.225f
+
+// Arcadia (DESIGN.md: never upper case for sentences): English messages are shown in sentence case.
+static std::string readable(const std::string& text)
+{
+    const std::string locale {Utils::Localization::sCurrentLocale};
+    if (!locale.empty() && locale.substr(0, 2) != "en")
+        return text;
+    return Utils::String::toSentenceCase(text);
+}
 
 GuiMsgBox::GuiMsgBox(const std::string& text,
                      const std::string& name1,
@@ -37,7 +49,7 @@ GuiMsgBox::GuiMsgBox(const std::string& text,
 {
     // Initially set the text component to wrap by line breaks while maintaining the row lengths.
     // This is the "ideal" size for the text as it's exactly how it's written.
-    mMsg = std::make_shared<TextComponent>(text, Font::get(FONT_SIZE_MEDIUM), mMenuColorPrimary,
+    mMsg = std::make_shared<TextComponent>(readable(text), Font::get(FONT_SIZE_MEDIUM), mMenuColorPrimary,
                                            ALIGN_CENTER, ALIGN_CENTER, glm::ivec2 {1, 1});
     mGrid.setEntry(mMsg, glm::ivec2 {0, 0}, false, false);
 
@@ -107,7 +119,7 @@ void GuiMsgBox::calculateSize()
 void GuiMsgBox::changeText(const std::string& newText)
 {
     mMsg->setAutoCalcExtent(glm::vec2 {1, 1});
-    mMsg->setText(newText);
+    mMsg->setText(readable(newText));
 
     calculateSize();
 }

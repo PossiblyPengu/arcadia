@@ -29,6 +29,9 @@ namespace Utils
         size_t unicodeLength(const std::string& stringArg);
         std::string toLower(const std::string& stringArg);
         std::string toUpper(const std::string& stringArg);
+        // Arcadia: turns an ALL CAPS English message into sentence case, keeping acronyms and names
+        // (ROM, BIOS, RetroArch ...) and leaving words that already mix cases (paths, file names) alone.
+        std::string toSentenceCase(const std::string& stringArg);
         std::string toCapitalized(const std::string& stringArg);
         std::string filterUtf8(const std::string& stringArg);
         std::string trim(const std::string& stringArg);
