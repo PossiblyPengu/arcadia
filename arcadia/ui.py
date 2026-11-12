@@ -1039,6 +1039,7 @@ class MainWindow(QMainWindow):
             self._launch_problem(str(exc))
             return
         args = plan.args
+        self._starter_controls(plan)
 
         proc = QProcess(self)
         proc.setProgram(args[0])
@@ -1057,6 +1058,19 @@ class MainWindow(QMainWindow):
         self.play_timer.start()
         self.toast.show_message(f"Launching {row['title']}…" + (" with your installed copy" if plan.via.startswith("local:") else ""))
         self._update_running_state()
+
+    def _starter_controls(self, plan) -> None:
+        """Before the first run of an emulator Arcadia installed, give it a starter controller setup (never over yours)."""
+        from arcadia import controls
+
+        if not self.config.emulator_controls or not plan.via.startswith("local:"):
+            return
+        emu_id = plan.via.split(":", 1)[1]
+        if controls.supported(emu_id):
+            try:
+                controls.apply(emu_id, Installer(self.config.emulators_path).folder(emu_id), self.config.backups_path / "controls")
+            except OSError:
+                pass  # never stop a game from starting over this
 
     def _launch_problem(self, text: str) -> None:
         """A game couldn't start: say why, and put the likely fixes one press away instead of leaving a dead end."""
@@ -1486,7 +1500,7 @@ class MainWindow(QMainWindow):
             "games": self.open_bring_in,
             "emulators": self.open_emulators,
             "bios": lambda: self.open_tools(0),
-            "sync": lambda: self.open_tools(2),
+            "sync": lambda: self.open_tools(3),
         }
         WelcomeDialog(self.config, actions, lambda: self.library.summary()["systems"], parent=self).exec()
 

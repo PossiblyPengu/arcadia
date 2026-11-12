@@ -56,6 +56,14 @@ def config_text(config: Config) -> str:
         f"savestate_auto_save = {_flag(config.ra_auto_save_state)}",
         f"savestate_auto_load = {_flag(config.ra_auto_save_state)}",
     ]
+    if config.ra_hotkeys:  # the usual couch layout, by the buttons of a standard (Xbox-style) pad: hold Select, then...
+        lines += [
+            f"input_enable_hotkey_btn = {_q('6')}",  # Select / View
+            f"input_exit_emulator_btn = {_q('7')}",  # ...Start / Menu: quit back to Arcadia
+            f"input_menu_toggle_btn = {_q('2')}",  # ...X: RetroArch's menu
+            f"input_load_state_btn = {_q('4')}",  # ...left bumper
+            f"input_save_state_btn = {_q('5')}",  # ...right bumper
+        ]
     if config.ra_saves_in_home:
         lines.append(f"savefile_directory = {_q(str(config.saves_path))}")
     return "\n".join(lines) + "\n"

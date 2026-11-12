@@ -24,9 +24,10 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from arcadia import bios, retroarch, savesync
+from arcadia import bios, controls, retroarch, savesync
 from arcadia.folder_picker import choose_folder
 from arcadia.config import Config
+from arcadia.emulators import CATALOG, Installer
 from arcadia.setup_dialog import _Busy
 from arcadia.updates import flatpaks_in_use, installed_flatpaks
 
@@ -64,6 +65,7 @@ class ToolsDialog(QDialog, _Busy):
         self.tabs = QTabWidget()
         self.tabs.addTab(self._build_bios(), "BIOS files")
         self.tabs.addTab(self._build_retroarch(), "RetroArch and Flatpak")
+        self.tabs.addTab(self._build_controls(), "Controls")
         self.tabs.addTab(self._build_sync(), "Save sync")
 
         self.status = QLabel("")
@@ -79,6 +81,108 @@ class ToolsDialog(QDialog, _Busy):
         self.tabs.setCurrentIndex(tab)
         self.refresh_bios()
         self.refresh_cores()
+
+    # ----- controls -----
+
+    def _build_controls(self) -> QWidget:
+        page = QWidget()
+        self.hotkeys_box = QCheckBox("RetroArch: hold Select, then Start quits, X opens its menu, left / right bumper loads / saves a state")
+        self.hotkeys_box.setChecked(self.config.ra_hotkeys)
+        self.hotkeys_box.toggled.connect(self._on_hotkeys)
+        self.starter_box = QCheckBox("Give emulators Arcadia installs a starter controller setup before their first run (never over yours)")
+        self.starter_box.setChecked(self.config.emulator_controls)
+        self.starter_box.toggled.connect(self._on_starter)
+        self.controls_table = _table(["Emulator", "Controls", "What Arcadia does"], 2)
+        self.setup_btn = QPushButton("Set up controls")
+        self.setup_btn.clicked.connect(lambda: self._setup_controls(force=False))
+        self.reset_btn = QPushButton("Reset to Arcadia's controls")
+        self.reset_btn.clicked.connect(lambda: self._setup_controls(force=True))
+        row = QHBoxLayout()
+        row.addWidget(self.setup_btn)
+        row.addWidget(self.reset_btn)
+        row.addStretch(1)
+        layout = QVBoxLayout(page)
+        layout.addWidget(self.hotkeys_box)
+        layout.addWidget(self.starter_box)
+        layout.addWidget(self.controls_table, 1)
+        layout.addLayout(row)
+        layout.addWidget(
+            _note(
+                "In Game Mode the Deck's controller reaches every emulator as a standard Xbox-style gamepad, so most emulators "
+                "map it themselves. For DuckStation and PCSX2, Arcadia writes the first controller's buttons into their settings "
+                "(A, B, X, Y, the D-pad, sticks, bumpers and triggers as a PlayStation pad). Reset keeps a copy of the old file in "
+                "backups/controls. Only emulators installed through Arcadia (File → Emulators) are touched; Flatpak ones keep their "
+                "own settings. These starter settings haven't been run on a real machine yet."
+            )
+        )
+        self.refresh_controls()
+        return page
+
+    def _on_hotkeys(self, on: bool) -> None:
+        self.config.ra_hotkeys = on
+        self.settings_changed = True
+
+    def _on_starter(self, on: bool) -> None:
+        self.config.emulator_controls = on
+        self.settings_changed = True
+
+    def _selected_emulator(self) -> str | None:
+        rows = self.controls_table.selectionModel().selectedRows() if self.controls_table.selectionModel() else []
+        item = self.controls_table.item(rows[0].row(), 0) if rows else None
+        return item.data(Qt.ItemDataRole.UserRole) if item else None
+
+    def refresh_controls(self) -> None:
+        keep = self._selected_emulator() if hasattr(self, "controls_table") else None
+        installer = Installer(self.config.emulators_path)
+        installed = installer.installed()
+        self.controls_table.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
+        self.controls_table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        self.controls_table.setRowCount(0)
+        for emu_id, spec in CATALOG.items():
+            r = self.controls_table.rowCount()
+            self.controls_table.insertRow(r)
+            name = QTableWidgetItem(spec.name)
+            name.setData(Qt.ItemDataRole.UserRole, emu_id)
+            if emu_id not in installed:
+                state, note, color = "—", "Not installed through Arcadia.", DIM
+            elif controls.supported(emu_id):
+                has = controls.status(emu_id, installer.folder(emu_id)) == "set"
+                state = "✓  set up" if has else "not set up yet"
+                note = "Has a controller setup. “Reset” replaces it with Arcadia's." if has else "“Set up controls” writes a starter setup; it also happens at its first launch."
+                color = GOOD if has else WARN
+            else:
+                state, note, color = "automatic", controls.TIPS, DIM
+            for col, text in enumerate((None, state, note)):
+                if col == 0:
+                    self.controls_table.setItem(r, 0, name)
+                    continue
+                item = QTableWidgetItem(text)
+                if col == 1:
+                    item.setForeground(color)
+                self.controls_table.setItem(r, col, item)
+        self.controls_table.resizeRowsToContents()
+        for r in range(self.controls_table.rowCount()):  # the row you picked stays picked
+            if keep and self.controls_table.item(r, 0).data(Qt.ItemDataRole.UserRole) == keep:
+                self.controls_table.selectRow(r)
+
+    def _setup_controls(self, force: bool) -> None:
+        emu_id = self._selected_emulator()
+        installer = Installer(self.config.emulators_path)
+        if emu_id is None or installer.get(emu_id) is None or not controls.supported(emu_id):
+            QMessageBox.information(self, "Controls", "Select an emulator that Arcadia installed and sets controls for (DuckStation or PCSX2).")
+            return
+        if force and QMessageBox.question(
+            self, "Reset controls", f"Replace {CATALOG[emu_id].name}'s controller setup with Arcadia's? The old settings file is kept in backups/controls."
+        ) != QMessageBox.StandardButton.Yes:
+            return
+        try:
+            outcome = controls.apply(emu_id, installer.folder(emu_id), self.config.backups_path / "controls", force=force)
+        except OSError as exc:
+            QMessageBox.warning(self, "Controls", f"Couldn't write the settings: {exc}")
+            return
+        words = {"kept": "already has controls, so nothing was changed", "created": "got a starter setup", "added": "got a starter setup added", "replaced": "was reset to Arcadia's controls"}
+        self.status.setText(f"{CATALOG[emu_id].name} {words[outcome.action]}.")
+        self.refresh_controls()
 
     # ----- BIOS -----
 

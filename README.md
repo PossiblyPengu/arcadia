@@ -481,6 +481,22 @@ and updates when you say so, then offers to restart. A copy installed with `git 
 "Check for a newer Arcadia when it starts" in Settings for a quiet note at startup. The repository must be public
 for this to work. If an update changes `requirements.txt`, run `./install.sh` once afterwards.
 
+## Controls inside the emulators
+
+File → BIOS, emulator settings and sync → **Controls**. In Game Mode the Deck's controller reaches every emulator as a
+standard Xbox-style gamepad, so most emulators map it themselves. Arcadia adds:
+
+- **RetroArch hotkeys** (on by default): hold Select, then Start quits back to Arcadia, X opens RetroArch's menu, and
+  the bumpers load / save a state. They go in the settings file Arcadia passes to RetroArch, never into your
+  `retroarch.cfg`.
+- **DuckStation and PCSX2** (when installed through Arcadia): a starter controller setup written into their own
+  settings folder before the first launch, only if they have none. Your own bindings are never overwritten;
+  "Reset to Arcadia's controls" replaces just the controller section and keeps the old file in `backups/controls`.
+- Other emulators (RPCS3, Cemu, xemu, Flycast, melonDS, Azahar, RMG, mGBA, Eden) detect a standard gamepad
+  themselves, so they get a one-line tip. Flatpak emulators keep their own settings.
+
+These starter settings follow each emulator's documented format but haven't been run on a real machine yet.
+
 ## Install and run on a Steam Deck (or any Linux PC)
 
 In Desktop Mode, open a terminal in the Arcadia folder and run:

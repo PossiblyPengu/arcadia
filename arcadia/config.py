@@ -116,6 +116,8 @@ class Config:
     ra_fullscreen: bool = True
     ra_vsync: bool = True
     ra_integer_scale: bool = False
+    ra_hotkeys: bool = True  # Select+Start quits RetroArch, Select+X opens its menu, Select+L1/R1 load/save a state
+    emulator_controls: bool = True  # give emulators Arcadia installs a starter controller setup before their first run
     ra_auto_save_state: bool = False  # save on exit and load on start
     ra_saves_in_home: bool = False  # keep RetroArch's in-game saves in Arcadia's saves/ folder (existing saves aren't moved)
     logos_asked: bool = True  # whether the one-time offer to download the console logos has been made (new installs start False)
