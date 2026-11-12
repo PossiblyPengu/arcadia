@@ -57,6 +57,7 @@
 #endif
 
 #include <FreeImage.h>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <time.h>
@@ -143,8 +144,34 @@ void outputToConsole()
 }
 #endif
 
+// Steam Deck: in Game Mode (gamescope) ES-DE runs fullscreen as usual, but on a desktop (including
+// the Deck's Desktop Mode) it opens in a normal window so it can be moved, closed and left alone.
+// --fullscreen and --windowed override this, as does --resolution (which is always windowed).
+void applyDisplayDefaults(bool forceFullscreen, bool forceWindowed)
+{
+#if defined(__linux__) && !defined(__ANDROID__)
+    if (Settings::getInstance()->getInt("ScreenWidth") != 0 && !forceWindowed)
+        return;
+    const char* desktop {std::getenv("XDG_CURRENT_DESKTOP")};
+    const bool gameMode {std::getenv("SteamGameId") != nullptr ||
+                         std::getenv("GAMESCOPE_WAYLAND_DISPLAY") != nullptr ||
+                         (desktop != nullptr && std::string(desktop) == "gamescope")};
+    if (forceWindowed || (!forceFullscreen && !gameMode)) {
+        if (Settings::getInstance()->getInt("ScreenWidth") == 0) {
+            Settings::getInstance()->setInt("ScreenWidth", 1280);
+            Settings::getInstance()->setInt("ScreenHeight", 800);
+        }
+    }
+#else
+    (void)forceFullscreen;
+    (void)forceWindowed;
+#endif
+}
+
 bool parseArguments(const std::vector<std::string>& arguments)
 {
+    bool forceFullscreen {false};
+    bool forceWindowed {false};
     Utils::FileSystem::setExePath(arguments[0]);
     const std::string portableFilePath {Utils::FileSystem::getExePath() + "/portable.txt"};
 
@@ -262,6 +289,12 @@ bool parseArguments(const std::vector<std::string>& arguments)
             Settings::getInstance()->setInt("ScreenWidth", width);
             Settings::getInstance()->setInt("ScreenHeight", height);
             i += 2;
+        }
+        else if (arguments[i] == "--fullscreen") {
+            forceFullscreen = true;
+        }
+        else if (arguments[i] == "--windowed") {
+            forceWindowed = true;
         }
         else if (arguments[i] == "--screenoffset") {
             if (i >= arguments.size() - 2) {
@@ -408,6 +441,8 @@ bool parseArguments(const std::vector<std::string>& arguments)
 "Options:\n"
 "  --display [1 to 4]                    Display/monitor to use\n"
 "  --resolution [width] [height]         Application resolution\n"
+"  --fullscreen                          Always start fullscreen (the default in Game Mode)\n"
+"  --windowed                            Always start in a 1280x800 window (the default on a desktop)\n"
 "  --screenoffset [horiz.] [vert.]       Offset screen contents within application window\n"
 "  --screenrotate [0, 90, 180 or 270]    Rotate screen contents within application window\n"
 "  --fullscreen-padding [1/on or 0/off]  Padding if --resolution is lower than display resolution\n"
@@ -448,6 +483,8 @@ bool parseArguments(const std::vector<std::string>& arguments)
         Settings::getInstance()->setBool("ParseGamelistOnly", false);
         settingsNeedSaving = true;
     }
+
+    applyDisplayDefaults(forceFullscreen, forceWindowed);
 
     return true;
 }

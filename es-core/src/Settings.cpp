@@ -307,7 +307,7 @@ void Settings::setDefaults()
     mBoolMap["LaunchOnOtherScreen"] = {false, false};
 #endif
 #if !defined(__IOS__)
-    mBoolMap["CustomEventScripts"] = {false, false};
+    mBoolMap["CustomEventScripts"] = {true, true};  // on by default: the Deck setup (save sync) uses them
     mBoolMap["CustomEventScriptsBrowsing"] = {false, false};
 #endif
     mBoolMap["ParseGamelistOnly"] = {false, false};
