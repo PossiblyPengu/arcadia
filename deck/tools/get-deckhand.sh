@@ -23,7 +23,7 @@ rc=0; "$bin" >> "$DECK_LOG" 2>&1 < /dev/null || rc=$?
 if [ "$rc" -ne 0 ]; then
   deck_log "Deckhand: $bin stopped with code $rc"
   : > "$DECKHAND_BROKEN"
-  deck_say "Deckhand" "Deckhand didn't start properly (it stopped with code $rc; details are in $DECK_LOG). Pick “Windows games and stores” again to reinstall it."
+  deck_say "Deckhand" "Deckhand didn't start properly (it stopped with code $rc; details are in $DECK_LOG). Pick “Windows games” again to reinstall it."
   exit 1
 fi
 deck_say "Deckhand" "${installed:-}Deckhand is closed. Open it again from here, or from your Steam library once you've used its ☰ Menu → Add Deckhand to Steam. It installs Windows programs and games, game stores (Epic, GOG, Battle.net…), game streaming and Deck add-ons, and adds them to Steam."

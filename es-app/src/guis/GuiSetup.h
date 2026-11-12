@@ -59,7 +59,6 @@ private:
     std::shared_ptr<ComponentList> mSteps;
     std::shared_ptr<ComponentList> mTools;
     int mColumn;
-    bool mRailSection;
 
     std::unique_ptr<std::thread> mThread;
     std::mutex mMutex;

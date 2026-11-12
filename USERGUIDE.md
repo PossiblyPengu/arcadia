@@ -74,7 +74,7 @@ what it did) and the checklist is read again afterwards. On the right (press rig
 |---|---|
 | Games | Shows where your games go, and how many Arcadia found |
 | Sort downloads | Moves ROMs from your Downloads folder into the right system folders. It checks each file's header, extension and disc contents, keeps cue sheets with their tracks, joins multi-disc games with an `.m3u` playlist and groups Switch updates and DLC with their game. Anything it isn't sure about is listed and left alone. Nothing is overwritten or deleted. |
-| Sort downloads and subfolders | The same, looking inside the folders in Downloads too |
+| Sort inside folders | The same, looking inside the folders in Downloads too |
 | Undo the last sort | Puts the last sort's files back where they came from |
 | Emulators / Update emulators | Installs or updates the Flatpak emulators: RetroArch, DuckStation, PCSX2, PPSSPP, Dolphin, melonDS, Azahar, mGBA, Flycast, RPCS3, Cemu and xemu |
 | BIOS files | Lists which BIOS files are present and which are missing (by file name only) |
@@ -124,7 +124,7 @@ Arcadia's design language is in [`DESIGN.md`](DESIGN.md). In **Settings > Look a
 - **Theme variant:** *Cover shelf* (the default, a carousel of covers) or *Plain list* for big libraries.
 - **Theme transitions:** *Slide* or *Fade*.
 
-In Settings, L1 / R1 step to the previous or next section.
+In Settings, choose a section with up and down and open it with A; B goes back to the list of sections.
 
 The other themes that come with ES-DE (Linear, Modern, Slate) are still there under *Theme*.
 
