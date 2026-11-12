@@ -891,8 +891,19 @@ template <typename T> void CarouselComponent<T>::render(const glm::mat4& parentT
     std::vector<renderStruct> renderItems;
     std::vector<renderStruct> renderItemsSorted;
 
+    // A short list wraps around, which would show the same entry twice. Draw each entry once, with
+    // the selected one first among the following entries (the ones after it in the list).
+    const int slots {2 * itemInclusion + itemInclusionBefore + itemInclusionAfter};
+    const bool shortList {numEntries > 1 && numEntries < slots &&
+                          (mType == CarouselType::HORIZONTAL || mType == CarouselType::VERTICAL)};
+    const int firstShown {center - (numEntries - 1) / 2};
+    const int lastShown {firstShown + numEntries - 1};
+
     for (int i {center - itemInclusion - itemInclusionBefore};
          i < center + itemInclusion + itemInclusionAfter; ++i) {
+        if (shortList && (i < firstShown || i > lastShown))
+            continue;
+
         int index {i};
 
         while (index < 0)
