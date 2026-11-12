@@ -41,10 +41,6 @@ GuiThemeDownloader::GuiThemeDownloader(std::function<void()> updateCallback)
     addChild(&mBackground);
     addChild(&mGrid);
 
-#if defined(_WIN64)
-    // Required due to the idiotic file locking that exists on this operating system.
-    ViewController::getInstance()->stopViewVideos();
-#endif
 
     const float fontSizeSmall {mRenderer->getIsVerticalOrientation() ? FONT_SIZE_MINI :
                                                                        FONT_SIZE_SMALL};
@@ -183,18 +179,10 @@ GuiThemeDownloader::GuiThemeDownloader(std::function<void()> updateCallback)
     std::promise<bool>().swap(mPromise);
     mFuture = mPromise.get_future();
 
-#if defined(__ANDROID__)
-    mThemeDirectory = Utils::FileSystem::getInternalAppDataDirectory() + "/themes";
-#elif defined(__IOS__)
-    mThemeDirectory = Utils::FileSystem::getAppDataDirectory() + "/themes";
-#else
     const std::string defaultUserThemeDir {Utils::FileSystem::getAppDataDirectory() + "/themes"};
     const std::string userThemeDirSetting {Utils::FileSystem::expandHomePath(
         Settings::getInstance()->getString("UserThemeDirectory"))};
 
-#if defined(_WIN64)
-    mThemeDirectory = Utils::String::replace(mThemeDirectory, "\\", "/");
-#endif
     if (userThemeDirSetting.empty()) {
         mThemeDirectory = defaultUserThemeDir;
     }
@@ -209,7 +197,6 @@ GuiThemeDownloader::GuiThemeDownloader(std::function<void()> updateCallback)
                         << defaultUserThemeDir << "\"";
         mThemeDirectory = defaultUserThemeDir;
     }
-#endif
 
     if (mThemeDirectory.back() != '/')
         mThemeDirectory.append("/");
@@ -235,10 +222,6 @@ GuiThemeDownloader::~GuiThemeDownloader()
 
 bool GuiThemeDownloader::fetchRepository(const std::string& repositoryName, bool allowReset)
 {
-#if defined(_WIN64)
-    // Workaround for a bug in the libintl library.
-    Utils::Localization::setThreadLocale();
-#endif
 
     int errorCode {0};
     const std::string path {mThemeDirectory + repositoryName};
@@ -610,12 +593,7 @@ void GuiThemeDownloader::makeInventory()
             git_repository_free(repository);
 
             LOG(LogDebug) << "GuiThemeDownloader::makeInventory(): Theme \""
-#if defined(_WIN64)
-                          << Utils::String::replace(path, "/", "\\")
-                          << "\" inventory completed in: "
-#else
                           << path << "\" inventory completed in: "
-#endif
                           << std::chrono::duration_cast<std::chrono::milliseconds>(
                                  std::chrono::system_clock::now() - themeInventoryTime)
                                  .count()
@@ -710,11 +688,7 @@ void GuiThemeDownloader::parseThemesList()
         }
     }
 
-#if defined(__ANDROID__)
-    const std::vector<std::string> themeKeys {"themes", "themesAndroid"};
-#else
     const std::vector<std::string> themeKeys {"themes"};
-#endif
 
     for (auto& themeKey : themeKeys) {
         if (doc.HasMember(themeKey.c_str()) && doc[themeKey.c_str()].IsArray()) {
@@ -1178,9 +1152,6 @@ void GuiThemeDownloader::setupFullscreenViewer()
 void GuiThemeDownloader::update(int deltaTime)
 {
     if (!mAttemptedFetch) {
-#if defined(__ANDROID__)
-        removeDisabledRepositories();
-#endif
         // We need to run this here instead of from the constructor so that GuiMsgBox will be
         // on top of the GUI stack if it needs to be displayed.
         mAttemptedFetch = true;
@@ -1390,21 +1361,11 @@ bool GuiThemeDownloader::input(InputConfig* config, Input input)
     if (config->isMappedTo("y", input) && input.value &&
         mGrid.getSelectedComponent() == mCenterGrid && mThemes[mList->getCursorId()].isCloned) {
         mWindow->pushGui(new GuiMsgBox(
-#if defined(__ANDROID__)
-            _("THIS WILL COMPLETELY DELETE THE THEME"),
-#else
             _("THIS WILL COMPLETELY DELETE THE THEME INCLUDING ANY LOCAL CUSTOMIZATIONS"),
-#endif
             _("PROCEED"),
             [this] {
-#if defined(_WIN64)
-                const std::string themeDirectory {
-                    Utils::String::replace(mThemeDirectory, "/", "\\") +
-                    mThemes[mList->getCursorId()].reponame};
-#else
                 const std::string themeDirectory {mThemeDirectory +
                                                   mThemes[mList->getCursorId()].reponame};
-#endif
                 LOG(LogInfo) << "Deleting theme directory \"" << themeDirectory << "\"";
                 if (!Utils::FileSystem::removeDirectory(themeDirectory, true)) {
                     mWindow->pushGui(new GuiMsgBox(

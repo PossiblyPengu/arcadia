@@ -16,9 +16,6 @@
 
 #include <fstream>
 
-#if defined(__IOS__)
-#include "utils/PlatformUtilIOS.h"
-#endif
 
 ResourceManager& ResourceManager::getInstance()
 {
@@ -36,37 +33,14 @@ std::string ResourceManager::getResourcePath(const std::string& path, bool termi
         if (Utils::FileSystem::exists(testHome))
             return testHome;
 
-#if defined(__IOS__)
-        const std::string iOSPackagePath {Utils::Platform::iOS::getPackagePath() + &path[2]};
 
-        if (Utils::FileSystem::exists(iOSPackagePath))
-            return iOSPackagePath;
-#endif
-
-#if defined(__APPLE__) && !defined(__IOS__)
-        // For macOS, check in the ../Resources directory relative to the executable directory.
-        std::string applePackagePath {Utils::FileSystem::getExePath() + "/../Resources/resources/" +
-                                      &path[2]};
-
-        if (Utils::FileSystem::exists(applePackagePath))
-            return applePackagePath;
-
-#elif (defined(__unix__) && !defined(APPIMAGE_BUILD)) || defined(__ANDROID__) || defined(__HAIKU__)
+#if   (defined(__unix__) && !defined(APPIMAGE_BUILD))
         // Check in the program data directory.
         std::string testDataPath {Utils::FileSystem::getProgramDataPath() + "/resources/" +
                                   &path[2]};
         if (Utils::FileSystem::exists(testDataPath))
             return testDataPath;
 #endif
-#if defined(__ANDROID__)
-        // Check in the assets directory using AssetManager.
-        SDL_RWops* resFile {SDL_RWFromFile(path.substr(2).c_str(), "rb")};
-        if (resFile != nullptr) {
-            SDL_RWclose(resFile);
-            return path.substr(2);
-        }
-        else {
-#else
         // Check under the ES executable directory.
         std::string testExePath {Utils::FileSystem::getExePath() + "/resources/" + &path[2]};
 
@@ -77,21 +51,14 @@ std::string ResourceManager::getResourcePath(const std::string& path, bool termi
         // indicate that we have a broken ES-DE installation. If the argument
         // terminateOnFailure is set to false though, then skip this step.
         else {
-#endif
             if (terminateOnFailure) {
                 LOG(LogError) << "Program resource missing: " << path;
                 LOG(LogError) << "Tried to find the resource in the following locations:";
                 LOG(LogError) << testHome;
-#if defined(__IOS__)
-                LOG(LogError) << iOSPackagePath;
-#elif defined(__APPLE__)
-                LOG(LogError) << applePackagePath;
-#elif defined(__unix__) && !defined(APPIMAGE_BUILD)
+#if   defined(__unix__) && !defined(APPIMAGE_BUILD)
             LOG(LogError) << testDataPath;
 #endif
-#if !defined(__ANDROID__)
                 LOG(LogError) << testExePath;
-#endif
                 LOG(LogError) << "Has ES-DE been properly installed?";
                 Utils::Platform::emergencyShutdown();
             }
@@ -110,20 +77,10 @@ const ResourceData ResourceManager::getFileData(const std::string& path) const
     // Check if its a resource.
     const std::string respath {getResourcePath(path)};
 
-#if defined(__ANDROID__)
-    // Check in the assets directory using AssetManager.
-    SDL_RWops* resFile {SDL_RWFromFile(respath.c_str(), "rb")};
-    if (resFile != nullptr) {
-        ResourceData data {loadFile(resFile)};
-        SDL_RWclose(resFile);
-        return data;
-    }
-#else
     if (Utils::FileSystem::exists(respath)) {
         ResourceData data {loadFile(respath)};
         return data;
     }
-#endif
 
     // If the file doesn't exist, return an "empty" ResourceData.
     ResourceData data {nullptr, 0};
@@ -132,11 +89,7 @@ const ResourceData ResourceManager::getFileData(const std::string& path) const
 
 ResourceData ResourceManager::loadFile(const std::string& path) const
 {
-#if defined(_WIN64)
-    std::ifstream stream {Utils::String::stringToWideString(path).c_str(), std::ios::binary};
-#else
     std::ifstream stream {path, std::ios::binary};
-#endif
 
     stream.seekg(0, stream.end);
     const size_t size {static_cast<size_t>(stream.tellg())};

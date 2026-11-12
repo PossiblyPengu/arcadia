@@ -27,9 +27,6 @@
 #include "views/GamelistView.h"
 #include "views/ViewController.h"
 
-#if defined(__ANDROID__)
-#include "utils/PlatformUtilAndroid.h"
-#endif
 
 #include <assert.h>
 #include <regex>
@@ -270,12 +267,6 @@ const std::vector<FileData*> FileData::getChildrenRecursive() const
 
 const std::string FileData::getROMDirectory()
 {
-#if defined(__ANDROID__)
-    return AndroidVariables::sROMDirectory;
-#elif defined(__IOS__)
-    std::string dir {Utils::FileSystem::getHomePath() + "/Documents/ROMs"};
-    return dir;
-#endif
 
     const std::string& romDirSetting {Settings::getInstance()->getString("ROMDirectory")};
     std::string romDirPath;
@@ -288,13 +279,8 @@ const std::string FileData::getROMDirectory()
         // Expand home path if ~ is used.
         romDirPath = Utils::FileSystem::expandHomePath(romDirPath);
 
-#if defined(_WIN64)
-        if (romDirPath.back() != '\\')
-            romDirPath = romDirPath + "\\";
-#else
         if (romDirPath.back() != '/')
             romDirPath = romDirPath + "/";
-#endif
     }
 
     // If %ESPATH% is used for the ROM path configuration, then expand it to the binary
@@ -306,9 +292,6 @@ const std::string FileData::getROMDirectory()
 
 const std::string FileData::getMediaDirectory()
 {
-#if defined(__IOS__)
-    return Utils::FileSystem::getAppDataDirectory() + "/downloaded_media/";
-#endif
 
     const std::string& mediaDirSetting {Settings::getInstance()->getString("MediaDirectory")};
     std::string mediaDirPath;
@@ -1019,10 +1002,8 @@ void FileData::launchGame()
     std::string romPath {Utils::FileSystem::getEscapedPath(mPath)};
     std::string baseName {Utils::FileSystem::getStem(mPath)};
     std::string romRaw {Utils::FileSystem::getPreferredPath(mPath)};
-#if !defined(_WIN64)
     std::string romRawWindows {
         Utils::String::replace(Utils::FileSystem::getPreferredPath(mPath), "/", "\\")};
-#endif
 
     // For the special case where a directory has a supported file extension and is therefore
     // interpreted as a file, check if there is a matching filename inside the directory.
@@ -1031,11 +1012,7 @@ void FileData::launchGame()
         for (std::string& file : Utils::FileSystem::getDirContent(mPath)) {
             if (Utils::FileSystem::getFileName(file) == Utils::FileSystem::getFileName(mPath) &&
                 (Utils::FileSystem::isRegularFile(file) || Utils::FileSystem::isSymlink(file))) {
-#if defined(__ANDROID__)
-                romRaw = file;
-#else
                 romPath = Utils::FileSystem::getEscapedPath(file);
-#endif
                 baseName = baseName.substr(0, baseName.find("."));
                 break;
             }
@@ -1045,11 +1022,6 @@ void FileData::launchGame()
     const std::string fileName {baseName + Utils::FileSystem::getExtension(romPath)};
     const std::string esPath {Utils::FileSystem::getExePath()};
 
-#if defined(__ANDROID__)
-    // On Android we always run in the background, although the logic is a bit different
-    // as we don't need to wake up the application manually.
-    bool runInBackground {true};
-#else
     bool runInBackground {false};
 
     // In addition to the global RunInBackground setting it's possible to define this flag
@@ -1068,19 +1040,13 @@ void FileData::launchGame()
     // The global setting always applies.
     if (Settings::getInstance()->getBool("RunInBackground"))
         runInBackground = true;
-#endif
 
-#if !defined(_WIN64)
     // Whether to parse .desktop files on Unix or open apps or alias files on macOS.
     bool isShortcut {false};
     size_t enableShortcutsPos {command.find("%ENABLESHORTCUTS%")};
 
     if (enableShortcutsPos != std::string::npos) {
-#if defined(__APPLE__)
-        if (Utils::FileSystem::getExtension(romRaw) == ".app")
-#else
         if (Utils::FileSystem::getExtension(romRaw) == ".desktop")
-#endif
             isShortcut = true;
 
         command = Utils::String::replace(command, "%ENABLESHORTCUTS%", "");
@@ -1089,7 +1055,6 @@ void FileData::launchGame()
                           return !std::isspace(static_cast<unsigned char>(c));
                       }));
     }
-#endif
 
     std::string coreEntry;
     std::string coreName;
@@ -1099,48 +1064,7 @@ void FileData::launchGame()
     std::vector<std::string> emulatorCorePaths;
     bool isAndroidApp {false};
 
-#if defined(__ANDROID__)
-    std::string androidPackage;
-    std::string androidActivity;
-    std::string androidAction;
-    std::string androidCategory;
-    std::string androidMimeType;
-    std::string androidData;
-    std::map<std::string, std::string> androidExtrasString;
-    std::map<std::string, std::string> androidExtrasStringArray;
-    std::map<std::string, std::string> androidExtrasInteger;
-    std::map<std::string, std::string> androidExtrasBool;
-    std::vector<std::string> androidActivityFlags;
-#endif
 
-#if defined(_WIN64)
-    bool hideWindow {false};
-
-    // If the %HIDEWINDOW% variable is defined, we pass a flag to launchGameWindows() to
-    // hide the window. This is intended primarily for hiding console windows when launching
-    // scripts (used for example by Steam games and source ports).
-    if (command.find("%HIDEWINDOW%") != std::string::npos) {
-        hideWindow = true;
-        command = Utils::String::replace(command, "%HIDEWINDOW%", "");
-        // Trim any leading whitespaces as they could cause the script execution to fail.
-        command.erase(command.begin(), std::find_if(command.begin(), command.end(), [](char c) {
-                          return !std::isspace(static_cast<unsigned char>(c));
-                      }));
-    }
-
-    bool escapeSpecials {false};
-
-    // If calling scripts and links using some binaries like cmd.exe then the special characters
-    // &()^=;, must be escaped.
-    if (command.find("%ESCAPESPECIALS%") != std::string::npos) {
-        escapeSpecials = true;
-        command = Utils::String::replace(command, "%ESCAPESPECIALS%", "");
-        // Trim any leading whitespaces as they could cause the script execution to fail.
-        command.erase(command.begin(), std::find_if(command.begin(), command.end(), [](char c) {
-                          return !std::isspace(static_cast<unsigned char>(c));
-                      }));
-    }
-#endif
 
     // If there's a quotation mark before the %CORE_ variable, then remove it.
     // The closing quotation mark will be removed later below.
@@ -1222,77 +1146,7 @@ void FileData::launchGame()
     // Check that the emulator actually exists, and if so, get its path.
     std::pair<std::string, FileData::findEmulatorResult> emulator;
 
-#if defined(__ANDROID__)
-    // Native Android apps and games.
-    if (command.find("%ANDROIDAPP%=") != std::string::npos) {
-        std::string packageName;
-        size_t startPos {command.find("%ANDROIDAPP%=")};
-        size_t endPos {command.find(" ", startPos)};
-        if (endPos == std::string::npos)
-            endPos = command.length();
-
-        packageName = command.substr(startPos + 13, endPos - startPos - 13);
-        isAndroidApp = true;
-
-        if (packageName == "%FILEINJECT%") {
-            LOG(LogDebug) << "Injecting app info from file \"" + fileName + "\"";
-            std::string appString;
-            std::ifstream injectFileStream;
-
-            injectFileStream.open(romRaw);
-            for (std::string line; getline(injectFileStream, line);) {
-                // Remove Windows carriage return characters.
-                line = Utils::String::replace(line, "\r", "");
-                appString += line;
-                if (appString.size() > 4096)
-                    break;
-            }
-            injectFileStream.close();
-
-            if (appString.empty()) {
-                LOG(LogDebug) << "FileData::launchGame(): File empty or insufficient permissions, "
-                                 "nothing to inject";
-                packageName = "";
-            }
-            else if (appString.size() > 4096) {
-                LOG(LogWarning) << "FileData::launchGame(): Injection file exceeding maximum "
-                                   "allowed size of 4096 bytes, skipping \""
-                                << fileName << "\"";
-                packageName = "";
-            }
-            else {
-                packageName = appString;
-            }
-        }
-
-        if (packageName != "" && packageName != "%FILEINJECT%") {
-            LOG(LogInfo) << "Game entry is an Android app: " << packageName;
-
-            size_t separatorPos {packageName.find('/')};
-
-            if (separatorPos != std::string::npos) {
-                androidActivity = packageName.substr(separatorPos + 1);
-                packageName = packageName.substr(0, separatorPos);
-            }
-
-            if (Utils::Platform::Android::checkEmulatorInstalled(packageName, androidActivity)) {
-                emulator = std::make_pair(packageName,
-                                          FileData::findEmulatorResult::FOUND_ANDROID_PACKAGE);
-            }
-            else {
-                emulator = std::make_pair(packageName, FileData::findEmulatorResult::NOT_FOUND);
-            }
-        }
-        else {
-            emulator = std::make_pair(packageName, FileData::findEmulatorResult::NOT_FOUND);
-        }
-    }
-    else {
-        emulator = findEmulator(command, false);
-    }
-#else
     emulator = findEmulator(command, false);
-#endif
 
     // Show an error message if there was no matching emulator entry in es_find_rules.xml.
     if (emulator.second == FileData::findEmulatorResult::NO_RULES) {
@@ -1328,15 +1182,6 @@ void FileData::launchGame()
             if (endPos != std::string::npos)
                 emulatorName = command.substr(startPos + 10, endPos - startPos - 10);
         }
-#if defined(__ANDROID__)
-        else if ((startPos = command.find("%ANDROIDAPP%=")) != std::string::npos) {
-            endPos = command.find(" ", startPos);
-            if (endPos == std::string::npos)
-                endPos = command.length();
-
-            emulatorName = command.substr(startPos + 13, endPos - startPos - 13);
-        }
-#endif
         if (isAndroidApp) {
             if (emulatorName == "" || emulatorName == "%FILEINJECT%") {
                 window->queueInfoPopup(
@@ -1368,32 +1213,9 @@ void FileData::launchGame()
         window->setAllowFileAnimation(true);
         return;
     }
-#if defined(_WIN64)
-    else {
-        std::string emulatorLogPath {Utils::String::replace(
-            Utils::String::replace(emulator.first, "%ESPATH%", esPath), "/", "\\")};
-        if (emulatorLogPath.front() != '\"' && emulatorLogPath.back() != '\"')
-            emulatorLogPath = "\"" + emulatorLogPath + "\"";
-        LOG(LogDebug) << "FileData::launchGame(): Emulator set to " << emulatorLogPath;
-#else
-#if defined(__ANDROID__)
-    else if (emulator.second == FileData::findEmulatorResult::FOUND_ANDROID_PACKAGE) {
-        androidPackage = emulator.first;
-        size_t separatorPos {androidPackage.find('/')};
-
-        if (separatorPos != std::string::npos) {
-            androidActivity = androidPackage.substr(separatorPos + 1);
-            androidPackage = androidPackage.substr(0, separatorPos);
-        }
-
-        LOG(LogDebug) << "FileData::launchGame(): Found emulator package \"" << androidPackage
-                      << "\"";
-    }
-#endif
     else if (!isShortcut) {
         LOG(LogDebug) << "FileData::launchGame(): Emulator set to \""
                       << Utils::String::replace(emulator.first, "%ESPATH%", esPath) << "\"";
-#endif
     }
 
     // If %EMUPATH% is used in es_systems.xml for this system, then check that the core
@@ -1412,15 +1234,8 @@ void FileData::launchGame()
         std::string coreFile;
         if (spacePos != std::string::npos) {
             coreRaw = command.substr(emuPathPos, spacePos - emuPathPos);
-#if defined(_WIN64)
-            coreFile =
-                Utils::FileSystem::getParent(Utils::String::replace(emulator.first, "\"", "")) +
-                command.substr(emuPathPos + 9, spacePos - emuPathPos - 9);
-            coreFile = Utils::String::replace(coreFile, "/", "\\");
-#else
             coreFile = Utils::FileSystem::getParent(emulator.first) +
                        command.substr(emuPathPos + 9, spacePos - emuPathPos - 9);
-#endif
             if (hasQuotationMark) {
                 coreRaw.pop_back();
                 coreFile.pop_back();
@@ -1497,33 +1312,19 @@ void FileData::launchGame()
         if (separatorPos != std::string::npos) {
             coreName = command.substr(coreFilePos + 2, separatorPos - (coreFilePos + 2));
 
-#if defined(_WIN64)
-            std::string coreFile {Utils::FileSystem::expandHomePath(path + "\\" + coreName)};
-#else
             std::string coreFile {Utils::FileSystem::expandHomePath(path + "/" + coreName)};
-#endif
 
             // Expand %EMUPATH% if it has been used in the %CORE_ variable.
             size_t stringPos {coreFile.find("%EMUPATH%")};
             if (stringPos != std::string::npos) {
-#if defined(_WIN64)
-                coreFile = coreFile.replace(
-                    stringPos, 9,
-                    Utils::FileSystem::getParent(Utils::String::replace(emulator.first, "\"", "")));
-                coreFile = Utils::String::replace(coreFile, "/", "\\");
-#else
                 coreFile =
                     coreFile.replace(stringPos, 9, Utils::FileSystem::getParent(emulator.first));
-#endif
             }
 
             // Expand %ESPATH% if it has been used in the %CORE_ variable.
             stringPos = coreFile.find("%ESPATH%");
             if (stringPos != std::string::npos) {
                 coreFile = coreFile.replace(stringPos, 8, esPath);
-#if defined(_WIN64)
-                coreFile = Utils::String::replace(coreFile, "/", "\\");
-#endif
             }
 
             if (Utils::FileSystem::isRegularFile(coreFile) ||
@@ -1616,18 +1417,6 @@ void FileData::launchGame()
 
         if (startDirectory != "") {
             startDirectory = Utils::FileSystem::expandHomePath(startDirectory);
-#if defined(_WIN64)
-            startDirectory = Utils::String::replace(
-                startDirectory, "%EMUDIR%",
-                Utils::FileSystem::getParent(Utils::String::replace(emulator.first, "\"", "")));
-
-            startDirectory = Utils::String::replace(
-                startDirectory, "%GAMEDIR%",
-                Utils::FileSystem::getParent(Utils::String::replace(romPath, "\"", "")));
-
-            startDirectory = Utils::String::replace(startDirectory, "%GAMEENTRYDIR%",
-                                                    Utils::String::replace(romPath, "\"", ""));
-#else
             startDirectory = Utils::String::replace(
                 startDirectory, "%EMUDIR%",
                 Utils::FileSystem::getParent(Utils::String::replace(emulator.first, "\\", "")));
@@ -1638,7 +1427,6 @@ void FileData::launchGame()
 
             startDirectory = Utils::String::replace(startDirectory, "%GAMEENTRYDIR%",
                                                     Utils::String::replace(romPath, "\\", ""));
-#endif
             if (!Utils::FileSystem::isDirectory(startDirectory)) {
                 Utils::FileSystem::createDirectory(startDirectory);
 
@@ -1659,11 +1447,7 @@ void FileData::launchGame()
                     return;
                 }
             }
-#if defined(_WIN64)
-            startDirectory = Utils::String::replace(startDirectory, "/", "\\");
-#else
             startDirectory = Utils::FileSystem::getEscapedPath(startDirectory);
-#endif
             LOG(LogDebug) << "FileData::launchGame(): Setting start directory to \""
                           << startDirectory << "\"";
         }
@@ -1718,22 +1502,6 @@ void FileData::launchGame()
         }
 
         if (injectFile != "") {
-#if defined(_WIN64)
-            injectFile = Utils::String::replace(injectFile, "\\", "/");
-            injectFile = Utils::String::replace(injectFile, "%BASENAME%",
-                                                Utils::String::replace(baseName, "\"", ""));
-            if (injectFile == "%ROM%") {
-                injectFile = Utils::String::replace(injectFile, "%ROM%",
-                                                    Utils::String::replace(romRaw, "\"", ""));
-            }
-            else {
-                if (injectFile.size() < 3 || !(injectFile[1] == ':' && injectFile[2] == '/'))
-                    injectFile =
-                        Utils::FileSystem::getParent(Utils::String::replace(romPath, "\"", "")) +
-                        "/" + injectFile;
-            }
-            injectFile = Utils::String::replace(injectFile, "/", "\\");
-#else
             injectFile = Utils::String::replace(injectFile, "%BASENAME%",
                                                 Utils::String::replace(baseName, "\\", ""));
             if (injectFile == "%ROM%") {
@@ -1746,18 +1514,13 @@ void FileData::launchGame()
                         Utils::FileSystem::getParent(Utils::String::replace(romPath, "\\", "")) +
                         "/" + injectFile;
             }
-#endif
             if (Utils::FileSystem::isRegularFile(injectFile) ||
                 Utils::FileSystem::isSymlink(injectFile)) {
                 LOG(LogDebug) << "FileData::launchGame(): Injecting from file \"" << injectFile
                               << "\"";
                 std::string arguments;
                 std::ifstream injectFileStream;
-#if defined(_WIN64)
-                injectFileStream.open(Utils::String::stringToWideString(injectFile));
-#else
                 injectFileStream.open(injectFile);
-#endif
                 for (std::string line; getline(injectFileStream, line);) {
                     // Remove Windows carriage return characters.
                     line = Utils::String::replace(line, "\r", "");
@@ -1790,46 +1553,7 @@ void FileData::launchGame()
         injectPos = command.find("%INJECT%");
     }
 
-#if defined(_WIN64)
-    if (escapeSpecials) {
-        bool foundSpecial {false};
 
-        // The special characters need to be procesed in this order.
-        std::string specialCharacters {"^&()=;,"};
-
-        for (size_t i {0}; i < specialCharacters.size(); ++i) {
-            // Don't modify this code, it breaks easily.
-            const std::string special(1, specialCharacters[i]);
-            if (romPath.find(special) != std::string::npos) {
-                romPath = Utils::String::replace(romPath, special, "^" + special);
-                foundSpecial = true;
-            }
-        }
-
-        if (foundSpecial)
-            romPath = Utils::String::replace(romPath, " ", "^ ");
-    }
-#endif
-
-#if !defined(_WIN64)
-#if defined(__APPLE__)
-    if (isShortcut) {
-        if (Utils::FileSystem::exists(Utils::String::replace(romPath, "\\", ""))) {
-            LOG(LogInfo) << "Opening app or alias file \""
-                         << Utils::String::replace(romPath, "\\", "") << "\"";
-            command = Utils::String::replace(command, emulator.first, "open -W -a");
-        }
-        else {
-            LOG(LogError) << "App or alias file \"" << romPath
-                          << "\" doesn't exist or is unreadable";
-            window->queueInfoPopup(_("ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"),
-                                   6000);
-            window->setAllowTextScrolling(true);
-            window->setAllowFileAnimation(true);
-            return;
-        }
-    }
-#else
     if (isShortcut) {
         // Note that the following is not an attempt to implement the entire FreeDesktop standard
         // for .desktop files, for example argument parsing is not really usable in this context.
@@ -1891,204 +1615,16 @@ void FileData::launchGame()
             return;
         }
     }
-#endif
-#endif
 
-#if !defined(__ANDROID__)
     // Replace the remaining variables with their actual values.
     command = Utils::String::replace(command, "%ROM%", romPath);
     command = Utils::String::replace(command, "%BASENAME%", baseName);
     command = Utils::String::replace(command, "%FILENAME%", fileName);
     command = Utils::String::replace(command, "%ROMRAW%", romRaw);
-#if !defined(_WIN64)
     command = Utils::String::replace(command, "%ROMRAWWIN%", romRawWindows);
-#endif
     command = Utils::String::replace(command, "%ROMPATH%",
                                      Utils::FileSystem::getEscapedPath(getROMDirectory()));
-#else
-    command = Utils::String::replace(command, "%ANDROIDPACKAGE%", androidPackage);
-    // Escaped quotation marks should only be used for Extras on Android so it should be safe to
-    // just change them to temporary variables and convert them back to the escaped quotation
-    // marks when parsing the Extras.
-    command = Utils::String::replace(command, "\\\"", "%QUOTATION%");
 
-    // This is expanded to /data/user/<userid> and /storage/emulated/<userid> respectively.
-    command = Utils::String::replace(command, "%INTERNALDATA%",
-                                     Utils::Platform::Android::getInternalDirectory());
-    command = Utils::String::replace(command, "%EXTERNALDATA%",
-                                     Utils::Platform::Android::getExternalDirectory());
-
-    const std::vector<std::string> androidVariabels {
-        "%ACTION%=", "%CATEGORY%=", "%MIMETYPE%=", "%DATA%="};
-
-    for (std::string variable : androidVariabels) {
-        size_t dataPos {command.find(variable)};
-        if (dataPos != std::string::npos) {
-            bool invalidEntry {false};
-            bool isQuoted {(command.length() > dataPos + variable.length() &&
-                            command[dataPos + variable.length()] == '\"')};
-            std::string value;
-
-            if (isQuoted) {
-                const size_t closeQuotePos {command.find("\"", dataPos + variable.length() + 1)};
-                if (closeQuotePos != std::string::npos)
-                    value = command.substr(dataPos + variable.length() + 1,
-                                           closeQuotePos - (dataPos + variable.length() + 1));
-                else
-                    invalidEntry = true;
-            }
-            else {
-                const size_t spacePos {command.find(" ", dataPos)};
-                if (spacePos != std::string::npos)
-                    value = command.substr(dataPos + variable.length(),
-                                           spacePos - (dataPos + variable.length()));
-                else
-                    value = command.substr(dataPos + variable.length(),
-                                           command.size() - dataPos + variable.length());
-            }
-
-            if (invalidEntry) {
-                LOG(LogError) << "Invalid entry in systems configuration file es_systems.xml";
-                LOG(LogError) << "Raw emulator launch command:";
-                LOG(LogError) << commandRaw;
-
-                window->queueInfoPopup(_("ERROR: INVALID ENTRY IN SYSTEMS CONFIGURATION FILE"),
-                                       6000);
-                window->setAllowTextScrolling(true);
-                window->setAllowFileAnimation(true);
-                return;
-            }
-
-            if (variable == "%ACTION%=")
-                androidAction = value;
-            else if (variable == "%DATA%=")
-                androidData = value;
-            else if (variable == "%CATEGORY%=")
-                androidCategory = value;
-            else if (variable == "%MIMETYPE%=")
-                androidMimeType = value;
-        }
-    }
-
-    std::vector<std::string> extraVariabels {"%EXTRA_", "%EXTRAARRAY_", "%EXTRAINTEGER_",
-                                             "%EXTRABOOL_"};
-
-    for (std::string variable : extraVariabels) {
-        size_t extraPos {command.find(variable)};
-        while (extraPos != std::string::npos) {
-            if (extraPos != std::string::npos) {
-                bool invalidEntry {false};
-                bool isQuoted {false};
-                std::string extraName;
-                std::string extraValue;
-
-                size_t equalPos {command.find("=", extraPos)};
-                if (equalPos == std::string::npos)
-                    invalidEntry = true;
-
-                if (!invalidEntry && extraPos + variable.length() + 1 >= command.size())
-                    invalidEntry = true;
-
-                if (!invalidEntry) {
-                    if (command.length() > equalPos && command[equalPos + 1] == '\"')
-                        isQuoted = true;
-
-                    extraName = command.substr(extraPos + variable.length(),
-                                               equalPos - (extraPos + variable.length() + 1));
-
-                    if (isQuoted) {
-                        const size_t closeQuotePos {command.find("\"", equalPos + 2)};
-                        if (closeQuotePos != std::string::npos)
-                            extraValue =
-                                command.substr(equalPos + 2, closeQuotePos - (equalPos + 2));
-                        else
-                            invalidEntry = true;
-                    }
-                    else {
-                        const size_t spacePos {command.find(" ", extraPos)};
-                        if (spacePos != std::string::npos)
-                            extraValue = command.substr(equalPos + 1, spacePos - (equalPos + 1));
-                        else
-                            extraValue = command.substr(equalPos + 1, command.size() - equalPos);
-                    }
-
-                    if (invalidEntry) {
-                        LOG(LogError)
-                            << "Invalid entry in systems configuration file es_systems.xml";
-                        LOG(LogError) << "Raw emulator launch command:";
-                        LOG(LogError) << commandRaw;
-
-                        window->queueInfoPopup(
-                            _("ERROR: INVALID ENTRY IN SYSTEMS CONFIGURATION FILE"), 6000);
-                        window->setAllowTextScrolling(true);
-                        window->setAllowFileAnimation(true);
-                        return;
-                    }
-
-                    if (extraName != "" && extraValue != "") {
-                        // Expand the unescaped game directory path and ROM directory as well as
-                        // the raw path to the game file if the corresponding variables have been
-                        // used in the Extra definition. We also change back any temporary quotation
-                        // mark variables to actual escaped quotation marks so they can be passed
-                        // in the Intent.
-                        extraValue = Utils::String::replace(extraValue, "%QUOTATION%", "\\\"");
-                        extraValue =
-                            Utils::String::replace(extraValue, "%GAMEDIRRAW%",
-                                                   Utils::FileSystem::getParent(
-                                                       Utils::String::replace(romPath, "\\", "")));
-                        extraValue =
-                            Utils::String::replace(extraValue, "%ROMPATHRAW%", getROMDirectory());
-                        extraValue = Utils::String::replace(extraValue, "%ROMRAW%", romRaw);
-                        extraValue =
-                            Utils::String::replace(extraValue, "%ROMRAWWIN%", romRawWindows);
-                        extraValue = Utils::String::replace(extraValue, "%BASENAME%", baseName);
-                        extraValue = Utils::String::replace(extraValue, "//", "/");
-                        // This is mostly intended for escaping double forward slashes as \/\/.
-                        extraValue = Utils::String::replace(extraValue, "\\/", "/");
-
-                        if (variable == "%EXTRA_")
-                            androidExtrasString[extraName] = extraValue;
-                        else if (variable == "%EXTRAARRAY_")
-                            androidExtrasStringArray[extraName] = extraValue;
-                        else if (variable == "%EXTRAINTEGER_")
-                            androidExtrasInteger[extraName] = extraValue;
-                        else if (variable == "%EXTRABOOL_")
-                            androidExtrasBool[extraName] = extraValue;
-                    }
-                }
-            }
-            extraPos = command.find(variable, extraPos + 1);
-        }
-    }
-
-    if (command.find("%ACTIVITY_CLEAR_TASK%") != std::string::npos)
-        androidActivityFlags.emplace_back("%ACTIVITY_CLEAR_TASK%");
-    if (command.find("%ACTIVITY_CLEAR_TOP%") != std::string::npos)
-        androidActivityFlags.emplace_back("%ACTIVITY_CLEAR_TOP%");
-    if (command.find("%ACTIVITY_NO_HISTORY%") != std::string::npos)
-        androidActivityFlags.emplace_back("%ACTIVITY_NO_HISTORY%");
-#endif
-
-#if defined(_WIN64)
-    // Hack to remove double quotation marks as these can occur under some special circumstances.
-    const int quotationCount {static_cast<int>(
-        std::count_if(command.cbegin(), command.cend(), [](char c) { return c == '\"'; }))};
-    if (quotationCount % 2 != 0)
-        command = Utils::String::replace(command, "\"\"", "\"");
-
-    command = Utils::String::replace(
-        command, "%ESPATH%", Utils::String::replace(Utils::FileSystem::getExePath(), "/", "\\"));
-    command = Utils::String::replace(command, "%EMUDIR%",
-                                     Utils::FileSystem::getEscapedPath(Utils::FileSystem::getParent(
-                                         Utils::String::replace(emulator.first, "\"", ""))));
-    command = Utils::String::replace(command, "%GAMEDIR%",
-                                     Utils::FileSystem::getEscapedPath(Utils::FileSystem::getParent(
-                                         Utils::String::replace(romPath, "\"", ""))));
-    command = Utils::String::replace(
-        command, "%GAMEDIRRAW%",
-        Utils::String::replace(
-            Utils::FileSystem::getParent(Utils::String::replace(romPath, "\"", "")), "/", "\\"));
-#else
     command = Utils::String::replace(command, "%ESPATH%", Utils::FileSystem::getExePath());
     command = Utils::String::replace(command, "%EMUDIR%",
                                      Utils::FileSystem::getEscapedPath(Utils::FileSystem::getParent(
@@ -2099,7 +1635,6 @@ void FileData::launchGame()
     command = Utils::String::replace(
         command, "%GAMEDIRRAW%",
         Utils::FileSystem::getParent(Utils::String::replace(romPath, "\\", "")));
-#endif
 
     // Trim any leading and trailing whitespace characters as they could cause launch issues.
     command = Utils::String::trim(command);
@@ -2121,44 +1656,8 @@ void FileData::launchGame()
 
     LOG(LogDebug) << "Raw emulator launch command:";
     LOG(LogDebug) << commandRaw;
-#if defined(__ANDROID__)
-    LOG(LogInfo) << "Expanded emulator launch arguments:";
-    LOG(LogInfo) << "Package: " << androidPackage;
-    if (androidActivity != "") {
-        LOG(LogInfo) << "Activity: " << androidActivity;
-    }
-    if (androidAction != "") {
-        LOG(LogInfo) << "Action: " << androidAction;
-    }
-    if (androidCategory != "") {
-        LOG(LogInfo) << "Category: " << androidCategory;
-    }
-    if (androidMimeType != "") {
-        LOG(LogInfo) << "MIME type: " << androidMimeType;
-    }
-    if (androidData != "") {
-        LOG(LogInfo) << "Data: " << androidData;
-    }
-    for (auto& extra : androidExtrasString) {
-        LOG(LogInfo) << "Extra name: " << extra.first;
-        LOG(LogInfo) << "Extra value: " << extra.second;
-    }
-    for (auto& extra : androidExtrasStringArray) {
-        LOG(LogInfo) << "Extra array name: " << extra.first;
-        LOG(LogInfo) << "Extra array value: " << extra.second;
-    }
-    for (auto& extra : androidExtrasInteger) {
-        LOG(LogInfo) << "Extra integer name: " << extra.first;
-        LOG(LogInfo) << "Extra integer value: " << extra.second;
-    }
-    for (auto& extra : androidExtrasBool) {
-        LOG(LogInfo) << "Extra bool name: " << extra.first;
-        LOG(LogInfo) << "Extra bool value: " << extra.second;
-    }
-#else
     LOG(LogInfo) << "Expanded emulator launch command:";
     LOG(LogInfo) << command;
-#endif
 
 #if defined(FLATPAK_BUILD)
     // Break out of the sandbox.
@@ -2176,17 +1675,6 @@ void FileData::launchGame()
     Settings::getInstance()->setInt(
         "GameLaunchTime", static_cast<int>(Utils::Time::DateTime(Utils::Time::now()).getTime()));
 
-#if defined(_WIN64)
-    returnValue = Utils::Platform::launchGameWindows(
-        Utils::String::stringToWideString(command),
-        Utils::String::stringToWideString(startDirectory), runInBackground, hideWindow);
-#elif defined(__ANDROID__)
-    returnValue = Utils::Platform::Android::launchGame(
-        androidPackage, androidActivity, androidAction, androidCategory, androidMimeType,
-        androidData, mEnvData->mStartPath, romRaw, androidExtrasString, androidExtrasStringArray,
-        androidExtrasInteger, androidExtrasBool, androidActivityFlags,
-        Settings::getInstance()->getBool("LaunchOnOtherScreen"));
-#else
 
 #if defined(DEINIT_ON_LAUNCH)
 // Deinit both the AudioManager and the window which allows emulators to launch in KMS mode.
@@ -2199,7 +1687,6 @@ window->init();
 returnValue = Utils::Platform::launchGameUnix(command, startDirectory, runInBackground);
 #endif
 
-#endif
     // Notify the user in case of a failed game launch using a popup window.
     if (returnValue != 0) {
         LOG(LogWarning) << "Launch terminated with nonzero return value " << returnValue;
@@ -2215,17 +1702,6 @@ returnValue = Utils::Platform::launchGameUnix(command, startDirectory, runInBack
     else {
         // Stop showing the game launch notification.
         window->stopInfoPopup();
-#if defined(_WIN64)
-        // If the RunInBackground setting has been enabled or if the %RUNINBACKGROUND% variable has
-        // been set for the specific launch command, then block the video player, stop scrolling
-        // game names and descriptions and keep the screensaver from getting activated.
-        if (runInBackground)
-            window->setLaunchedGame(true);
-        else
-            // Normalize deltaTime so that the screensaver does not start immediately
-            // when returning from the game.
-            window->normalizeNextUpdate();
-#else
         // For some game systems we need to keep ES-DE running while the game is launched.
         // This blocks the video player, stops the scrolling of game names and descriptions and
         // keeps the screensaver from getting activated.
@@ -2234,7 +1710,6 @@ returnValue = Utils::Platform::launchGameUnix(command, startDirectory, runInBack
         // Normalize deltaTime so that the screensaver does not start immediately
         // when returning from the game.
         window->normalizeNextUpdate();
-#endif
     }
 
     // If running in the background then don't trigger the game-end event, which will instead be
@@ -2297,13 +1772,6 @@ const std::pair<std::string, FileData::findEmulatorResult> FileData::findEmulato
 
     // Method 1, emulator is defined using find rules:
 
-#if defined(_WIN64)
-    std::vector<std::string> emulatorWinRegistryPaths;
-    std::vector<std::string> emulatorWinRegistryValues;
-#endif
-#if defined(__ANDROID__)
-    std::vector<std::string> emulatorAndroidPackages;
-#endif
     std::vector<std::string> emulatorSystemPaths;
     std::vector<std::string> emulatorStaticPaths;
     std::string emulatorEntry;
@@ -2326,212 +1794,18 @@ const std::pair<std::string, FileData::findEmulatorResult> FileData::findEmulato
     }
 
     if (emulatorEntry != "") {
-#if defined(_WIN64)
-        emulatorWinRegistryPaths =
-            SystemData::sFindRules.get()->mEmulators[emulatorEntry].winRegistryPaths;
-        emulatorWinRegistryValues =
-            SystemData::sFindRules.get()->mEmulators[emulatorEntry].winRegistryValues;
-#endif
-#if defined(__ANDROID__)
-        emulatorAndroidPackages =
-            SystemData::sFindRules.get()->mEmulators[emulatorEntry].androidPackages;
-#endif
         emulatorSystemPaths = SystemData::sFindRules.get()->mEmulators[emulatorEntry].systemPaths;
 
         emulatorStaticPaths = SystemData::sFindRules.get()->mEmulators[emulatorEntry].staticPaths;
     }
 
     // Error handling in case of no emulator find rule.
-#if defined(_WIN64)
-    if (emulatorEntry != "" && emulatorWinRegistryPaths.empty() &&
-        emulatorWinRegistryValues.empty() && emulatorSystemPaths.empty() &&
-        emulatorStaticPaths.empty())
-#elif defined(__ANDROID__)
-    if (emulatorEntry != "" && emulatorAndroidPackages.empty() && emulatorSystemPaths.empty() &&
-        emulatorStaticPaths.empty())
-#else
     if (emulatorEntry != "" && emulatorSystemPaths.empty() && emulatorStaticPaths.empty())
-#endif
         return std::make_pair(emulatorEntry, FileData::findEmulatorResult::NO_RULES);
 
-#if defined(_WIN64)
-    for (std::string& path : emulatorWinRegistryPaths) {
-        // Search for the emulator using the App Paths keys in the Windows Registry.
-        const std::string& registryKeyPath {
-            "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\" + path};
 
-        HKEY registryKey;
-        LSTATUS keyStatus {-1};
-        LSTATUS pathStatus {-1};
-        std::wstring registryPath(1024, 0);
-        DWORD pathSize {1024};
-
-        // First look in HKEY_CURRENT_USER.
-        keyStatus = RegOpenKeyExW(HKEY_CURRENT_USER,
-                                  Utils::String::stringToWideString(registryKeyPath).c_str(), 0,
-                                  KEY_QUERY_VALUE, &registryKey);
-
-        // If not found, then try in HKEY_LOCAL_MACHINE.
-        if (keyStatus != ERROR_SUCCESS) {
-            keyStatus = RegOpenKeyExW(HKEY_LOCAL_MACHINE,
-                                      Utils::String::stringToWideString(registryKeyPath).c_str(), 0,
-                                      KEY_QUERY_VALUE, &registryKey);
-        }
-
-        // If the key exists, then try to retrieve its default value.
-        if (keyStatus == ERROR_SUCCESS) {
-            pathStatus = RegGetValue(registryKey, nullptr, nullptr, RRF_RT_REG_SZ, nullptr,
-                                     &registryPath[0], &pathSize);
-            registryPath.erase(std::find(registryPath.begin(), registryPath.end(), '\0'),
-                               registryPath.end());
-        }
-        else {
-            RegCloseKey(registryKey);
-            continue;
-        }
-
-        // That a value was found does not guarantee that the emulator actually exists, so
-        // check for that as well.
-        if (pathStatus == ERROR_SUCCESS) {
-            if (Utils::FileSystem::isRegularFile(Utils::String::wideStringToString(registryPath)) ||
-                Utils::FileSystem::isSymlink(Utils::String::wideStringToString(registryPath))) {
-                LOG(LogDebug) << "FileData::findEmulator(): "
-                              << (preCommand ? "Pre-command" : "Emulator")
-                              << " found via winregistrypath rule";
-                exePath = Utils::FileSystem::getEscapedPath(
-                    Utils::String::wideStringToString(registryPath));
-                command.replace(startPos, endPos - startPos + 1, exePath);
-                RegCloseKey(registryKey);
-                return std::make_pair(exePath, FileData::findEmulatorResult::FOUND_FILE);
-            }
-        }
-        RegCloseKey(registryKey);
-    }
-
-    for (std::string& value : emulatorWinRegistryValues) {
-        // If the pipe character is found, then the string following this should be appended
-        // to the key value, assuming the key is found.
-        std::string appendString;
-        const size_t pipePos {value.find('|')};
-
-        if (pipePos != std::string::npos) {
-            appendString = value.substr(pipePos + 1, std::string::npos);
-            value = value.substr(0, pipePos);
-        }
-
-        // Search for the defined value in the Windows Registry.
-        const std::string& registryValueKey {
-            Utils::String::replace(Utils::FileSystem::getParent(value), "/", "\\")};
-        const std::string& registryValue {Utils::FileSystem::getFileName(value)};
-
-        HKEY registryKey;
-        LSTATUS keyStatus {-1};
-        LSTATUS pathStatus {-1};
-        std::wstring path(1024, 0);
-        DWORD pathSize {1024};
-
-        // First look in HKEY_CURRENT_USER.
-        keyStatus = RegOpenKeyExW(HKEY_CURRENT_USER,
-                                  Utils::String::stringToWideString(registryValueKey).c_str(), 0,
-                                  KEY_QUERY_VALUE, &registryKey);
-
-        // If not found, then try in HKEY_LOCAL_MACHINE.
-        if (keyStatus != ERROR_SUCCESS) {
-            keyStatus = RegOpenKeyExW(HKEY_LOCAL_MACHINE,
-                                      Utils::String::stringToWideString(registryValueKey).c_str(),
-                                      0, KEY_QUERY_VALUE, &registryKey);
-        }
-
-        // If the key exists, then try to retrieve the defined value.
-        if (keyStatus == ERROR_SUCCESS) {
-            pathStatus = RegGetValueW(registryKey, nullptr,
-                                      Utils::String::stringToWideString(registryValue).c_str(),
-                                      RRF_RT_REG_SZ, nullptr, &path[0], &pathSize);
-            path.erase(std::find(path.begin(), path.end(), '\0'), path.end());
-        }
-        else {
-            RegCloseKey(registryKey);
-            continue;
-        }
-
-        if (path.empty()) {
-            RegCloseKey(registryKey);
-            continue;
-        }
-
-        if (!appendString.empty())
-            path.append(Utils::String::stringToWideString(appendString));
-
-        // That a value was found does not guarantee that the emulator actually exists,
-        // so check for that as well.
-        if (pathStatus == ERROR_SUCCESS) {
-            if (Utils::FileSystem::isRegularFile(Utils::String::wideStringToString(path)) ||
-                Utils::FileSystem::isSymlink(Utils::String::wideStringToString(path))) {
-                LOG(LogDebug) << "FileData::findEmulator(): "
-                              << (preCommand ? "Pre-command" : "Emulator")
-                              << " found via winregistryvalue rule";
-                exePath =
-                    Utils::FileSystem::getEscapedPath(Utils::String::wideStringToString(path));
-                command.replace(startPos, endPos - startPos + 1, exePath);
-                RegCloseKey(registryKey);
-                return std::make_pair(exePath, FileData::findEmulatorResult::FOUND_FILE);
-            }
-        }
-        RegCloseKey(registryKey);
-    }
-#endif
-
-#if defined(__ANDROID__)
-    for (std::string& androidpackage : emulatorAndroidPackages) {
-        // If a forward slash character is present in the androidpackage entry it means an explicit
-        // Intent activity should be used rather than the default one. The checkEmulatorInstalled()
-        // Java function will check for the activity as well and if it's not found it flags the
-        // overall emulator entry as not found.
-        std::string packageName {androidpackage};
-        std::string activity;
-        size_t separatorPos {packageName.find('/')};
-
-        if (separatorPos != std::string::npos) {
-            activity = packageName.substr(separatorPos + 1);
-            packageName = packageName.substr(0, separatorPos);
-        }
-
-        if (Utils::Platform::Android::checkEmulatorInstalled(packageName, activity)) {
-            return std::make_pair(androidpackage,
-                                  FileData::findEmulatorResult::FOUND_ANDROID_PACKAGE);
-        }
-    }
-#endif
 
     for (std::string& path : emulatorSystemPaths) {
-#if defined(_WIN64)
-        std::wstring pathWide {Utils::String::stringToWideString(path)};
-        // Search for the emulator using the PATH environment variable.
-        DWORD size {SearchPathW(nullptr, pathWide.c_str(), L".exe", 0, nullptr, nullptr)};
-
-        if (size) {
-            std::vector<wchar_t> pathBuffer(static_cast<size_t>(size) + 1);
-            wchar_t* fileName {nullptr};
-
-            SearchPathW(nullptr, pathWide.c_str(), L".exe", size + 1, pathBuffer.data(), &fileName);
-            std::wstring pathString {pathBuffer.data()};
-
-            if (pathString.length()) {
-                exePath = Utils::String::wideStringToString(
-                    pathString.substr(0, pathString.size() - std::wstring(fileName).size()));
-                exePath.pop_back();
-            }
-        }
-        if (exePath != "") {
-            LOG(LogDebug) << "FileData::findEmulator(): "
-                          << (preCommand ? "Pre-command" : "Emulator")
-                          << " found via systempath rule";
-            exePath += "\\" + path;
-            exePath = Utils::FileSystem::getEscapedPath(exePath);
-            command.replace(startPos, endPos - startPos + 1, exePath);
-            return std::make_pair(exePath, FileData::findEmulatorResult::FOUND_FILE);
-        }
-#else
         exePath = Utils::FileSystem::getPathToBinary(path);
         if (exePath != "") {
             LOG(LogDebug) << "FileData::findEmulator(): "
@@ -2541,7 +1815,6 @@ const std::pair<std::string, FileData::findEmulatorResult> FileData::findEmulato
             command.replace(startPos, endPos - startPos + 1, exePath);
             return std::make_pair(exePath, FileData::findEmulatorResult::FOUND_FILE);
         }
-#endif
     }
 
     for (std::string& path : emulatorStaticPaths) {
@@ -2563,16 +1836,9 @@ const std::pair<std::string, FileData::findEmulatorResult> FileData::findEmulato
 
         // Find the first matching file if a wildcard was used for the emulator entry.
         if (path.find('*') != std::string::npos) {
-#if defined(_WIN64)
-            Utils::FileSystem::StringList files {
-                Utils::FileSystem::getMatchingFiles(Utils::String::replace(path, "\\", "/"))};
-            if (files.size() > 0)
-                path = Utils::String::replace(files.front(), "/", "\\");
-#else
             Utils::FileSystem::StringList files {Utils::FileSystem::getMatchingFiles(path)};
             if (files.size() > 0)
                 path = files.front();
-#endif
         }
 
         if (Utils::FileSystem::isRegularFile(path) || Utils::FileSystem::isSymlink(path)) {
@@ -2615,22 +1881,6 @@ const std::pair<std::string, FileData::findEmulatorResult> FileData::findEmulato
         }
     }
 
-#if defined(_WIN64)
-    std::wstring emuExecutableWide {Utils::String::stringToWideString(emuExecutable)};
-    // Search for the emulator using the PATH environment variable.
-    const DWORD size {
-        SearchPathW(nullptr, emuExecutableWide.c_str(), L".exe", 0, nullptr, nullptr)};
-
-    if (size) {
-        std::vector<wchar_t> pathBuffer(static_cast<size_t>(size) + 1);
-        wchar_t* fileName {nullptr};
-
-        SearchPathW(nullptr, emuExecutableWide.c_str(), L".exe", size + 1, pathBuffer.data(),
-                    &fileName);
-
-        exePath = Utils::String::wideStringToString(pathBuffer.data());
-    }
-#elif !defined(__ANDROID__)
     if (Utils::FileSystem::isRegularFile(emuExecutable) ||
         Utils::FileSystem::isSymlink(emuExecutable)) {
         exePath = Utils::FileSystem::getEscapedPath(emuExecutable);
@@ -2641,7 +1891,6 @@ const std::pair<std::string, FileData::findEmulatorResult> FileData::findEmulato
         if (exePath != "")
             exePath += "/" + emuExecutable;
     }
-#endif
 
     if (exePath.empty())
         return std::make_pair("", FileData::findEmulatorResult::NOT_FOUND);

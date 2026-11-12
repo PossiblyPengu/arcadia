@@ -10,10 +10,6 @@
 //  metadata edit interface is covered by GuiMetaDataEd.
 //
 
-#if defined(_WIN64)
-// Why this is needed here is anyone's guess but without it the compilation fails.
-#include <winsock2.h>
-#endif
 
 #include "guis/GuiGamelistOptions.h"
 
@@ -415,20 +411,6 @@ void GuiGamelistOptions::openMetaDataEd()
     std::function<void()> deleteGameBtnFunc;
 
     clearGameBtnFunc = [this, file] {
-#if defined(_WIN64)
-        if (file->getType() == FOLDER) {
-            LOG(LogInfo) << "Deleting media files and gamelist.xml entry for the folder \""
-                         << Utils::String::replace(file->getFullPath(), "/", "\\") << "\"";
-        }
-        else if (file->getType() == GAME && Utils::FileSystem::isDirectory(file->getFullPath())) {
-            LOG(LogInfo) << "Deleting media files and gamelist.xml entry for the "
-                            "file-interpreted folder \""
-                         << Utils::String::replace(file->getFullPath(), "/", "\\") << "\"";
-        }
-        else {
-            LOG(LogInfo) << "Deleting media files and gamelist.xml entry for the file \""
-                         << Utils::String::replace(file->getFullPath(), "/", "\\") << "\"";
-#else
         if (file->getType() == FOLDER) {
             LOG(LogInfo) << "Deleting media files and gamelist.xml entry for the folder \""
                          << file->getFullPath() << "\"";
@@ -441,7 +423,6 @@ void GuiGamelistOptions::openMetaDataEd()
         else {
             LOG(LogInfo) << "Deleting media files and gamelist.xml entry for the file \""
                          << file->getFullPath() << "\"";
-#endif
         }
         ViewController::getInstance()->getGamelistView(file->getSystem()).get()->removeMedia(file);
 
@@ -487,12 +468,7 @@ void GuiGamelistOptions::openMetaDataEd()
     };
 
     deleteGameBtnFunc = [this, file] {
-#if defined(_WIN64)
-        LOG(LogInfo) << "Deleting game file \""
-                     << Utils::String::replace(file->getFullPath(), "/", "\\")
-#else
         LOG(LogInfo) << "Deleting game file \"" << file->getFullPath()
-#endif
                      << "\", all its media files and its gamelist.xml entry";
         CollectionSystemsManager::getInstance()->deleteCollectionFiles(file);
         ViewController::getInstance()->getGamelistView(file->getSystem()).get()->removeMedia(file);

@@ -24,9 +24,6 @@
 #include <random>
 #include <time.h>
 
-#if defined(_WIN64)
-#include <cstring>
-#endif
 
 #define IMAGES_FADE_IN_TIME 450.0f
 
@@ -416,12 +413,7 @@ void Screensaver::generateImageList()
         if (!(*it)->isGameSystem() || (*it)->isCollection())
             continue;
 
-#if defined(_WIN64)
-        const std::string mediaBaseDir {
-            Utils::String::replace(FileData::getMediaDirectory(), "\\", "/")};
-#else
         const std::string mediaBaseDir {FileData::getMediaDirectory()};
-#endif
         const std::string mediaDirMiximages {
             mediaBaseDir + (*it)->getRootFolder()->getSystemName() + "/miximages"};
         const std::string mediaDirScreenshots {
@@ -442,13 +434,7 @@ void Screensaver::generateImageList()
         // all files recursively is much faster as this avoids stat() function calls which are
         // very expensive on such problematic platforms.
 
-#if defined(_WIN64) || defined(__APPLE__) || defined(__ANDROID__)
-        // Although macOS may have filesystem case-sensitivity enabled it's rare and the impact
-        // would not be severe in this case anyway.
-        const bool caseSensitiveFilesystem {false};
-#else
         const bool caseSensitiveFilesystem {true};
-#endif
 
         for (auto& entry : Utils::FileSystem::getDirContent(mediaDirMiximages, true)) {
             if (caseSensitiveFilesystem)
@@ -546,12 +532,7 @@ void Screensaver::generateVideoList()
         if (!(*it)->isGameSystem() || (*it)->isCollection())
             continue;
 
-#if defined(_WIN64)
-        const std::string mediaBaseDir {
-            Utils::String::replace(FileData::getMediaDirectory(), "\\", "/")};
-#else
         const std::string mediaBaseDir {FileData::getMediaDirectory()};
-#endif
         const std::string mediaDir {mediaBaseDir + (*it)->getRootFolder()->getSystemName() +
                                     "/videos"};
         Utils::FileSystem::StringList dirContent;
@@ -562,13 +543,7 @@ void Screensaver::generateVideoList()
         // all files recursively is much faster as this avoids stat() function calls which are
         // very expensive on such problematic platforms.
 
-#if defined(_WIN64) || defined(__APPLE__) || defined(__ANDROID__)
-        // Although macOS may have filesystem case-sensitivity enabled it's rare and the impact
-        // would not be severe in this case anyway.
-        const bool caseSensitiveFilesystem {false};
-#else
         const bool caseSensitiveFilesystem {true};
-#endif
         for (auto& entry : Utils::FileSystem::getDirContent(mediaDir, true)) {
             if (caseSensitiveFilesystem)
                 dirContent.emplace_back(entry);
@@ -795,12 +770,7 @@ void Screensaver::triggerCustomEvent()
     if (mCurrentGame == nullptr)
         return;
 
-#if defined(_WIN64)
-    Scripting::fireEvent("screensaver-game-select",
-                         Utils::String::replace(mCurrentGame->getPath(), "/", "\\"),
-#else
     Scripting::fireEvent("screensaver-game-select", mCurrentGame->getPath(),
-#endif
                          mCurrentGame->metadata.get("name"), mCurrentGame->getSystem()->getName(),
                          mCurrentGame->getSystem()->getFullName());
 }

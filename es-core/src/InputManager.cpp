@@ -24,20 +24,10 @@
 
 #define KEYBOARD_GUID_STRING "-1"
 
-#if defined(__ANDROID__)
-#define TOUCH_GUID_STRING "-3"
-#include "utils/PlatformUtilAndroid.h"
-#endif
 
-#if defined(__IOS__)
-#define TOUCH_GUID_STRING "-3"
-#endif
 
 InputManager::InputManager() noexcept
     : mWindow {Window::getInstance()}
-#if defined(__ANDROID__) || defined(__IOS__)
-    , mInputOverlay {InputOverlay::getInstance()}
-#endif
     , mKeyboardInputConfig {nullptr}
     , mTouchInputConfig {nullptr}
 {
@@ -88,10 +78,6 @@ void InputManager::init()
         LOG(LogInfo) << "Added keyboard with default configuration";
     }
 
-#if defined(__ANDROID__) || defined(__IOS__)
-    mTouchInputConfig = std::make_unique<InputConfig>(DEVICE_TOUCH, "Touch", TOUCH_GUID_STRING);
-    loadTouchConfig();
-#endif
 
     // Load optional controller mappings. Normally the supported controllers should be compiled
     // into SDL as a header file, but if a user has a very rare controller that is not supported,
@@ -156,12 +142,7 @@ void InputManager::writeDeviceConfig(InputConfig* config)
 
     if (Utils::FileSystem::exists(path)) {
         // Merge files.
-#if defined(_WIN64)
-        pugi::xml_parse_result result {
-            doc.load_file(Utils::String::stringToWideString(path).c_str())};
-#else
         pugi::xml_parse_result result {doc.load_file(path.c_str())};
-#endif
         if (!result) {
             LOG(LogError) << "Couldn't parse input configuration file: " << result.description();
         }
@@ -187,11 +168,7 @@ void InputManager::writeDeviceConfig(InputConfig* config)
 
     config->writeToXML(root);
 
-#if defined(_WIN64)
-    doc.save_file(Utils::String::stringToWideString(path).c_str());
-#else
     doc.save_file(path.c_str());
-#endif
 
     Scripting::fireEvent("config-changed");
     Scripting::fireEvent("controls-changed");
@@ -215,10 +192,6 @@ int InputManager::getNumConfiguredDevices()
     if (mKeyboardInputConfig->isConfigured())
         ++num;
 
-#if defined(__ANDROID__) || defined(__IOS__)
-    if (mTouchInputConfig->isConfigured())
-        ++num;
-#endif
 
     return num;
 }
@@ -240,10 +213,6 @@ std::string InputManager::getDeviceGUIDString(int deviceId)
 {
     if (deviceId == DEVICE_KEYBOARD)
         return KEYBOARD_GUID_STRING;
-#if defined(__ANDROID__) || defined(__IOS__)
-    else if (deviceId == DEVICE_TOUCH)
-        return TOUCH_GUID_STRING;
-#endif
 
     auto it = mJoysticks.find(deviceId);
     if (it == mJoysticks.cend()) {
@@ -261,10 +230,6 @@ InputConfig* InputManager::getInputConfigByDevice(int device)
 {
     if (device == DEVICE_KEYBOARD)
         return mKeyboardInputConfig.get();
-#if defined(__ANDROID__) || defined(__IOS__)
-    else if (device == DEVICE_TOUCH)
-        return mTouchInputConfig.get();
-#endif
     else
         return mInputConfigs[device].get();
 }
@@ -357,12 +322,8 @@ bool InputManager::parseEvent(const SDL_Event& event)
         case SDL_KEYDOWN: {
             if (SDL_IsTextInputActive()) {
                 // Paste from clipboard.
-#if defined(__APPLE__)
-                if (event.key.keysym.mod & KMOD_GUI && event.key.keysym.sym == SDLK_v) {
-#else
                 if ((event.key.keysym.mod & KMOD_CTRL && event.key.keysym.sym == SDLK_v) ||
                     (event.key.keysym.mod & KMOD_SHIFT && event.key.keysym.sym == SDLK_INSERT)) {
-#endif
                     if (SDL_HasClipboardText()) {
                         char* clipboardText {SDL_GetClipboardText()};
                         mWindow->textInput(clipboardText, true);
@@ -379,38 +340,13 @@ bool InputManager::parseEvent(const SDL_Event& event)
             if (event.key.repeat)
                 return false;
 
-#if defined(__ANDROID__)
-            // Quit application if the back button is pressed or if the back gesture is used,
-            // unless we're set as the Android home app.
-            if (event.key.keysym.sym == SDLK_AC_BACK &&
-                Settings::getInstance()->getBool("BackEventAppExit") &&
-                !AndroidVariables::sIsHomeApp) {
-                SDL_Event quit {};
-                quit.type = SDL_QUIT;
-                SDL_PushEvent(&quit);
-                return false;
-            }
-#endif
             // There is no need to handle the OS-default quit shortcut (Alt + F4 on Windows and
             // Linux and Command + Q on macOS) as that's taken care of by the window manager.
             // The exception is Android as there are are no default quit shortcuts on this OS.
             std::string quitShortcut {Settings::getInstance()->getString("KeyboardQuitShortcut")};
-#if defined(__APPLE__)
-            if (quitShortcut != "CmdQ") {
-#elif defined(__ANDROID__)
-            if (!AndroidVariables::sIsHomeApp) {
-#else
             if (quitShortcut != "AltF4") {
-#endif
                 bool quitES {false};
-#if defined(__ANDROID__)
-                if (quitShortcut == "AltF4" && event.key.keysym.sym == SDLK_F4 &&
-                    (event.key.keysym.mod & KMOD_LALT))
-                    quitES = true;
-                else if (quitShortcut == "F4" && event.key.keysym.sym == SDLK_F4 &&
-#else
                 if (quitShortcut == "F4" && event.key.keysym.sym == SDLK_F4 &&
-#endif
                          !(event.key.keysym.mod & KMOD_LALT))
                     quitES = true;
                 else if (quitShortcut == "CtrlQ" && event.key.keysym.sym == SDLK_q &&
@@ -443,62 +379,6 @@ bool InputManager::parseEvent(const SDL_Event& event)
                            Input(DEVICE_KEYBOARD, TYPE_KEY, event.key.keysym.sym, 0, false));
             return true;
         }
-#if defined(__ANDROID__) || defined(__IOS__)
-        case SDL_FINGERDOWN: {
-            if (!Settings::getInstance()->getBool("InputTouchOverlay"))
-                return false;
-
-            const int buttonID {mInputOverlay.getButtonId(
-                SDL_FINGERDOWN, event.tfinger.fingerId + 1, event.tfinger.x, event.tfinger.y)};
-            if (buttonID != -2) {
-                mWindow->input(getInputConfigByDevice(DEVICE_TOUCH),
-                               Input(DEVICE_TOUCH, TYPE_TOUCH, buttonID, 1, false));
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-        case SDL_FINGERUP: {
-            if (!Settings::getInstance()->getBool("InputTouchOverlay"))
-                return false;
-
-            const int buttonID {mInputOverlay.getButtonId(SDL_FINGERUP, event.tfinger.fingerId + 1,
-                                                          event.tfinger.x, event.tfinger.y)};
-            if (buttonID != -2) {
-                mWindow->input(getInputConfigByDevice(DEVICE_TOUCH),
-                               Input(DEVICE_TOUCH, TYPE_TOUCH, buttonID, 0, false));
-
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-        case SDL_FINGERMOTION: {
-            if (!Settings::getInstance()->getBool("InputTouchOverlay"))
-                return false;
-
-            bool releasedButton {false};
-            const int buttonID {
-                mInputOverlay.getButtonId(SDL_FINGERMOTION, event.tfinger.fingerId + 1,
-                                          event.tfinger.x, event.tfinger.y, &releasedButton)};
-
-            if (buttonID == -2)
-                return false;
-
-            if (releasedButton) {
-                mWindow->input(getInputConfigByDevice(DEVICE_TOUCH),
-                               Input(DEVICE_TOUCH, TYPE_TOUCH, buttonID, 0, false));
-                return true;
-            }
-            else {
-                mWindow->input(getInputConfigByDevice(DEVICE_TOUCH),
-                               Input(DEVICE_TOUCH, TYPE_TOUCH, buttonID, 1, false));
-                return true;
-            }
-        }
-#endif
         case SDL_TEXTINPUT: {
             mWindow->textInput(event.text.text);
             break;
@@ -524,11 +404,7 @@ bool InputManager::loadInputConfig(InputConfig* config)
     std::string path {getConfigPath()};
 
     pugi::xml_document doc;
-#if defined(_WIN64)
-    pugi::xml_parse_result res {doc.load_file(Utils::String::stringToWideString(path).c_str())};
-#else
     pugi::xml_parse_result res {doc.load_file(path.c_str())};
-#endif
 
     if (!res) {
         LOG(LogError) << "Couldn't parse the input configuration file: " << res.description();
@@ -574,11 +450,7 @@ void InputManager::loadDefaultKBConfig()
     cfg->mapInput("A", Input(DEVICE_KEYBOARD, TYPE_KEY, SDLK_RETURN, 1, true));
     cfg->mapInput("B", Input(DEVICE_KEYBOARD, TYPE_KEY, SDLK_BACKSPACE, 1, true));
     cfg->mapInput("X", Input(DEVICE_KEYBOARD, TYPE_KEY, SDLK_DELETE, 1, true));
-#if defined(__APPLE__)
-    cfg->mapInput("Y", Input(DEVICE_KEYBOARD, TYPE_KEY, SDLK_PRINTSCREEN, 1, true));
-#else
     cfg->mapInput("Y", Input(DEVICE_KEYBOARD, TYPE_KEY, SDLK_INSERT, 1, true));
-#endif
     cfg->mapInput("Back", Input(DEVICE_KEYBOARD, TYPE_KEY, SDLK_F1, 1, true));
     cfg->mapInput("Start", Input(DEVICE_KEYBOARD, TYPE_KEY, SDLK_ESCAPE, 1, true));
 
@@ -628,29 +500,6 @@ void InputManager::loadDefaultControllerConfig(SDL_JoystickID deviceIndex)
 
 void InputManager::loadTouchConfig()
 {
-#if defined(__ANDROID__) || defined(__IOS__)
-    InputConfig* cfg {mTouchInputConfig.get()};
-
-    if (cfg->isConfigured())
-        return;
-
-    // clang-format off
-    cfg->mapInput("Up", Input(DEVICE_TOUCH, TYPE_TOUCH, SDL_CONTROLLER_BUTTON_DPAD_UP, 1, true));
-    cfg->mapInput("Down", Input(DEVICE_TOUCH, TYPE_TOUCH, SDL_CONTROLLER_BUTTON_DPAD_DOWN, 1, true));
-    cfg->mapInput("Left", Input(DEVICE_TOUCH, TYPE_TOUCH, SDL_CONTROLLER_BUTTON_DPAD_LEFT, 1, true));
-    cfg->mapInput("Right", Input(DEVICE_TOUCH, TYPE_TOUCH, SDL_CONTROLLER_BUTTON_DPAD_RIGHT, 1, true));
-    cfg->mapInput("Start", Input(DEVICE_TOUCH, TYPE_TOUCH, SDL_CONTROLLER_BUTTON_START, 1, true));
-    cfg->mapInput("Back", Input(DEVICE_TOUCH, TYPE_TOUCH, SDL_CONTROLLER_BUTTON_BACK, 1, true));
-    cfg->mapInput("A", Input(DEVICE_TOUCH, TYPE_TOUCH, SDL_CONTROLLER_BUTTON_A, 1, true));
-    cfg->mapInput("B", Input(DEVICE_TOUCH, TYPE_TOUCH, SDL_CONTROLLER_BUTTON_B, 1, true));
-    cfg->mapInput("X", Input(DEVICE_TOUCH, TYPE_TOUCH, SDL_CONTROLLER_BUTTON_X, 1, true));
-    cfg->mapInput("Y", Input(DEVICE_TOUCH, TYPE_TOUCH, SDL_CONTROLLER_BUTTON_Y, 1, true));
-    cfg->mapInput("LeftShoulder", Input(DEVICE_TOUCH, TYPE_TOUCH, SDL_CONTROLLER_BUTTON_LEFTSHOULDER, 1, true));
-    cfg->mapInput("RightShoulder", Input(DEVICE_TOUCH, TYPE_TOUCH, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER, 1, true));
-    cfg->mapInput("LeftTrigger", Input(DEVICE_TOUCH, TYPE_TOUCH, InputOverlay::TriggerButtons::TRIGGER_LEFT, 1, true));
-    cfg->mapInput("RightTrigger", Input(DEVICE_TOUCH, TYPE_TOUCH, InputOverlay::TriggerButtons::TRIGGER_RIGHT, 1, true));
-    // clang-format on
-#endif
 }
 
 void InputManager::addControllerByDeviceIndex(Window* window, int deviceIndex)

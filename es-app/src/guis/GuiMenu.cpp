@@ -9,10 +9,6 @@
 
 #include "guis/GuiMenu.h"
 
-#if defined(_WIN64)
-// Why this is needed here is anyone's guess but without it the compilation fails.
-#include <winsock2.h>
-#endif
 
 #include "ApplicationVersion.h"
 #include "CollectionSystemsManager.h"
@@ -41,14 +37,7 @@
 #include "utils/LocalizationUtil.h"
 #include "utils/PlatformUtil.h"
 
-#if defined(__ANDROID__)
-#include "InputOverlay.h"
-#include "utils/PlatformUtilAndroid.h"
-#endif
 
-#if defined(__IOS__)
-#include "InputOverlay.h"
-#endif
 
 #include <SDL2/SDL_events.h>
 #include <algorithm>
@@ -84,17 +73,10 @@ GuiMenu::GuiMenu()
 
     if (!Settings::getInstance()->getBool("ForceKiosk") &&
         Settings::getInstance()->getString("UIMode") != "kiosk") {
-#if defined(__APPLE__)
-        addEntry(_("QUIT ES-DE"), mMenuColorPrimary, false, [this] { openQuitMenu(); });
-#elif defined(__ANDROID__)
-        if (!AndroidVariables::sIsHomeApp)
-            addEntry(_("QUIT ES-DE"), mMenuColorPrimary, false, [this] { openQuitMenu(); });
-#else
         if (Settings::getInstance()->getBool("ShowQuitMenu"))
             addEntry(_("QUIT"), mMenuColorPrimary, true, [this] { openQuitMenu(); });
         else
             addEntry(_("QUIT ES-DE"), mMenuColorPrimary, false, [this] { openQuitMenu(); });
-#endif
     }
 
     addChild(&mMenu);
@@ -764,11 +746,11 @@ void GuiMenu::openUIOptions()
     auto menuColorScheme =
         std::make_shared<OptionListComponent<std::string>>(_("MENU COLOR SCHEME"), false);
     const std::string selectedMenuColor {Settings::getInstance()->getString("MenuColorScheme")};
-    menuColorScheme->add(_("DARK"), "dark", selectedMenuColor == "dark");
-    menuColorScheme->add(_("DARK AND RED"), "darkred", selectedMenuColor == "darkred");
-    menuColorScheme->add(_("LIGHT"), "light", selectedMenuColor == "light");
+    menuColorScheme->add(_("INK"), "ink", selectedMenuColor != "oled" && selectedMenuColor != "paper");
+    menuColorScheme->add(_("OLED BLACK"), "oled", selectedMenuColor == "oled");
+    menuColorScheme->add(_("PAPER"), "paper", selectedMenuColor == "paper");
     // If there are no objects returned, then there must be a manually modified entry in the
-    // configuration file. Simply set the menu color scheme to "dark" in this case.
+    // configuration file. Simply set the menu color scheme to "ink" in this case.
     if (menuColorScheme->getSelectedObjects().size() == 0)
         menuColorScheme->selectEntry(0);
     s->addWithLabel(_("MENU COLOR SCHEME"), menuColorScheme);
@@ -944,7 +926,6 @@ void GuiMenu::openUIOptions()
         }
     });
 
-#if !defined(__FreeBSD__) && !defined(__HAIKU__)
     // System status.
     ComponentListRow systemStatusRow;
     systemStatusRow.elements.clear();
@@ -955,7 +936,6 @@ void GuiMenu::openUIOptions()
     systemStatusRow.addElement(mMenu.makeArrow(), false);
     systemStatusRow.makeAcceptInputHandler(std::bind(&GuiMenu::openSystemStatusOptions, this));
     s->addRow(systemStatusRow);
-#endif
 
     // Media viewer.
     ComponentListRow mediaViewerRow;
@@ -1092,12 +1072,6 @@ void GuiMenu::openUIOptions()
             Settings::getInstance()->setBool("VirtualKeyboard", virtualKeyboard->getState());
             s->setNeedsSaving();
             s->setInvalidateCachedBackground();
-#if defined(__ANDROID__)
-            if (Settings::getInstance()->getBool("VirtualKeyboard"))
-                SDL_SetHint(SDL_HINT_ENABLE_SCREEN_KEYBOARD, "0");
-            else
-                SDL_SetHint(SDL_HINT_ENABLE_SCREEN_KEYBOARD, "1");
-#endif
         }
     });
 
@@ -1237,27 +1211,8 @@ void GuiMenu::openSoundOptions()
 {
     auto s = new GuiSettings(_("SOUND SETTINGS"));
 
-#if defined(__ANDROID__)
-    // Audio driver.
-    auto audioDriver = std::make_shared<OptionListComponent<std::string>>(_("AUDIO DRIVER"), false);
-    std::string selectedDriver {Settings::getInstance()->getString("AudioDriver")};
-    audioDriver->add("OPENSL ES", "openslES", selectedDriver == "openslES");
-    audioDriver->add("AAUDIO", "AAudio", selectedDriver == "AAudio");
-    // If there are no objects returned, then there must be a manually modified entry in the
-    // configuration file. Simply set the audio driver to "openslES" in this case.
-    if (audioDriver->getSelectedObjects().size() == 0)
-        audioDriver->selectEntry(0);
-    s->addWithLabel(_("AUDIO DRIVER (REQUIRES RESTART)"), audioDriver);
-    s->addSaveFunc([audioDriver, s] {
-        if (audioDriver->getSelected() != Settings::getInstance()->getString("AudioDriver")) {
-            Settings::getInstance()->setString("AudioDriver", audioDriver->getSelected());
-            s->setNeedsSaving();
-        }
-    });
-#endif
 
 // TODO: Implement system volume support for macOS and Android.
-#if !defined(__APPLE__) && !defined(__ANDROID__) && !defined(__FreeBSD__) && !defined(__HAIKU__)
     // System volume.
     // The reason to create the VolumeControl object every time instead of making it a singleton
     // is that this is the easiest way to detect new default audio devices or changes to the
@@ -1276,7 +1231,6 @@ void GuiMenu::openSoundOptions()
             volumeControl.setVolume(static_cast<int>(std::round(systemVolume->getValue())));
         }
     });
-#endif
 
     // Volume for navigation sounds.
     auto soundVolumeNavigation = std::make_shared<SliderComponent>(0.0f, 100.0f, 1.0f, "%");
@@ -1392,165 +1346,6 @@ void GuiMenu::openInputDeviceOptions()
         }
     });
 
-#if defined(__ANDROID__) || defined(__IOS__)
-    // Touch overlay size.
-    auto touchOverlaySize =
-        std::make_shared<OptionListComponent<std::string>>(_("TOUCH OVERLAY SIZE"), false);
-    std::string selectedOverlaySize {Settings::getInstance()->getString("InputTouchOverlaySize")};
-    touchOverlaySize->add(_("MEDIUM"), "medium", selectedOverlaySize == "medium");
-    touchOverlaySize->add(_("LARGE"), "large", selectedOverlaySize == "large");
-    touchOverlaySize->add(_("SMALL"), "small", selectedOverlaySize == "small");
-    touchOverlaySize->add(_("EXTRA SMALL"), "x-small", selectedOverlaySize == "x-small");
-    // If there are no objects returned, then there must be a manually modified entry in the
-    // configuration file. Simply set the overlay size to "medium" in this case.
-    if (touchOverlaySize->getSelectedObjects().size() == 0)
-        touchOverlaySize->selectEntry(0);
-    s->addWithLabel(_("TOUCH OVERLAY SIZE"), touchOverlaySize);
-    s->addSaveFunc([touchOverlaySize, s] {
-        if (touchOverlaySize->getSelected() !=
-            Settings::getInstance()->getString("InputTouchOverlaySize")) {
-            Settings::getInstance()->setString("InputTouchOverlaySize",
-                                               touchOverlaySize->getSelected());
-            s->setNeedsSaving();
-            InputOverlay::getInstance().createButtons();
-        }
-    });
-
-    // Touch overlay opacity.
-    auto touchOverlayOpacity =
-        std::make_shared<OptionListComponent<std::string>>(_("TOUCH OVERLAY OPACITY"), false);
-    std::string selectedOverlayOpacity {
-        Settings::getInstance()->getString("InputTouchOverlayOpacity")};
-    touchOverlayOpacity->add(_("NORMAL"), "normal", selectedOverlayOpacity == "normal");
-    touchOverlayOpacity->add(_("LOW"), "low", selectedOverlayOpacity == "low");
-    touchOverlayOpacity->add(_("VERY LOW"), "verylow", selectedOverlayOpacity == "verylow");
-    // If there are no objects returned, then there must be a manually modified entry in the
-    // configuration file. Simply set the overlay opacity to "normal" in this case.
-    if (touchOverlayOpacity->getSelectedObjects().size() == 0)
-        touchOverlayOpacity->selectEntry(0);
-    s->addWithLabel(_("TOUCH OVERLAY OPACITY"), touchOverlayOpacity);
-    s->addSaveFunc([touchOverlayOpacity, s] {
-        if (touchOverlayOpacity->getSelected() !=
-            Settings::getInstance()->getString("InputTouchOverlayOpacity")) {
-            Settings::getInstance()->setString("InputTouchOverlayOpacity",
-                                               touchOverlayOpacity->getSelected());
-            s->setNeedsSaving();
-            InputOverlay::getInstance().createButtons();
-        }
-    });
-
-    // Touch overlay fade-out timer.
-    auto touchOverlayFadeTime = std::make_shared<SliderComponent>(0.0f, 20.0f, 1.0f, "s");
-    touchOverlayFadeTime->setValue(
-        static_cast<float>(Settings::getInstance()->getInt("InputTouchOverlayFadeTime")));
-    s->addWithLabel(_("TOUCH OVERLAY FADE-OUT TIME"), touchOverlayFadeTime);
-    s->addSaveFunc([touchOverlayFadeTime, s] {
-        if (touchOverlayFadeTime->getValue() !=
-            static_cast<float>(Settings::getInstance()->getInt("InputTouchOverlayFadeTime"))) {
-            Settings::getInstance()->setInt("InputTouchOverlayFadeTime",
-                                            static_cast<int>(touchOverlayFadeTime->getValue()));
-            InputOverlay::getInstance().resetFadeTimer();
-            s->setNeedsSaving();
-        }
-    });
-
-    // Whether to enable the touch overlay.
-    auto inputTouchOverlay = std::make_shared<SwitchComponent>();
-    inputTouchOverlay->setState(Settings::getInstance()->getBool("InputTouchOverlay"));
-    s->addWithLabel(_("ENABLE TOUCH OVERLAY"), inputTouchOverlay);
-    s->addSaveFunc([inputTouchOverlay, s] {
-        if (Settings::getInstance()->getBool("InputTouchOverlay") !=
-            inputTouchOverlay->getState()) {
-            Settings::getInstance()->setBool("InputTouchOverlay", inputTouchOverlay->getState());
-            if (Settings::getInstance()->getBool("InputTouchOverlay"))
-                InputOverlay::getInstance().createButtons();
-            else
-                InputOverlay::getInstance().clearButtons();
-            s->setNeedsSaving();
-        }
-    });
-
-    if (!Settings::getInstance()->getBool("InputTouchOverlay")) {
-        touchOverlaySize->setEnabled(false);
-        touchOverlaySize->setOpacity(DISABLED_OPACITY);
-        touchOverlaySize->getParent()
-            ->getChild(touchOverlaySize->getChildIndex() - 1)
-            ->setOpacity(DISABLED_OPACITY);
-
-        touchOverlayOpacity->setEnabled(false);
-        touchOverlayOpacity->setOpacity(DISABLED_OPACITY);
-        touchOverlayOpacity->getParent()
-            ->getChild(touchOverlayOpacity->getChildIndex() - 1)
-            ->setOpacity(DISABLED_OPACITY);
-
-        touchOverlayFadeTime->setEnabled(false);
-        touchOverlayFadeTime->setOpacity(DISABLED_OPACITY);
-        touchOverlayFadeTime->getParent()
-            ->getChild(touchOverlayFadeTime->getChildIndex() - 1)
-            ->setOpacity(DISABLED_OPACITY);
-    }
-
-    auto inputTouchOverlayCallback = [this, inputTouchOverlay, touchOverlaySize,
-                                      touchOverlayOpacity, touchOverlayFadeTime]() {
-        if (!inputTouchOverlay->getState()) {
-            const std::string message {
-                _("DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU WILL "
-                  "LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO TEMPORARILY "
-                  "PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING AGAIN, OR YOU "
-                  "COULD CLEAR THE ES-DE STORAGE IN THE ANDROID APP SETTINGS TO FORCE THE "
-                  "CONFIGURATOR TO RUN ON NEXT STARTUP")};
-
-            Window* window {mWindow};
-            window->pushGui(
-                new GuiMsgBox(message, _("OK"), nullptr, "", nullptr, "", nullptr, "", nullptr,
-                              nullptr, true, true,
-                              (mRenderer->getIsVerticalOrientation() ?
-                                   0.84f :
-                                   0.54f * (1.778f / mRenderer->getScreenAspectRatio()))));
-        }
-
-        if (touchOverlaySize->getEnabled()) {
-            touchOverlaySize->setEnabled(false);
-            touchOverlaySize->setOpacity(DISABLED_OPACITY);
-            touchOverlaySize->getParent()
-                ->getChild(touchOverlaySize->getChildIndex() - 1)
-                ->setOpacity(DISABLED_OPACITY);
-
-            touchOverlayOpacity->setEnabled(false);
-            touchOverlayOpacity->setOpacity(DISABLED_OPACITY);
-            touchOverlayOpacity->getParent()
-                ->getChild(touchOverlayOpacity->getChildIndex() - 1)
-                ->setOpacity(DISABLED_OPACITY);
-
-            touchOverlayFadeTime->setEnabled(false);
-            touchOverlayFadeTime->setOpacity(DISABLED_OPACITY);
-            touchOverlayFadeTime->getParent()
-                ->getChild(touchOverlayFadeTime->getChildIndex() - 1)
-                ->setOpacity(DISABLED_OPACITY);
-        }
-        else {
-            touchOverlaySize->setEnabled(true);
-            touchOverlaySize->setOpacity(1.0f);
-            touchOverlaySize->getParent()
-                ->getChild(touchOverlaySize->getChildIndex() - 1)
-                ->setOpacity(1.0f);
-
-            touchOverlayOpacity->setEnabled(true);
-            touchOverlayOpacity->setOpacity(1.0f);
-            touchOverlayOpacity->getParent()
-                ->getChild(touchOverlayOpacity->getChildIndex() - 1)
-                ->setOpacity(1.0f);
-
-            touchOverlayFadeTime->setEnabled(true);
-            touchOverlayFadeTime->setOpacity(1.0f);
-            touchOverlayFadeTime->getParent()
-                ->getChild(touchOverlayFadeTime->getChildIndex() - 1)
-                ->setOpacity(1.0f);
-        }
-    };
-
-    inputTouchOverlay->setCallback(inputTouchOverlayCallback);
-#endif
 
     // Whether to only accept input from the first controller.
     auto inputOnlyFirstController = std::make_shared<SwitchComponent>();
@@ -1659,7 +1454,6 @@ void GuiMenu::openOtherOptions()
         std::bind([this] { mWindow->pushGui(new GuiAlternativeEmulators); }));
     s->addRow(alternativeEmulatorsRow);
 
-#if !defined(__IOS__)
     // Game media directory.
     ComponentListRow rowMediaDir;
     auto mediaDirectory = std::make_shared<TextComponent>(
@@ -1701,7 +1495,6 @@ void GuiMenu::openOtherOptions()
         }
     });
     s->addRow(rowMediaDir);
-#endif
 
     // Maximum play time tracking.
     auto maxPlayTimeTracking = std::make_shared<SliderComponent>(0.0f, 24.0f, 1.0f, "h");
@@ -1754,7 +1547,6 @@ void GuiMenu::openOtherOptions()
     });
 #endif
 
-#if !defined(__ANDROID__) && !defined(__IOS__)
     // Display/monitor.
     auto displayIndex =
         std::make_shared<OptionListComponent<std::string>>(_("DISPLAY/MONITOR INDEX"), false);
@@ -1775,7 +1567,6 @@ void GuiMenu::openOtherOptions()
             s->setNeedsSaving();
         }
     });
-#endif
 
     // Screen contents rotation.
     auto screenRotate =
@@ -1804,16 +1595,9 @@ void GuiMenu::openOtherOptions()
     auto keyboardQuitShortcut =
         std::make_shared<OptionListComponent<std::string>>(_("KEYBOARD QUIT SHORTCUT"), false);
     std::string selectedShortcut {Settings::getInstance()->getString("KeyboardQuitShortcut")};
-#if defined(_WIN64) || defined(__unix__) || defined(__HAIKU__)
     keyboardQuitShortcut->add("ALT + F4", "AltF4", selectedShortcut == "AltF4");
     keyboardQuitShortcut->add("CTRL + Q", "CtrlQ", selectedShortcut == "CtrlQ");
     keyboardQuitShortcut->add("ALT + Q", "AltQ", selectedShortcut == "AltQ");
-#endif
-#if defined(__APPLE__)
-    keyboardQuitShortcut->add("\u2318 + Q", "CmdQ", selectedShortcut == "CmdQ");
-    keyboardQuitShortcut->add("CTRL + Q", "CtrlQ", selectedShortcut == "CtrlQ");
-    keyboardQuitShortcut->add("ALT + Q", "AltQ", selectedShortcut == "AltQ");
-#endif
     keyboardQuitShortcut->add("F4", "F4", selectedShortcut == "F4");
     // If there are no objects returned, then there must be a manually modified entry in the
     // configuration file. Simply set the keyboard quit shortcut to the first entry in this case.
@@ -1886,7 +1670,7 @@ void GuiMenu::openOtherOptions()
     });
 #endif
 
-#if defined(APPLICATION_UPDATER) && !defined(__ANDROID__)
+#if defined(APPLICATION_UPDATER)
 #if defined(IS_PRERELEASE)
     // Add a dummy entry to indicate that this setting is always enabled when running a prerelease.
     auto applicationUpdaterPrereleases = std::make_shared<SwitchComponent>();
@@ -1914,20 +1698,8 @@ void GuiMenu::openOtherOptions()
 #endif
 #endif
 
-#if defined(_WIN64)
-    // Hide taskbar during the program session.
-    auto hide_taskbar = std::make_shared<SwitchComponent>();
-    hide_taskbar->setState(Settings::getInstance()->getBool("HideTaskbar"));
-    s->addWithLabel(_("HIDE TASKBAR (REQUIRES RESTART)"), hide_taskbar);
-    s->addSaveFunc([hide_taskbar, s] {
-        if (hide_taskbar->getState() != Settings::getInstance()->getBool("HideTaskbar")) {
-            Settings::getInstance()->setBool("HideTaskbar", hide_taskbar->getState());
-            s->setNeedsSaving();
-        }
-    });
-#endif
 
-#if !defined(__ANDROID__) && !defined(DEINIT_ON_LAUNCH)
+#if !defined(DEINIT_ON_LAUNCH)
     // Run ES in the background when a game has been launched.
     auto runInBackground = std::make_shared<SwitchComponent>();
     runInBackground->setState(Settings::getInstance()->getBool("RunInBackground"));
@@ -2011,22 +1783,7 @@ void GuiMenu::openOtherOptions()
         }
     });
 
-#if defined(__ANDROID__)
-    // Launch games on the other screen.
-    auto launchOnOtherScreen = std::make_shared<SwitchComponent>();
-    launchOnOtherScreen->setState(Settings::getInstance()->getBool("LaunchOnOtherScreen"));
-    s->addWithLabel(_("LAUNCH GAMES ON THE OTHER SCREEN"), launchOnOtherScreen);
-    s->addSaveFunc([launchOnOtherScreen, s] {
-        if (launchOnOtherScreen->getState() !=
-            Settings::getInstance()->getBool("LaunchOnOtherScreen")) {
-            Settings::getInstance()->setBool("LaunchOnOtherScreen",
-                                             launchOnOtherScreen->getState());
-            s->setNeedsSaving();
-        }
-    });
-#endif
 
-#if !defined(__IOS__)
     // Custom event scripts, fired using Scripting::fireEvent().
     auto customEventScripts = std::make_shared<SwitchComponent>();
     customEventScripts->setState(Settings::getInstance()->getBool("CustomEventScripts"));
@@ -2061,7 +1818,6 @@ void GuiMenu::openOtherOptions()
             ->getChild(customEventScriptsBrowsing->getChildIndex() - 1)
             ->setOpacity(DISABLED_OPACITY);
     }
-#endif
 
     // Only show games included in the gamelist.xml files.
     auto parseGamelistOnly = std::make_shared<SwitchComponent>();
@@ -2090,7 +1846,6 @@ void GuiMenu::openOtherOptions()
         }
     });
 
-#if defined(__unix__) && !defined(__ANDROID__)
     // Whether to disable desktop composition.
     auto disableComposition = std::make_shared<SwitchComponent>();
     disableComposition->setState(Settings::getInstance()->getBool("DisableComposition"));
@@ -2102,35 +1857,7 @@ void GuiMenu::openOtherOptions()
             s->setNeedsSaving();
         }
     });
-#endif
 
-#if defined(__ANDROID__)
-    if (!AndroidVariables::sIsHomeApp) {
-        // Whether swiping or pressing back should exit the application.
-        auto backEventAppExit = std::make_shared<SwitchComponent>();
-        backEventAppExit->setState(Settings::getInstance()->getBool("BackEventAppExit"));
-        s->addWithLabel(_("BACK BUTTON/BACK SWIPE EXITS APP"), backEventAppExit);
-        s->addSaveFunc([backEventAppExit, s] {
-            if (backEventAppExit->getState() !=
-                Settings::getInstance()->getBool("BackEventAppExit")) {
-                Settings::getInstance()->setBool("BackEventAppExit", backEventAppExit->getState());
-                s->setNeedsSaving();
-            }
-        });
-    }
-    else {
-        // If we're running as the Android home app then we don't allow the application to quit,
-        // so simply add a disabled dummy switch in this case.
-        auto backEventAppExit = std::make_shared<SwitchComponent>();
-        s->addWithLabel(_("BACK BUTTON/BACK SWIPE EXITS APP"), backEventAppExit);
-        backEventAppExit->setEnabled(false);
-        backEventAppExit->setState(false);
-        backEventAppExit->setOpacity(DISABLED_OPACITY);
-        backEventAppExit->getParent()
-            ->getChild(backEventAppExit->getChildIndex() - 1)
-            ->setOpacity(DISABLED_OPACITY);
-    }
-#endif
 
     if (Settings::getInstance()->getBool("DebugFlag")) {
         // If the --debug command line option was passed then create a dummy entry.
@@ -2192,7 +1919,6 @@ void GuiMenu::openOtherOptions()
 
 // macOS requires root privileges to reboot and power off so it doesn't make much
 // sense to enable this setting and menu entry for that operating system.
-#if !defined(__APPLE__) && !defined(__ANDROID__)
     // Whether to show the quit menu with the options to reboot and shutdown the computer.
     auto showQuitMenu = std::make_shared<SwitchComponent>();
     showQuitMenu->setState(Settings::getInstance()->getBool("ShowQuitMenu"));
@@ -2204,9 +1930,8 @@ void GuiMenu::openOtherOptions()
             s->setNeedsCloseMenu([this] { delete this; });
         }
     });
-#endif
 
-#if defined(APPLICATION_UPDATER) && !defined(__ANDROID__) && !defined(IS_PRERELEASE)
+#if defined(APPLICATION_UPDATER) && !defined(IS_PRERELEASE)
     auto applicationUpdaterFrequencyFunc =
         [applicationUpdaterPrereleases](const std::string& frequency) {
             if (frequency == "never") {
@@ -2229,7 +1954,6 @@ void GuiMenu::openOtherOptions()
     applicationUpdaterFrequency->setCallback(applicationUpdaterFrequencyFunc);
 #endif
 
-#if !defined(__IOS__)
     auto browsingEventsToggleFunc = [customEventScriptsBrowsing]() {
         if (customEventScriptsBrowsing->getEnabled()) {
             customEventScriptsBrowsing->setEnabled(false);
@@ -2248,7 +1972,6 @@ void GuiMenu::openOtherOptions()
     };
 
     customEventScripts->setCallback(browsingEventsToggleFunc);
-#endif
 
     s->setSize(mSize);
     mWindow->pushGui(s);
@@ -2377,11 +2100,7 @@ void GuiMenu::openUtilities()
 
 void GuiMenu::openQuitMenu()
 {
-#if defined(__APPLE__) || defined(__ANDROID__)
-    if (true) {
-#else
     if (!Settings::getInstance()->getBool("ShowQuitMenu")) {
-#endif
         mWindow->pushGui(new GuiMsgBox(
             _("REALLY QUIT?"), _("YES"),
             [this] {
@@ -2446,7 +2165,6 @@ void GuiMenu::openQuitMenu()
         row.addElement(powerOffText, true);
         s->addRow(row);
 
-#if !defined(__HAIKU__)
         row.elements.clear();
         row.makeAcceptInputHandler([window, this] {
             window->pushGui(new GuiMsgBox(
@@ -2468,7 +2186,6 @@ void GuiMenu::openQuitMenu()
         suspendText->setSelectable(true);
         row.addElement(suspendText, true);
         s->addRow(row);
-#endif
 
         s->setSize(mSize);
         mWindow->pushGui(s);
@@ -2484,20 +2201,10 @@ void GuiMenu::addVersionInfo()
     const std::string applicationName {"ES-DE"};
 
 #if defined(IS_PRERELEASE)
-#if defined(__ANDROID__)
-    mVersion.setText(applicationName + "  " + Utils::String::toUpper(PROGRAM_VERSION_STRING) + "-" +
-                     std::to_string(ANDROID_VERSION_CODE) + " (Built " + __DATE__ + ")");
-#else
     mVersion.setText(applicationName + "  " + Utils::String::toUpper(PROGRAM_VERSION_STRING) +
                      " (Built " + __DATE__ + ")");
-#endif
-#else
-#if defined(__ANDROID__)
-    mVersion.setText(applicationName + "  " + Utils::String::toUpper(PROGRAM_VERSION_STRING) + "-" +
-                     std::to_string(ANDROID_VERSION_CODE));
 #else
     mVersion.setText(applicationName + "  " + Utils::String::toUpper(PROGRAM_VERSION_STRING));
-#endif
 #endif
 
     mVersion.setHorizontalAlignment(ALIGN_CENTER);

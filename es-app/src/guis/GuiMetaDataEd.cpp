@@ -82,12 +82,7 @@ GuiMetaDataEd::GuiMetaDataEd(MetaDataList* md,
 
     if (folderPath.size() >= 2) {
         folderPath.erase(0, 1);
-#if defined(_WIN64)
-        folderPath.push_back('\\');
-        folderPath = Utils::String::replace(folderPath, "/", "\\");
-#else
         folderPath.push_back('/');
-#endif
     }
 
     mSubtitle = std::make_shared<TextComponent>(
@@ -463,15 +458,8 @@ GuiMetaDataEd::GuiMetaDataEd(MetaDataList* md,
                     }
                 }
 
-#if defined(__unix__)
                 std::sort(std::begin(children), std::end(children),
                           [](FileData* a, FileData* b) { return a->getPath() < b->getPath(); });
-#else
-                std::sort(std::begin(children), std::end(children), [](FileData* a, FileData* b) {
-                    return Utils::String::toUpper(a->getPath()) <
-                           Utils::String::toUpper(b->getPath());
-                });
-#endif
 
                 // OK callback (apply new value to ed).
                 auto updateVal = [this, ed, originalValue,
@@ -669,11 +657,9 @@ GuiMetaDataEd::GuiMetaDataEd(MetaDataList* md,
     }
 
     bool symlinkedDirectory {false};
-#if !defined(__ANDROID__)
     if (scraperParams.game->getType() == FOLDER &&
         Utils::FileSystem::isSymlink(scraperParams.game->getPath()))
         symlinkedDirectory = true;
-#endif
 
     std::vector<std::shared_ptr<ButtonComponent>> buttons;
 
@@ -734,12 +720,8 @@ GuiMetaDataEd::GuiMetaDataEd(MetaDataList* md,
         // For the special case where a directory has a supported file extension and is therefore
         // interpreted as a file, don't add the delete button. If it's however a symlink then add
         // the delete button as we should be able to remove such files.
-#if defined(__ANDROID__)
-        if (mDeleteGameFunc && !Utils::FileSystem::isDirectory(scraperParams.game->getPath())) {
-#else
         if (mDeleteGameFunc && (Utils::FileSystem::isSymlink(scraperParams.game->getPath()) ||
                                 !Utils::FileSystem::isDirectory(scraperParams.game->getPath()))) {
-#endif
             auto deleteFilesAndSelf = [&] {
                 mDeleteGameFunc();
                 delete this;

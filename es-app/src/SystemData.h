@@ -43,12 +43,6 @@ public:
 
 private:
     struct EmulatorRules {
-#if defined(_WIN64)
-        std::vector<std::string> winRegistryPaths;
-        std::vector<std::string> winRegistryValues;
-#elif defined(__ANDROID__)
-        std::vector<std::string> androidPackages;
-#endif
         std::vector<std::string> systemPaths;
         std::vector<std::string> staticPaths;
     };

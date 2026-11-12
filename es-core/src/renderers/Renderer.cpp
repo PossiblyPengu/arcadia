@@ -15,13 +15,7 @@
 #include "renderers/ShaderOpenGL.h"
 #include "resources/ResourceManager.h"
 
-#if defined(__ANDROID__)
-#include "utils/PlatformUtilAndroid.h"
-#endif
 
-#if defined(_WIN64)
-#include <windows.h>
-#endif
 
 Renderer* Renderer::getInstance()
 {
@@ -69,9 +63,6 @@ bool Renderer::createWindow()
 
     mInitialCursorState = (SDL_ShowCursor(0) != 0);
 
-#if defined(__ANDROID__) || defined(__IOS__)
-    int displayIndex {0};
-#else
     int displayIndex {Settings::getInstance()->getInt("DisplayIndex")};
     // Check that an invalid value has not been manually entered in the es_settings.xml file.
     if (displayIndex != 1 && displayIndex != 2 && displayIndex != 3 && displayIndex != 4) {
@@ -91,43 +82,17 @@ bool Renderer::createWindow()
     else {
         LOG(LogInfo) << "Using display: " << std::to_string(displayIndex + 1);
     }
-#endif
 
     SDL_DisplayMode displayMode;
     SDL_GetDesktopDisplayMode(displayIndex, &displayMode);
 
-#if defined(_WIN64)
-    // Tell Windows that we're DPI aware so that we can set a physical resolution and
-    // avoid any automatic DPI scaling.
-    SetProcessDPIAware();
-    // We need to set the resolution based on the actual display bounds as the numbers
-    // returned by SDL_GetDesktopDisplayMode are calculated based on DPI scaling and
-    // therefore do not necessarily reflect the physical display resolution.
-    SDL_Rect displayBounds;
-    SDL_GetDisplayBounds(displayIndex, &displayBounds);
-    displayMode.w = displayBounds.w;
-    displayMode.h = displayBounds.h;
-#endif
 
-#if defined(__ANDROID__)
-    const std::pair<int, int> windowSize {Utils::Platform::Android::getWindowSize()};
-
-    if (windowSize.first != 0 && windowSize.second != 0) {
-        sScreenWidth = windowSize.first;
-        sScreenHeight = windowSize.second;
-    }
-    else {
-        sScreenWidth = displayMode.w;
-        sScreenHeight = displayMode.h;
-    }
-#else
     sScreenWidth = Settings::getInstance()->getInt("ScreenWidth") ?
                        Settings::getInstance()->getInt("ScreenWidth") :
                        displayMode.w;
     sScreenHeight = Settings::getInstance()->getInt("ScreenHeight") ?
                         Settings::getInstance()->getInt("ScreenHeight") :
                         displayMode.h;
-#endif
 
     mScreenOffsetX = glm::clamp((Settings::getInstance()->getInt("ScreenOffsetX") ?
                                      Settings::getInstance()->getInt("ScreenOffsetX") :
@@ -194,7 +159,6 @@ bool Renderer::createWindow()
     // games or when manually switching windows using the task switcher).
     SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
 
-#if defined(__unix__) && !defined(__ANDROID__)
     // Disabling desktop composition can lead to better framerates and a more fluid user
     // interface, but with some drivers it can cause strange behaviors when returning to
     // the desktop.
@@ -202,7 +166,6 @@ bool Renderer::createWindow()
         SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "1");
     else
         SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
-#endif
 
     bool userResolution {false};
     // Check if the user has changed the resolution from the command line.
@@ -212,38 +175,10 @@ bool Renderer::createWindow()
     unsigned int windowFlags {0};
     setup();
 
-#if defined(_WIN64)
-    // For Windows we use SDL_WINDOW_BORDERLESS as "real" full screen doesn't work properly.
-    // The borderless mode seems to behave well and it's almost completely seamless, especially
-    // with a hidden taskbar.
-    if (!userResolution)
-        windowFlags = SDL_WINDOW_BORDERLESS | SDL_WINDOW_OPENGL;
-    else
-        // If the resolution has been manually set from the command line, then keep the border.
-        windowFlags = SDL_WINDOW_OPENGL;
-#elif defined(__IOS__)
-    windowFlags = SDL_WINDOW_FULLSCREEN | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_OPENGL;
-#elif defined(__APPLE__)
-    // Not sure if this could be a useful setting.
-    //        SDL_SetHint(SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES, "0");
-
-    // The SDL_WINDOW_BORDERLESS mode seems to be the only mode that somehow works on macOS
-    // as a real fullscreen mode will do lots of weird stuff like preventing window switching
-    // or refusing to let emulators run at all. SDL_WINDOW_FULLSCREEN_DESKTOP almost works, but
-    // it "shuffles" windows when starting the emulator and won't return properly when the game
-    // has exited. With SDL_WINDOW_BORDERLESS some emulators (like RetroArch) have to be
-    // configured to run in fullscreen mode or switching to its window will not work, but
-    // apart from that this mode works fine.
-    if (!userResolution)
-        windowFlags = SDL_WINDOW_BORDERLESS | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_OPENGL;
-    else
-        windowFlags = SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_OPENGL;
-#else
     if (!userResolution)
         windowFlags = SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_OPENGL;
     else
         windowFlags = SDL_WINDOW_OPENGL;
-#endif
 
     if ((mSDLWindow = SDL_CreateWindow("ES-DE", SDL_WINDOWPOS_UNDEFINED_DISPLAY(displayIndex),
                                        SDL_WINDOWPOS_UNDEFINED_DISPLAY(displayIndex), mWindowWidth,
@@ -254,51 +189,11 @@ bool Renderer::createWindow()
 
     mDisplayIndex = displayIndex;
 
-#if defined(__APPLE__)
-    // The code below is required as the high DPI scaling on macOS and iOS is measured in "points"
-    // rather than pixels. For example there could be a 1920x1080 entry in the macOS display
-    // settings that actually corresponds to something like 3840x2160 pixels while at the same
-    // time there is a separate 1080p entry which corresponds to a "real" 1920x1080 resolution.
-    // Therefore the --resolution flag results in different things depending on whether a high
-    // DPI screen is used. E.g. 1280x720 on a 4K display would actually end up as 2560x1440 pixels.
-    // The scale factor on macOS and iOS can be 1, 2 or 3 and we use this factor to calculate the
-    // actual physical pixel dimensions. We indicate these numbers inside parenthesis in the log
-    // file and we multiply the internal pixel resolution accordingly so that the full display
-    // or window size is always used for rendering.
-    int width {0};
-#if defined(__IOS__)
-    SDL_GetWindowSizeInPixels(mSDLWindow, &width, nullptr);
-#else
-    SDL_GL_GetDrawableSize(mSDLWindow, &width, nullptr);
-#endif
-    int scaleFactor {static_cast<int>(width / mWindowWidth)};
-
-    LOG(LogInfo) << "Display resolution: " << std::to_string(displayMode.w) << "x"
-                 << std::to_string(displayMode.h) << " (physical resolution "
-                 << std::to_string(displayMode.w * scaleFactor) << "x"
-                 << std::to_string(displayMode.h * scaleFactor) << ")";
-    LOG(LogInfo) << "Display refresh rate: " << std::to_string(displayMode.refresh_rate) << " Hz";
-    LOG(LogInfo) << "Application resolution: " << std::to_string(sScreenWidth) << "x"
-                 << std::to_string(sScreenHeight) << " (physical resolution "
-                 << std::to_string(sScreenWidth * scaleFactor) << "x"
-                 << std::to_string(sScreenHeight * scaleFactor) << ")";
-
-    mWindowWidth *= scaleFactor;
-    mWindowHeight *= scaleFactor;
-    sScreenWidth *= scaleFactor;
-    sScreenHeight *= scaleFactor;
-    mPaddingWidth *= scaleFactor;
-    mPaddingHeight *= scaleFactor;
-    mScreenOffsetX *= scaleFactor;
-    mScreenOffsetY *= scaleFactor;
-
-#else
     LOG(LogInfo) << "Display resolution: " << std::to_string(displayMode.w) << "x"
                  << std::to_string(displayMode.h);
     LOG(LogInfo) << "Display refresh rate: " << std::to_string(displayMode.refresh_rate) << " Hz";
     LOG(LogInfo) << "Application resolution: " << std::to_string(sScreenWidth) << "x"
                  << std::to_string(sScreenHeight);
-#endif
 
     sScreenHeightModifier = static_cast<float>(sScreenHeight) / 1080.0f;
     sScreenWidthModifier = static_cast<float>(sScreenWidth) / 1920.0f;
@@ -334,14 +229,6 @@ bool Renderer::createWindow()
     setIcon();
     setSwapInterval();
 
-#if defined(_WIN64) || defined(__ANDROID__)
-    // It seems as if Windows needs this to avoid a brief white screen flash on startup.
-    // Possibly this is driver-specific rather than OS-specific. There is additional code
-    // in init() to work around the white screen flash issue on all operating systems.
-    // On Android the swap is also necessary to avoid displaying random garbage when
-    // the rendering starts.
-    swapBuffers();
-#endif
 
     return loadShaders();
 }

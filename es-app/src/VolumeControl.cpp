@@ -11,26 +11,16 @@
 #include "Log.h"
 #include "utils/MathUtil.h"
 
-#if defined(_WIN64)
-#include <cmath>
-#endif
 
-#if defined(__linux__) && !defined(__ANDROID__)
 std::string VolumeControl::mixerName = "Master";
 std::string VolumeControl::mixerCard = "default";
-#endif
 
 VolumeControl::VolumeControl()
 // clang-format off
-#if defined(__linux__) && !defined(__ANDROID__)
     : mixerIndex {0}
     , mixerHandle {nullptr}
     , mixerElem {nullptr}
     , mixerSelemId {nullptr}
-#elif defined(_WIN64)
-    : mixerHandle {nullptr}
-    , endpointVolume {nullptr}
-#endif
 // clang-format on
 {
     init();
@@ -39,16 +29,13 @@ VolumeControl::VolumeControl()
 VolumeControl::~VolumeControl()
 {
     deinit();
-#if defined(__linux__) && !defined(__ANDROID__)
     snd_config_update_free_global();
-#endif
 }
 
 void VolumeControl::init()
 {
     // Initialize audio mixer interface.
 
-#if defined(__linux__) && !defined(__ANDROID__)
     // Try to open mixer device.
     if (mixerHandle == nullptr) {
         snd_mixer_selem_id_alloca(&mixerSelemId);
@@ -98,48 +85,12 @@ void VolumeControl::init()
             LOG(LogError) << "VolumeControl::init(): Failed to open ALSA mixer!";
         }
     }
-#elif defined(_WIN64)
-    // Windows Vista or above.
-    if (endpointVolume == nullptr) {
-        CoInitialize(nullptr);
-        IMMDeviceEnumerator* deviceEnumerator = nullptr;
-        CoCreateInstance(__uuidof(MMDeviceEnumerator), nullptr, CLSCTX_INPROC_SERVER,
-                         __uuidof(IMMDeviceEnumerator),
-                         reinterpret_cast<LPVOID*>(&deviceEnumerator));
-        if (deviceEnumerator != nullptr) {
-            // Get default endpoint.
-            IMMDevice* defaultDevice = nullptr;
-            deviceEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &defaultDevice);
-            if (defaultDevice != nullptr) {
-                // Retrieve endpoint volume.
-                defaultDevice->Activate(__uuidof(IAudioEndpointVolume), CLSCTX_INPROC_SERVER,
-                                        nullptr, reinterpret_cast<LPVOID*>(&endpointVolume));
-                if (endpointVolume == nullptr) {
-                    LOG(LogError) << "VolumeControl::init(): "
-                                     "Failed to get default audio endpoint volume!";
-                }
-                // Release default device. we don't need it anymore.
-                defaultDevice->Release();
-            }
-            else {
-                LOG(LogError) << "VolumeControl::init(): Failed to get default audio endpoint!";
-            }
-            // Release device enumerator. we don't need it anymore.
-            deviceEnumerator->Release();
-        }
-        else {
-            LOG(LogError) << "VolumeControl::init(): Failed to get audio endpoint enumerator!";
-            CoUninitialize();
-        }
-    }
-#endif
 }
 
 void VolumeControl::deinit()
 {
     // Deinitialize audio mixer interface.
 
-#if defined(__linux__) && !defined(__ANDROID__)
     if (mixerHandle != nullptr) {
         snd_mixer_detach(mixerHandle, mixerCard.c_str());
         snd_mixer_free(mixerHandle);
@@ -147,20 +98,12 @@ void VolumeControl::deinit()
         mixerHandle = nullptr;
         mixerElem = nullptr;
     }
-#elif defined(_WIN64)
-    if (endpointVolume != nullptr) {
-        endpointVolume->Release();
-        endpointVolume = nullptr;
-        CoUninitialize();
-    }
-#endif
 }
 
 int VolumeControl::getVolume() const
 {
     int volume = 0;
 
-#if defined(__linux__) && !defined(__ANDROID__)
     if (mixerElem != nullptr) {
         // Get volume range.
         long minVolume;
@@ -182,19 +125,6 @@ int VolumeControl::getVolume() const
             LOG(LogError) << "VolumeControl::getVolume(): Failed to get volume range";
         }
     }
-#elif defined(_WIN64)
-    if (endpointVolume != nullptr) {
-        // Windows Vista or above, uses EndpointVolume API.
-        float floatVolume = 0.0f; // 0-1
-        if (endpointVolume->GetMasterVolumeLevelScalar(&floatVolume) == S_OK) {
-            volume = static_cast<int>(std::round(floatVolume * 100.0f));
-            LOG(LogInfo) << "System audio volume is " << volume;
-        }
-        else {
-            LOG(LogError) << "VolumeControl::getVolume(): Failed to get master volume!";
-        }
-    }
-#endif
 
     volume = glm::clamp(volume, 0, 100);
     return volume;
@@ -204,7 +134,6 @@ void VolumeControl::setVolume(int volume)
 {
     volume = glm::clamp(volume, 0, 100);
 
-#if defined(__linux__) && !defined(__ANDROID__)
     if (mixerElem != nullptr) {
         // Get volume range.
         long minVolume;
@@ -223,15 +152,4 @@ void VolumeControl::setVolume(int volume)
             LOG(LogError) << "VolumeControl::getVolume(): Failed to get volume range";
         }
     }
-#elif defined(_WIN64)
-    if (endpointVolume != nullptr) {
-        // Windows Vista or above, uses EndpointVolume API.
-        float floatVolume = 0.0f; // 0-1
-        if (volume > 0)
-            floatVolume = static_cast<float>(volume) / 100.0f;
-        if (endpointVolume->SetMasterVolumeLevelScalar(floatVolume, nullptr) != S_OK) {
-            LOG(LogError) << "VolumeControl::setVolume(): Failed to set master volume";
-        }
-    }
-#endif
 }

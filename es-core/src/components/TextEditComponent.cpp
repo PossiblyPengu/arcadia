@@ -12,9 +12,6 @@
 #include "utils/LocalizationUtil.h"
 #include "utils/StringUtil.h"
 
-#if defined(__ANDROID__)
-#include "Settings.h"
-#endif
 
 #define TEXT_PADDING_HORIZ 12.0f
 #define TEXT_PADDING_VERT 2.0f
@@ -103,10 +100,8 @@ void TextEditComponent::setText(const std::string& val, bool update)
 
 void TextEditComponent::textInput(const std::string& text, const bool pasting)
 {
-#if !defined(__ANDROID__)
     if (mMaskInput && !pasting)
         return;
-#endif
 
     // Allow pasting up to a reasonable max clipboard size.
     if (pasting && text.length() > (mMultiLine ? 16384 : 300))
@@ -230,19 +225,9 @@ bool TextEditComponent::input(InputConfig* config, Input input)
                 }
                 return true;
             }
-#if defined(__ANDROID__)
-            else if (!Settings::getInstance()->getBool("VirtualKeyboard") &&
-                     input.id == SDLK_BACKSPACE) {
-                return false;
-            }
-            else if (Settings::getInstance()->getBool("VirtualKeyboard") &&
-                     input.id == SDLK_BACKSPACE) {
-                mMaskInput = false;
-#else
             else if (input.id == SDLK_BACKSPACE) {
                 mMaskInput = false;
                 textInput("\b");
-#endif
                 return true;
             }
         }

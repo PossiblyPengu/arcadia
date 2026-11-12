@@ -11,9 +11,6 @@
 #ifndef ES_CORE_INPUT_MANAGER_H
 #define ES_CORE_INPUT_MANAGER_H
 
-#if defined(__ANDROID__) || defined(__IOS__)
-#include "InputOverlay.h"
-#endif
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_joystick.h>
@@ -62,9 +59,6 @@ private:
     void removeControllerByJoystickID(Window* window, SDL_JoystickID joyID);
 
     Window* mWindow;
-#if defined(__ANDROID__) || defined(__IOS__)
-    InputOverlay& mInputOverlay;
-#endif
 
     static const int DEADZONE_TRIGGERS = 18000;
     static const int DEADZONE_THUMBSTICKS = 23000;

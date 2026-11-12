@@ -11,3 +11,5 @@ and separate so upstream updates stay easy to merge:
 - `.github/workflows/steamdeck-appimage.yml`: builds the Steam Deck AppImage and the deck extras.
 - `CMakeLists.txt`: the upstream application updater is off by default (it would replace the fork with stock ES-DE); use the deck's *Update ES-DE* instead.
 - `deck/lib/romsort/`: the ROM sorter from Arcadia, as a command line tool.
+- Trimmed to Linux and the Steam Deck: the Android, macOS, Windows, Haiku, iOS, web and BSD code and files were removed (they stay in git history). The `--no-update-check` option went with the upstream updater.
+- Menus and dialogs use the Arcadia colour schemes (ink, oled, paper) and a white focus ring, see `DESIGN.md`.

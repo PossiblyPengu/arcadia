@@ -135,11 +135,7 @@ void CollectionSystemsManager::deinit(const bool shutdown)
 
 void CollectionSystemsManager::saveCustomCollection(SystemData* sys)
 {
-#if defined(_WIN64)
-    std::string rompath {Utils::String::replace(FileData::getROMDirectory(), "\\", "/")};
-#else
     std::string rompath {FileData::getROMDirectory()};
-#endif
     rompath = Utils::String::replace(rompath, "//", "/");
 
     std::string name {sys->getName()};
@@ -162,12 +158,7 @@ void CollectionSystemsManager::saveCustomCollection(SystemData* sys)
         std::ifstream configFileIn;
         std::ofstream configFileOut;
 
-#if defined(_WIN64)
-        configFileIn.open(
-            Utils::String::stringToWideString(getCustomCollectionConfigPath(name)).c_str());
-#else
         configFileIn.open(getCustomCollectionConfigPath(name));
-#endif
         for (std::string gameEntry; getline(configFileIn, gameEntry);) {
             // Remove Windows carriage return characters.
             gameEntry = Utils::String::replace(gameEntry, "\r", "");
@@ -196,13 +187,7 @@ void CollectionSystemsManager::saveCustomCollection(SystemData* sys)
         auto last = std::unique(fileGameEntries.begin(), fileGameEntries.end());
         fileGameEntries.erase(last, fileGameEntries.end());
 
-#if defined(_WIN64)
-        configFileOut.open(
-            Utils::String::stringToWideString(getCustomCollectionConfigPath(name)).c_str(),
-            std::ios::binary);
-#else
         configFileOut.open(getCustomCollectionConfigPath(name), std::ios::binary);
-#endif
 
         for (auto it = fileGameEntries.cbegin(); it != fileGameEntries.cend(); ++it)
             configFileOut << (*it) << std::endl;
@@ -1057,11 +1042,7 @@ void CollectionSystemsManager::deleteCustomCollection(const std::string& collect
         LOG(LogInfo) << "Deleted custom collection \"" << collectionName << "\"";
         LOG(LogDebug) << "CollectionSystemsManager::deleteCustomCollection(): Deleted "
                          "configuration file \""
-#if defined(_WIN64)
-                      << Utils::String::replace(configFile, "/", "\\") << "\"";
-#else
                       << configFile << "\"";
-#endif
         mWindow->queueInfoPopup(
             Utils::String::format(_("DELETED COLLECTION '%s'"),
                                   Utils::String::toUpper(collectionName).c_str()),
@@ -1075,11 +1056,7 @@ void CollectionSystemsManager::deleteCustomCollection(const std::string& collect
 
 void CollectionSystemsManager::reactivateCustomCollectionEntry(FileData* game)
 {
-#if defined(_WIN64)
-    std::string rompath {Utils::String::replace(FileData::getROMDirectory(), "\\", "/")};
-#else
     std::string rompath {FileData::getROMDirectory()};
-#endif
     rompath = Utils::String::replace(rompath, "//", "/");
 
     std::string gamePath {Utils::String::replace(game->getFullPath(), rompath, "%ROMPATH%/")};
@@ -1095,11 +1072,7 @@ void CollectionSystemsManager::reactivateCustomCollectionEntry(FileData* game)
             continue;
         std::string path {getCustomCollectionConfigPath(it->first)};
         if (Utils::FileSystem::exists(path)) {
-#if defined(_WIN64)
-            std::ifstream input {Utils::String::stringToWideString(path).c_str()};
-#else
             std::ifstream input {path};
-#endif
             for (std::string gameKey; getline(input, gameKey);) {
                 // Remove Windows carriage return characters.
                 gameKey = Utils::String::replace(gameKey, "\r", "");
@@ -1333,23 +1306,14 @@ void CollectionSystemsManager::populateCustomCollection(CollectionSystemData* sy
         LOG(LogInfo) << "Couldn't find custom collection config file \"" << path << "\"";
         return;
     }
-#if defined(_WIN64)
-    LOG(LogInfo) << "Parsing custom collection file \"" << Utils::String::replace(path, "/", "\\")
-                 << "\"...";
-#else
     LOG(LogInfo) << "Parsing custom collection file \"" << path << "\"...";
-#endif
 
     FileData* rootFolder {newSys->getRootFolder()};
     FileFilterIndex* index {newSys->getIndex()};
 
     // Get configuration for this custom collection.
 
-#if defined(_WIN64)
-    std::ifstream input {Utils::String::stringToWideString(path).c_str()};
-#else
     std::ifstream input {path};
-#endif
 
     // Get all files map.
     std::unordered_map<std::string, FileData*> allFilesMap {
@@ -1357,11 +1321,7 @@ void CollectionSystemsManager::populateCustomCollection(CollectionSystemData* sy
 
     // Get the ROM directory, either as configured in es_settings.xml, or if no value
     // is set there, then use the default hardcoded path.
-#if defined(_WIN64)
-    std::string rompath {Utils::String::replace(FileData::getROMDirectory(), "\\", "/")};
-#else
     std::string rompath {FileData::getROMDirectory()};
-#endif
     rompath = Utils::String::replace(rompath, "//", "/");
 
     // Iterate list of files in the config file.
@@ -1381,11 +1341,7 @@ void CollectionSystemsManager::populateCustomCollection(CollectionSystemData* sy
             if (!newGame->getCountAsGame()) {
                 LOG(LogWarning)
 
-#if defined(_WIN64)
-                    << "File \"" << Utils::String::replace(gameKey, "/", "\\")
-#else
                     << "File \"" << gameKey
-#endif
                     << "\" does not exist, is hidden, or is not counted as a game, ignoring entry";
                 delete newGame;
             }
@@ -1396,11 +1352,7 @@ void CollectionSystemsManager::populateCustomCollection(CollectionSystemData* sy
         }
         else {
             LOG(LogWarning)
-#if defined(_WIN64)
-                << "File \"" << Utils::String::replace(gameKey, "/", "\\")
-#else
                 << "File \"" << gameKey
-#endif
                 << "\" does not exist, is hidden, or is not counted as a game, ignoring entry";
         }
     }
@@ -1508,11 +1460,7 @@ std::vector<std::string> CollectionSystemsManager::getSystemsFromConfig()
             return systems;
 
         pugi::xml_document doc;
-#if defined(_WIN64)
-        pugi::xml_parse_result res {doc.load_file(Utils::String::stringToWideString(path).c_str())};
-#else
         pugi::xml_parse_result res {doc.load_file(path.c_str())};
-#endif
 
         if (!res)
             return systems;

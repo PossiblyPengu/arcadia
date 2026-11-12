@@ -13,10 +13,6 @@
 
 #include <SDL2/SDL_timer.h>
 
-#if defined(__ANDROID__)
-#include "InputOverlay.h"
-#include "utils/PlatformUtilAndroid.h"
-#endif
 
 #define MAX_FILE_SIZE 1048576
 #define CHECKED_PATH ":/graphics/checkbox_checked.svg"
@@ -89,7 +85,6 @@ GuiGameImporter::GuiGameImporter(std::string title, std::function<void()> update
 
     mMenu.addWithLabel(_("REMOVE ENTRIES"), mRemoveEntries);
 
-#if (defined(__linux__) || defined(__FreeBSD__)) && !defined(__ANDROID__)
     mStripSpecialChars = std::make_shared<SwitchComponent>();
     mStripSpecialChars->setState(Settings::getInstance()->getBool("ImporterStripSpecialChars"));
     mMenu.addWithLabel(_("STRIP SPECIAL CHARACTERS"), mStripSpecialChars);
@@ -101,124 +96,7 @@ GuiGameImporter::GuiGameImporter(std::string title, std::function<void()> update
             mMenu.setNeedsSaving();
         }
     });
-#endif
 
-#if defined(__ANDROID__)
-    mMediaTarget =
-        std::make_shared<OptionListComponent<std::string>>(_("MEDIA TARGET TYPE"), false);
-    std::string selectedMediaTarget {Settings::getInstance()->getString("ImporterMediaTarget")};
-    mMediaTarget->add(_("SCREENSHOTS"), "screenshots", selectedMediaTarget == "screenshots");
-    mMediaTarget->add(_("TITLE SCREENS"), "titlescreens", selectedMediaTarget == "titlescreens");
-    mMediaTarget->add(_("COVERS"), "covers", selectedMediaTarget == "covers");
-    mMediaTarget->add(_("BACK COVERS"), "backcovers", selectedMediaTarget == "backcovers");
-    mMediaTarget->add(_("MARQUEES (WHEELS)"), "marquees", selectedMediaTarget == "marquees");
-    mMediaTarget->add(_("3D BOXES"), "3dboxes", selectedMediaTarget == "3dboxes");
-    mMediaTarget->add(_("PHYSICAL MEDIA"), "physicalmedia", selectedMediaTarget == "physicalmedia");
-    mMediaTarget->add(_("FAN ART"), "fanart", selectedMediaTarget == "fanart");
-    mMediaTarget->add(_("MIXIMAGES"), "miximages", selectedMediaTarget == "miximages");
-    mMenu.addSaveFunc([this] {
-        if (mMediaTarget->getSelected() !=
-            Settings::getInstance()->getString("ImporterMediaTarget")) {
-            Settings::getInstance()->setString("ImporterMediaTarget", mMediaTarget->getSelected());
-            mMenu.setNeedsSaving();
-        }
-    });
-
-    if (mMediaTarget->getSelectedObjects().size() == 0)
-        mMediaTarget->selectEntry(0);
-
-    mMenu.addWithLabel(_("MEDIA TARGET TYPE"), mMediaTarget);
-
-    mImportMedia = std::make_shared<SwitchComponent>();
-    mImportMedia->setState(Settings::getInstance()->getBool("ImporterImportMedia"));
-    mMenu.addWithLabel(_("IMPORT MEDIA"), mImportMedia);
-    mMenu.addSaveFunc([this] {
-        if (mImportMedia->getState() != Settings::getInstance()->getBool("ImporterImportMedia")) {
-            Settings::getInstance()->setBool("ImporterImportMedia", mImportMedia->getState());
-            mMenu.setNeedsSaving();
-        }
-    });
-
-    mImportMediaAdditional = std::make_shared<SwitchComponent>();
-    mImportMediaAdditional->setState(
-        Settings::getInstance()->getBool("ImporterImportMediaAdditional"));
-    mMenu.addWithLabel(_("IMPORT BANNERS OR LOGOS IF AVAILABLE"), mImportMediaAdditional);
-    mMenu.addSaveFunc([this] {
-        if (mImportMediaAdditional->getState() !=
-            Settings::getInstance()->getBool("ImporterImportMediaAdditional")) {
-            Settings::getInstance()->setBool("ImporterImportMediaAdditional",
-                                             mImportMediaAdditional->getState());
-            mMenu.setNeedsSaving();
-        }
-    });
-
-    auto importMediaToggleFunc = [this]() {
-        if (mImportMedia->getState() == false) {
-            mMediaTarget->setEnabled(false);
-            mMediaTarget->setOpacity(DISABLED_OPACITY);
-            mMediaTarget->getParent()
-                ->getChild(mMediaTarget->getChildIndex() - 1)
-                ->setOpacity(DISABLED_OPACITY);
-
-            mImportMediaAdditional->setEnabled(false);
-            mImportMediaAdditional->setOpacity(DISABLED_OPACITY);
-            mImportMediaAdditional->getParent()
-                ->getChild(mImportMediaAdditional->getChildIndex() - 1)
-                ->setOpacity(DISABLED_OPACITY);
-
-            mImportMediaOverwrite->setEnabled(false);
-            mImportMediaOverwrite->setOpacity(DISABLED_OPACITY);
-            mImportMediaOverwrite->getParent()
-                ->getChild(mImportMediaOverwrite->getChildIndex() - 1)
-                ->setOpacity(DISABLED_OPACITY);
-        }
-        else {
-            mMediaTarget->setEnabled(true);
-            mMediaTarget->setOpacity(1.0f);
-            mMediaTarget->getParent()
-                ->getChild(mMediaTarget->getChildIndex() - 1)
-                ->setOpacity(1.0f);
-
-            mImportMediaAdditional->setEnabled(true);
-            mImportMediaAdditional->setOpacity(1.0f);
-            mImportMediaAdditional->getParent()
-                ->getChild(mImportMediaAdditional->getChildIndex() - 1)
-                ->setOpacity(1.0f);
-
-            mImportMediaOverwrite->setEnabled(true);
-            mImportMediaOverwrite->setOpacity(1.0f);
-            mImportMediaOverwrite->getParent()
-                ->getChild(mImportMediaOverwrite->getChildIndex() - 1)
-                ->setOpacity(1.0f);
-        }
-    };
-
-    mImportMediaOverwrite = std::make_shared<SwitchComponent>();
-    mImportMediaOverwrite->setState(
-        Settings::getInstance()->getBool("ImporterImportMediaOverwrite"));
-    mMenu.addWithLabel(_("OVERWRITE MEDIA FILES"), mImportMediaOverwrite);
-    mMenu.addSaveFunc([this] {
-        if (mImportMediaOverwrite->getState() !=
-            Settings::getInstance()->getBool("ImporterImportMediaOverwrite")) {
-            Settings::getInstance()->setBool("ImporterImportMediaOverwrite",
-                                             mImportMediaOverwrite->getState());
-            mMenu.setNeedsSaving();
-        }
-    });
-
-    importMediaToggleFunc();
-    mImportMedia->setCallback(importMediaToggleFunc);
-
-    mGamesOnly = std::make_shared<SwitchComponent>();
-    mGamesOnly->setState(Settings::getInstance()->getBool("ImporterGamesOnly"));
-    mMenu.addWithLabel(_("ONLY INCLUDE APPS CATEGORIZED AS GAMES"), mGamesOnly);
-    mMenu.addSaveFunc([this] {
-        if (mGamesOnly->getState() != Settings::getInstance()->getBool("ImporterGamesOnly")) {
-            Settings::getInstance()->setBool("ImporterGamesOnly", mGamesOnly->getState());
-            mMenu.setNeedsSaving();
-        }
-    });
-#endif
 
     mMenu.addButton(_("START"), _("start importer"),
                     std::bind(&GuiGameImporter::pressedStart, this));
@@ -237,44 +115,11 @@ GuiGameImporter::GuiGameImporter(std::string title, std::function<void()> update
         mRemoveEntries->getParent()
             ->getChild(mRemoveEntries->getChildIndex() - 1)
             ->setOpacity(DISABLED_OPACITY);
-#if (defined(__linux__) || defined(__FreeBSD__)) && !defined(__ANDROID__)
         mStripSpecialChars->setEnabled(false);
         mStripSpecialChars->setOpacity(DISABLED_OPACITY);
         mStripSpecialChars->getParent()
             ->getChild(mStripSpecialChars->getChildIndex() - 1)
             ->setOpacity(DISABLED_OPACITY);
-#endif
-#if defined(__ANDROID__)
-        mMediaTarget->setEnabled(false);
-        mMediaTarget->setOpacity(DISABLED_OPACITY);
-        mMediaTarget->getParent()
-            ->getChild(mMediaTarget->getChildIndex() - 1)
-            ->setOpacity(DISABLED_OPACITY);
-
-        mImportMedia->setEnabled(false);
-        mImportMedia->setOpacity(DISABLED_OPACITY);
-        mImportMedia->getParent()
-            ->getChild(mImportMedia->getChildIndex() - 1)
-            ->setOpacity(DISABLED_OPACITY);
-
-        mImportMediaAdditional->setEnabled(false);
-        mImportMediaAdditional->setOpacity(DISABLED_OPACITY);
-        mImportMediaAdditional->getParent()
-            ->getChild(mImportMediaAdditional->getChildIndex() - 1)
-            ->setOpacity(DISABLED_OPACITY);
-
-        mImportMediaOverwrite->setEnabled(false);
-        mImportMediaOverwrite->setOpacity(DISABLED_OPACITY);
-        mImportMediaOverwrite->getParent()
-            ->getChild(mImportMediaOverwrite->getChildIndex() - 1)
-            ->setOpacity(DISABLED_OPACITY);
-
-        mGamesOnly->setEnabled(false);
-        mGamesOnly->setOpacity(DISABLED_OPACITY);
-        mGamesOnly->getParent()
-            ->getChild(mGamesOnly->getChildIndex() - 1)
-            ->setOpacity(DISABLED_OPACITY);
-#endif
         mMenu.setButtonOpacity(0, 0.5f);
     }
 
@@ -311,19 +156,6 @@ void GuiGameImporter::update(int deltaTime)
     if (mIsInventorying)
         mBusyAnim.update(deltaTime);
 
-#if defined(__ANDROID__)
-    if (mAndroidGetApps && mIsInventorying) {
-        // We call the Android retrieval function here instead of in pressedStart() to be able
-        // to render a static busy indicator before executing the call.
-        mAndroidGetApps = false;
-        mIsInventorying = true;
-        std::vector<std::pair<std::string, std::string>> appList;
-        Utils::Platform::Android::getInstalledApps(appList, mGamesOnly->getState(),
-                                                   mImportMediaAdditional->getState());
-        mImportThread =
-            std::make_unique<std::thread>(&GuiGameImporter::androidpackageRule, this, appList);
-    }
-#endif
 
     if (mDoneInventorying) {
         // We call this just to reset the busy indicator to the first animation frame, in case
@@ -351,19 +183,8 @@ void GuiGameImporter::render(const glm::mat4& parentTrans)
     glm::mat4 trans {parentTrans * getTransform()};
     renderChildren(trans);
 
-#if defined(__ANDROID__)
-    if (mIsInventorying || mAndroidGetApps) {
-        mBusyAnim.render(trans);
-        // Make sure no touch overlay buttons are shown as stuck when the rendering is blocked.
-        InputOverlay::getInstance().unselectAllButtons();
-    }
-
-    if (mAndroidGetApps)
-        mIsInventorying = true;
-#else
     if (mIsInventorying)
         mBusyAnim.render(trans);
-#endif
 }
 
 std::vector<HelpPrompt> GuiGameImporter::getHelpPrompts()
@@ -389,9 +210,6 @@ void GuiGameImporter::pressedStart()
     Utils::FileSystem::removeDirectory(mTempDir, true);
 
     mTargetSystemDir = mTargetSystem->getSelected();
-#if defined(__ANDROID__)
-    mMediaTargetDir = mMediaTarget->getSelected();
-#endif
     mFileExtension = "";
 
     for (auto& importRule : SystemData::sImportRules.get()->mSystems) {
@@ -421,15 +239,9 @@ void GuiGameImporter::pressedStart()
                     // indicator is rendered before calling the retrieval function.
                     mAndroidGetApps = true;
                 }
-#if defined(__APPLE__)
-                else if (importRule.second.ruleType == "macosbundle") {
-                    mImportThread = std::make_unique<std::thread>(&GuiGameImporter::macosbundleRule,
-                                                                  this, importRule);
-#else
                 else if (importRule.second.ruleType == "file") {
                     mImportThread =
                         std::make_unique<std::thread>(&GuiGameImporter::fileRule, this, importRule);
-#endif
                 }
                 else if (importRule.second.ruleType == "desktopshortcut") {
                     mImportThread = std::make_unique<std::thread>(
@@ -495,48 +307,15 @@ void GuiGameImporter::selectorWindow()
 
     std::vector<std::pair<std::string, std::string>> fileList;
 
-#if defined(__ANDROID__)
-    const bool darkColorScheme {Settings::getInstance()->getString("MenuColorScheme") != "light"};
-#endif
 
     for (std::string& file : inputFileList) {
-#if defined(__ANDROID__)
-        std::string mediaFile {mTempDir + "/icons/" +
-                               Utils::FileSystem::getStem(Utils::FileSystem::getFileName(file)) +
-                               mMediaFileExtension};
-#endif
 
         row.elements.clear();
         auto lbl = std::make_shared<TextComponent>(
             Utils::FileSystem::getStem(Utils::FileSystem::getFileName(file)),
             Font::get(FONT_SIZE_MEDIUM), mMenuColorPrimary);
 
-#if defined(__ANDROID__)
-        auto media = std::make_shared<ImageComponent>();
-        media->setResize(0, Font::get(FONT_SIZE_MEDIUM)->getLetterHeight() * 1.4f);
-        if (!darkColorScheme)
-            media->setInvertInMenus(false);
-
-        std::string mediaFileAdditional;
-
-        if (mImportMediaAdditional->getState()) {
-            mediaFileAdditional = mTempDir + "/media/" +
-                                  Utils::FileSystem::getStem(Utils::FileSystem::getFileName(file)) +
-                                  mMediaFileExtension;
-        }
-
-        if (Utils::FileSystem::exists(mediaFile)) {
-            fileList.emplace_back(std::make_pair(
-                file, (Utils::FileSystem::exists(mediaFileAdditional) ? mediaFileAdditional :
-                                                                        mediaFile)));
-            media->setImage(mediaFile);
-        }
-        else {
-            fileList.emplace_back(std::make_pair(file, ""));
-        }
-#else
         fileList.emplace_back(std::make_pair(file, ""));
-#endif
 
         auto checkbox = std::make_shared<ImageComponent>();
         checkbox->setResize(0, Font::get(FONT_SIZE_MEDIUM)->getLetterHeight());
@@ -545,10 +324,6 @@ void GuiGameImporter::selectorWindow()
         checkbox->setEnabled(false);
         mCheckboxes.emplace_back(checkbox);
 
-#if defined(__ANDROID__)
-        row.addElement(media, false);
-        row.addElement(spacer, false);
-#endif
         row.addElement(lbl, true);
         row.addElement(checkbox, false);
         row.makeAcceptInputHandler([checkbox] {
@@ -566,28 +341,13 @@ void GuiGameImporter::selectorWindow()
 
     mSelectorMenu->addButton(_("IMPORT"), _("import"), [this, fileList] {
         const std::string removeEntries {mRemoveEntries->getSelected()};
-#if defined(__ANDROID__)
-        const bool importMedia {mImportMedia->getState()};
-        const bool overwriteMedia {mImportMediaOverwrite->getState()};
-#endif
         int numEntriesImported {0};
 
         if (removeEntries == "unselected") {
             for (auto& file : Utils::FileSystem::getDirContent(
                      FileData::getROMDirectory() + mTargetSystemDir, false)) {
-#if defined(_WIN64)
-                if (Utils::String::toLower(Utils::FileSystem::getExtension(file)) ==
-                    Utils::String::toLower(mFileExtension)) {
-                    LOG(LogInfo) << "GuiGameImporter: Removed file \""
-                                 << Utils::String::replace(file, "/", "\\") << "\"";
-#elif defined(__APPLE__)
-                if (Utils::String::toLower(Utils::FileSystem::getExtension(file)) ==
-                    Utils::String::toLower(mFileExtension)) {
-                    LOG(LogInfo) << "GuiGameImporter: Removed file \"" << file << "\"";
-#else
                 if (Utils::FileSystem::getExtension(file) == mFileExtension) {
                     LOG(LogInfo) << "GuiGameImporter: Removed file \"" << file << "\"";
-#endif
                     Utils::FileSystem::removeFile(file);
                 }
             }
@@ -595,25 +355,12 @@ void GuiGameImporter::selectorWindow()
 
         for (int i {0}; i < static_cast<int>(mCheckboxes.size()); ++i) {
             const std::string systemDir {FileData::getROMDirectory() + mTargetSystemDir};
-#if defined(__ANDROID__)
-            const std::string mediaDir {FileData::getMediaDirectory() + mTargetSystemDir + "/" +
-                                        mMediaTargetDir};
-#endif
             if (!Utils::FileSystem::exists(systemDir))
                 Utils::FileSystem::createDirectory(systemDir);
 
             if (!Utils::FileSystem::exists(systemDir))
                 return;
 
-#if defined(__ANDROID__)
-            if (importMedia) {
-                if (!Utils::FileSystem::exists(mediaDir))
-                    Utils::FileSystem::createDirectory(mediaDir);
-
-                if (!Utils::FileSystem::exists(mediaDir))
-                    return;
-            }
-#endif
 
             if (mCheckboxes[i]->getEnabled()) {
                 mHasUpdates = true;
@@ -621,35 +368,16 @@ void GuiGameImporter::selectorWindow()
 
                 const std::string file {fileList[i].first};
                 if (Utils::FileSystem::exists(file)) {
-#if defined(__APPLE__)
-                    // On macOS we need to move the file to preserve the symlink.
-                    Utils::FileSystem::renameFile(
-                        file, systemDir + "/" + Utils::FileSystem::getFileName(file), true);
-#else
                     // We have to copy and not rename the files as they may need to move across
                     // different storage devices.
                     Utils::FileSystem::copyFile(
                         file, systemDir + "/" + Utils::FileSystem::getFileName(file), true);
                     Utils::FileSystem::removeFile(file);
-#endif
 
                     LOG(LogInfo) << "GuiGameImporter: Importing \""
                                  << Utils::FileSystem::getStem(Utils::FileSystem::getFileName(file))
                                  << "\"";
 
-#if defined(__ANDROID__)
-                    const std::string mediaFile {fileList[i].second};
-
-                    if (importMedia) {
-                        if (Utils::FileSystem::exists(mediaFile)) {
-                            Utils::FileSystem::copyFile(
-                                mediaFile,
-                                mediaDir + "/" + Utils::FileSystem::getFileName(mediaFile),
-                                overwriteMedia);
-                            Utils::FileSystem::removeFile(mediaFile);
-                        }
-                    }
-#endif
                 }
             }
         }
@@ -700,39 +428,13 @@ void GuiGameImporter::androidpackageRule(std::vector<std::pair<std::string, std:
     // This is just so that the busy component gets shown briefly regardless of processing time.
     SDL_Delay(400);
 
-#if defined(__ANDROID__)
-    if (appList.size() > 0) {
-        const std::string filesDir {mTempDir + "/files"};
-        if (!Utils::FileSystem::exists(filesDir))
-            Utils::FileSystem::createDirectory(filesDir);
-        if (!Utils::FileSystem::exists(filesDir)) {
-            mIsInventorying = false;
-            mDoneInventorying = true;
-            LOG(LogError) << "GuiGameImporter: Couldn't create temporary files directory";
-            return;
-        }
-    }
-
-    for (auto& app : appList) {
-        hasEntries = true;
-        std::ofstream appFile;
-        appFile.open(mTempDir + "/files/" + app.first + mFileExtension, std::ios::binary);
-        appFile << app.second << std::endl;
-        appFile.close();
-    }
-#endif
 
     mHasEntries = hasEntries;
     mIsInventorying = false;
     mDoneInventorying = true;
 }
 
-#if defined(__APPLE__)
-void GuiGameImporter::macosbundleRule(
-    std::pair<const std::string, ImportRules::ImportRule> importRule)
-#else
 void GuiGameImporter::fileRule(std::pair<const std::string, ImportRules::ImportRule> importRule)
-#endif
 {
     mHasEntries = false;
     mIsInventorying = true;
@@ -753,42 +455,14 @@ void GuiGameImporter::fileRule(std::pair<const std::string, ImportRules::ImportR
     for (auto& directory : importRule.second.directories) {
         // Expand ~ to the user home directory.
         std::string expandedDir {Utils::FileSystem::expandHomePath(directory.path, true)};
-#if !defined(__ANDROID__)
         // Expand %ESPATH% to the ES-DE binary directory.
         expandedDir =
             Utils::String::replace(expandedDir, "%ESPATH%", Utils::FileSystem::getExePath());
-#endif
 
         std::list<std::string> fileList {
             Utils::FileSystem::getDirContent(expandedDir, directory.recursive)};
         for (auto& file : fileList) {
-#if defined(_WIN64) || defined(__APPLE__)
-            if (Utils::String::toLower(Utils::FileSystem::getExtension(file)) ==
-                Utils::String::toLower(mFileExtension)) {
-#else
             if (Utils::FileSystem::getExtension(file) == mFileExtension) {
-#endif
-#if defined(__APPLE__)
-                if (file.find("Frameworks") != std::string::npos) {
-                    LOG(LogDebug)
-                        << "GuiGameImporter::macosbundleRule(): Skipping Frameworks entry \""
-                        << file << "\"";
-                    continue;
-                }
-
-                if (file.find("Platforms") != std::string::npos) {
-                    LOG(LogDebug)
-                        << "GuiGameImporter::macosbundleRule(): Skipping Platforms entry \"" << file
-                        << "\"";
-                    continue;
-                }
-
-                if (file.find("ES-DE.app") != std::string::npos ||
-                    file.find("Uninstall.app") != std::string::npos ||
-                    file.find("Uninstaller.app") != std::string::npos) {
-                    continue;
-                }
-#else
                 if (Utils::FileSystem::isDirectory(file)) {
                     LOG(LogWarning) << "GuiGameImporter: Skipping \"" << file
                                     << "\" as it's a directory and not a file";
@@ -801,15 +475,9 @@ void GuiGameImporter::fileRule(std::pair<const std::string, ImportRules::ImportR
                                     << fileSize << " bytes, skipping it";
                     continue;
                 }
-#endif
 
-#if defined(_WIN64)
-                if (Utils::FileSystem::getFileName(file) == "ES-DE.lnk")
-                    continue;
-#elif (defined(__linux__) || defined(__FreeBSD__)) && !defined(__ANDROID__)
                 if (Utils::FileSystem::getFileName(file) == "org.es_de.frontend.desktop")
                     continue;
-#endif
                 std::string targetFile {file};
                 hasEntries = true;
                 int index {1};
@@ -828,16 +496,8 @@ void GuiGameImporter::fileRule(std::pair<const std::string, ImportRules::ImportR
                     ++index;
                 }
 
-#if defined(__APPLE__)
-                // On macOS there are no shortcut entries but rather the entries are the
-                // applications themselves, meaning their entire directory structures. As such
-                // we'll create symlinks instead of copying files on this operating system.
-                Utils::FileSystem::createSymlink(
-                    file, filesDir + "/" + Utils::FileSystem::getFileName(targetFile));
-#else
                 Utils::FileSystem::copyFile(
                     file, filesDir + "/" + Utils::FileSystem::getFileName(targetFile), false);
-#endif
             }
         }
     }

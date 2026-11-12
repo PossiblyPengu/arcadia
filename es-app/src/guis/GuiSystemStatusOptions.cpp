@@ -42,21 +42,6 @@ GuiSystemStatusOptions::GuiSystemStatusOptions(const std::string& title)
         }
     });
 
-#if defined(__ANDROID__)
-    // Display cellular indicator.
-    auto systemStatusCellular = std::make_shared<SwitchComponent>();
-    systemStatusCellular->setState(Settings::getInstance()->getBool("SystemStatusCellular"));
-    addWithLabel(_("DISPLAY CELLULAR STATUS INDICATOR"), systemStatusCellular);
-    addSaveFunc([systemStatusCellular, this] {
-        if (systemStatusCellular->getState() !=
-            Settings::getInstance()->getBool("SystemStatusCellular")) {
-            Settings::getInstance()->setBool("SystemStatusCellular",
-                                             systemStatusCellular->getState());
-            setNeedsSaving();
-            setNeedsUpdateStatusComponents();
-        }
-    });
-#endif
 
     // Display battery indicator.
     auto systemStatusBattery = std::make_shared<SwitchComponent>();

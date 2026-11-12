@@ -11,9 +11,6 @@
 
 #include <string>
 
-#if defined(_WIN64)
-#include <windows.h>
-#endif
 
 namespace Utils
 {

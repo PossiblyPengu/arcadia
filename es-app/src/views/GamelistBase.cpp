@@ -6,10 +6,6 @@
 //  Gamelist base class with utility functions and other low-level logic.
 //
 
-#if defined(_WIN64)
-// Why this is needed here is anyone's guess but without it the compilation fails.
-#include <winsock2.h>
-#endif
 
 #include "views/GamelistBase.h"
 

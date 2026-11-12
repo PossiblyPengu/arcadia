@@ -21,9 +21,6 @@
 #include <algorithm>
 #include <pugixml.hpp>
 
-#if defined(__IOS__)
-#include "utils/PlatformUtilIOS.h"
-#endif
 
 // clang-format off
 std::vector<std::string> ThemeData::sSupportedViews {
@@ -670,11 +667,7 @@ void ThemeData::loadFile(const std::map<std::string, std::string>& sysDataMap,
     mVariables.insert(sysDataMap.cbegin(), sysDataMap.cend());
 
     pugi::xml_document doc;
-#if defined(_WIN64)
-    pugi::xml_parse_result res {doc.load_file(Utils::String::stringToWideString(path).c_str())};
-#else
     pugi::xml_parse_result res {doc.load_file(path.c_str())};
-#endif
     if (!res)
         throw error << ": XML parsing error: " << res.description();
 
@@ -845,12 +838,6 @@ void ThemeData::populateThemes()
     // Check for themes first under the user theme directory (which is in the ES-DE home directory
     // by default), then under the data installation directory (Unix only) and last under the ES-DE
     // binary directory.
-#if defined(__ANDROID__)
-    const std::string userThemeDirectory {Utils::FileSystem::getInternalAppDataDirectory() +
-                                          "/themes"};
-#elif defined(__IOS__)
-    const std::string userThemeDirectory;
-#else
     const std::string defaultUserThemeDir {Utils::FileSystem::getAppDataDirectory() + "/themes"};
     const std::string userThemeDirSetting {Utils::FileSystem::expandHomePath(
         Settings::getInstance()->getString("UserThemeDirectory"))};
@@ -862,12 +849,7 @@ void ThemeData::populateThemes()
     else if (Utils::FileSystem::isDirectory(userThemeDirSetting) ||
              Utils::FileSystem::isSymlink(userThemeDirSetting)) {
         userThemeDirectory = userThemeDirSetting;
-#if defined(_WIN64)
-        LOG(LogInfo) << "Setting user theme directory to \""
-                     << Utils::String::replace(userThemeDirectory, "/", "\\") << "\"";
-#else
         LOG(LogInfo) << "Setting user theme directory to \"" << userThemeDirectory << "\"";
-#endif
     }
     else {
         LOG(LogWarning) << "Requested user theme directory \"" << userThemeDirSetting
@@ -875,21 +857,8 @@ void ThemeData::populateThemes()
                         << defaultUserThemeDir << "\"";
         userThemeDirectory = defaultUserThemeDir;
     }
-#endif
 
-#if defined(__ANDROID__)
-    const std::vector<std::string> themePaths {Utils::FileSystem::getProgramDataPath() + "/themes",
-                                               Utils::FileSystem::getAppDataDirectory() + "/themes",
-                                               userThemeDirectory};
-#elif defined(__IOS__)
-    const std::vector<std::string> themePaths {Utils::Platform::iOS::getPackagePath() + "themes",
-                                               Utils::FileSystem::getAppDataDirectory() +
-                                                   "/themes"};
-#elif defined(__APPLE__)
-    const std::vector<std::string> themePaths {
-        Utils::FileSystem::getExePath() + "/themes",
-        Utils::FileSystem::getExePath() + "/../Resources/themes", userThemeDirectory};
-#elif defined(_WIN64) || defined(APPIMAGE_BUILD)
+#if   defined(APPIMAGE_BUILD)
     const std::vector<std::string> themePaths {Utils::FileSystem::getExePath() + "/themes",
                                                userThemeDirectory};
 #else
@@ -913,12 +882,7 @@ void ThemeData::populateThemes()
                      Utils::String::toLower(themeDirName.substr(themeDirName.length() - 8, 8)) ==
                          "disabled"))
                     continue;
-#if defined(_WIN64)
-                LOG(LogDebug) << "Loading theme capabilities for \""
-                              << Utils::String::replace(*it, "/", "\\") << "\"...";
-#else
                 LOG(LogDebug) << "Loading theme capabilities for \"" << *it << "\"...";
-#endif
                 ThemeCapability capabilities {parseThemeCapabilities((*it))};
 
                 if (!capabilities.validTheme)
@@ -928,12 +892,7 @@ void ThemeData::populateThemes()
                 if (capabilities.themeName != "")
                     themeName.append(" (\"").append(capabilities.themeName).append("\")");
 
-#if defined(_WIN64)
-                LOG(LogInfo) << "Added theme \"" << Utils::String::replace(*it, "/", "\\") << "\""
-                             << themeName;
-#else
                 LOG(LogInfo) << "Added theme \"" << *it << "\"" << themeName;
-#endif
                 int aspectRatios {0};
                 int languages {0};
                 if (capabilities.aspectRatios.size() > 0)
@@ -1201,12 +1160,7 @@ ThemeData::ThemeCapability ThemeData::parseThemeCapabilities(const std::string& 
         capabilities.validTheme = true;
 
         pugi::xml_document doc;
-#if defined(_WIN64)
-        const pugi::xml_parse_result& res {
-            doc.load_file(Utils::String::stringToWideString(capFile).c_str())};
-#else
         const pugi::xml_parse_result& res {doc.load_file(capFile.c_str())};
-#endif
         if (res.status == pugi::status_no_document_element) {
             LOG(LogDebug) << "Found a capabilities.xml file with no configuration";
         }
@@ -1749,11 +1703,7 @@ ThemeData::ThemeCapability ThemeData::parseThemeCapabilities(const std::string& 
         capabilities.validTheme = false;
         LOG(LogWarning)
             << "No capabilities.xml file found, this does not appear to be a valid theme: \""
-#if defined(_WIN64)
-            << Utils::String::replace(path, "/", "\\") << "\"";
-#else
             << path << "\"";
-#endif
     }
 
     // Add the aspect ratios in the order they are defined in sSupportedAspectRatios so they
@@ -1843,18 +1793,10 @@ void ThemeData::parseIncludes(const pugi::xml_node& root)
                 if (!(Settings::getInstance()->getBool("DebugSkipMissingThemeFiles") ||
                       (mCustomCollection && Settings::getInstance()->getBool(
                                                 "DebugSkipMissingThemeFilesCustomCollections")))) {
-#if defined(_WIN64)
-                    LOG(LogDebug) << Utils::String::replace(error.message, "/", "\\")
-                                  << ": Couldn't find file \"" << node.text().get() << "\" "
-                                  << ((node.text().get() != path) ?
-                                          "which resolves to \"" +
-                                              Utils::String::replace(path, "/", "\\") + "\"" :
-#else
                     LOG(LogDebug) << error.message << ": Couldn't find file \"" << node.text().get()
                                   << "\" "
                                   << ((node.text().get() != path) ?
                                           "which resolves to \"" + path + "\"" :
-#endif
                                           "");
                 }
                 continue;
@@ -1866,12 +1808,7 @@ void ThemeData::parseIncludes(const pugi::xml_node& root)
         mPaths.push_back(path);
 
         pugi::xml_document includeDoc;
-#if defined(_WIN64)
-        pugi::xml_parse_result result {
-            includeDoc.load_file(Utils::String::stringToWideString(path).c_str())};
-#else
         pugi::xml_parse_result result {includeDoc.load_file(path.c_str())};
-#endif
         if (!result)
             throw error << ": Error parsing file: " << result.description();
 
@@ -2328,18 +2265,10 @@ void ThemeData::parseElement(const pugi::xml_node& root,
                     // For explicit paths, print a warning if the file couldn't be found, but
                     // only print a debug message if it was set using a variable.
                     if (str == node.text().as_string()) {
-#if defined(_WIN64)
-                        LOG(LogWarning) << Utils::String::replace(error.message, "/", "\\")
-                                        << ": Couldn't find file \"" << node.text().get() << "\" "
-                                        << ((node.text().get() != path) ?
-                                                "which resolves to \"" +
-                                                    Utils::String::replace(path, "/", "\\") + "\"" :
-#else
                         LOG(LogWarning)
                             << error.message << ": Couldn't find file \"" << node.text().get()
                             << "\" "
                             << ((node.text().get() != path) ? "which resolves to \"" + path + "\"" :
-#endif
                                                 "")
                                         << " (element type \"" << element.type << "\", name \""
                                         << root.attribute("name").as_string() << "\", property \""
@@ -2349,18 +2278,10 @@ void ThemeData::parseElement(const pugi::xml_node& root,
                                (mCustomCollection &&
                                 Settings::getInstance()->getBool(
                                     "DebugSkipMissingThemeFilesCustomCollections")))) {
-#if defined(_WIN64)
-                        LOG(LogDebug) << Utils::String::replace(error.message, "/", "\\")
-                                      << ": Couldn't find file \"" << node.text().get() << "\" "
-                                      << ((node.text().get() != path) ?
-                                              "which resolves to \"" +
-                                                  Utils::String::replace(path, "/", "\\") + "\"" :
-#else
                         LOG(LogDebug)
                             << error.message << ": Couldn't find file \"" << node.text().get()
                             << "\" "
                             << ((node.text().get() != path) ? "which resolves to \"" + path + "\"" :
-#endif
                                               "")
                                       << " (element type \"" << element.type << "\", name \""
                                       << root.attribute("name").as_string() << "\", property \""

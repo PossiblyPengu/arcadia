@@ -19,9 +19,6 @@
 #include "resources/Font.h"
 #include "utils/LocalizationUtil.h"
 
-#if defined(__ANDROID__) || defined(__IOS__)
-#include "InputOverlay.h"
-#endif
 
 #include <algorithm>
 #include <iomanip>
@@ -487,10 +484,6 @@ void Window::update(int deltaTime)
             systemStatusComponent->update(deltaTime);
     }
 
-#if defined(__ANDROID__) || defined(__IOS__)
-    if (Settings::getInstance()->getBool("InputTouchOverlay"))
-        InputOverlay::getInstance().update(deltaTime);
-#endif
 }
 
 bool Window::isBackgroundDimmed()
@@ -578,7 +571,7 @@ void Window::render()
                     backgroundParameters.blurStrength = 1.75f;
 
                     // Also dim the background slightly.
-                    if (Settings::getInstance()->getString("MenuColorScheme") == "light")
+                    if (Settings::getInstance()->getString("MenuColorScheme") == "paper")
                         backgroundParameters.dimming = 0.60f;
                     else
                         backgroundParameters.dimming = 0.80f;
@@ -590,7 +583,7 @@ void Window::render()
                 }
                 else {
                     // Dim the background slightly.
-                    if (Settings::getInstance()->getString("MenuColorScheme") == "light")
+                    if (Settings::getInstance()->getString("MenuColorScheme") == "paper")
                         backgroundParameters.dimming = 0.60f;
                     else
                         backgroundParameters.dimming = 0.80f;
@@ -751,10 +744,6 @@ void Window::render()
     if (mRenderScreensaver)
         mScreensaver->renderScreensaver();
 
-#if defined(__ANDROID__) || defined(__IOS__)
-    if (Settings::getInstance()->getBool("InputTouchOverlay"))
-        InputOverlay::getInstance().render(mRenderer->getIdentity());
-#endif
 
     if (Settings::getInstance()->getBool("DisplayGPUStatistics"))
         mGPUStatisticsText->render(mRenderer->getIdentity());

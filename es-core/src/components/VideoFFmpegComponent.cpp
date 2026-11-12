@@ -1158,46 +1158,6 @@ void VideoFFmpegComponent::calculateBlackFrame()
 
 void VideoFFmpegComponent::detectHWDecoder()
 {
-#if defined(__APPLE__)
-    LOG(LogDebug) << "VideoFFmpegComponent::detectHWDecoder(): Using hardware decoder VideoToolbox";
-    sDeviceType = AV_HWDEVICE_TYPE_VIDEOTOOLBOX;
-    return;
-#elif defined(_WIN64)
-    bool hasDXVA2 {false};
-    bool hasD3D11VA {false};
-
-    AVBufferRef* testContext {nullptr};
-    AVHWDeviceType tempDevice {AV_HWDEVICE_TYPE_NONE};
-
-    while ((tempDevice = av_hwdevice_iterate_types(tempDevice)) != AV_HWDEVICE_TYPE_NONE) {
-        // The Direct3D 11 decoder detection seems to cause stability issues on some machines
-        // so disabling it for now.
-        if (tempDevice == AV_HWDEVICE_TYPE_DXVA2) {
-            // if (tempDevice == AV_HWDEVICE_TYPE_DXVA2 || tempDevice == AV_HWDEVICE_TYPE_D3D11VA) {
-            if (av_hwdevice_ctx_create(&testContext, tempDevice, nullptr, nullptr, 0) >= 0) {
-                if (tempDevice == AV_HWDEVICE_TYPE_DXVA2)
-                    hasDXVA2 = true;
-                else
-                    hasD3D11VA = true;
-            }
-            av_buffer_unref(&testContext);
-        }
-    }
-
-    // Prioritize DXVA2.
-    if (hasDXVA2) {
-        LOG(LogDebug) << "VideoFFmpegComponent::detectHWDecoder(): Using hardware decoder DXVA2";
-        sDeviceType = AV_HWDEVICE_TYPE_DXVA2;
-    }
-    else if (hasD3D11VA) {
-        LOG(LogDebug) << "VideoFFmpegComponent::detectHWDecoder(): Using hardware decoder D3D11VA";
-        sDeviceType = AV_HWDEVICE_TYPE_D3D11VA;
-    }
-    else {
-        LOG(LogWarning) << "VideoFFmpegComponent::detectHWDecoder(): Unable to detect any usable "
-                           "hardware decoder";
-    }
-#else
     // This would mostly be Linux, but possibly also FreeBSD.
 
     bool hasVAAPI {false};
@@ -1231,7 +1191,6 @@ void VideoFFmpegComponent::detectHWDecoder()
         LOG(LogWarning) << "VideoFFmpegComponent::detectHWDecoder(): Unable to detect any "
                            "usable hardware decoder";
     }
-#endif
 }
 
 bool VideoFFmpegComponent::decoderInitHW()
@@ -1519,12 +1478,7 @@ void VideoFFmpegComponent::startVideoStream()
         mVideoHeight = mFormatContext->streams[mVideoStreamIndex]->codecpar->height;
 
         LOG(LogDebug) << "VideoFFmpegComponent::startVideoStream(): "
-#if defined(_WIN64)
-                      << "Playing video \"" << Utils::String::replace(mVideoPath, "/", "\\")
-                      << "\" (codec: "
-#else
                       << "Playing video \"" << mVideoPath << "\" (codec: "
-#endif
                       << avcodec_get_name(
                              mFormatContext->streams[mVideoStreamIndex]->codecpar->codec_id)
                       << ", decoder: " << (hwDecoding ? "hardware" : "software") << ")";

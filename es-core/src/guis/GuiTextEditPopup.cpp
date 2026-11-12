@@ -94,13 +94,8 @@ GuiTextEditPopup::GuiTextEditPopup(const std::string& title,
 
     float textHeight = mText->getFont()->getHeight();
 
-#if defined(__ANDROID__)
-    if (multiLine)
-        textHeight *= 2.0f;
-#else
     if (multiLine)
         textHeight *= 6.0f;
-#endif
 
     mText->setSize(0.0f, textHeight);
 
@@ -117,13 +112,8 @@ GuiTextEditPopup::GuiTextEditPopup(const std::string& title,
 
         setSize(windowWidth, mTitle->getFont()->getHeight() + textHeight +
                                  mButtonGrid->getSize().y + mButtonGrid->getSize().y * 1.85f);
-#if defined(__ANDROID__)
-        setPosition((Renderer::getScreenWidth() - mSize.x) / 2.0f,
-                    Font::get(FONT_SIZE_LARGE_FIXED)->getLetterHeight());
-#else
         setPosition((Renderer::getScreenWidth() - mSize.x) / 2.0f,
                     (Renderer::getScreenHeight() - mSize.y) / 2.0f);
-#endif
     }
     else {
         float width = glm::clamp(0.54f * aspectValue, 0.20f, 0.70f) * Renderer::getScreenWidth();
@@ -131,13 +121,8 @@ GuiTextEditPopup::GuiTextEditPopup(const std::string& title,
         setSize(width, mTitle->getFont()->getHeight() + textHeight + mButtonGrid->getSize().y +
                            mButtonGrid->getSize().y / 2.0f);
 
-#if defined(__ANDROID__)
-        setPosition((Renderer::getScreenWidth() - mSize.x) / 2.0f,
-                    Font::get(FONT_SIZE_LARGE_FIXED)->getLetterHeight());
-#else
         setPosition((Renderer::getScreenWidth() - mSize.x) / 2.0f,
                     (Renderer::getScreenHeight() - mSize.y) / 2.0f);
-#endif
     }
 
     if (!multiLine)

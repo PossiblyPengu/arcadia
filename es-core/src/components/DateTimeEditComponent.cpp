@@ -236,11 +236,7 @@ void DateTimeEditComponent::changeDate()
     tm new_tm = mTime;
 
     if (mTime.getIsoString() == "19700101T000000")
-#if defined(_WIN64)
-        new_tm = {0, 0, 0, 1, 0, 70, 0, 0, -1};
-#else
         new_tm = {0, 0, 0, 1, 0, 70, 0, 0, -1, 0, 0};
-#endif
 
     // ISO 8601 date format.
     if (mEditIndex == 0) {

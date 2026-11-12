@@ -720,9 +720,6 @@ void ImageComponent::applyTheme(const std::shared_ptr<ThemeData>& theme,
     // possible to override scraped media.
     if (mThemeImageTypes.empty() && elem->has("gameOverridePath")) {
         mGameOverridePath = elem->get<std::string>("gameOverridePath");
-#if defined(_WIN64)
-        mGameOverridePath = Utils::String::replace(mGameOverridePath, "\\", "/");
-#endif
         if (mGameOverridePath.back() != '/')
             mGameOverridePath.push_back('/');
 

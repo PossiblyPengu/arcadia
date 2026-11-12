@@ -86,25 +86,7 @@ HttpReq::HttpReq(const std::string& url, bool scraperRequest)
     // Set User-Agent.
     std::string userAgent {"ES-DE Frontend/"};
     userAgent.append(PROGRAM_VERSION_STRING).append(" (");
-#if defined(__FreeBSD__)
-    userAgent.append("FreeBSD");
-#elif defined(__HAIKU__)
-    userAgent.append("Haiku");
-#elif defined(__ANDROID__)
-    userAgent.append("Android");
-#elif defined(_WIN64)
-    userAgent.append("Windows");
-#elif defined(__IOS__)
-    userAgent.append("iOS");
-#elif defined(__APPLE__)
-    userAgent.append("macOS");
-#elif defined(__linux__)
     userAgent.append("Linux");
-#elif defined(__unix__)
-    userAgent.append("Unix");
-#else
-    userAgent.append("Unknown");
-#endif
     userAgent.append("; ").append(sPlatformIdentifier).append(")");
     err = curl_easy_setopt(mHandle, CURLOPT_USERAGENT, userAgent.c_str());
     if (err != CURLE_OK) {
@@ -174,7 +156,7 @@ HttpReq::HttpReq(const std::string& url, bool scraperRequest)
     }
 
     // Set curl restrict redirect protocols.
-#if defined(__APPLE__) || LIBCURL_VERSION_MAJOR < 7 ||                                             \
+#if LIBCURL_VERSION_MAJOR < 7 ||                                             \
     (LIBCURL_VERSION_MAJOR == 7 && LIBCURL_VERSION_MINOR < 85)
     err = curl_easy_setopt(mHandle, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
 #else

@@ -10,21 +10,12 @@
 
 #include "Settings.h"
 
-#if defined(__APPLE__)
-#include <chrono>
-#endif
 
-#if defined(__IOS__)
-#include <SDL2/SDL_syswm.h>
-#endif
 
 RendererOpenGL::RendererOpenGL() noexcept
     : mShaderFBO1 {0}
     , mShaderFBO2 {0}
     , mFramebuffer {0}
-#if defined(__IOS__)
-    , mColorbuffer {0}
-#endif
     , mVertexBuffer1 {0}
     , mVertexBuffer2 {0}
     , mSDLContext {nullptr}
@@ -120,11 +111,7 @@ GLenum RendererOpenGL::convertTextureType(const TextureType type)
 #else
         case TextureType::BGRA:  { return GL_BGRA;            } break;
 #endif
-#if defined(__EMSCRIPTEN__) || defined(__ANDROID__) || defined(__IOS__)
-        case TextureType::RED:   { return GL_LUMINANCE;       } break;
-#else
         case TextureType::RED:   { return GL_RED;             } break;
-#endif
         default:                 { return GL_ZERO;            }
     }
     // clang-format on
@@ -219,9 +206,6 @@ bool RendererOpenGL::createContext()
         return false;
     }
 
-#if defined(_WIN64)
-    glewInit();
-#endif
 
     SDL_GL_MakeCurrent(getSDLWindow(), mSDLContext);
 
@@ -236,50 +220,13 @@ bool RendererOpenGL::createContext()
     LOG(LogInfo) << "GL renderer: " << renderer;
     LOG(LogInfo) << "GL version: " << version;
 
-#if defined(_WIN64)
-    // This is required to avoid a crash when attempting to call glActiveTexture() in case
-    // there is no support for OpenGL 3.3 by the driver. If 3.3 is the highest suppported
-    // version then SDL_GL_CreateContext() will fail if attempting to use version 4.2 or 4.6.
-    if (!GLEW_VERSION_3_3) {
-        LOG(LogError)
-            << "It seems as if your GPU driver lacks the required OpenGL support, either install a "
-               "capable driver or use the Mesa3D software renderer";
-        return false;
-    }
-#endif
 
 #if defined(USE_OPENGLES)
     LOG(LogInfo) << "Application renderer: OpenGL ES " << mMajorGLVersion << "." << mMinorGLVersion;
 #else
-#if defined(_WIN64)
-    LOG(LogInfo) << "Application renderer: OpenGL " << mMajorGLVersion << "." << mMinorGLVersion
-                 << " with GLEW";
-#else
     LOG(LogInfo) << "Application renderer: OpenGL " << mMajorGLVersion << "." << mMinorGLVersion;
 #endif
-#endif
 
-#if defined(__IOS__)
-    SDL_SysWMinfo info {};
-    SDL_VERSION(&info.version);
-
-    UIWindow* uiWindow {nullptr};
-    if (SDL_GetWindowWMInfo(getSDLWindow(), &info) && info.subsystem == SDL_SYSWM_UIKIT)
-        uiWindow = reinterpret_cast<UIWindow*>(info.info.uikit.window);
-
-    if (uiWindow) {
-        mFramebuffer = info.info.uikit.framebuffer;
-        mColorbuffer = info.info.uikit.colorbuffer;
-    }
-
-    GL_CHECK_ERROR(glBindFramebuffer(GL_FRAMEBUFFER, mFramebuffer));
-    GL_CHECK_ERROR(glBindRenderbuffer(GL_RENDERBUFFER, mColorbuffer));
-    GLenum status {glCheckFramebufferStatus(GL_FRAMEBUFFER)};
-
-    if (status != GL_FRAMEBUFFER_COMPLETE) {
-        LOG(LogError) << "Couldn't setup framebuffer: " << status;
-    }
-#endif
 
     GL_CHECK_ERROR(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
     GL_CHECK_ERROR(glActiveTexture(GL_TEXTURE0));
@@ -409,22 +356,7 @@ void RendererOpenGL::setSwapInterval()
 
 void RendererOpenGL::swapBuffers()
 {
-#if defined(__APPLE__) && !defined(__IOS__)
-    // On macOS when running in the background, the OpenGL driver apparently does not swap
-    // the frames which leads to a very fast swap time. This makes ES-DE use a lot of CPU
-    // resources which slows down the games significantly on slower machines. By introducing
-    // a delay if the swap time is very low we reduce CPU usage while still keeping the
-    // application functioning normally.
-    const auto beforeSwap = std::chrono::system_clock::now();
     SDL_GL_SwapWindow(getSDLWindow());
-
-    if (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() -
-                                                              beforeSwap)
-            .count() < 3.0)
-        SDL_Delay(10);
-#else
-    SDL_GL_SwapWindow(getSDLWindow());
-#endif
     GL_CHECK_ERROR(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }
 
@@ -474,17 +406,8 @@ unsigned int RendererOpenGL::createTexture(const unsigned int texUnit,
                                     GL_UNSIGNED_BYTE, data));
     }
     else {
-#if defined(__IOS__)
-        if (type == TextureType::RED)
-            GL_CHECK_ERROR(glTexImage2D(GL_TEXTURE_2D, 0, textureType, width, height, 0,
-                                        textureType, GL_UNSIGNED_BYTE, data));
-        else
-            GL_CHECK_ERROR(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, textureType,
-                                        GL_UNSIGNED_BYTE, data));
-#else
         GL_CHECK_ERROR(glTexImage2D(GL_TEXTURE_2D, 0, textureType, width, height, 0, textureType,
                                     GL_UNSIGNED_BYTE, data));
-#endif
     }
 #else
     GL_CHECK_ERROR(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, textureType,
@@ -708,18 +631,6 @@ void RendererOpenGL::shaderPostprocessing(unsigned int shaders,
     if (shaders & Shader::SCANLINES)
         shaderList.push_back(Shader::SCANLINES);
 
-#if defined(__ANDROID__)
-    // For unknown reasons some specific Android devices won't be able to render directly
-    // from screen to a texture using one FBO and then read the pixels from there, instead
-    // they need to render twice to both FBOs. This hack simply adds another core shader pass
-    // to work around this issue. It only happens when the background is dimmed, i.e. when
-    // opening a menu and when the blur has also been disabled.
-    bool renderHack {false};
-    if (textureRGBA && shaderList.size() == 1) {
-        renderHack = true;
-        shaderList.push_back(Shader::CORE);
-    }
-#endif
 
     setMatrix(getIdentity());
     bindTexture(mPostProcTexture1, 0);
@@ -806,12 +717,6 @@ void RendererOpenGL::shaderPostprocessing(unsigned int shaders,
             drawTriangleStrips(vertices, 4, BlendFactor::SRC_ALPHA,
                                BlendFactor::ONE_MINUS_SRC_ALPHA);
 
-#if defined(__ANDROID__)
-            if (renderHack) {
-                vertices->dimming = 1.0f;
-                vertices->shaderFlags ^= ShaderFlags::CONVERT_PIXEL_FORMAT;
-            }
-#endif
             if (shaderCalls == 1)
                 break;
 

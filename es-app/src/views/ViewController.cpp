@@ -37,9 +37,6 @@
 #include "views/GamelistView.h"
 #include "views/SystemView.h"
 
-#if defined(__ANDROID__)
-#include "utils/PlatformUtilAndroid.h"
-#endif
 
 ViewController::ViewController() noexcept
     : mRenderer {Renderer::getInstance()}
@@ -70,116 +67,94 @@ ViewController* ViewController::getInstance()
 
 void ViewController::setMenuColors()
 {
-    if (Settings::getInstance()->getString("MenuColorScheme") == "light") {
-        mMenuColorFrame = 0xEFEFEFFF;
-        mMenuColorFrameLaunchScreen = 0xDFDFDFFF;
-        mMenuColorFrameBusyComponent = 0xF5F5F5FF;
-        mMenuColorPanelDimmed = 0x00000009;
+    // The three Arcadia colour schemes (see DESIGN.md): ink (default), oled and paper. The values of older
+    // settings ("dark", "darkred", "light") are mapped to the nearest one.
+    std::string scheme {Settings::getInstance()->getString("MenuColorScheme")};
+    if (scheme == "light")
+        scheme = "paper";
+    else if (scheme != "oled" && scheme != "paper")
+        scheme = "ink";
 
-        mMenuColorTitle = 0x555555FF;
-        mMenuColorPrimary = 0x777777FF;
-        mMenuColorSecondary = 0x888888FF;
-        mMenuColorTertiary = 0x666666FF;
-        mMenuColorRed = 0x992222FF;
-        mMenuColorGreen = 0x449944FF;
-        mMenuColorBlue = 0x222299FF;
+    // Shared by the two dark schemes.
+    mMenuColorTitle = 0xF1F3F9FF;
+    mMenuColorPrimary = 0xDDE1EBFF;
+    mMenuColorSecondary = 0x9AA1B4FF;
+    mMenuColorTertiary = 0x9AA1B4FF;
+    mMenuColorRed = 0xE5645FFF;
+    mMenuColorGreen = 0x6FCF97FF;
+    mMenuColorBlue = 0x5AA9FFFF;
+    mMenuColorBusyComponent = 0x9AA1B4FF;
+    mMenuColorScrollIndicators = 0x5D6477FF;
+    mMenuColorPopupText = 0xDDE1EBFF;
+    mMenuColorButtonFocused = 0x5AA9FFFF;
+    mMenuColorButtonTextFocused = 0x10121AFF;
+    mMenuColorButtonTextUnfocused = 0xDDE1EBFF;
+    mMenuColorButtonFlatFocused = 0x5AA9FFFF;
+    mMenuColorKeyboardModifier = 0xE5645FFF;
+    mMenuColorKeyboardCursorFocused = 0x5AA9FFFF;
+    mMenuColorKeyboardCursorUnfocused = 0x5D6477FF;
+    mMenuColorKeyboardText = 0xDDE1EB00;
+    mMenuColorTextInputFrameFocused = 0x5AA9FFFF;
+    mMenuColorSliderKnobDisabled = 0x3A3F52FF;
+    mMenuColorDateTimeEditMarker = 0xFFFFFF22;
+    mMenuColorDetectDeviceHeld = 0xDDE1EB00;
 
-        mMenuColorSelector = 0xFFFFFFFF;
-        mMenuColorSeparators = 0xC6C7C6FF;
-        mMenuColorBusyComponent = 0xB8B8B8FF;
-        mMenuColorScrollIndicators = 0x888888FF;
-        mMenuColorPopupText = 0x444444FF;
-
-        mMenuColorButtonFocused = 0x777777FF;
-        mMenuColorButtonTextFocused = 0xFFFFFFFF;
-        mMenuColorButtonTextUnfocused = 0x777777FF;
-        mMenuColorButtonFlatFocused = 0x878787FF;
-        mMenuColorButtonFlatUnfocused = 0xDADADAFF;
-
-        mMenuColorKeyboardModifier = 0xF26767FF;
-        mMenuColorKeyboardCursorFocused = 0x777777FF;
-        mMenuColorKeyboardCursorUnfocused = 0xC7C7C7FF;
-        mMenuColorKeyboardText = 0x77777700;
-        mMenuColorTextInputFrameFocused = 0xFFFFFFFF;
-        mMenuColorTextInputFrameUnfocused = 0xFFFFFFFF;
-
-        mMenuColorSliderKnobDisabled = 0xC9C9C9FF;
-        mMenuColorDateTimeEditMarker = 0x00000022;
-        mMenuColorDetectDeviceHeld = 0x44444400;
+    if (scheme == "ink") {
+        mMenuColorFrame = 0x1B1E2BFF;
+        mMenuColorFrameLaunchScreen = 0x10121AFF;
+        mMenuColorFrameBusyComponent = 0x10121AFF;
+        mMenuColorPanelDimmed = 0x00000040;
+        mMenuColorSelector = 0x2E5282FF;
+        mMenuColorSeparators = 0x2D3140FF;
+        mMenuColorButtonFlatUnfocused = 0x20232FFF;
+        mMenuColorTextInputFrameUnfocused = 0x20232FFF;
     }
-    else if (Settings::getInstance()->getString("MenuColorScheme") == "darkred") {
-        mMenuColorFrame = 0x191919FF;
-        mMenuColorFrameLaunchScreen = 0x121212FF;
+    else if (scheme == "oled") {
+        mMenuColorFrame = 0x0A0B0FFF;
+        mMenuColorFrameLaunchScreen = 0x000000FF;
         mMenuColorFrameBusyComponent = 0x000000FF;
-        mMenuColorPanelDimmed = 0x00000024;
-
-        mMenuColorTitle = 0x909090FF;
-        mMenuColorPrimary = 0x808080FF;
-        mMenuColorSecondary = 0x939393FF;
-        mMenuColorTertiary = 0x909090FF;
-        mMenuColorRed = 0xCA3E3EFF;
-        mMenuColorGreen = 0x449944FF;
-        mMenuColorBlue = 0x4757ddff;
-
-        mMenuColorSelector = 0x461816FF;
-        mMenuColorSeparators = 0x303030FF;
-        mMenuColorBusyComponent = 0x888888FF;
-        mMenuColorScrollIndicators = 0x707070FF;
-        mMenuColorPopupText = 0xBBBBBBFF;
-
-        mMenuColorButtonFocused = 0x050505FF;
-        mMenuColorButtonTextFocused = 0xAFAFAFFF;
-        mMenuColorButtonTextUnfocused = 0x808080FF;
-        mMenuColorButtonFlatFocused = 0x090909FF;
-        mMenuColorButtonFlatUnfocused = 0x242424FF;
-
-        mMenuColorKeyboardModifier = 0xC62F2FFF;
-        mMenuColorKeyboardCursorFocused = 0xAAAAAAFF;
-        mMenuColorKeyboardCursorUnfocused = 0x666666FF;
-        mMenuColorKeyboardText = 0x92929200;
-        mMenuColorTextInputFrameFocused = 0x090909FF;
-        mMenuColorTextInputFrameUnfocused = 0x242424FF;
-
-        mMenuColorSliderKnobDisabled = 0x393939FF;
-        mMenuColorDateTimeEditMarker = 0xFFFFFF22;
-        mMenuColorDetectDeviceHeld = 0x99999900;
+        mMenuColorPanelDimmed = 0x00000040;
+        mMenuColorSelector = 0x1E3A5FFF;
+        mMenuColorSeparators = 0x23262FFF;
+        mMenuColorButtonFlatUnfocused = 0x14161DFF;
+        mMenuColorTextInputFrameUnfocused = 0x14161DFF;
     }
     else {
-        mMenuColorFrame = 0x191919FF;
-        mMenuColorFrameLaunchScreen = 0x121212FF;
-        mMenuColorFrameBusyComponent = 0x000000FF;
-        mMenuColorPanelDimmed = 0x00000024;
+        mMenuColorFrame = 0xE2E5EEFF;
+        mMenuColorFrameLaunchScreen = 0xD6DAE6FF;
+        mMenuColorFrameBusyComponent = 0xEEF0F5FF;
+        mMenuColorPanelDimmed = 0x00000012;
 
-        mMenuColorTitle = 0x909090FF;
-        mMenuColorPrimary = 0x808080FF;
-        mMenuColorSecondary = 0x939393FF;
-        mMenuColorTertiary = 0x909090FF;
-        mMenuColorRed = 0xCA3E3EFF;
-        mMenuColorGreen = 0x449944FF;
-        mMenuColorBlue = 0x4757ddff;
+        mMenuColorTitle = 0x14151BFF;
+        mMenuColorPrimary = 0x2B3040FF;
+        mMenuColorSecondary = 0x4D5468FF;
+        mMenuColorTertiary = 0x4D5468FF;
+        mMenuColorRed = 0xB3261EFF;
+        mMenuColorGreen = 0x2E7D4FFF;
+        mMenuColorBlue = 0x1F6FD1FF;
 
-        mMenuColorSelector = 0x000000FF;
-        mMenuColorSeparators = 0x303030FF;
-        mMenuColorBusyComponent = 0x888888FF;
-        mMenuColorScrollIndicators = 0x707070FF;
-        mMenuColorPopupText = 0xBBBBBBFF;
+        mMenuColorSelector = 0xB8D4F5FF;
+        mMenuColorSeparators = 0xC2C7D6FF;
+        mMenuColorBusyComponent = 0x4D5468FF;
+        mMenuColorScrollIndicators = 0x7D8498FF;
+        mMenuColorPopupText = 0x14151BFF;
 
-        mMenuColorButtonFocused = 0x050505FF;
-        mMenuColorButtonTextFocused = 0xAFAFAFFF;
-        mMenuColorButtonTextUnfocused = 0x808080FF;
-        mMenuColorButtonFlatFocused = 0x090909FF;
-        mMenuColorButtonFlatUnfocused = 0x242424FF;
+        mMenuColorButtonFocused = 0x1F6FD1FF;
+        mMenuColorButtonTextFocused = 0xFFFFFFFF;
+        mMenuColorButtonTextUnfocused = 0x2B3040FF;
+        mMenuColorButtonFlatFocused = 0x1F6FD1FF;
+        mMenuColorButtonFlatUnfocused = 0xD6DAE6FF;
 
-        mMenuColorKeyboardModifier = 0xC62F2FFF;
-        mMenuColorKeyboardCursorFocused = 0xAAAAAAFF;
-        mMenuColorKeyboardCursorUnfocused = 0x666666FF;
-        mMenuColorKeyboardText = 0x92929200;
-        mMenuColorTextInputFrameFocused = 0x090909FF;
-        mMenuColorTextInputFrameUnfocused = 0x242424FF;
+        mMenuColorKeyboardModifier = 0xB3261EFF;
+        mMenuColorKeyboardCursorFocused = 0x1F6FD1FF;
+        mMenuColorKeyboardCursorUnfocused = 0x7D8498FF;
+        mMenuColorKeyboardText = 0x2B304000;
+        mMenuColorTextInputFrameFocused = 0x1F6FD1FF;
+        mMenuColorTextInputFrameUnfocused = 0xEEF0F5FF;
 
-        mMenuColorSliderKnobDisabled = 0x393939FF;
-        mMenuColorDateTimeEditMarker = 0xFFFFFF22;
-        mMenuColorDetectDeviceHeld = 0x99999900;
+        mMenuColorSliderKnobDisabled = 0xB5BACBFF;
+        mMenuColorDateTimeEditMarker = 0x00000022;
+        mMenuColorDetectDeviceHeld = 0x2B304000;
     }
 }
 
@@ -243,14 +218,6 @@ void ViewController::invalidSystemsFileDialog()
 
 void ViewController::noGamesDialog()
 {
-#if defined(__ANDROID__) || defined(__IOS__)
-    mNoGamesErrorMessage = _("NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR "
-                             "PLACE THEM MANUALLY IN THE CONFIGURED ROM DIRECTORY. "
-                             "OPTIONALLY YOU CAN GENERATE THE ROM DIRECTORY STRUCTURE "
-                             "WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING "
-                             "SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. "
-                             "THIS IS THE CONFIGURED ROM DIRECTORY:\n");
-#else
     mNoGamesErrorMessage = _("NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR "
                              "PLACE THEM MANUALLY IN THE CURRENTLY CONFIGURED ROM "
                              "DIRECTORY. YOU CAN ALSO CHANGE THE ROM PATH AND "
@@ -258,26 +225,14 @@ void ViewController::noGamesDialog()
                              "WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING "
                              "SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. "
                              "THIS IS THE CONFIGURED ROM DIRECTORY:\n");
-#endif
 
-#if defined(_WIN64)
-    mRomDirectory = Utils::String::replace(FileData::getROMDirectory(), "/", "\\");
-#else
     mRomDirectory = FileData::getROMDirectory();
-#endif
 
     auto gameImporterUpdateFunc = [&]() {
         delete mNoGamesMessageBox;
         ViewController::getInstance()->rescanROMDirectory();
     };
 
-#if defined(__ANDROID__) || defined(__IOS__)
-    mNoGamesMessageBox = new GuiMsgBox(
-        mNoGamesErrorMessage + mRomDirectory, _("IMPORT"),
-        [this, gameImporterUpdateFunc] {
-            mWindow->pushGui(new GuiGameImporter(_("GAME IMPORTER"), gameImporterUpdateFunc));
-        },
-#else
     mNoGamesMessageBox = new GuiMsgBox(
         mNoGamesErrorMessage + mRomDirectory, _("IMPORT"),
         [this, gameImporterUpdateFunc] {
@@ -286,11 +241,7 @@ void ViewController::noGamesDialog()
         _("CHANGE"),
         [this] {
             std::string currentROMDirectory;
-#if defined(_WIN64)
-            currentROMDirectory = Utils::String::replace(FileData::getROMDirectory(), "/", "\\");
-#else
             currentROMDirectory = FileData::getROMDirectory();
-#endif
             if (Settings::getInstance()->getBool("VirtualKeyboard")) {
                 mWindow->pushGui(new GuiTextEditKeyboardPopup(
                     0.0f, _("ENTER ROM DIRECTORY PATH"), currentROMDirectory,
@@ -299,12 +250,7 @@ void ViewController::noGamesDialog()
                             Settings::getInstance()->setString(
                                 "ROMDirectory", Utils::String::trim(newROMDirectory));
                             Settings::getInstance()->saveFile();
-#if defined(_WIN64)
-                            mRomDirectory =
-                                Utils::String::replace(FileData::getROMDirectory(), "/", "\\");
-#else
                             mRomDirectory = FileData::getROMDirectory();
-#endif
                             mNoGamesMessageBox->changeText(mNoGamesErrorMessage + mRomDirectory);
                             mWindow->pushGui(new GuiMsgBox(
                                 _("ROM DIRECTORY SETTING SAVED, RESTART "
@@ -327,12 +273,7 @@ void ViewController::noGamesDialog()
                         Settings::getInstance()->setString("ROMDirectory",
                                                            Utils::String::trim(newROMDirectory));
                         Settings::getInstance()->saveFile();
-#if defined(_WIN64)
-                        mRomDirectory =
-                            Utils::String::replace(FileData::getROMDirectory(), "/", "\\");
-#else
                         mRomDirectory = FileData::getROMDirectory();
-#endif
                         mNoGamesMessageBox->changeText(mNoGamesErrorMessage + mRomDirectory);
                         mWindow->pushGui(new GuiMsgBox(
                             _("ROM DIRECTORY SETTING SAVED, RESTART "
@@ -348,7 +289,6 @@ void ViewController::noGamesDialog()
                     _("CLEAR (LEAVE BLANK TO RESET TO DEFAULT PATH)")));
             }
         },
-#endif // __ANDROID__
         _("CREATE"),
         [this] {
             mWindow->pushGui(new GuiMsgBox(
@@ -392,17 +332,10 @@ void ViewController::noGamesDialog()
             quit.type = SDL_QUIT;
             SDL_PushEvent(&quit);
         },
-#if defined(__ANDROID__) || defined(__IOS__)
-        "", nullptr, nullptr, true, false,
-        (mRenderer->getIsVerticalOrientation() ?
-             0.90f :
-             0.58f * (1.778f / mRenderer->getScreenAspectRatio())));
-#else
         nullptr, true, false,
         (mRenderer->getIsVerticalOrientation() ?
              0.90f :
              0.62f * (1.778f / mRenderer->getScreenAspectRatio())));
-#endif
 
     mWindow->pushGui(mNoGamesMessageBox);
 }
@@ -1059,7 +992,7 @@ void ViewController::launch(FileData* game)
     if (durationString != "disabled" && durationString != "popup")
         mWindow->displayLaunchScreen(game->getSourceFileData());
 
-#if defined(__ANDROID__) || defined(DEINIT_ON_LAUNCH)
+#if defined(DEINIT_ON_LAUNCH)
     if (durationString != "disabled")
         NavigationSounds::getInstance().playThemeNavigationSound(LAUNCHSOUND);
 #else
@@ -1071,12 +1004,8 @@ void ViewController::launch(FileData* game)
     // During this time period, all user input is blocked.
     setAnimation(new LambdaAnimation([](float t) {}, duration), 0, [this, game] {
         game->launchGame();
-#if defined(__ANDROID__)
-        AudioManager::getInstance().stop();
-#else
         if (!Settings::getInstance()->getBool("RunInBackground"))
             AudioManager::getInstance().stop();
-#endif
         // If the launch screen is disabled then this will do nothing.
         mWindow->closeLaunchScreen();
         onFileChanged(game, true);
@@ -1254,12 +1183,10 @@ bool ViewController::input(InputConfig* config, Input input)
             mWindow->getGameLaunched()->setPlayMetadata(true);
             mWindow->setGameLaunched(nullptr);
         }
-#if !defined(__ANDROID__)
         // Filter out the "a" button so the game is not restarted if there was such a button press
         // queued when leaving the game.
         if (config->isMappedTo("a", input) && input.value != 0)
             return true;
-#endif
         // Trigger the game-end event.
         auto& eventParams = mWindow->getGameEndEventParams();
         if (eventParams.size() == 5) {
@@ -1409,13 +1336,6 @@ void ViewController::preload()
                 SystemData::sStartupExitSignal = true;
                 return;
             }
-#if defined(__ANDROID__)
-            if (event.type == SDL_WINDOWEVENT &&
-                event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-                setWindowSizeChanged(static_cast<int>(event.window.data1),
-                                     static_cast<int>(event.window.data2));
-            }
-#endif
         };
 
         const std::string entryType {(*it)->isCustomCollection() ? "custom collection" : "system"};
@@ -1596,23 +1516,6 @@ void ViewController::reloadAll()
 
 void ViewController::setWindowSizeChanged(const int width, const int height)
 {
-#if defined(__ANDROID__)
-    std::pair<int, int> windowSize {Utils::Platform::Android::getWindowSize()};
-    const int screenRotation {Settings::getInstance()->getInt("ScreenRotate")};
-
-    if (screenRotation == 90 || screenRotation == 270)
-        windowSize = std::make_pair(windowSize.second, windowSize.first);
-
-    if (windowSize.first == static_cast<int>(mRenderer->getScreenWidth()) &&
-        windowSize.second == static_cast<int>(mRenderer->getScreenHeight())) {
-        mWindowChangedWidth = 0;
-        mWindowChangedHeight = 0;
-    }
-    else {
-        mWindowChangedWidth = windowSize.first;
-        mWindowChangedHeight = windowSize.second;
-    }
-#endif
 }
 
 void ViewController::checkWindowSizeChanged()
@@ -1658,9 +1561,6 @@ void ViewController::checkWindowSizeChanged()
         noGamesDialog();
     }
 
-#if defined(__ANDROID__)
-    InputOverlay::getInstance().init();
-#endif
 }
 
 void ViewController::rescanROMDirectory()

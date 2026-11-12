@@ -12,13 +12,7 @@
 // Disable the CImg display capabilities.
 #define cimg_display 0
 
-#if defined(__HAIKU__)
-#include <sys/time.h>
-#endif
 
-#if defined(__IOS__)
-#define cimg_no_system_calls
-#endif
 
 #include "CImg.h"
 

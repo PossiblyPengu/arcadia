@@ -257,13 +257,25 @@ void ComponentList::render(const glm::mat4& parentTrans)
     // Move camera the scroll distance.
     trans = glm::translate(trans, glm::vec3 {0.0f, -mCameraOffset, 0.0f});
 
-    const bool darkColorScheme {Settings::getInstance()->getString("MenuColorScheme") != "light"};
+    const bool darkColorScheme {Settings::getInstance()->getString("MenuColorScheme") != "paper" &&
+                                Settings::getInstance()->getString("MenuColorScheme") != "light"};
 
     // Draw selector bar if we're using the dark color scheme.
     if (mFocused && mOpacity == 1.0f && darkColorScheme) {
         mRenderer->setMatrix(trans);
         mRenderer->drawRect(0.0f, mSelectorBarOffset, mSize.x, mRowHeight, mMenuColorSelector,
                             mMenuColorSelector, false, mOpacity, mDimming);
+        // The focus ring (DESIGN.md): a white outline round the focused row, drawn inside it so nothing shifts.
+        const float ring {std::max(2.0f, std::round(mRenderer->getScreenHeight() * 0.004f))};
+        const unsigned int white {0xFFFFFFFF};
+        mRenderer->drawRect(0.0f, mSelectorBarOffset, mSize.x, ring, white, white, false, mOpacity,
+                            mDimming);
+        mRenderer->drawRect(0.0f, mSelectorBarOffset + mRowHeight - ring, mSize.x, ring, white,
+                            white, false, mOpacity, mDimming);
+        mRenderer->drawRect(0.0f, mSelectorBarOffset, ring, mRowHeight, white, white, false,
+                            mOpacity, mDimming);
+        mRenderer->drawRect(mSize.x - ring, mSelectorBarOffset, ring, mRowHeight, white, white,
+                            false, mOpacity, mDimming);
     }
 
     // Draw our entries.

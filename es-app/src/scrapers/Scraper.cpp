@@ -18,9 +18,6 @@
 #include "utils/LocalizationUtil.h"
 #include "utils/StringUtil.h"
 
-#if defined(_WIN64)
-#include "views/ViewController.h"
-#endif
 
 #include <FreeImage.h>
 #include <cmath>
@@ -53,15 +50,8 @@ std::unique_ptr<ScraperSearchHandle> startScraperSearch(const ScraperSearchParam
         LOG(LogDebug) << "Scraper::startScraperSearch(): Scraping system \""
                       << params.system->getName()
                       << (params.game->getType() == FOLDER ? "\", folder \"" : "\", game file \"")
-#if defined(_WIN64)
-                      << Utils::String::replace(
-                             params.game->getPath().substr(
-                                 params.game->getSystemEnvData()->mStartPath.length() + 1),
-                             "/", "\\")
-#else
                       << params.game->getPath().substr(
                              params.game->getSystemEnvData()->mStartPath.length() + 1)
-#endif
                       << "\"";
         scraper_request_funcs.at(name)(params, handle->mRequestQueue, handle->mResults);
     }
@@ -272,10 +262,6 @@ MDResolveHandle::MDResolveHandle(const ScraperSearchResult& result,
         mediaFileInfo.existingMediaFile = search.game->getVideoPath();
         mediaFileInfo.resizeFile = false;
         scrapeFiles.push_back(mediaFileInfo);
-#if defined(_WIN64)
-        // Required due to the idiotic file locking that exists on this operating system.
-        ViewController::getInstance()->stopViewVideos();
-#endif
     }
     if (Settings::getInstance()->getBool("ScrapeManuals") && result.manualUrl != "") {
         mediaFileInfo.fileURL = result.manualUrl;
@@ -336,21 +322,12 @@ MDResolveHandle::MDResolveHandle(const ScraperSearchResult& result,
                 content.size() < 80) {
                 LOG(LogWarning)
                     << "ScreenScraper: Image seems to be invalid, not saving it to disk: \""
-#if defined(_WIN64)
-                    << Utils::String::replace(filePath, "/", "\\") << "\"";
-#else
                     << filePath << "\"";
-#endif
                 setStatus(ASYNC_DONE);
                 return;
             }
 
-#if defined(_WIN64)
-            std::ofstream stream(Utils::String::stringToWideString(filePath).c_str(),
-                                 std::ios_base::out | std::ios_base::binary);
-#else
             std::ofstream stream(filePath, std::ios_base::out | std::ios_base::binary);
-#endif
             if (!stream || stream.bad()) {
                 setError(_("Failed to open path for writing media file.") + " \n" +
                              _("Permission problems?"),
@@ -448,11 +425,7 @@ void MediaDownloadHandle::update()
             return;
         LOG(LogWarning) << "Scraper: Server returned HTTP error code 404 (resource not found), "
                            "skipping \""
-#if defined(_WIN64)
-                        << Utils::String::replace(mSavePath, "/", "\\") << "\"";
-#else
                         << mSavePath << "\"";
-#endif
         setStatus(ASYNC_DONE);
         return;
     }
@@ -534,11 +507,7 @@ void MediaDownloadHandle::update()
         if (emptyImage) {
             LOG(LogWarning) << "ScreenScraper: Image does not seem to contain any data, not saving "
                                "it to disk: \""
-#if defined(_WIN64)
-                            << Utils::String::replace(mSavePath, "/", "\\") << "\"";
-#else
                             << mSavePath << "\"";
-#endif
             setStatus(ASYNC_DONE);
             return;
         }
@@ -566,21 +535,12 @@ void MediaDownloadHandle::update()
 
     if (Settings::getInstance()->getString("Scraper") == "screenscraper" && content.size() < 80) {
         LOG(LogWarning) << "ScreenScraper: File seems to be invalid, not saving it to disk: \""
-#if defined(_WIN64)
-                        << Utils::String::replace(mSavePath, "/", "\\") << "\"";
-#else
                         << mSavePath << "\"";
-#endif
         setStatus(ASYNC_DONE);
         return;
     }
 
-#if defined(_WIN64)
-    std::ofstream stream(Utils::String::stringToWideString(mSavePath).c_str(),
-                         std::ios_base::out | std::ios_base::binary);
-#else
     std::ofstream stream(mSavePath, std::ios_base::out | std::ios_base::binary);
-#endif
     if (!stream || stream.bad()) {
         setError(_("Failed to open path for writing media file.") + " \n" +
                      _("Permission problems?"),
@@ -596,20 +556,10 @@ void MediaDownloadHandle::update()
     }
 
     if (mMediaType == "manuals") {
-#if defined(_WIN64)
-        LOG(LogDebug) << "Scraper::update(): Saving game manual \""
-                      << Utils::String::replace(mSavePath, "/", "\\") << "\"";
-#else
         LOG(LogDebug) << "Scraper::update(): Saving game manual \"" << mSavePath << "\"";
-#endif
     }
     else if (mMediaType == "videos") {
-#if defined(_WIN64)
-        LOG(LogDebug) << "Scraper::update(): Saving video \""
-                      << Utils::String::replace(mSavePath, "/", "\\") << "\"";
-#else
         LOG(LogDebug) << "Scraper::update(): Saving video \"" << mSavePath << "\"";
-#endif
     }
 
     // Resize it.
@@ -647,15 +597,9 @@ bool resizeImage(const std::string& path, const std::string& mediaType)
 
     // Detect the file format.
 
-#if defined(_WIN64)
-    format = FreeImage_GetFileTypeU(Utils::String::stringToWideString(path).c_str(), 0);
-    if (format == FIF_UNKNOWN)
-        format = FreeImage_GetFIFFromFilenameU(Utils::String::stringToWideString(path).c_str());
-#else
     format = FreeImage_GetFileType(path.c_str(), 0);
     if (format == FIF_UNKNOWN)
         format = FreeImage_GetFIFFromFilename(path.c_str());
-#endif
     if (format == FIF_UNKNOWN) {
         LOG(LogError) << "Could not detect filetype for image \"" << path << "\"!";
         return false;
@@ -663,11 +607,7 @@ bool resizeImage(const std::string& path, const std::string& mediaType)
 
     // Make sure we can read this format, and if so, then load it.
     if (FreeImage_FIFSupportsReading(format)) {
-#if defined(_WIN64)
-        image = FreeImage_LoadU(format, Utils::String::stringToWideString(path).c_str());
-#else
         image = FreeImage_Load(format, path.c_str());
-#endif
     }
     else {
         LOG(LogError) << "File format not supported for image \"" << path << "\"";
@@ -680,14 +620,8 @@ bool resizeImage(const std::string& path, const std::string& mediaType)
     // If the image is smaller than (or the same size as) maxWidth and maxHeight, then don't
     // do any scaling. It doesn't make sense to upscale the image and waste disk space.
     if (maxWidth >= width && maxHeight >= height) {
-#if defined(_WIN64)
-        LOG(LogDebug) << "Scraper::resizeImage(): Saving image \""
-                      << Utils::String::replace(path, "/", "\\") << "\" at its original resolution "
-                      << width << "x" << height;
-#else
         LOG(LogDebug) << "Scraper::resizeImage(): Saving image \"" << path
                       << "\" at its original resolution " << width << "x" << height;
-#endif
         FreeImage_Unload(image);
         return true;
     }
@@ -717,26 +651,15 @@ bool resizeImage(const std::string& path, const std::string& mediaType)
         return false;
     }
 
-#if defined(_WIN64)
-    bool saved {FreeImage_SaveU(format, imageRescaled,
-                                Utils::String::stringToWideString(path).c_str()) != 0};
-#else
     bool saved {FreeImage_Save(format, imageRescaled, path.c_str()) != 0};
-#endif
     FreeImage_Unload(imageRescaled);
 
     if (!saved) {
         LOG(LogError) << "Failed to save resized image";
     }
     else {
-#if defined(_WIN64)
-        LOG(LogDebug) << "Scraper::resizeImage(): Downscaled image \""
-                      << Utils::String::replace(path, "/", "\\") << "\" from " << width << "x"
-                      << height << " to " << maxWidth << "x" << maxHeight;
-#else
         LOG(LogDebug) << "Scraper::resizeImage(): Downscaled image \"" << path << "\" from "
                       << width << "x" << height << " to " << maxWidth << "x" << maxHeight;
-#endif
     }
 
     return saved;
@@ -760,15 +683,6 @@ std::string getSaveAsPath(const ScraperSearchParams& params,
     if (!Utils::FileSystem::exists(path))
         Utils::FileSystem::createDirectory(path);
 
-#if defined(__ANDROID__)
-    if (!Utils::FileSystem::exists(path + ".nomedia")) {
-        LOG(LogInfo) << "Creating \"no media\" file \"" << path + ".nomedia" << "\"...";
-        Utils::FileSystem::createEmptyFile(path + ".nomedia");
-        if (!Utils::FileSystem::exists(path + ".nomedia")) {
-            LOG(LogWarning) << "Couldn't create file, permission problems?";
-        }
-    }
-#endif
 
     path.append(systemsubdirectory)
         .append("/")

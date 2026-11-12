@@ -174,7 +174,7 @@ void Settings::setDefaults()
     mStringMap["StartupView"] = {"system", "system"};
     mStringMap["SystemsSorting"] = {"default", "default"};
     mStringMap["DefaultSortOrder"] = {"name, ascending", "name, ascending"};
-    mStringMap["MenuColorScheme"] = {"dark", "dark"};
+    mStringMap["MenuColorScheme"] = {"ink", "ink"};
     mStringMap["MenuOpeningEffect"] = {"scale-up", "scale-up"};
     mStringMap["LaunchScreenDuration"] = {"normal", "normal"};
     mStringMap["UIMode"] = {"full", "full"};
@@ -232,9 +232,6 @@ void Settings::setDefaults()
     mBoolMap["ShowHelpPrompts"] = {true, true};
 
     // Sound settings.
-#if defined(__ANDROID__)
-    mStringMap["AudioDriver"] = {"openslES", "openslES"};
-#endif
     mIntMap["SoundVolumeNavigation"] = {70, 70};
     mIntMap["SoundVolumeVideos"] = {80, 80};
     mBoolMap["ViewsVideoAudio"] = {true, true};
@@ -244,12 +241,6 @@ void Settings::setDefaults()
 
     // Input device settings.
     mStringMap["InputControllerType"] = {"xbox", "xbox"};
-#if defined(__ANDROID__) || defined(__IOS__)
-    mStringMap["InputTouchOverlaySize"] = {"medium", "medium"};
-    mStringMap["InputTouchOverlayOpacity"] = {"normal", "normal"};
-    mIntMap["InputTouchOverlayFadeTime"] = {6, 6};
-    mBoolMap["InputTouchOverlay"] = {true, true};
-#endif
     mBoolMap["InputOnlyFirstController"] = {false, false};
     mBoolMap["InputSwapButtons"] = {false, false};
     mBoolMap["InputIgnoreKeyboard"] = {false, false};
@@ -263,35 +254,20 @@ void Settings::setDefaults()
     mBoolMap["FavStarCustom"] = {false, false};
 
     // Other settings.
-#if !defined(__IOS__)
     mStringMap["MediaDirectory"] = {"", ""};
-#endif
     mIntMap["MaxPlayTimeTracking"] = {8, 8};
     mIntMap["MaxVRAM"] = {512, 512};
 #if !defined(USE_OPENGLES)
     mIntMap["AntiAliasing"] = {0, 0};
 #endif
-#if !defined(__ANDROID__) && !defined(__IOS__)
     mIntMap["DisplayIndex"] = {1, 1};
-#endif
     mIntMap["ScreenRotate"] = {0, 0};
-#if defined(__APPLE__)
-    mStringMap["KeyboardQuitShortcut"] = {"CmdQ", "CmdQ"};
-#else
     mStringMap["KeyboardQuitShortcut"] = {"AltF4", "AltF4"};
-#endif
     mStringMap["SaveGamelistsMode"] = {"always", "always"};
     mStringMap["ApplicationUpdaterFrequency"] = {"always", "always"};
     mStringMap["ApplicationUpdaterDownloadDirectory"] = {"", ""};
-#if !defined(__ANDROID__)
     mBoolMap["ApplicationUpdaterPrereleases"] = {false, false};
-#endif
-#if defined(_WIN64)
-    mBoolMap["HideTaskbar"] = {false, false};
-#endif
-#if !defined(__ANDROID__)
     mBoolMap["RunInBackground"] = {false, false};
-#endif
 #if defined(VIDEO_HW_DECODING)
     mBoolMap["VideoHardwareDecoding"] = {false, false};
 #endif
@@ -303,43 +279,22 @@ void Settings::setDefaults()
     mBoolMap["AlternativeEmulatorPerGame"] = {true, true};
     mBoolMap["ShowHiddenFiles"] = {true, true};
     mBoolMap["ShowHiddenGames"] = {true, true};
-#if defined(__ANDROID__)
-    mBoolMap["LaunchOnOtherScreen"] = {false, false};
-#endif
-#if !defined(__IOS__)
     mBoolMap["CustomEventScripts"] = {true, true};  // on by default: the Deck setup (save sync) uses them
     mBoolMap["CustomEventScriptsBrowsing"] = {false, false};
-#endif
     mBoolMap["ParseGamelistOnly"] = {false, false};
     mBoolMap["MAMENameStripExtraInfo"] = {true, true};
-#if defined(__unix__) && !defined(__ANDROID__)
     mBoolMap["DisableComposition"] = {false, false};
-#endif
-#if defined(__ANDROID__)
-    mBoolMap["BackEventAppExit"] = {true, true};
-#endif
     mBoolMap["DebugMode"] = {false, false};
     mBoolMap["DisplayGPUStatistics"] = {false, false};
     mBoolMap["EnableMenuKidMode"] = {false, false};
 // macOS requires root privileges to reboot and power off so it doesn't make much
 // sense to enable this setting and menu entry for that operating system.
-#if !defined(__APPLE__) && !defined(__ANDROID__)
     mBoolMap["ShowQuitMenu"] = {false, false};
-#endif
 
     // Utilities -> Game Importer.
     mStringMap["ImporterTargetSystem"] = {"", ""};
     mStringMap["ImporterRemoveEntries"] = {"never", "never"};
-#if (defined(__linux__) || defined(__FreeBSD__)) && !defined(__ANDROID__)
     mBoolMap["ImporterStripSpecialChars"] = {false, false};
-#endif
-#if defined(__ANDROID__)
-    mStringMap["ImporterMediaTarget"] = {"screenshots", "screenshots"};
-    mBoolMap["ImporterImportMedia"] = {true, true};
-    mBoolMap["ImporterImportMediaAdditional"] = {true, true};
-    mBoolMap["ImporterImportMediaOverwrite"] = {false, false};
-    mBoolMap["ImporterGamesOnly"] = {false, false};
-#endif
 
     //
     // Settings configured via command-line arguments.
@@ -371,13 +326,9 @@ void Settings::setDefaults()
     mBoolMap["CreatePlaceholderSystemDirectories"] = {false, false};
     mBoolMap["SystemStatusDisplayAll"] = {false, false};
     mStringMap["OpenGLVersion"] = {"", ""};
-#if !defined(__ANDROID__) && !defined(__IOS__)
     mStringMap["ROMDirectory"] = {"", ""};
-#endif
     mStringMap["UIMode_passkey"] = {"uuddlrlrba", "uuddlrlrba"};
-#if !defined(__ANDROID__) && !defined(__IOS__)
     mStringMap["UserThemeDirectory"] = {"", ""};
-#endif
     mIntMap["LottieMaxFileCache"] = {150, 150};
     mIntMap["LottieMaxTotalCache"] = {1024, 1024};
     mIntMap["ScraperConnectionTimeout"] = {30, 30};
@@ -431,11 +382,7 @@ void Settings::saveFile()
         node.append_attribute("value").set_value(it->second.second.c_str());
     }
 
-#if defined(_WIN64)
-    doc.save_file(Utils::String::stringToWideString(path).c_str());
-#else
     doc.save_file(path.c_str());
-#endif
 
     Scripting::fireEvent("config-changed");
     Scripting::fireEvent("settings-changed");
@@ -449,11 +396,7 @@ void Settings::loadFile()
         return;
 
     pugi::xml_document doc;
-#if defined(_WIN64)
-    pugi::xml_parse_result result {doc.load_file(Utils::String::stringToWideString(path).c_str())};
-#else
     pugi::xml_parse_result result {doc.load_file(path.c_str())};
-#endif
     if (!result) {
         LOG(LogError) << "Couldn't parse the es_settings.xml file: " << result.description();
         return;

@@ -275,12 +275,7 @@ void GuiScraperMulti::doNextSearch()
 
     if (folderPath.size() >= 2) {
         folderPath.erase(0, 1);
-#if defined(_WIN64)
-        folderPath.push_back('\\');
-        folderPath = Utils::String::replace(folderPath, "/", "\\");
-#else
         folderPath.push_back('/');
-#endif
     }
 
     // Update subtitle.

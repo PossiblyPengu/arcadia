@@ -19,9 +19,6 @@
 #include <algorithm>
 #include <iostream>
 
-#if defined(_WIN64)
-#include <Windows.h>
-#endif
 
 namespace Utils
 {
@@ -56,9 +53,6 @@ namespace Utils
 
         std::string sCurrentLocale {"en_US"};
         float sMenuTitleScaleFactor {1.0f};
-#if defined(_WIN64)
-        unsigned long sLocaleID {0};
-#endif
 
         const char* pgettextBuiltin(const char* msgctxt, const char* msgid)
         {
@@ -91,33 +85,6 @@ namespace Utils
 
         std::pair<std::string, std::string> getLocale()
         {
-#if defined(_WIN64)
-            std::wstring localeNameWide(LOCALE_NAME_MAX_LENGTH, '\0');
-            if (GetUserDefaultLocaleName(&localeNameWide[0], LOCALE_NAME_MAX_LENGTH) == 0)
-                return std::make_pair("en", "US");
-
-            std::string localeName {Utils::String::wideStringToString(localeNameWide)};
-            localeName.erase(localeName.find('\0'));
-
-            // This should never happen, but who knows with Windows.
-            if (localeName.empty())
-                return std::make_pair("en", "US");
-
-            std::vector<std::string> localeVector;
-
-            // Of course Windows doesn't follow standards and names locales with dashes
-            // instead of underscores, such as "sv-SE" instead of "sv_SE". But who knows
-            // if this is consistent, so we check for underscores as an extra precaution.
-            if (localeName.find("_") != std::string::npos)
-                localeVector = Utils::String::delimitedStringToVector(localeName, "_");
-            else
-                localeVector = Utils::String::delimitedStringToVector(localeName, "-");
-
-            if (localeVector.size() == 1)
-                return std::make_pair(localeVector[0], "");
-            else
-                return std::make_pair(localeVector[0], localeVector[1]);
-#else
             // SDL_GetPreferredLocales() does not seem to always return accurate results
             // on Windows but for all other operating systems we use it.
             SDL_Locale* preferredLocales {SDL_GetPreferredLocales()};
@@ -132,7 +99,6 @@ namespace Utils
 
             SDL_free(preferredLocales);
             return std::make_pair(language, country);
-#endif
         }
 
         void setLocale()
@@ -254,21 +220,6 @@ namespace Utils
             if (objectPath.length() > localePath.length())
                 objectPath = objectPath.substr(0, objectPath.length() - localePath.length());
 
-#if defined(_WIN64)
-            _configthreadlocale(_DISABLE_PER_THREAD_LOCALE);
-            // Some workarounds as Windows can apparently never follow standards.
-            std::string localeTemp;
-            if (locale == "bs_BA")
-                localeTemp = "bs-Latn-BA";
-            else if (locale == "sr_RS")
-                localeTemp = "sr-Latn-RS";
-            else
-                localeTemp = locale;
-
-            sLocaleID = LocaleNameToLCID(Utils::String::stringToWideString(localeTemp).c_str(),
-                                         LOCALE_ALLOW_NEUTRAL_NAMES);
-            SetThreadLocale(sLocaleID);
-#else
             setenv("LANGUAGE", std::string {locale + ".UTF-8"}.c_str(), 1);
             setenv("LANG", std::string {locale + ".UTF-8"}.c_str(), 1);
             // For some bizarre reason we need to first set the locale to en_US.UTF-8 before
@@ -278,33 +229,12 @@ namespace Utils
             setlocale(LC_MESSAGES, std::string {"en_US.UTF-8"}.c_str());
 
             setlocale(LC_MESSAGES, std::string {locale + ".UTF-8"}.c_str());
-#endif
             textdomain(locale.c_str());
             bindtextdomain(locale.c_str(), objectPath.c_str());
             bind_textdomain_codeset(locale.c_str(), "UTF-8");
             sCurrentLocale = locale;
         }
 
-#if defined(_WIN64)
-        void setThreadLocale()
-        {
-            // This is essentially a workaround for what seems to be a bug in the libintl library
-            // where _configthreadlocale(_DISABLE_PER_THREAD_LOCALE) does not have the expected
-            // effect. If gettext() is called from a child thread and the string has not been
-            // translated already from the main thread then it will not get translated to the
-            // selected locale. If however the string is first translated on the main thread and
-            // then translated again from the child thread it works correctly. However, if calling
-            // SetThreadLocale() from the child thread before attempting any translations then
-            // everything behaves as expected which feels like a cleaner workaround than having
-            // to make every single translation from the main thread that we want to use in any
-            // child threads.
-
-            if (sLocaleID == 0)
-                return;
-
-            SetThreadLocale(sLocaleID);
-        }
-#endif
 
     } // namespace Localization
 

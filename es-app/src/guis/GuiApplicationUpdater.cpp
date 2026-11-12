@@ -59,14 +59,9 @@ GuiApplicationUpdater::GuiApplicationUpdater()
                                                     mMenuColorPrimary, ALIGN_LEFT);
     mGrid.setEntry(mProcessStep1, glm::ivec2 {1, 2}, false, true, glm::ivec2 {2, 1});
 
-#if defined(_WIN64)
-    const std::string step2Text {
-        Utils::String::replace(Utils::FileSystem::getParent(mDownloadPackageFilename), "/", "\\")};
-#else
     const std::string step2Text {mLinuxAppImage ?
                                      _("INSTALL PACKAGE") :
                                      Utils::FileSystem::getParent(mDownloadPackageFilename)};
-#endif
     mProcessStep2 = std::make_shared<TextComponent>(step2Text, Font::get(FONT_SIZE_MEDIUM),
                                                     mMenuColorPrimary, ALIGN_LEFT);
     mGrid.setEntry(mProcessStep2, glm::ivec2 {1, 3}, false, true, glm::ivec2 {2, 1});
@@ -122,13 +117,8 @@ GuiApplicationUpdater::GuiApplicationUpdater()
             _("CHANGE DIRECTORY"), _("change download directory"), [this]() {
                 if (mDownloading || mHasDownloaded)
                     return;
-#if defined(_WIN64)
-                std::string currentDownloadDirectory {Utils::String::replace(
-                    Utils::FileSystem::getParent(mDownloadPackageFilename), "/", "\\")};
-#else
                 std::string currentDownloadDirectory {
                     Utils::FileSystem::getParent(mDownloadPackageFilename)};
-#endif
                 auto directoryFunc = [this,
                                       currentDownloadDirectory](std::string newDownloadDirectory) {
                     if (currentDownloadDirectory != newDownloadDirectory) {
@@ -138,24 +128,14 @@ GuiApplicationUpdater::GuiApplicationUpdater()
                                          [](char c) { return c != '/' && c != '\\'; })
                                 .base(),
                             newDownloadDirectory.end());
-#if defined(_WIN64)
-                        newDownloadDirectory =
-                            Utils::String::replace(newDownloadDirectory, "/", "\\");
-#else
                     newDownloadDirectory = Utils::String::replace(newDownloadDirectory, "\\", "/");
-#endif
                         Settings::getInstance()->setString(
                             "ApplicationUpdaterDownloadDirectory",
                             Utils::String::trim(newDownloadDirectory));
                         Settings::getInstance()->saveFile();
                         setDownloadPath();
-#if defined(_WIN64)
-                        mProcessStep2->setValue(Utils::String::replace(
-                            Utils::FileSystem::getParent(mDownloadPackageFilename), "/", "\\"));
-#else
                             mProcessStep2->setValue(
                                 Utils::FileSystem::getParent(mDownloadPackageFilename));
-#endif
                     }
                 };
                 if (Settings::getInstance()->getBool("VirtualKeyboard")) {
@@ -242,13 +222,8 @@ void GuiApplicationUpdater::setDownloadPath()
                                    "/" + mPackage.filename + "_" + mPackage.version;
     }
     else {
-#if defined(_WIN64)
-        const std::string downloadDirectory {Utils::String::replace(
-            Settings::getInstance()->getString("ApplicationUpdaterDownloadDirectory"), "\\", "/")};
-#else
         const std::string downloadDirectory {
             Settings::getInstance()->getString("ApplicationUpdaterDownloadDirectory")};
-#endif
         if (downloadDirectory == "")
             mDownloadPackageFilename = Utils::FileSystem::getSystemHomeDirectory() + "/Downloads/";
         else

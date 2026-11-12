@@ -9,9 +9,6 @@
 #ifndef ES_APP_FILE_FILTER_INDEX_H
 #define ES_APP_FILE_FILTER_INDEX_H
 
-#if defined(__APPLE__) || defined(__FreeBSD__)
-#include <sstream>
-#endif
 
 #include <map>
 #include <string>

@@ -336,22 +336,7 @@ void SystemStatusComponent::update(int deltaTime)
     mAccumulatorAndroid += deltaTime;
 
     if (mAccumulator >= SystemStatus::updateTime) {
-#if defined(__ANDROID__)
-        // For Android we poll on the main thread instead of in a separate thread.
-        SystemStatus::Status status;
-        const bool pollImmediately {SystemStatus::getInstance().getPollImmediately()};
-        if (mAccumulatorAndroid >= SystemStatus::pollingTime || pollImmediately) {
-            status = SystemStatus::getInstance().getStatus(true);
-            mAccumulatorAndroid = 0;
-            if (pollImmediately)
-                SystemStatus::getInstance().setPollImmediately(false);
-        }
-        else {
-            status = SystemStatus::getInstance().getStatus(false);
-        }
-#else
         SystemStatus::Status status {SystemStatus::getInstance().getStatus()};
-#endif
         mAccumulator = 0;
 
         bool statusChanged {false};

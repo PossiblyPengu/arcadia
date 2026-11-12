@@ -50,27 +50,12 @@ void FindRules::loadFindRules()
         LOG(LogInfo) << "Found custom find rules configuration file";
     }
 
-#if defined(__ANDROID__)
-    filePath = ResourceManager::getInstance().getResourcePath(":/systems/android/es_find_rules.xml",
-                                                              false);
-#elif defined(LINUX_AARCH64)
+#if   defined(LINUX_AARCH64)
     filePath = ResourceManager::getInstance().getResourcePath(
         ":/systems/linuxarm/es_find_rules.xml", false);
-#elif defined(__linux__)
-    filePath =
-        ResourceManager::getInstance().getResourcePath(":/systems/linux/es_find_rules.xml", false);
-#elif defined(_WIN64)
-    filePath = ResourceManager::getInstance().getResourcePath(":/systems/windows/es_find_rules.xml",
-                                                              false);
-#elif defined(__APPLE__)
-    filePath =
-        ResourceManager::getInstance().getResourcePath(":/systems/macos/es_find_rules.xml", false);
-#elif defined(__HAIKU__)
-    filePath =
-        ResourceManager::getInstance().getResourcePath(":/systems/haiku/es_find_rules.xml", false);
 #else
     filePath =
-        ResourceManager::getInstance().getResourcePath(":/systems/unix/es_find_rules.xml", false);
+        ResourceManager::getInstance().getResourcePath(":/systems/linux/es_find_rules.xml", false);
 #endif
 
     if (filePath.empty() && paths.empty()) {
@@ -82,20 +67,10 @@ void FindRules::loadFindRules()
         paths.emplace_back(filePath);
 
     for (auto& path : paths) {
-#if defined(_WIN64)
-        LOG(LogInfo) << "Parsing find rules configuration file \""
-                     << Utils::String::replace(path, "/", "\\") << "\"...";
-#else
         LOG(LogInfo) << "Parsing find rules configuration file \"" << path << "\"...";
-#endif
 
         pugi::xml_document doc;
-#if defined(_WIN64)
-        const pugi::xml_parse_result& res {
-            doc.load_file(Utils::String::stringToWideString(path).c_str())};
-#else
         const pugi::xml_parse_result& res {doc.load_file(path.c_str())};
-#endif
         if (!res) {
             LOG(LogError) << "Couldn't parse es_find_rules.xml: " << res.description();
             continue;
@@ -134,15 +109,7 @@ void FindRules::loadFindRules()
                                     << emulatorName << "\", skipping entry";
                     continue;
                 }
-#if defined(_WIN64)
-                if (ruleType != "winregistrypath" && ruleType != "winregistryvalue" &&
-                    ruleType != "systempath" && ruleType != "staticpath") {
-#elif defined(__ANDROID__)
-                if (ruleType != "androidpackage" && ruleType != "systempath" &&
-                    ruleType != "staticpath") {
-#else
                 if (ruleType != "systempath" && ruleType != "staticpath") {
-#endif
                     LOG(LogWarning) << "Found invalid rule type \"" << ruleType
                                     << "\" for emulator \"" << emulatorName << "\", skipping entry";
                     continue;
@@ -154,26 +121,11 @@ void FindRules::loadFindRules()
                         emulatorRules.systemPaths.emplace_back(entryValue);
                     else if (ruleType == "staticpath")
                         emulatorRules.staticPaths.emplace_back(entryValue);
-#if defined(_WIN64)
-                    else if (ruleType == "winregistrypath")
-                        emulatorRules.winRegistryPaths.emplace_back(entryValue);
-                    else if (ruleType == "winregistryvalue")
-                        emulatorRules.winRegistryValues.emplace_back(entryValue);
-#elif defined(__ANDROID__)
-                    else if (ruleType == "androidpackage")
-                        emulatorRules.androidPackages.emplace_back(entryValue);
-#endif
                 }
             }
             mEmulators[emulatorName] = emulatorRules;
             emulatorRules.systemPaths.clear();
             emulatorRules.staticPaths.clear();
-#if defined(_WIN64)
-            emulatorRules.winRegistryPaths.clear();
-            emulatorRules.winRegistryValues.clear();
-#elif defined(__ANDROID__)
-            emulatorRules.androidPackages.clear();
-#endif
         }
 
         for (pugi::xml_node core {ruleList.child("core")}; core; core = core.next_sibling("core")) {
@@ -230,27 +182,12 @@ void ImportRules::loadImportRules()
         LOG(LogInfo) << "Found custom import rules configuration file";
     }
 
-#if defined(__ANDROID__)
-    filePath = ResourceManager::getInstance().getResourcePath(
-        ":/systems/android/es_import_rules.xml", false);
-#elif defined(LINUX_AARCH64)
+#if   defined(LINUX_AARCH64)
     filePath = ResourceManager::getInstance().getResourcePath(
         ":/systems/linuxarm/es_import_rules.xml", false);
-#elif defined(__linux__)
+#else
     filePath = ResourceManager::getInstance().getResourcePath(":/systems/linux/es_import_rules.xml",
                                                               false);
-#elif defined(_WIN64)
-    filePath = ResourceManager::getInstance().getResourcePath(
-        ":/systems/windows/es_import_rules.xml", false);
-#elif defined(__APPLE__)
-    filePath = ResourceManager::getInstance().getResourcePath(":/systems/macos/es_import_rules.xml",
-                                                              false);
-#elif defined(__HAIKU__)
-    filePath = ResourceManager::getInstance().getResourcePath(":/systems/haiku/es_import_rules.xml",
-                                                              false);
-#else
-    filePath =
-        ResourceManager::getInstance().getResourcePath(":/systems/unix/es_import_rules.xml", false);
 #endif
 
     if (filePath.empty() && paths.empty()) {
@@ -262,20 +199,10 @@ void ImportRules::loadImportRules()
         paths.emplace_back(filePath);
 
     for (auto& path : paths) {
-#if defined(_WIN64)
-        LOG(LogInfo) << "Parsing import rules configuration file \""
-                     << Utils::String::replace(path, "/", "\\") << "\"...";
-#else
         LOG(LogInfo) << "Parsing import rules configuration file \"" << path << "\"...";
-#endif
 
         pugi::xml_document doc;
-#if defined(_WIN64)
-        const pugi::xml_parse_result& res {
-            doc.load_file(Utils::String::stringToWideString(path).c_str())};
-#else
         const pugi::xml_parse_result& res {doc.load_file(path.c_str())};
-#endif
         if (!res) {
             LOG(LogError) << "Couldn't parse es_import_rules.xml: " << res.description();
             continue;
@@ -316,15 +243,7 @@ void ImportRules::loadImportRules()
                                     << systemName << "\", skipping entry";
                     continue;
                 }
-#if defined(__ANDROID__)
-                if (ruleType != "androidpackage") {
-#elif defined(__APPLE__)
-                if (ruleType != "macosbundle") {
-#elif defined(__linux__) || defined(__FreeBSD__)
                 if (ruleType != "file" && ruleType != "desktopshortcut") {
-#else
-                if (ruleType != "file") {
-#endif
                     LOG(LogWarning) << "Found invalid rule type \"" << ruleType
                                     << "\" for system \"" << systemName << "\", skipping entry";
                     continue;
@@ -357,23 +276,14 @@ void ImportRules::loadImportRules()
                                         << systemName << "\"";
                     }
                 }
-#if defined(__APPLE__)
-                else if (ruleType == "macosbundle") {
-                    ImportRule importRule;
-                    importRule.ruleName = ruleName;
-                    importRule.ruleType = "macosbundle";
-                    importRule.extension = ".app";
-#else
                 else if (ruleType == "file") {
                     ImportRule importRule;
                     importRule.ruleName = ruleName;
                     importRule.ruleType = "file";
 
                     bool hasExtension {false};
-#endif
                     bool hasDirectory {false};
 
-#if !defined(__APPLE__)
                     const pugi::xml_node& extension {rule.child("extension")};
                     if (extension) {
                         const std::string extensionValue {extension.text().get()};
@@ -386,7 +296,6 @@ void ImportRules::loadImportRules()
                                             << "\" has no value defined";
                         }
                     }
-#endif
                     for (pugi::xml_node directory {rule.child("directory")}; directory;
                          directory = directory.next_sibling("directory")) {
 
@@ -442,13 +351,11 @@ void ImportRules::loadImportRules()
                     }
 
                     bool addRule {true};
-#if !defined(__APPLE__)
                     if (!hasExtension) {
                         addRule = false;
                         LOG(LogWarning) << "Missing mandatory property \"extension\" for system \""
                                         << systemName << "\"";
                     }
-#endif
                     if (!hasDirectory) {
                         addRule = false;
                         LOG(LogWarning) << "Missing mandatory property \"directory\" for system \""
@@ -741,13 +648,8 @@ bool SystemData::populateFolder(FileData* folder)
             }
 
             if (Utils::FileSystem::exists(filePath + "/noload.txt")) {
-#if defined(_WIN64)
-                LOG(LogInfo) << "Skipped folder \"" << Utils::String::replace(filePath, "/", "\\")
-                             << "\" as a noload.txt file is present";
-#else
                 LOG(LogInfo) << "Skipped folder \"" << filePath
                              << "\" as a noload.txt file is present";
-#endif
                 FileData* newFolder {new FileData(FOLDER, filePath, mEnvData, this)};
                 newFolder->setNoLoad(true);
                 folder->addChild(newFolder);
@@ -836,12 +738,7 @@ bool SystemData::loadConfig()
     // This is only done to get the total system count, for calculating the progress bar position.
     for (auto& configPath : configPaths) {
         pugi::xml_document doc;
-#if defined(_WIN64)
-        const pugi::xml_parse_result& res {
-            doc.load_file(Utils::String::stringToWideString(configPath).c_str())};
-#else
         const pugi::xml_parse_result& res {doc.load_file(configPath.c_str())};
-#endif
         if (!res)
             break;
         const pugi::xml_node& systemList {doc.child("systemList")};
@@ -861,20 +758,10 @@ bool SystemData::loadConfig()
         if (onlyProcessCustomFile)
             break;
 
-#if defined(_WIN64)
-        LOG(LogInfo) << "Parsing systems configuration file \""
-                     << Utils::String::replace(configPath, "/", "\\") << "\"...";
-#else
         LOG(LogInfo) << "Parsing systems configuration file \"" << configPath << "\"...";
-#endif
 
         pugi::xml_document doc;
-#if defined(_WIN64)
-        const pugi::xml_parse_result& res {
-            doc.load_file(Utils::String::stringToWideString(configPath).c_str())};
-#else
         const pugi::xml_parse_result& res {doc.load_file(configPath.c_str())};
-#endif
 
         if (!res) {
             LOG(LogError) << "Couldn't parse es_systems.xml: " << res.description();
@@ -916,13 +803,6 @@ bool SystemData::loadConfig()
                     sStartupExitSignal = true;
                     return true;
                 }
-#if defined(__ANDROID__)
-                if (event.type == SDL_WINDOWEVENT &&
-                    event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-                    ViewController::getInstance()->setWindowSizeChanged(
-                        static_cast<int>(event.window.data1), static_cast<int>(event.window.data2));
-                }
-#endif
             };
 
             std::string name;
@@ -979,9 +859,6 @@ bool SystemData::loadConfig()
             // the ROM path configured as ROMDirectory in es_settings.xml. If it's set to ""
             // in this configuration file, the default hardcoded path $HOME/ROMs/ will be used.
             path = Utils::String::replace(path, "%ROMPATH%", rompath);
-#if defined(_WIN64)
-            path = Utils::String::replace(path, "\\", "/");
-#endif
             path = Utils::String::replace(path, "//", "/");
 
             // In case ~ is used, expand it to the home directory path.
@@ -991,12 +868,7 @@ bool SystemData::loadConfig()
             // processing.
             if (!Utils::FileSystem::exists(path)) {
                 LOG(LogDebug) << "SystemData::loadConfig(): Skipping system \"" << name
-#if defined(_WIN64)
-                              << "\" as the defined ROM directory \""
-                              << Utils::String::replace(path, "/", "\\")
-#else
                               << "\" as the defined ROM directory \"" << path
-#endif
                               << "\" does not exist";
                 continue;
             }
@@ -1124,13 +996,6 @@ bool SystemData::loadConfig()
             // Convert path to generic directory seperators.
             path = Utils::FileSystem::getGenericPath(path);
 
-#if defined(_WIN64)
-            if (!Settings::getInstance()->getBool("ShowHiddenFiles") &&
-                Utils::FileSystem::isHidden(path)) {
-                LOG(LogWarning) << "Skipping hidden ROM folder \"" << path << "\"";
-                continue;
-            }
-#endif
 
             // Create the system runtime environment data.
             SystemEnvironmentData* envData {new SystemEnvironmentData};
@@ -1257,17 +1122,9 @@ void SystemData::loadSortingConfig()
         return;
     }
 
-#if defined(_WIN64)
-    LOG(LogInfo) << "Parsing systems sorting file \"" << Utils::String::replace(path, "/", "\\")
-                 << "\"...";
-    pugi::xml_document doc;
-    const pugi::xml_parse_result& res {
-        doc.load_file(Utils::String::stringToWideString(path).c_str())};
-#else
     LOG(LogInfo) << "Parsing systems sorting file \"" << path << "\"...";
     pugi::xml_document doc;
     const pugi::xml_parse_result& res {doc.load_file(path.c_str())};
-#endif
     if (!res) {
         LOG(LogError) << "Couldn't parse es_systems_sorting.xml: " << res.description();
         return;
@@ -1342,21 +1199,11 @@ std::vector<std::string> SystemData::getConfigPath()
         paths.emplace_back(path);
     }
 
-#if defined(__ANDROID__)
-    path = ResourceManager::getInstance().getResourcePath(":/systems/android/es_systems.xml", true);
-#elif defined(LINUX_AARCH64)
+#if   defined(LINUX_AARCH64)
     path =
         ResourceManager::getInstance().getResourcePath(":/systems/linuxarm/es_systems.xml", true);
-#elif defined(__linux__)
-    path = ResourceManager::getInstance().getResourcePath(":/systems/linux/es_systems.xml", true);
-#elif defined(_WIN64)
-    path = ResourceManager::getInstance().getResourcePath(":/systems/windows/es_systems.xml", true);
-#elif defined(__APPLE__)
-    path = ResourceManager::getInstance().getResourcePath(":/systems/macos/es_systems.xml", true);
-#elif defined(__HAIKU__)
-    path = ResourceManager::getInstance().getResourcePath(":/systems/haiku/es_systems.xml", true);
 #else
-    path = ResourceManager::getInstance().getResourcePath(":/systems/unix/es_systems.xml", true);
+    path = ResourceManager::getInstance().getResourcePath(":/systems/linux/es_systems.xml", true);
 #endif
 
     paths.emplace_back(path);
@@ -1379,30 +1226,11 @@ bool SystemData::createSystemDirectories()
     }
 
     if (!Utils::FileSystem::exists(rompath)) {
-#if defined(_WIN64)
-        if (rompath.size() == 3 && rompath[1] == ':' && rompath[2] == '\\') {
-            if (Utils::FileSystem::driveExists(rompath)) {
-                LOG(LogInfo) << "ROM directory set to root of device " << rompath;
-            }
-            else {
-                LOG(LogError) << "Device " << rompath << " does not exist";
-                return true;
-            }
-        }
-        else {
-            LOG(LogInfo) << "Creating base ROM directory \"" << rompath << "\"...";
-            if (!Utils::FileSystem::createDirectory(rompath)) {
-                LOG(LogError) << "Couldn't create directory, permission problems or disk full?";
-                return true;
-            }
-        }
-#else
         LOG(LogInfo) << "Creating base ROM directory \"" << rompath << "\"...";
         if (!Utils::FileSystem::createDirectory(rompath)) {
             LOG(LogError) << "Couldn't create directory, permission problems or disk full?";
             return true;
         }
-#endif
     }
     else {
         LOG(LogInfo) << "Base ROM directory \"" << rompath << "\" already exists";
@@ -1412,12 +1240,7 @@ bool SystemData::createSystemDirectories()
         // If the loadExclusive tag is present in the custom es_systems.xml file, then skip
         // processing of the bundled configuration file.
         pugi::xml_document doc;
-#if defined(_WIN64)
-        const pugi::xml_parse_result& res {
-            doc.load_file(Utils::String::stringToWideString(configPaths.front()).c_str())};
-#else
         const pugi::xml_parse_result& res {doc.load_file(configPaths.front().c_str())};
-#endif
         if (res) {
             const pugi::xml_node& loadExclusive {doc.child("loadExclusive")};
             if (loadExclusive)
@@ -1436,20 +1259,10 @@ bool SystemData::createSystemDirectories()
         if (onlyProcessCustomFile && configPath == configPaths.front())
             continue;
 
-#if defined(_WIN64)
-        LOG(LogInfo) << "Parsing systems configuration file \""
-                     << Utils::String::replace(configPath, "/", "\\") << "\"...";
-#else
         LOG(LogInfo) << "Parsing systems configuration file \"" << configPath << "\"...";
-#endif
 
         pugi::xml_document doc;
-#if defined(_WIN64)
-        const pugi::xml_parse_result& res {
-            doc.load_file(Utils::String::stringToWideString(configPath).c_str())};
-#else
         const pugi::xml_parse_result& res {doc.load_file(configPath.c_str())};
-#endif
 
         if (!res) {
             LOG(LogError) << "Couldn't parse es_systems.xml";
@@ -1561,13 +1374,7 @@ bool SystemData::createSystemDirectories()
                     return true;
             }
 
-#if defined(_WIN64)
-            systemInfoFile.open(
-                Utils::String::stringToWideString(rompath + systemDir + systemInfoFileName)
-                    .c_str());
-#else
             systemInfoFile.open(rompath + systemDir + systemInfoFileName);
-#endif
 
             if (systemInfoFile.fail()) {
                 LOG(LogError) << "Couldn't create system information file \""
@@ -1646,11 +1453,7 @@ bool SystemData::createSystemDirectories()
 
         if (systemsFileSuccess) {
             std::ofstream systemsFile;
-#if defined(_WIN64)
-            systemsFile.open(Utils::String::stringToWideString(rompath + systemsFileName).c_str());
-#else
             systemsFile.open(rompath + systemsFileName);
-#endif
             if (systemsFile.fail()) {
                 systemsFileSuccess = false;
             }
@@ -1718,16 +1521,9 @@ std::string SystemData::getGamelistPath(bool forWrite) const
             return filePath;
         }
         else {
-#if defined(_WIN64)
-            LOG(LogWarning) << "Found a gamelist.xml file in \""
-                            << Utils::String::replace(mRootFolder->getPath(), "/", "\\")
-                            << "\\\" which will not get loaded, move it to \"" << gamelistPath
-                            << "\\\" or otherwise delete it";
-#else
             LOG(LogWarning) << "Found a gamelist.xml file in \"" << mRootFolder->getPath()
                             << "/\" which will not get loaded, move it to \"" << gamelistPath
                             << "/\" or otherwise delete it";
-#endif
         }
     }
 

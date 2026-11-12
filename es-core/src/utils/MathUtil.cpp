@@ -111,12 +111,7 @@ namespace Utils
             if (isFilePath) {
                 if (Utils::FileSystem::isDirectory(hashArg))
                     return "";
-#if defined(_WIN64)
-                std::ifstream inputFile {Utils::String::stringToWideString(hashArg).c_str(),
-                                         std::ios::binary};
-#else
                 std::ifstream inputFile {hashArg, std::ios::binary};
-#endif
                 if (inputFile.fail()) {
                     inputFile.close();
                     return "";

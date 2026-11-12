@@ -83,11 +83,7 @@ namespace GamelistFileParser
 
                 if (std::find(extensions.cbegin(), extensions.cend(),
                               Utils::FileSystem::getExtension(path)) == extensions.cend()) {
-#if defined(_WIN64)
-                    LOG(LogWarning) << "File \"" << Utils::String::replace(path, "/", "\\")
-#else
                     LOG(LogWarning) << "File \"" << path
-#endif
                                     << "\" is present in gamelist.xml but the extension is not "
                                        "configured in es_systems.xml";
                     // In case there are no entries left in the folder.
@@ -155,20 +151,10 @@ namespace GamelistFileParser
             return;
         }
 
-#if defined(_WIN64)
-        LOG(LogInfo) << "Parsing gamelist file \"" << Utils::String::replace(xmlpath, "/", "\\")
-                     << "\"...";
-#else
         LOG(LogInfo) << "Parsing gamelist file \"" << xmlpath << "\"...";
-#endif
 
         pugi::xml_document doc;
-#if defined(_WIN64)
-        const pugi::xml_parse_result& result {
-            doc.load_file(Utils::String::stringToWideString(xmlpath).c_str())};
-#else
         const pugi::xml_parse_result& result {doc.load_file(xmlpath.c_str())};
-#endif
 
         if (!result) {
             LOG(LogError) << "Error parsing gamelist file \"" << xmlpath
@@ -223,12 +209,7 @@ namespace GamelistFileParser
                     fileNode.child("path").text().get(), relativeTo, false)};
 
                 if (!trustGamelist && !Utils::FileSystem::exists(path)) {
-#if defined(_WIN64)
-                    LOG(LogWarning) << (type == GAME ? "File \"" : "Folder \"")
-                                    << Utils::String::replace(path, "/", "\\")
-#else
                     LOG(LogWarning) << (type == GAME ? "File \"" : "Folder \"") << path
-#endif
                                     << "\" does not exist, skipping entry";
                     continue;
                 }
@@ -258,13 +239,7 @@ namespace GamelistFileParser
 
                 if (!file) {
                     if (!Utils::FileSystem::exists(path + "/noload.txt")) {
-#if defined(_WIN64)
-                        LOG(LogWarning)
-                            << "Couldn't process \"" << Utils::String::replace(path, "/", "\\")
-                            << "\", skipping entry";
-#else
                         LOG(LogWarning) << "Couldn't process \"" << path << "\", skipping entry";
-#endif
                     }
                     continue;
                 }
@@ -374,12 +349,7 @@ namespace GamelistFileParser
             Utils::FileSystem::getFileSize(xmlReadPath) != 0) {
             // Parse an existing file first.
 
-#if defined(_WIN64)
-            const pugi::xml_parse_result& result {
-                doc.load_file(Utils::String::stringToWideString(xmlReadPath).c_str())};
-#else
             const pugi::xml_parse_result& result {doc.load_file(xmlReadPath.c_str())};
-#endif
 
             if (!result) {
                 LOG(LogError) << "Error parsing gamelist file \"" << xmlReadPath
@@ -508,17 +478,9 @@ namespace GamelistFileParser
                     LOG(LogDebug) << "GamelistFileParser::updateGamelist(): Added/updated "
                                   << numUpdated
                                   << (numUpdated == 1 ? " entity in \"" : " entities in \"")
-#if defined(_WIN64)
-                                  << Utils::String::replace(xmlWritePath, "/", "\\") << "\"";
-#else
                                   << xmlWritePath << "\"";
-#endif
                 }
-#if defined(_WIN64)
-                if (!doc.save_file(Utils::String::stringToWideString(xmlWritePath).c_str())) {
-#else
                 if (!doc.save_file(xmlWritePath.c_str())) {
-#endif
                     LOG(LogError) << "Error saving gamelist.xml to \"" << xmlWritePath
                                   << "\" (for system " << system->getName() << ")";
                 }

@@ -46,20 +46,11 @@ GuiOrphanedDataCleanup::GuiOrphanedDataCleanup(std::function<void()> reloadCallb
                                        [](char c) { return c != '\\'; })
                               .base(),
                           mMediaDirectory.end());
-#if defined(_WIN64)
-    mMediaDirectory.append("\\");
-#else
     mMediaDirectory.append("/");
-#endif
 
     addChild(&mBackground);
     addChild(&mGrid);
 
-#if defined(_WIN64) || defined(__APPLE__) || defined(__ANDROID__)
-    // Although macOS may have filesystem case-sensitivity enabled it's rare and in worst case
-    // this will just leave some extra media files on the filesystem.
-    mCaseSensitiveFilesystem = false;
-#endif
 
     mMediaDescription =
         _("THIS WILL REMOVE ALL MEDIA FILES WHERE NO MATCHING GAME FILES CAN BE FOUND. "
@@ -303,10 +294,6 @@ GuiOrphanedDataCleanup::~GuiOrphanedDataCleanup()
 
 void GuiOrphanedDataCleanup::cleanupMediaFiles()
 {
-#if defined(_WIN64)
-    // Workaround for a bug in the libintl library.
-    Utils::Localization::setThreadLocale();
-#endif
 
     LOG(LogInfo) << "GuiOrphanedDataCleanup: Starting cleanup of game media";
 
@@ -389,12 +376,7 @@ void GuiOrphanedDataCleanup::cleanupMediaFiles()
                 if (std::find(systemFilesRelative.cbegin(), systemFilesRelative.cend(),
                               relativePath) == systemFilesRelative.end()) {
                     cleanupFiles.emplace_back(mediaFile);
-#if defined(_WIN64)
-                    LOG(LogInfo) << "Found orphaned media file \""
-                                 << Utils::String::replace(mediaFile, "/", "\\") << "\"";
-#else
                     LOG(LogInfo) << "Found orphaned media file \"" << mediaFile << "\"";
-#endif
                 }
             }
         }
@@ -404,22 +386,11 @@ void GuiOrphanedDataCleanup::cleanupMediaFiles()
         if (cleanupFiles.size() > 0) {
             struct tm tm;
             std::string dateString(20, '\0');
-#if defined(_WIN64)
-            localtime_s(&tm, &currentTime);
-            std::strftime(&dateString[0], 20, "%Y-%m-%d_%H%M%S", &tm);
-#else
             std::strftime(&dateString[0], 20, "%Y-%m-%d_%H%M%S", localtime_r(&currentTime, &tm));
-#endif
             dateString.erase(dateString.find('\0'));
             const std::string targetDirectory {mMediaDirectory + "CLEANUP/" + dateString + "/"};
-#if defined(_WIN64)
-            LOG(LogInfo) << "Moving orphaned files to \""
-                         << Utils::String::replace(targetDirectory, "/", "\\") + system->getName()
-                         << "\\\"";
-#else
             LOG(LogInfo) << "Moving orphaned files to \"" << targetDirectory + system->getName()
                          << "/\"";
-#endif
 
             for (auto& file : cleanupFiles) {
                 const std::string fileDirectory {
@@ -463,12 +434,7 @@ void GuiOrphanedDataCleanup::cleanupMediaFiles()
             while (path != systemMediaDir) {
                 if (Utils::FileSystem::getDirContent(path).size() == 0) {
 
-#if defined(_WIN64)
-                    LOG(LogInfo) << "Deleting empty directory \""
-                                 << Utils::String::replace(path, "/", "\\") << "\"";
-#else
                     LOG(LogInfo) << "Deleting empty directory \"" << path << "\"";
-#endif
                     if (Utils::FileSystem::removeDirectory(path, false))
                         ++directoryDeleteCounter;
                     path = Utils::FileSystem::getParent(path);
@@ -496,10 +462,6 @@ void GuiOrphanedDataCleanup::cleanupMediaFiles()
 
 void GuiOrphanedDataCleanup::cleanupGamelists()
 {
-#if defined(_WIN64)
-    // Workaround for a bug in the libintl library.
-    Utils::Localization::setThreadLocale();
-#endif
 
     LOG(LogInfo) << "GuiOrphanedDataCleanup: Starting cleanup of gamelist.xml files";
 
@@ -553,12 +515,7 @@ void GuiOrphanedDataCleanup::cleanupGamelists()
         }
 
         pugi::xml_document sourceDoc;
-#if defined(_WIN64)
-        const pugi::xml_parse_result& fileContents {
-            sourceDoc.load_file(Utils::String::stringToWideString(gamelistFile).c_str())};
-#else
         const pugi::xml_parse_result& fileContents {sourceDoc.load_file(gamelistFile.c_str())};
-#endif
 
         if (!fileContents) {
             LOG(LogError) << "Couldn't parse file \"" << gamelistFile << "\"";
@@ -570,13 +527,8 @@ void GuiOrphanedDataCleanup::cleanupGamelists()
             SDL_Delay(500);
             continue;
         }
-#if defined(_WIN64)
-        LOG(LogDebug) << "GuiOrphanedDataCleanup::cleanupGamelists(): Parsing file \""
-                      << Utils::String::replace(gamelistFile, "/", "\\") << "\"";
-#else
         LOG(LogDebug) << "GuiOrphanedDataCleanup::cleanupGamelists(): Parsing file \""
                       << gamelistFile << "\"";
-#endif
 
         const pugi::xml_node& alternativeEmulator {sourceDoc.child("alternativeEmulator")};
         if (alternativeEmulator) {
@@ -728,12 +680,7 @@ void GuiOrphanedDataCleanup::cleanupGamelists()
         if (removeCount > 0) {
             struct tm tm;
             std::string dateString(20, '\0');
-#if defined(_WIN64)
-            localtime_s(&tm, &currentTime);
-            std::strftime(&dateString[0], 20, "%Y-%m-%d_%H%M%S", &tm);
-#else
             std::strftime(&dateString[0], 20, "%Y-%m-%d_%H%M%S", localtime_r(&currentTime, &tm));
-#endif
             dateString.erase(dateString.find('\0'));
             const std::string targetDirectory {
                 Utils::FileSystem::getParent(
@@ -751,12 +698,7 @@ void GuiOrphanedDataCleanup::cleanupGamelists()
             }
 
             if (!mFailed) {
-#if defined(_WIN64)
-                LOG(LogInfo) << "Moving old gamelist.xml file to \""
-                             << Utils::String::replace(targetDirectory, "/", "\\") << "\\\"";
-#else
                 LOG(LogInfo) << "Moving old gamelist.xml file to \"" << targetDirectory << "/\"";
-#endif
                 if (Utils::FileSystem::renameFile(gamelistFile, targetDirectory + "/gamelist.xml",
                                                   true)) {
                     LOG(LogError) << "Couldn't move file \"" << gamelistFile << "\"";
@@ -817,10 +759,6 @@ void GuiOrphanedDataCleanup::cleanupGamelists()
 
 void GuiOrphanedDataCleanup::cleanupCollections()
 {
-#if defined(_WIN64)
-    // Workaround for a bug in the libintl library.
-    Utils::Localization::setThreadLocale();
-#endif
 
     LOG(LogInfo)
         << "GuiOrphanedDataCleanup: Starting cleanup of custom collections configuration files";
@@ -863,23 +801,14 @@ void GuiOrphanedDataCleanup::cleanupCollections()
             mIsProcessing = false;
             return;
         }
-#if defined(_WIN64)
-        LOG(LogDebug) << "GuiOrphanedDataCleanup::cleanupCollections(): Parsing file \""
-                      << Utils::String::replace(collectionFile, "/", "\\") << "\"";
-#else
         LOG(LogDebug) << "GuiOrphanedDataCleanup::cleanupCollections(): Parsing file \""
                       << collectionFile << "\"";
-#endif
         // Get configuration for this custom collection.
         std::vector<std::string> validEntries;
         int removeCount {0};
         std::ifstream configFileSource;
 
-#if defined(_WIN64)
-        configFileSource.open(Utils::String::stringToWideString(collectionFile).c_str());
-#else
         configFileSource.open(collectionFile);
-#endif
         if (!configFileSource.good()) {
             LOG(LogError) << "Couldn't open custom collection configuration file \""
                           << collectionFile << "\"";
@@ -933,12 +862,7 @@ void GuiOrphanedDataCleanup::cleanupCollections()
         if (removeCount > 0) {
             struct tm tm;
             std::string dateString(20, '\0');
-#if defined(_WIN64)
-            localtime_s(&tm, &currentTime);
-            std::strftime(&dateString[0], 20, "%Y-%m-%d_%H%M%S", &tm);
-#else
             std::strftime(&dateString[0], 20, "%Y-%m-%d_%H%M%S", localtime_r(&currentTime, &tm));
-#endif
             dateString.erase(dateString.find('\0'));
             const std::string targetDirectory {Utils::FileSystem::getParent(collectionFile) +
                                                "/CLEANUP/" + dateString + "/"};
@@ -955,12 +879,7 @@ void GuiOrphanedDataCleanup::cleanupCollections()
             }
             else {
                 std::ofstream configFileTarget;
-#if defined(_WIN64)
-                configFileTarget.open(Utils::String::stringToWideString(tempFile).c_str(),
-                                      std::ios::binary);
-#else
                 configFileTarget.open(tempFile, std::ios::binary);
-#endif
                 if (!configFileTarget.good()) {
                     LOG(LogError) << "Couldn't write to temporary collection configuration file \""
                                   << tempFile << "\"";
@@ -979,14 +898,8 @@ void GuiOrphanedDataCleanup::cleanupCollections()
 
                 if (configFileTarget.is_open())
                     configFileTarget.close();
-#if defined(_WIN64)
-                LOG(LogInfo) << "Moving old \"" << Utils::FileSystem::getFileName(collectionFile)
-                             << "\" file to \""
-                             << Utils::String::replace(targetDirectory, "/", "\\") << "\"";
-#else
                 LOG(LogInfo) << "Moving old \"" << Utils::FileSystem::getFileName(collectionFile)
                              << "\" file to \"" << targetDirectory << "\"";
-#endif
 
                 if (Utils::FileSystem::renameFile(
                         collectionFile,

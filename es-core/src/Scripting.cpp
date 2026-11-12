@@ -30,9 +30,6 @@ namespace Scripting
                    const std::string& arg3,
                    const std::string& arg4)
     {
-#if defined(__IOS__)
-        return;
-#endif
         if (!Settings::getInstance()->getBool("CustomEventScripts"))
             return;
 
@@ -51,13 +48,7 @@ namespace Scripting
             std::list<std::string> scripts {Utils::FileSystem::getDirContent(*dirIt)};
             // Sort the scripts in case-sensitive order on Linux, Unix and Android and in
             // case-insensitive order on macOS and Windows.
-#if defined(__unix__)
             scripts.sort([](std::string a, std::string b) { return a.compare(b) < 0; });
-#else
-            scripts.sort([](std::string a, std::string b) {
-                return Utils::String::toUpper(a).compare(Utils::String::toUpper(b)) < 0;
-            });
-#endif
             for (auto it = scripts.cbegin(); it != scripts.cend(); ++it) {
                 std::string arg1Quotation;
                 std::string arg2Quotation;
@@ -92,18 +83,8 @@ namespace Scripting
                     .append(arg4Quotation)
                     .append(arg4)
                     .append(arg4Quotation);
-#if defined(_WIN64)
-                LOG(LogDebug) << "Executing: " << Utils::String::replace(script, "/", "\\");
-#else
                 LOG(LogDebug) << "Executing: " << script;
-#endif
-#if defined(__ANDROID__)
-                Utils::Platform::runSystemCommand("sh " + script);
-#elif defined(_WIN64)
-                Utils::Platform::runSystemCommand(Utils::String::stringToWideString(script));
-#else
                 Utils::Platform::runSystemCommand(script);
-#endif
             }
         }
     }

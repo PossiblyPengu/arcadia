@@ -17,13 +17,7 @@
 
 #include <array>
 
-#if defined(_WIN64)
-#include <windows.h>
-#endif
 
-#if defined(__ANDROID__) || defined(__IOS__)
-#include "ConvertPDF.h"
-#endif
 
 #define DEBUG_PDF_CONVERSION false
 
@@ -56,24 +50,14 @@ bool PDFViewer::startPDFViewer(FileData* game)
 {
     ViewController::getInstance()->pauseViewVideos();
 
-#if !defined(__ANDROID__) && !defined(__IOS__)
-#if defined(_WIN64)
-    const std::string convertBinary {"/es-pdf-converter/es-pdf-convert.exe"};
-#else
     const std::string convertBinary {"/es-pdf-convert"};
-#endif
     mESConvertPath = Utils::FileSystem::getExePath() + convertBinary;
     if (!Utils::FileSystem::exists(mESConvertPath)) {
-#if defined(_WIN64)
-        LOG(LogError) << "Couldn't find PDF conversion binary es-pdf-convert.exe";
-#else
         LOG(LogError) << "Couldn't find PDF conversion binary es-pdf-convert";
-#endif
         NavigationSounds::getInstance().playThemeNavigationSound(SCROLLSOUND);
         ViewController::getInstance()->startViewVideos();
         return false;
     }
-#endif // !__ANDROID__
 
     mGame = game;
     mManualPath = mGame->getManualPath();
@@ -85,9 +69,6 @@ bool PDFViewer::startPDFViewer(FileData* game)
         return false;
     }
 
-#if defined(_WIN64)
-    mManualPath = Utils::String::replace(mManualPath, "/", "\\");
-#endif
 
     LOG(LogDebug) << "PDFViewer::startPDFViewer(): Opening document \"" << mManualPath << "\"";
 
@@ -224,88 +205,6 @@ bool PDFViewer::getDocumentInfo()
 {
     std::string commandOutput;
 
-#if defined(_WIN64)
-    std::wstring command {
-        Utils::String::stringToWideString(Utils::FileSystem::getEscapedPath(mESConvertPath))};
-    command.append(L" -fileinfo ")
-        .append(Utils::String::stringToWideString(Utils::FileSystem::getEscapedPath(mManualPath)));
-
-    STARTUPINFOW si {};
-    PROCESS_INFORMATION pi;
-    HANDLE childStdoutRead {nullptr};
-    HANDLE childStdoutWrite {nullptr};
-    SECURITY_ATTRIBUTES saAttr {};
-    saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
-    saAttr.bInheritHandle = true;
-    saAttr.lpSecurityDescriptor = nullptr;
-
-    CreatePipe(&childStdoutRead, &childStdoutWrite, &saAttr, 0);
-    SetHandleInformation(childStdoutRead, HANDLE_FLAG_INHERIT, 0);
-
-    si.cb = sizeof(STARTUPINFOW);
-    si.hStdOutput = childStdoutWrite;
-    si.dwFlags |= STARTF_USESTDHANDLES;
-
-    bool processReturnValue {true};
-
-    // clang-format off
-    processReturnValue = CreateProcessW(
-        nullptr,                                // No application name (use command line).
-        const_cast<wchar_t*>(command.c_str()),  // Command line.
-        nullptr,                                // Process attributes.
-        nullptr,                                // Thread attributes.
-        TRUE,                                   // Handles inheritance.
-        0,                                      // Creation flags.
-        nullptr,                                // Use parent's environment block.
-        nullptr,                                // Starting directory, possibly the same as parent.
-        &si,                                    // Pointer to the STARTUPINFOW structure.
-        &pi);                                   // Pointer to the PROCESS_INFORMATION structure.
-    // clang-format on
-
-    if (!processReturnValue) {
-        LOG(LogError) << "Couldn't read PDF document information";
-        CloseHandle(pi.hProcess);
-        CloseHandle(pi.hThread);
-        return false;
-    }
-
-    CloseHandle(childStdoutWrite);
-
-    std::array<char, 512> buffer {};
-    DWORD dwRead;
-    bool readValue {true};
-
-    while (readValue) {
-        readValue = ReadFile(childStdoutRead, &buffer[0], 512, &dwRead, nullptr);
-        if (readValue) {
-            for (int i {0}; i < 512; ++i) {
-                if (buffer[i] == '\0')
-                    break;
-                commandOutput.append(1, buffer[i]);
-            }
-            buffer.fill('\0');
-        }
-    }
-
-    CloseHandle(childStdoutRead);
-    WaitForSingleObject(pi.hThread, INFINITE);
-    WaitForSingleObject(pi.hProcess, INFINITE);
-
-    DWORD exitCode {0};
-    if (GetExitCodeProcess(pi.hProcess, &exitCode) && exitCode != 0) {
-        LOG(LogError) << "Couldn't read PDF document information";
-        CloseHandle(pi.hProcess);
-        CloseHandle(pi.hThread);
-        return false;
-    }
-
-    // Close process and thread handles.
-    CloseHandle(pi.hProcess);
-    CloseHandle(pi.hThread);
-#elif defined(__ANDROID__) || defined(__IOS__)
-    if (ConvertPDF::processFile(mManualPath, "-fileinfo", 0, 0, 0, commandOutput) == -1)
-        return false;
-#else
     FILE* commandPipe;
     std::array<char, 512> buffer {};
 
@@ -328,7 +227,6 @@ bool PDFViewer::getDocumentInfo()
 
     if (pclose(commandPipe) != 0)
         return false;
-#endif
 
     const std::vector<std::string> pageRows {
         Utils::String::delimitedStringToVector(commandOutput, "\n")};
@@ -353,19 +251,6 @@ void PDFViewer::convertPage(int pageNum)
     mConversionTime = 0;
 
     if (mPages[pageNum].imageData.empty()) {
-#if defined(_WIN64)
-        std::wstring command {
-            Utils::String::stringToWideString(Utils::FileSystem::getEscapedPath(mESConvertPath))};
-        command.append(L" -convert ")
-            .append(
-                Utils::String::stringToWideString(Utils::FileSystem::getEscapedPath(mManualPath)))
-            .append(L" ")
-            .append(std::to_wstring(pageNum))
-            .append(L" ")
-            .append(std::to_wstring(static_cast<int>(mPages[pageNum].width)))
-            .append(L" ")
-            .append(std::to_wstring(static_cast<int>(mPages[pageNum].height)));
-#else
         std::string command {Utils::FileSystem::getEscapedPath(mESConvertPath)};
         command.append(" -convert ")
             .append(Utils::FileSystem::getEscapedPath(mManualPath))
@@ -375,85 +260,12 @@ void PDFViewer::convertPage(int pageNum)
             .append(std::to_string(static_cast<int>(mPages[pageNum].width)))
             .append(" ")
             .append(std::to_string(static_cast<int>(mPages[pageNum].height)));
-#endif
 
 #if (DEBUG_PDF_CONVERSION)
         LOG(LogDebug) << "Converting page: " << mCurrentPage;
-#if defined(_WIN64)
-        LOG(LogDebug) << Utils::String::wideStringToString(command);
-#else
         LOG(LogDebug) << command;
 #endif
-#endif
         std::string imageData;
-#if defined(_WIN64)
-        STARTUPINFOW si {};
-        PROCESS_INFORMATION pi;
-        HANDLE childStdoutRead {nullptr};
-        HANDLE childStdoutWrite {nullptr};
-        SECURITY_ATTRIBUTES saAttr {};
-        saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
-        saAttr.bInheritHandle = true;
-        saAttr.lpSecurityDescriptor = nullptr;
-
-        CreatePipe(&childStdoutRead, &childStdoutWrite, &saAttr, 0);
-        SetHandleInformation(childStdoutRead, HANDLE_FLAG_INHERIT, 0);
-
-        si.cb = sizeof(STARTUPINFOW);
-        si.hStdOutput = childStdoutWrite;
-        si.dwFlags |= STARTF_USESTDHANDLES;
-
-        bool processReturnValue {true};
-
-        // clang-format off
-        processReturnValue = CreateProcessW(
-            nullptr,                            // No application name (use command line).
-            const_cast<wchar_t*>(command.c_str()), // Command line.
-            nullptr,                            // Process attributes.
-            nullptr,                            // Thread attributes.
-            TRUE,                               // Handles inheritance.
-            0,                                  // Creation flags.
-            nullptr,                            // Use parent's environment block.
-            nullptr,                            // Starting directory, possibly the same as parent.
-            &si,                                // Pointer to the STARTUPINFOW structure.
-            &pi);                               // Pointer to the PROCESS_INFORMATION structure.
-        // clang-format on
-
-        if (!processReturnValue) {
-            CloseHandle(pi.hProcess);
-            CloseHandle(pi.hThread);
-            return;
-        }
-
-        // Close process and thread handles.
-        CloseHandle(pi.hProcess);
-        CloseHandle(pi.hThread);
-        CloseHandle(childStdoutWrite);
-
-        std::array<char, 512> buffer {};
-        DWORD dwRead;
-        bool readValue {true};
-
-        while (readValue) {
-            readValue = ReadFile(childStdoutRead, &buffer[0], 512, &dwRead, nullptr);
-            if (readValue) {
-                mPages[pageNum].imageData.insert(mPages[pageNum].imageData.end(),
-                                                 std::make_move_iterator(buffer.begin()),
-                                                 std::make_move_iterator(buffer.end()));
-            }
-        }
-
-        CloseHandle(childStdoutRead);
-        WaitForSingleObject(pi.hThread, INFINITE);
-        WaitForSingleObject(pi.hProcess, INFINITE);
-#elif (__ANDROID__) || defined(__IOS__)
-        ConvertPDF::processFile(mManualPath, "-convert", pageNum,
-                                static_cast<int>(mPages[pageNum].width),
-                                static_cast<int>(mPages[pageNum].height), imageData);
-        mPages[pageNum].imageData.insert(mPages[pageNum].imageData.end(),
-                                         std::make_move_iterator(imageData.begin()),
-                                         std::make_move_iterator(imageData.end()));
-#else
         FILE* commandPipe;
         std::array<char, 512> buffer {};
         int returnValue;
@@ -470,17 +282,9 @@ void PDFViewer::convertPage(int pageNum)
         }
 
         returnValue = pclose(commandPipe);
-#endif
         const size_t imageDataSize {mPages[pageNum].imageData.size()};
-#if defined(_WIN64)
-        if (!processReturnValue || (static_cast<int>(imageDataSize) <
-                                    mPages[pageNum].width * mPages[pageNum].height * 4)) {
-#elif defined(__ANDROID__) || defined(__IOS__)
-        if (static_cast<int>(imageDataSize) < mPages[pageNum].width * mPages[pageNum].height * 4) {
-#else
         if (returnValue != 0 || (static_cast<int>(imageDataSize) <
                                  mPages[pageNum].width * mPages[pageNum].height * 4)) {
-#endif
             LOG(LogError) << "Error reading PDF file";
             mPages[pageNum].imageData.clear();
             return;

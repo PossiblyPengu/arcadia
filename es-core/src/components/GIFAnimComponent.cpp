@@ -104,19 +104,10 @@ void GIFAnimComponent::setAnimation(const std::string& path)
 
     FREE_IMAGE_FORMAT fileFormat;
 
-#if defined(_WIN64)
-    fileFormat = FreeImage_GetFileTypeU(Utils::String::stringToWideString(mPath).c_str());
-#else
     fileFormat = FreeImage_GetFileType(mPath.c_str());
-#endif
 
     if (fileFormat == FIF_UNKNOWN)
-#if defined(_WIN64)
-        fileFormat =
-            FreeImage_GetFIFFromFilenameU(Utils::String::stringToWideString(mPath).c_str());
-#else
         fileFormat = FreeImage_GetFIFFromFilename(mPath.c_str());
-#endif
 
     if (fileFormat != FIF_GIF) {
         LOG(LogError)
@@ -127,11 +118,7 @@ void GIFAnimComponent::setAnimation(const std::string& path)
     // Make sure that we can actually read this format.
     if (FreeImage_FIFSupportsReading(fileFormat)) {
 
-#if defined(_WIN64)
-        mAnimFile = _wfopen(Utils::String::stringToWideString(mPath).c_str(), L"r+b");
-#else
         mAnimFile = fopen(mPath.c_str(), "r+b");
-#endif
         if (mAnimFile != nullptr)
             mAnimation = FreeImage_OpenMultiBitmapFromHandle(
                 fileFormat, &mAnimIO, static_cast<fi_handle>(mAnimFile), GIF_PLAYBACK);

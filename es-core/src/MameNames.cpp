@@ -32,15 +32,8 @@ MameNames::MameNames()
 
     pugi::xml_document doc;
 
-#if defined(_WIN64)
-    LOG(LogInfo) << "Parsing MAME names file \"" << Utils::String::replace(xmlpath, "/", "\\")
-                 << "\"...";
-    pugi::xml_parse_result result {
-        doc.load_file(Utils::String::stringToWideString(xmlpath).c_str())};
-#else
     LOG(LogInfo) << "Parsing MAME names file \"" << xmlpath << "\"...";
     pugi::xml_parse_result result {doc.load_file(xmlpath.c_str())};
-#endif
 
     if (!result) {
         LOG(LogError) << "Error parsing MAME names file \"" << xmlpath
@@ -60,14 +53,8 @@ MameNames::MameNames()
     if (!Utils::FileSystem::exists(xmlpath))
         return;
 
-#if defined(_WIN64)
-    LOG(LogInfo) << "Parsing MAME BIOSes file \"" << Utils::String::replace(xmlpath, "/", "\\")
-                 << "\"...";
-    result = doc.load_file(Utils::String::stringToWideString(xmlpath).c_str());
-#else
     LOG(LogInfo) << "Parsing MAME BIOSes file \"" << xmlpath << "\"...";
     result = doc.load_file(xmlpath.c_str());
-#endif
 
     if (!result) {
         LOG(LogError) << "Error parsing MAME BIOSes file \"" << xmlpath
@@ -87,14 +74,8 @@ MameNames::MameNames()
     if (!Utils::FileSystem::exists(xmlpath))
         return;
 
-#if defined(_WIN64)
-    LOG(LogInfo) << "Parsing MAME devices file \"" << Utils::String::replace(xmlpath, "/", "\\")
-                 << "\"...";
-    result = doc.load_file(Utils::String::stringToWideString(xmlpath).c_str());
-#else
     LOG(LogInfo) << "Parsing MAME devices file \"" << xmlpath << "\"...";
     result = doc.load_file(xmlpath.c_str());
-#endif
 
     if (!result) {
         LOG(LogError) << "Error parsing MAME devices file \"" << xmlpath

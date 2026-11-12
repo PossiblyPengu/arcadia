@@ -36,28 +36,10 @@ void AudioManager::init()
 {
     LOG(LogInfo) << "Setting up AudioManager...";
 
-#if defined(__ANDROID__)
-    if (SDL_InitSubSystem(SDL_INIT_AUDIO) != 0) {
-        if (Settings::getInstance()->getString("AudioDriver") != "AAudio") {
-            LOG(LogWarning) << "Requested OpenSL ES audio driver does not seem to be available, "
-                               "reverting to AAudio";
-            setenv("SDL_AUDIODRIVER", "AAudio", 1);
-            if (SDL_InitSubSystem(SDL_INIT_AUDIO) != 0) {
-                LOG(LogError) << "Couldn't initialize SDL audio: " << SDL_GetError();
-                return;
-            }
-        }
-        else {
-            LOG(LogError) << "Couldn't initialize SDL audio: " << SDL_GetError();
-            return;
-        }
-    }
-#else
     if (SDL_InitSubSystem(SDL_INIT_AUDIO) != 0) {
         LOG(LogError) << "Couldn't initialize SDL audio: " << SDL_GetError();
         return;
     }
-#endif
 
     LOG(LogInfo) << "Audio driver: " << SDL_GetCurrentAudioDriver();
 
@@ -104,12 +86,7 @@ void AudioManager::init()
                       << std::to_string(sRequestedAudioFormat.channels)
                       << " could not be set, obtained " << std::to_string(sAudioFormat.channels);
     }
-#if defined(_WIN64) || defined(__APPLE__)
-    // Beats me why the buffer size is not divided by the channel count on some operating systems.
-    if (sAudioFormat.samples != sRequestedAudioFormat.samples) {
-#else
     if (sAudioFormat.samples != sRequestedAudioFormat.samples / sRequestedAudioFormat.channels) {
-#endif
         LOG(LogDebug) << "AudioManager::init(): Requested sample buffer size "
                       << std::to_string(sRequestedAudioFormat.samples /
                                         sRequestedAudioFormat.channels)
