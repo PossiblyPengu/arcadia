@@ -85,7 +85,7 @@ keeps names and acronyms such as ROM, BIOS and RetroArch); other languages are s
 | Setup | program | a progress ring and a checklist (games, emulators, controls, folder access, cloud saves, BIOS files), each step running its tool when chosen, beside a card of tools |
 | Dialogs | program | a centred card: a pastel badge that says what it is about (question lavender, done mint, problem peach, removing something coral, information sky; picked from the words and the main button), the first sentence as a Fraunces title, the rest quieter below, pill buttons |
 | Notifications | program | a card at the top with the same badge beside the message, in sentence case; it slides down as it fades in. A problem says where to fix it (a missing emulator points to Setup → Emulators) |
-| Setup tools | program | their output appears line by line as they work; when done, a badge beside the title says whether it worked |
+| Setup tools | program | a card sized to what the tool says: a spinner that becomes a tick or an exclamation mark beside the title, a status line ("Done in 40 s"), a progress bar when the tool reports one, the lines by kind (a mint tick for done, a peach mark for a problem, dots for items, rings for what's left, hints in the accent ink, short bold headings), the summary in a tinted box; Close first, Try again when it failed; up/down scrolls |
 | Boot, launch, screensaver | program | the scheme's ground; the boot screen is the lavender mark over the Fraunces wordmark with a pink progress bar (`tools/make_splash.py`, one for each scheme); the screensaver dims |
 
 ## Controls

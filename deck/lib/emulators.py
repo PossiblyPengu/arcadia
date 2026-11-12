@@ -403,6 +403,15 @@ def install(plan: Plan, ids: list[str]) -> int:
         say("Everything is already installed.")
         return 0
     failed: list[str] = []
+    # Arcadia draws a progress bar from "@progress done/total" lines (they aren't shown).
+    total = len(apps) + len({c for e in chosen for c in e.cores if not core_installed(c)})
+    step = [0]
+
+    def progress() -> None:
+        print(f"@progress {step[0]}/{total}", flush=True)
+        step[0] += 1
+
+    progress()
     if apps:
         ensure_flathub(exe)
     for k, e in enumerate(apps, 1):
@@ -417,6 +426,7 @@ def install(plan: Plan, ids: list[str]) -> int:
             reason = (out.strip().splitlines() or ["no reason given"])[-1][:160]
             say(f"  ✗ {e.name} didn't install: {reason}")
             failed.append(e.name)
+        progress()
     wanted = [(c, e) for e in chosen if e.installed for c in e.missing_cores()]
     if wanted:
         say(f"Adding {len(wanted)} RetroArch core{'s' * (len(wanted) != 1)} (the part that plays each console)…")
@@ -434,6 +444,7 @@ def install(plan: Plan, ids: list[str]) -> int:
                 except (InstallError, OSError) as exc:
                     say(f"  ✗ {e.cores[core]}: {exc}")
                     failed.append(core)
+                progress()
     say("")
     if failed:
         say(f"Not everything installed ({', '.join(failed)}). Try again; details are in {ESDE / 'logs/deck.log'}.")

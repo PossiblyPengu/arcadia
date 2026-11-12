@@ -19,5 +19,6 @@ case "${1:-}" in
 esac
 if [ "${ARCADIA_OUTPUT:-}" = stdout ]; then python3 "$EMU" "$@"; exit $?; fi
 out="$(python3 "$EMU" "$@" 2>&1)"; rc=$?
+out="$(grep -v '^@progress ' <<<"$out")"  # (progress is for Arcadia's own screen)
 deck_say "Emulators" "$out"
 exit $rc

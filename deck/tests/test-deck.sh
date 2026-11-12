@@ -113,6 +113,10 @@ check "with no names it installs what the games need: RetroArch, from Flathub, f
 check "the user-level Flathub source is added first (SteamOS only has the system one)" '[ "$(grep -n "^remote-add --user --if-not-exists flathub" "$HOME/flatpak.calls" | cut -d: -f1)" -lt "$(grep -n "^install" "$HOME/flatpak.calls" | cut -d: -f1)" ]'
 check "the new emulator can see the ROM folder straight away" 'grep -q "^override --user --filesystem=$G.* org.libretro.RetroArch$" "$HOME/flatpak.calls"'
 check "the cores the games need are put where RetroArch and Arcadia look" '[ "$(cat "$TMP/ra-cores/mednafen_psx_libretro.so")" = "$(printf "\x7fELF psx core")" ] && [ -f "$TMP/ra-cores/snes9x_libretro.so" ]'
+check "it reports its progress for Arcadia's bar (start, then each step)" 'grep -q "^@progress 0/3$" <<<"$out" && grep -q "^@progress 3/3$" <<<"$out"'
+: > "$ARCADIA_HOME/logs/deck.log"; rm -f "$TMP/ra-cores/snes9x_libretro.so"
+FAKE_INSTALLED=org.libretro.RetroArch ARCADIA_ROMS="$G" ROM_ROOT="$G" bash "$HERE/tools/install-emulators.sh" >/dev/null
+check "outside Arcadia (a desktop dialog) the progress lines aren't shown" 'grep -q "Emulators:" "$ARCADIA_HOME/logs/deck.log" && ! grep -q "@progress" "$ARCADIA_HOME/logs/deck.log"'
 check "progress is shown as it goes, and the end says what happened" 'grep -q "Installing RetroArch (1 of 1)" <<<"$out" && grep -q "✓ Sony PlayStation" <<<"$out" && grep -q "All done" <<<"$out"'
 check "the checklist names what is missing" '[ "$(FAKE_INSTALLED=none ARCADIA_ROMS="$G" python3 "$EMU" status)" = "0|needs RetroArch" ]'
 check "with everything in place the checklist step is done" '[ "$(FAKE_INSTALLED=org.libretro.RetroArch ARCADIA_ROMS="$G" python3 "$EMU" status | cut -d"|" -f1)" = 1 ]'
