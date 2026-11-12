@@ -305,6 +305,14 @@ class MainWindow(QMainWindow):
         self.session_start = 0.0
         self._accent_hex = ""
         self._last_view: str | None = None
+        self._populate_later = QTimer(self)
+        self._populate_later.setSingleShot(True)
+        self._populate_later.setInterval(150)
+        self._populate_later.timeout.connect(self.populate_games)
+        self._restyle = QTimer(self)
+        self._restyle.setSingleShot(True)
+        self._restyle.setInterval(180)
+        self._restyle.timeout.connect(self._restyle_now)
         self._closed = False
         self._sync_task = None
         self._importing = False  # an import dialog is open
@@ -511,6 +519,7 @@ class MainWindow(QMainWindow):
         QTimer.singleShot(800, self.check_inbox)
         QTimer.singleShot(5000, self._startup_update_check)
         QTimer.singleShot(7000, lambda: self.check_app_update(quiet=True))
+        QTimer.singleShot(1500, self._offer_logos)
         QTimer.singleShot(3000, self._auto_sync)
 
     # ----- menu, fullscreen, persistence -----
@@ -537,17 +546,7 @@ class MainWindow(QMainWindow):
         self.sounds_action.setChecked(self.config.sounds)
         self.sounds_action.toggled.connect(self._on_sounds_toggled)
         view_menu.addAction(self.sounds_action)
-        pictures = view_menu.addMenu("Pictures")
-        group = QActionGroup(self)
-        self.logos_action = QAction("Console logos", self, checkable=True)
-        self.drawings_action = QAction("Console drawings", self, checkable=True)
-        for action, style in ((self.logos_action, "logos"), (self.drawings_action, "drawings")):
-            group.addAction(action)
-            pictures.addAction(action)
-            action.setChecked(self.config.art_style == style)
-            action.triggered.connect(lambda _c=False, s=style: self._set_art_style(s))
-        pictures.addSeparator()
-        pictures.addAction("Download console logos…", self.download_logos)
+        view_menu.addAction("Download console logos…", self.download_logos)
         view_menu.addAction("Use my own console pictures…", self.open_console_art)
         view_menu.addAction("Check my console pictures", self.check_console_art)
         view_menu.addSeparator()
@@ -560,13 +559,7 @@ class MainWindow(QMainWindow):
         view_menu.addAction(self.empty_action)
 
     def _configure_art(self) -> None:
-        pixelart.configure(self.config.media_path / "consoles", self.config.media_path / "logos", self.config.art_style)
-
-    def _set_art_style(self, style: str) -> None:
-        self.config.art_style = style
-        self._save_config()
-        self._configure_art()
-        self.carousel.update()
+        pixelart.configure(self.config.media_path / "consoles", self.config.media_path / "logos")
 
     def download_logos(self) -> None:
         """Fetch each console's logo from Wikipedia / Wikimedia Commons, after saying what that means."""
@@ -576,7 +569,8 @@ class MainWindow(QMainWindow):
             "Arcadia will download each console's logo from Wikipedia / Wikimedia Commons and keep them in your own "
             f"media folder ({self.config.media_path / 'logos'}). They are the makers' trademarks, used here only to label "
             "each console on screen, and they aren't included with Arcadia.\n\n"
-            "Each is then redrawn in the pixel style of its console's era. This takes a minute or two. Continue?",
+            "Each is then redrawn in the pixel style of its console's era. This takes a minute or two. You can do it later "
+            "from View → Download console logos. Continue?",
         )
         if answer != QMessageBox.StandardButton.Yes:
             return
@@ -603,11 +597,9 @@ class MainWindow(QMainWindow):
         text = f"Downloaded {len(result.done)} logo{'s' if len(result.done) != 1 else ''}."
         if result.failed:
             text += f"\n\nNo logo could be found for {len(result.failed)}: " + ", ".join(sorted(result.failed)) + (
-                "\n\nThose keep their drawings. You can put your own picture in the console pictures folder (View → Use my own console pictures)."
+                "\n\nThose show a plain cartridge. You can put your own picture in the console pictures folder (View → Use my own console pictures)."
             )
         QMessageBox.information(self, "Console logos", text)
-        if result.done and self.config.art_style != "logos":
-            self.toast.show_message("Logos downloaded: View → Pictures → Console logos to show them", 6000)
 
     def open_console_art(self) -> None:
         """Open the folder where console pictures go (nes.png, snes.png, ...), and say how it works."""
@@ -617,7 +609,7 @@ class MainWindow(QMainWindow):
         QMessageBox.information(
             self,
             "Your own console pictures",
-            f"Put a picture in this folder named after the console and it replaces Arcadia's drawing:\n\n{folder}\n\n"
+            f"Put a picture in this folder named after the console and it replaces the logo:\n\n{folder}\n\n"
             "For example  nes.png, snes.png, n64.png, gc.png, psx.png, genesis.webp.\n"
             "PNG or WebP with a transparent background looks best. Close and reopen Arcadia (or press Ctrl+R) to see them.",
         )
@@ -669,12 +661,29 @@ class MainWindow(QMainWindow):
     # ----- theme -----
 
     def _apply_accent(self, hex_color: str) -> None:
+        """Change the colour theme. Re-styling the whole window is slow, so while the ring is being turned it waits
+        until you stop (the backdrop colour changes at once)."""
         if hex_color == self._accent_hex:
             return
         self._accent_hex = hex_color
-        self.setStyleSheet(build_stylesheet(hex_color))
         self.backdrop.set_accent(QColor(hex_color))
         self.coverflow.set_accent(QColor(hex_color))
+        if not self.isVisible():
+            self.setStyleSheet(build_stylesheet(hex_color))
+            return
+        self._restyle.start()
+
+    def _restyle_now(self) -> None:
+        self.setStyleSheet(build_stylesheet(self._accent_hex))
+
+    def _offer_logos(self) -> None:
+        """First run only: console logos are what the console screen shows, and they're downloaded to your machine."""
+        if self._closed or self.config.logos_asked:
+            return
+        self.config.logos_asked = True
+        self._save_config()
+        if not any((self.config.media_path / "logos").glob("*.png")):
+            self.download_logos()
 
     def _play_banner(self, text: str) -> None:
         self.banner.setText(text.upper())
@@ -753,6 +762,7 @@ class MainWindow(QMainWindow):
         """Open the highlighted console: from "choose a console" to "choose a game"."""
         if self.current_system_id() is None:
             return
+        self._populate_later.stop()
         self.populate_games()
         if not self.on_games_page():
             self.sounds.play("open")

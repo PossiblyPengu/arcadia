@@ -1,4 +1,4 @@
-"""The "choose a console" screen: a rotating carousel of pixel-art consoles.
+"""The "choose a console" screen: a rotating carousel of console logos.
 
 The selected console sits large in the middle with its name beneath; the others curve away on both
 sides, smaller and fainter, and the ring wraps around (after the last console comes the first).
@@ -169,6 +169,7 @@ class ConsoleCarousel(QWidget):
     def paintEvent(self, _event) -> None:
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
         n = len(self._entries)
         if not n:
             painter.end()
@@ -206,18 +207,19 @@ class ConsoleCarousel(QWidget):
         painter.drawEllipse(QPointF(x, rect.bottom() + width * 0.04), width * 0.55, width * 0.55)
         painter.restore()
 
-        pixel_width = max(32, int(round(width / 8.0)) * 8)  # whole-ish pixel size keeps the edges crisp, and the cache small
+        # one master picture per console, drawn scaled: nothing is built while the ring turns
+        master = pixelart.MASTER
         if intensity > 0.01:
-            halo = pixelart.glow(entry.view_id, pixel_width, accent.name())
-            pad = pixelart.glow_padding(pixel_width)
-            scale = width / pixel_width
+            halo = pixelart.glow(entry.view_id, master, accent.name())
+            pad = pixelart.glow_padding(master)
+            scale = width / master
             painter.save()
             target = QRectF(rect.left() - pad * scale, rect.top() - pad * scale, halo.width() * scale, halo.height() * scale)
             for strength in (1.0, 0.8):  # twice: a bright core and a wide soft edge
                 painter.setOpacity(opacity * min(1.0, intensity * strength * 1.3))
                 painter.drawPixmap(target, halo, QRectF(halo.rect()))
             painter.restore()
-        sprite = pixelart.scaled(entry.view_id, pixel_width)
+        sprite = pixelart.scaled(entry.view_id, master)
         painter.drawPixmap(rect, sprite, QRectF(sprite.rect()))
         if i == self._hover and i != self._index:
             self._paint_label(painter, entry.name, QPointF(x, rect.bottom() + width * 0.16), 14, 0.9)
@@ -338,16 +340,16 @@ class ConsoleCarousel(QWidget):
         super().showEvent(event)
         self._offset = float(self._index)  # no spin on first show
         self._glow_changed()
-        self._warm = [e.view_id for e in self._entries]
+        n = len(self._entries)
+        self._warm = [self._entries[i].view_id for i in sorted(range(n), key=lambda i: abs(circular_delta(self._index, float(i), n)))]
         QTimer.singleShot(0, self._warm_next)
 
     def _warm_next(self) -> None:
-        """Draw the 3D renders ahead of time, one per tick, so spinning the ring never waits on one."""
-        while getattr(self, "_warm", None):
+        """Make the pictures ahead of time, nearest the middle first and one per tick, so turning the ring never waits."""
+        if getattr(self, "_warm", None):
             view_id = self._warm.pop(0)
-            pixelart.sprite_image(view_id)  # cached after the first time
-            QTimer.singleShot(8, self._warm_next)
-            return
+            pixelart.scaled(view_id, pixelart.MASTER)
+            QTimer.singleShot(4, self._warm_next)
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         key = event.key()

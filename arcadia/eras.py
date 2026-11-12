@@ -1,6 +1,6 @@
 """Which hardware generation ("bit era") each console belongs to.
 
-The label is shown under the console's name, and tools/make_console_art.py draws each console's picture in the
+The label is shown under the console's name, and logos.py draws each console's logo in the
 pixel style of its era: how many pixels wide, how many colours, hard pixel edges or the soft filtering of a 3D chip.
 """
 

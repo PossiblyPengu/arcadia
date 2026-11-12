@@ -14,8 +14,8 @@ written in Python with PySide6 (Qt).
 - Covers and metadata from an optional media folder (sidecar files, see below)
 - Cover-flow shelf with reflections: the selected game sits large in a glowing ring, its
   neighbors shrink and fade, and the whole window takes on the current system's color
-- **Two screens: choose a console, then choose a game.** The first screen is a **rotating carousel of pixel-art
-  consoles**: the selected one sits large in the middle with its name and game count, the others curve away on both
+- **Two screens: choose a console, then choose a game.** The first screen is a **rotating carousel of console
+  logos**: the selected one sits large in the middle with its name and game count, the others curve away on both
   sides, and the ring wraps around (after the last comes the first). Hover any console and it glows. Consoles with no
   games are hidden; **Recently played**, **Favorites** and **All games** are on the ring too. Open the middle one to
   get that console's cover-flow shelf, and go back with Esc / B / the "Consoles" button. Ctrl+F from the console
@@ -24,22 +24,16 @@ written in Python with PySide6 (Qt).
 - **Sound effects** (View → Sound effects, on by default): a soft tick as the console ring turns, a chime on opening
   a console, a falling tone on going back. They are tiny generated tones (`assets/sounds`, made by
   `tools/make_sounds.py`); with no audio device, or with the setting off, nothing plays and nothing breaks.
-- **Each console is shown in the pixel style of its own generation, and the screen says which** (8-BIT, 16-BIT,
-  32-BIT, 64-BIT, 128-BIT, HD, under the console's name). Which generation a console belongs to is `arcadia/eras.py`.
-  There are two sets of pictures, switched under View → Pictures:
-  - **Console logos** (the default): View → Pictures → *Download console logos…* fetches each console's logo from
-    Wikipedia / Wikimedia Commons into your own `media/logos` folder (they're the makers' trademarks, used only to
-    label the console, so they aren't shipped with Arcadia; it asks first and keeps the originals in
-    `media/logos/source`). Each is then redrawn in its era's style: the NES logo a few chunky pixels in a handful of
-    colours, the SNES's finer, the N64's sharper with more colours, the HD-era ones smooth, each on a light or dark
-    plaque so black and white logos both show. A console with no logo shows its drawing: that's the arcade cabinet, as it has no single logo. All 33 consoles with a listed logo were
-    downloaded and checked; the list is `arcadia/assets/logo_sources.json`.
-  - **Console drawings**: original pixel-art drawings of each console (modelled in real centimetres with details
-    placed from reference photographs, then drawn at its era's size and colour depth; `tools/make_console_art.py`,
-    needs Pillow, numpy and PySide6; Arcadia itself only loads the finished PNGs).
-  - **Your own pictures win over both**: View → "Use my own console pictures…" opens a folder where a PNG, WebP or
-    JPEG named after the console (`nes.png`, `snes.png`, …) replaces what Arcadia would show, so you can drop in
-    any logo or artwork you like.
+- **Each console is shown by its logo, in the pixel style of its own generation, and the screen says which**
+  (8-BIT, 16-BIT, 32-BIT, 64-BIT, 128-BIT, HD, under the console's name; see `arcadia/eras.py`). View → *Download
+  console logos…* (offered once on first run) fetches each console's logo from Wikipedia / Wikimedia Commons into
+  your own `media/logos` folder. They're the makers' trademarks, used only to label the console, so they aren't
+  shipped with Arcadia; it asks first and keeps the originals in `media/logos/source`. Each is then redrawn in its
+  era's style: the NES logo a few chunky pixels in a handful of colours, the SNES's finer, the N64's sharper with
+  more colours, the HD-era ones smooth, each on a light or dark plaque so black and white logos both show. A console
+  with no logo (such as the arcade) shows a plain cartridge. The list is `arcadia/assets/logo_sources.json`.
+  **Your own pictures win**: View → "Use my own console pictures…" opens a folder where a PNG, WebP or JPEG named
+  after the console (`nes.png`, `snes.png`, …) replaces the logo.
 - Sort by A–Z, recently played, most played, or favorites first (remembered between runs)
 - Type a letter to jump to the next title starting with it; search with Ctrl+F
 - Toast messages instead of dialogs, a live play timer on the Launch button, and a
@@ -601,13 +595,13 @@ arcadia/
   theme.py       stylesheet, animated backdrop, toast messages
   coverflow.py   animated cover-flow carousel with lazy cover loading
   consoles_view.py  the rotating console carousel (the first screen)
-  pixelart.py    picks each console's picture (yours, the bundled pixel art, or a generic cartridge) and draws the glow
+  pixelart.py    picks each console's picture (yours, its downloaded logo, or a generic cartridge) and draws the glow
   eras.py        which bit-generation each console belongs to (8-bit ... HD), and each era's pixel size and colour depth
   logos.py       downloads console logos to your media folder and redraws them in each console's era style
   transitions.py the zoom between the two screens
   sounds.py      the small sound effects (assets/sounds/*.wav)
-  assets/consoles/  the bundled pixel-art console pictures and their credits
-  ../tools/      scripts that rebuild those pictures from the source photographs
+  assets/consoles/  the Recent / Favorites / All tiles and the generic cartridge
+  ../tools/      scripts that rebuild those tiles and the app icon and sounds
   gamepad.py     optional evdev controller input
   ui.py          Qt windows and dialogs
   main.py        entry point

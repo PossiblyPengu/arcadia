@@ -150,46 +150,44 @@ def test_the_list_of_logo_files_covers_known_consoles_and_is_well_formed():
         assert names and all(isinstance(n, str) and n and "/" not in n and not n.startswith("File:") for n in names), cid
 
 
-def test_style_switch_prefers_a_downloaded_logo_but_never_your_own_picture(qapp, tmp_path):
+def test_a_downloaded_logo_is_used_but_never_over_your_own_picture(qapp, tmp_path):
     logo_dir, mine = tmp_path / "logos", tmp_path / "mine"
     logo_dir.mkdir()
     mine.mkdir()
     make_logo().scaled(90, 40).save(str(logo_dir / "nes.png"))
     try:
-        pixelart.configure(None, logo_dir, "logos")
+        pixelart.configure(None, logo_dir)
         assert pixelart.is_logo("nes") and pixelart.sprite_image("nes").width() == 90
-        assert not pixelart.is_logo("snes")  # no logo downloaded for it: its drawing
-        pixelart.configure(None, logo_dir, "drawings")
-        assert not pixelart.is_logo("nes") and pixelart.sprite_image("nes").width() != 90
-        pixelart.configure(None, logo_dir, "logos")
+        assert not pixelart.is_logo("snes")  # no logo downloaded for it: the plain cartridge
+        assert not pixelart.is_bundled("snes") and pixelart.sprite_image("snes").size() == pixelart.sprite_image("anything-else").size()
         solid = QImage(70, 50, QImage.Format.Format_ARGB32)
         solid.fill(QColor("#3366cc"))
         solid.save(str(mine / "nes.png"))
-        pixelart.configure(mine, logo_dir, "logos")
+        pixelart.configure(mine, logo_dir)
         assert pixelart.sprite_image("nes").width() == 70  # your own file wins over a logo
-        assert pixelart.configure(mine, logo_dir, "nonsense") is None and pixelart.style() == "logos"  # an unknown style is ignored
     finally:
-        pixelart.configure(None, None, "logos")
+        pixelart.configure(None, None)
 
 
-def test_the_window_has_the_picture_style_menu_and_it_sticks(qapp, tmp_path):
+def test_first_run_offers_the_logos_once(qapp, tmp_path, monkeypatch):
     from arcadia.config import Config
     from arcadia.library import Library
     from arcadia.ui import MainWindow
 
     cfg = Config.new_install(tmp_path / "A")
     cfg.ensure_layout()
+    assert cfg.logos_asked is False
     win = MainWindow(cfg, tmp_path / "config.json", Library(cfg.db_path))
+    asked = []
+    monkeypatch.setattr(win, "download_logos", lambda: asked.append(1))
     try:
-        assert win.logos_action.isChecked() and not win.drawings_action.isChecked()
-        win.drawings_action.trigger()
-        assert cfg.art_style == "drawings" and pixelart.style() == "drawings"
-        assert '"art_style": "drawings"' in (tmp_path / "config.json").read_text()
-        win.logos_action.trigger()
-        assert cfg.art_style == "logos" and pixelart.style() == "logos"
+        win._offer_logos()
+        win._offer_logos()
+        assert asked == [1] and cfg.logos_asked is True
+        assert '"logos_asked": true' in (tmp_path / "config.json").read_text()
     finally:
         win.close()
-        pixelart.configure(None, None, "logos")
+        pixelart.configure(None, None)
 
 
 def test_a_too_many_requests_answer_is_retried(qapp, tmp_path, monkeypatch):

@@ -118,7 +118,7 @@ class Config:
     ra_integer_scale: bool = False
     ra_auto_save_state: bool = False  # save on exit and load on start
     ra_saves_in_home: bool = False  # keep RetroArch's in-game saves in Arcadia's saves/ folder (existing saves aren't moved)
-    art_style: str = "logos"  # "logos" (the downloaded console logos, where you have them) or "drawings" (the bundled console drawings)
+    logos_asked: bool = True  # whether the one-time offer to download the console logos has been made (new installs start False)
     sounds: bool = True  # small sound effects when the console ring turns and when you open or go back
     auto_sync: bool = True  # sync saves when Arcadia starts and after each game closes (once a target is set up)
     sync_remote: str = DEFAULT_REMOTE  # an rclone remote and folder (Google Drive by default); used instead of sync_dir when set
@@ -128,7 +128,7 @@ class Config:
     @classmethod
     def new_install(cls, home: Path | None = None) -> "Config":
         """A fresh setup: everything lives under one folder (~/Arcadia unless told otherwise)."""
-        return cls(home_dir=str(home or DEFAULT_HOME), rom_root="", data_dir="")
+        return cls(home_dir=str(home or DEFAULT_HOME), rom_root="", data_dir="", logos_asked=False)
 
     # ----- where things live -----
 

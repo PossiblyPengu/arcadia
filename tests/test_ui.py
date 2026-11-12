@@ -1391,25 +1391,22 @@ def test_hovering_a_console_makes_it_glow_and_leaving_fades_it(window, qapp):
     assert side not in ring._glow
 
 
-def test_every_console_has_its_own_picture_and_a_glow(qapp):
+def test_every_console_has_a_picture_and_a_glow(qapp):
     from arcadia import pixelart
     from arcadia.config import default_systems
 
-    ids = [s.id for s in default_systems()] + ["__recent__", "__favorites__", "__all__"]
-    for view_id in ids:
-        assert pixelart.is_bundled(view_id), f"no bundled picture for {view_id}"
-    for view_id in [*ids, "something-the-user-added"]:
+    tiles = ["__recent__", "__favorites__", "__all__"]
+    for view_id in tiles:
+        assert pixelart.is_bundled(view_id), f"no tile for {view_id}"
+    for view_id in [*(s.id for s in default_systems()), *tiles, "something-the-user-added"]:
         image = pixelart.sprite_image(view_id)
-        assert 25 <= image.width() <= 170 and 25 <= image.height() <= 170
+        assert 25 <= image.width() <= 400 and 25 <= image.height() <= 400
         fitted = pixelart.scaled(view_id, 240)
         assert (fitted.width(), fitted.height()) == (240, 180)  # everything is fitted into the same box
         assert pixelart.glow(view_id, 128, "#ff0000").width() > 128
-    # a console Arcadia has no picture for gets the generic cartridge
+    # a console without a logo (or any picture) gets the generic cartridge
+    assert pixelart.sprite_image("nes").size() == pixelart.sprite_image("cartridge").size()
     assert pixelart.sprite_image("something-the-user-added").size() == pixelart.sprite_image("cartridge").size()
-    # pictures have several shades (they're shaded, not flat)
-    img = pixelart.sprite_image("gc")
-    shades = {img.pixelColor(x, y).name() for x in range(img.width()) for y in range(img.height()) if img.pixelColor(x, y).alpha()}
-    assert len(shades) >= 6
 
 
 def test_your_own_console_picture_replaces_the_builtin_render(qapp, tmp_path):
@@ -1440,62 +1437,28 @@ def test_your_own_console_picture_replaces_the_builtin_render(qapp, tmp_path):
     assert not pixelart.is_custom("nes")
 
 
-def test_bundled_pixel_art_is_used_and_well_formed(qapp):
-    from pathlib import Path
-
+def test_shipped_tiles_are_small_and_cut_out(qapp):
     from PySide6.QtGui import QImage
 
     from arcadia import pixelart
-    from arcadia.config import default_systems
 
-    folder = pixelart.ASSETS
-    files = sorted(folder.glob("*.png"))
-    assert len(files) >= 25
-    assert sum(f.stat().st_size for f in files) < 2_000_000  # small enough to keep in the repository
+    files = sorted(pixelart.ASSETS.glob("*.png"))
+    assert {f.stem for f in files} == {"__all__", "__favorites__", "__recent__", "cartridge"}
+    assert sum(f.stat().st_size for f in files) < 200_000
     for f in files:
         image = QImage(str(f))
         assert 25 <= image.width() <= 170 and 25 <= image.height() <= 170, f.name
         assert image.hasAlphaChannel() and image.pixelColor(0, 0).alpha() == 0, f.name  # cut out, not on a white box
-        assert pixelart.is_bundled(f.stem)
-    # the consoles that have a picture use it; every console still has *something*
-    assert pixelart.sprite_image("nes").size() == QImage(str(folder / "nes.png")).size()
-    for system in default_systems():
-        assert pixelart.sprite_image(system.id).width() > 20
-    # a bundled picture is scaled with crisp pixels into the same box as everything else
-    fitted = pixelart.scaled("nes", 240)
-    assert (fitted.width(), fitted.height()) == (240, 180)
-    # your own picture still wins over the bundled one
-    assert not pixelart.is_custom("nes")
-
-
-def test_the_art_is_original_and_says_so(qapp):
-    from arcadia import pixelart
-
     text = (pixelart.ASSETS / "ATTRIBUTION.md").read_text(encoding="utf-8")
-    assert "original to Arcadia" in text and "No photograph is copied" in text
+    assert "original to Arcadia" in text and "logo" in text
 
 
-def test_every_console_has_an_era_and_the_picture_is_drawn_at_its_size(qapp):
-    from PySide6.QtGui import QImage
-
-    from arcadia import eras, pixelart
+def test_every_console_has_an_era(qapp):
+    from arcadia import eras
     from arcadia.config import default_systems
 
-    widths = {}
     for system in default_systems():
-        era = eras.era_of(system.id)
-        assert era in eras.LABELS, f"{system.id} has no era"
-        widths.setdefault(era, []).append(QImage(str(pixelart.ASSETS / f"{system.id}.png")).width())
-    assert set(widths) == set(eras.LABELS)  # every generation is represented
-    # later generations are drawn bigger and finer: the average width grows with the era
-    averages = [sum(widths[e]) / len(widths[e]) for e in eras.LABELS]
-    assert averages == sorted(averages) and averages[-1] > averages[0] * 2
-    # the early eras use few colours, like the hardware
-    def colours(cid):
-        image = QImage(str(pixelart.ASSETS / f"{cid}.png"))
-        return len({image.pixelColor(x, y).name() for x in range(image.width()) for y in range(image.height()) if image.pixelColor(x, y).alpha()})
-
-    assert colours("nes") <= 14 and colours("snes") <= 28 and colours("gc") > colours("nes")
+        assert eras.era_of(system.id) in eras.LABELS, f"{system.id} has no era"
     assert eras.era_of("__recent__") == "" and eras.era_of("something-the-user-added") == ""
 
 
