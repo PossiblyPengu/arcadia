@@ -53,5 +53,8 @@ haven't been run against the emulators themselves.
 ## Building the AppImage
 
 `.github/workflows/steamdeck-appimage.yml` builds the Steam Deck AppImage on every push to `main` (download it from the
-run's *Artifacts*). Pushing a tag such as `v0.1.0` also publishes it, with `arcadia-deck-extras.tar.gz`, as a release, which
-is what *Update Arcadia* installs from. Locally, `tools/create_AppImage_SteamDeck.sh` does the same.
+run's *Artifacts*). It also runs the setup tools' tests first.
+
+**Releasing** works the same way as in Deckhand: bump the version in `VERSION`, write what changed in `RELEASE_NOTES.md`, and
+push to `main`. If there is no release for that version yet, the workflow publishes `v<version>` with the AppImage and
+`arcadia-deck-extras.tar.gz`, which is what *Update Arcadia* installs from. (Settings shows that version too.) Locally, `tools/create_AppImage_SteamDeck.sh` does the same.
