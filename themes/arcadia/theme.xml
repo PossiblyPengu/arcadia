@@ -99,7 +99,7 @@
                 <staticImage>${logos}/${system.theme}.svg</staticImage>
                 <maxItemCount>7.4</maxItemCount>
                 <itemSize>0.12 0.085</itemSize>
-                <itemScale>1.5</itemScale>
+                <itemScale>1.15</itemScale>
                 <itemVerticalAlignment>center</itemVerticalAlignment>
                 <imageFit>contain</imageFit>
                 <unfocusedItemOpacity>0.35</unfocusedItemOpacity>
@@ -385,7 +385,7 @@
                 <maxSize>0.34 0.5</maxSize>
                 <origin>0.5 0.5</origin>
                 <imageType>cover</imageType>
-                <defaultImage>./assets/placeholder.png</defaultImage>
+                <default>./assets/placeholder.png</default>
                 <cornerRadius>0.006</cornerRadius>
                 <interpolation>linear</interpolation>
                 <zIndex>20</zIndex>
@@ -394,6 +394,41 @@
                 <pos>0.76 0.715</pos>
                 <size>0.4 0.075</size>
             </text>
+            <image name="gameGlow">
+                <pos>0.76 0.42</pos>
+            </image>
+            <text name="labelYear">
+                <pos>0.1 0.765</pos>
+                <size>0.12 0.03</size>
+            </text>
+            <datetime name="releasedate">
+                <pos>0.1 0.8</pos>
+                <size>0.12 0.045</size>
+            </datetime>
+            <text name="labelGenre">
+                <pos>0.22 0.765</pos>
+                <size>0.12 0.03</size>
+            </text>
+            <text name="genre">
+                <pos>0.22 0.8</pos>
+                <size>0.12 0.045</size>
+            </text>
+            <text name="labelPlayers">
+                <pos>0.34 0.765</pos>
+                <size>0.12 0.03</size>
+            </text>
+            <text name="players">
+                <pos>0.34 0.8</pos>
+                <size>0.12 0.045</size>
+            </text>
+            <text name="labelLastPlayed">
+                <pos>0.46 0.765</pos>
+                <size>0.12 0.03</size>
+            </text>
+            <datetime name="lastplayed">
+                <pos>0.46 0.8</pos>
+                <size>0.12 0.045</size>
+            </datetime>
         </view>
     </variant>
 </theme>
