@@ -17,7 +17,7 @@ SwitchComponent::SwitchComponent(bool state)
     , mColorOriginalValue {mMenuColorPrimary}
     , mColorChangedValue {mMenuColorPrimary}
 {
-    mImage.setResize(0, Font::get(FONT_SIZE_MEDIUM)->getLetterHeight());
+    mImage.setResize(0, std::round(Font::get(FONT_SIZE_MEDIUM)->getLetterHeight() * 1.5f));
     mImage.setImage(":/graphics/off.svg");
     mImage.setColorShift(mMenuColorPrimary);
     mSize = mImage.getSize();

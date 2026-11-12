@@ -47,8 +47,8 @@ GuiThemeDownloader::GuiThemeDownloader(std::function<void()> updateCallback)
 
     // Set up main grid.
     mTitle = std::make_shared<TextComponent>(
-        _("THEME DOWNLOADER"),
-        Font::get(FONT_SIZE_LARGE * Utils::Localization::sMenuTitleScaleFactor), mMenuColorTitle,
+        Utils::Localization::readable(_("THEME DOWNLOADER")),
+        Font::get(FONT_SIZE_LARGE * Utils::Localization::sMenuTitleScaleFactor, FONT_PATH_TITLE), mMenuColorTitle,
         ALIGN_CENTER);
     mGrid.setEntry(mTitle, glm::ivec2 {0, 0}, false, true, glm::ivec2 {2, 2},
                    GridFlags::BORDER_BOTTOM);

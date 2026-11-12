@@ -1,13 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b1e2b"/><stop offset="1" stop-color="#0e1017"/></linearGradient>
-    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#5aa9ff" stop-opacity="0.55"/><stop offset="1" stop-color="#5aa9ff" stop-opacity="0"/></radialGradient>
-  </defs>
-  <rect width="256" height="256" rx="56" fill="url(#g)"/>
-  <circle cx="128" cy="132" r="104" fill="url(#glow)"/>
-  <path d="M72 64h112a8 8 0 0 1 8 8v100l-18 20H80a8 8 0 0 1-8-8z" fill="#2b2f42" stroke="#5aa9ff" stroke-width="6" stroke-linejoin="round"/>
-  <rect x="92" y="84" width="72" height="52" rx="8" fill="#0e1017" stroke="#9aa1b4" stroke-width="3"/>
-  <path d="M104 118l16-22 12 14 8-8 16 16z" fill="#5aa9ff"/>
-  <rect x="96" y="152" width="64" height="8" rx="4" fill="#9aa1b4"/>
-  <rect x="96" y="168" width="40" height="8" rx="4" fill="#5d6477"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Arcadia's mark: a soft amber tile with a gamepad drawn into it (see DESIGN.md). -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <rect x="8" y="8" width="240" height="240" rx="70" fill="#f4a259"/>
+  <rect x="55.5" y="101.5" width="145" height="57" rx="28.5" fill="none" stroke="#2a1708" stroke-width="11"/>
+  <path d="M78 130h32M94 114v32" stroke="#2a1708" stroke-width="11" stroke-linecap="round"/>
+  <circle cx="158" cy="120" r="8" fill="#2a1708"/>
+  <circle cx="178" cy="140" r="8" fill="#2a1708"/>
 </svg>

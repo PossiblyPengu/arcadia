@@ -35,8 +35,8 @@ GuiDetectDevice::GuiDetectDevice(bool firstRun,
 
     // Title.
     mTitle = std::make_shared<TextComponent>(
-        firstRun ? _("WELCOME") : _("CONFIGURE INPUT DEVICE"),
-        Font::get(FONT_SIZE_LARGE * Utils::Localization::sMenuTitleScaleFactor), mMenuColorTitle,
+        Utils::Localization::readable(firstRun ? _("WELCOME") : _("CONFIGURE INPUT DEVICE")),
+        Font::get(FONT_SIZE_LARGE * Utils::Localization::sMenuTitleScaleFactor, FONT_PATH_TITLE), mMenuColorTitle,
         ALIGN_CENTER);
     mGrid.setEntry(mTitle, glm::ivec2 {0, 0}, false, true, glm::ivec2 {1, 1},
                    GridFlags::BORDER_BOTTOM);

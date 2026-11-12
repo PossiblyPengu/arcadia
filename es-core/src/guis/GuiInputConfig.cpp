@@ -54,7 +54,7 @@ GuiInputConfig::GuiInputConfig(InputConfig* target,
     mGrid.setEntry(std::make_shared<GuiComponent>(), glm::ivec2 {0, 0}, false);
 
     mTitle = std::make_shared<TextComponent>(
-        _("CONFIGURING"), Font::get(FONT_SIZE_LARGE * Utils::Localization::sMenuTitleScaleFactor),
+        Utils::Localization::readable(_("CONFIGURING")), Font::get(FONT_SIZE_LARGE * Utils::Localization::sMenuTitleScaleFactor, FONT_PATH_TITLE),
         mMenuColorTitle, ALIGN_CENTER);
     mGrid.setEntry(mTitle, glm::ivec2 {0, 1}, false, true);
 

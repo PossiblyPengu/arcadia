@@ -81,8 +81,8 @@ GuiOrphanedDataCleanup::GuiOrphanedDataCleanup(std::function<void()> reloadCallb
 
     // Set up grid.
     mTitle = std::make_shared<TextComponent>(
-        _("ORPHANED DATA CLEANUP"),
-        Font::get(FONT_SIZE_LARGE * Utils::Localization::sMenuTitleScaleFactor), mMenuColorTitle,
+        Utils::Localization::readable(_("ORPHANED DATA CLEANUP")),
+        Font::get(FONT_SIZE_LARGE * Utils::Localization::sMenuTitleScaleFactor, FONT_PATH_TITLE), mMenuColorTitle,
         ALIGN_CENTER);
     mGrid.setEntry(mTitle, glm::ivec2 {0, 0}, false, true, glm::ivec2 {4, 1},
                    GridFlags::BORDER_NONE);

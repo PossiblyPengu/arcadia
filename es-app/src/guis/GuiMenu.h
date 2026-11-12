@@ -23,7 +23,13 @@ public:
 
     bool input(InputConfig* config, Input input) override;
     void onSizeChanged() override;
+    void render(const glm::mat4& parentTrans) override;
     std::vector<HelpPrompt> getHelpPrompts() override;
+
+    // Arcadia: the open settings screen, so a section card can step to its neighbour with the shoulder
+    // buttons (L/R). Null when the settings screen is closed.
+    static inline GuiMenu* sRail {nullptr};
+    void stepSection(int direction);
 
 private:
     void close(bool closeAllWindows);
@@ -54,6 +60,8 @@ private:
     MenuComponent mMenu;
     TextComponent mVersion;
     int mThemeDownloaderReloadCounter;
+    bool mRailMode {false};
+    std::vector<std::function<void()>> mSections;
 };
 
 #endif // ES_APP_GUIS_GUI_MENU_H

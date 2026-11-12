@@ -28,9 +28,11 @@ class TextComponent;
 #define FONT_SIZE_LARGE Font::getLargeFont()
 #define FONT_SIZE_LARGE_FIXED Font::getLargeFixedFont()
 
-#define FONT_PATH_LIGHT ":/fonts/Akrobat-Regular.ttf"
-#define FONT_PATH_REGULAR ":/fonts/Akrobat-SemiBold.ttf"
-#define FONT_PATH_BOLD ":/fonts/Akrobat-Bold.ttf"
+// Arcadia's type (DESIGN.md): Nunito for everything you read and press, Fraunces for titles.
+#define FONT_PATH_LIGHT ":/fonts/Nunito-SemiBold.ttf"
+#define FONT_PATH_REGULAR ":/fonts/Nunito-Bold.ttf"
+#define FONT_PATH_BOLD ":/fonts/Nunito-ExtraBold.ttf"
+#define FONT_PATH_TITLE ":/fonts/Fraunces-SemiBold.ttf"
 
 class Font : public IReloadable
 {
@@ -39,27 +41,27 @@ public:
     static std::shared_ptr<Font> get(float size, const std::string& path = getDefaultPath());
     static float getMiniFont(bool forceUpdate = false)
     {
-        static float sMiniFont {0.030f *
+        static float sMiniFont {0.024f *
                                 std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth())};
         if (forceUpdate)
-            sMiniFont = 0.030f * std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth());
+            sMiniFont = 0.024f * std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth());
         return sMiniFont;
     }
     static float getSmallFont(bool forceUpdate = false)
     {
-        static float sSmallFont {0.035f *
+        static float sSmallFont {0.027f *
                                  std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth())};
         if (forceUpdate)
-            sSmallFont = 0.035f * std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth());
+            sSmallFont = 0.027f * std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth());
         return sSmallFont;
     }
     static float getMediumFont(bool forceUpdate = false)
     {
         static float sMediumFont {
-            (Renderer::getIsVerticalOrientation() ? 0.040f : 0.041f) *
+            (Renderer::getIsVerticalOrientation() ? 0.032f : 0.032f) *
             std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth())};
         if (forceUpdate)
-            sMediumFont = (Renderer::getIsVerticalOrientation() ? 0.040f : 0.041f) *
+            sMediumFont = (Renderer::getIsVerticalOrientation() ? 0.032f : 0.032f) *
                           std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth());
         return sMediumFont;
     }
@@ -67,18 +69,18 @@ public:
     {
         // Fixed size regardless of screen orientation.
         static float sMediumFixedFont {
-            0.045f * std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth())};
+            0.036f * std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth())};
         if (forceUpdate)
             sMediumFixedFont =
-                0.045f * std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth());
+                0.036f * std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth());
         return sMediumFixedFont;
     }
     static float getLargeFont(bool forceUpdate = false)
     {
-        static float sLargeFont {(Renderer::getIsVerticalOrientation() ? 0.062f : 0.065f) *
+        static float sLargeFont {(Renderer::getIsVerticalOrientation() ? 0.050f : 0.052f) *
                                  std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth())};
         if (forceUpdate)
-            sLargeFont = (Renderer::getIsVerticalOrientation() ? 0.062f : 0.065f) *
+            sLargeFont = (Renderer::getIsVerticalOrientation() ? 0.050f : 0.052f) *
                          std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth());
         return sLargeFont;
     }
@@ -86,10 +88,10 @@ public:
     {
         // Fixed size regardless of screen orientation.
         static float sLargeFixedFont {
-            0.085f * std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth())};
+            0.070f * std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth())};
         if (forceUpdate)
             sLargeFixedFont =
-                0.085f * std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth());
+                0.070f * std::min(Renderer::getScreenHeight(), Renderer::getScreenWidth());
         return sLargeFixedFont;
     }
 

@@ -84,6 +84,12 @@ void Window::pushGui(GuiComponent* gui)
 {
     mGuiStack.push_back(gui);
     gui->updateHelpPrompts();
+    // Each card opened over the settings rail slides in the way the rail itself did.
+    if (mRailGui != nullptr && gui != mRailGui && mGuiStack.size() > 2 &&
+        Settings::getInstance()->getString("MenuOpeningEffect") == "slide") {
+        mTopScale = 0.5f;
+        mScaleAccumulator = 0;
+    }
 }
 
 void Window::removeGui(GuiComponent* gui)
@@ -161,7 +167,7 @@ bool Window::init(bool resized)
     progressBarRect.barPosX =
         (mRenderer->getScreenWidth() / 2.0f) - (progressBarRect.barWidth / 2.0f);
     progressBarRect.barPosY = mSplashTextPositions.y + (progressBarRect.barHeight * 2.0f);
-    progressBarRect.color = 0x2D3140FF;
+    progressBarRect.color = 0x4A3A30FF;
     mProgressBarRectangles.emplace_back(progressBarRect);
 
     const float borderThickness {std::ceil(2.0f * mRenderer->getScreenResolutionModifier())};
@@ -170,14 +176,14 @@ bool Window::init(bool resized)
     progressBarRect.barHeight -= borderThickness * 2.0f;
     progressBarRect.barPosX += borderThickness;
     progressBarRect.barPosY += borderThickness;
-    progressBarRect.color = 0x10121AFF;
+    progressBarRect.color = 0x1C1613FF;
     mProgressBarRectangles.emplace_back(progressBarRect);
 
     progressBarRect.barWidth -= borderThickness * 2.0f;
     progressBarRect.barHeight -= borderThickness * 2.0f;
     progressBarRect.barPosX += borderThickness;
     progressBarRect.barPosY += borderThickness;
-    progressBarRect.color = 0x5AA9FFFF;
+    progressBarRect.color = 0xF4A259FF;
     mProgressBarRectangles.emplace_back(progressBarRect);
 
     mBackgroundOverlay->setResize(mRenderer->getScreenWidth(), mRenderer->getScreenHeight());
@@ -571,7 +577,7 @@ void Window::render()
                     backgroundParameters.blurStrength = 1.75f;
 
                     // Also dim the background slightly.
-                    if (Settings::getInstance()->getString("MenuColorScheme") == "paper")
+                    if (Settings::getInstance()->getString("MenuColorScheme") == "linen")
                         backgroundParameters.dimming = 0.60f;
                     else
                         backgroundParameters.dimming = 0.80f;
@@ -583,7 +589,7 @@ void Window::render()
                 }
                 else {
                     // Dim the background slightly.
-                    if (Settings::getInstance()->getString("MenuColorScheme") == "paper")
+                    if (Settings::getInstance()->getString("MenuColorScheme") == "linen")
                         backgroundParameters.dimming = 0.60f;
                     else
                         backgroundParameters.dimming = 0.80f;
@@ -664,6 +670,13 @@ void Window::render()
                     mScaleAccumulator = 0;
             }
 
+            // The settings rail and its ground go under the button hints, whether or not it is on top.
+            const bool railShown {mRailGui != nullptr && !mRenderLaunchScreen &&
+                                  std::find(mGuiStack.cbegin(), mGuiStack.cend(), mRailGui) !=
+                                      mGuiStack.cend()};
+            if (railShown)
+                mRailGui->render(top == mRailGui ? topTrans : trans);
+
             if (!mRenderedHelpPrompts) {
                 if (mHelpComponents != nullptr) {
                     for (auto& helpComponent : *mHelpComponents) {
@@ -680,7 +693,7 @@ void Window::render()
                 }
             }
 
-            if (!mRenderLaunchScreen)
+            if (!mRenderLaunchScreen && !(railShown && top == mRailGui))
                 top->render(topTrans);
         }
         else {
@@ -792,7 +805,7 @@ void Window::renderSplashScreen(SplashScreenState state, float progress)
     glm::mat4 trans {mRenderer->getIdentity()};
     mRenderer->setMatrix(trans);
     mRenderer->drawRect(0.0f, 0.0f, mRenderer->getScreenWidth(), mRenderer->getScreenHeight(),
-                        0x10121AFF, 0x10121AFF);
+                        0x1C1613FF, 0x1C1613FF);
     mSplash->render(trans);
     mRenderer->setMatrix(trans);
 

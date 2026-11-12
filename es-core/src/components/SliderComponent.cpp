@@ -41,7 +41,7 @@ SliderComponent::SliderComponent(float min, float max, float increment, const st
     mKnob.setResize(0.0f, std::round(mSize.y * 0.7f));
     mKnob.setOrigin(0.5f, 0.0f);
     mKnob.setImage(":/graphics/slider_knob.svg");
-    mKnob.setColorShift(mMenuColorBlue);
+    mKnob.setColorShift(mMenuColorPill);
 
     mKnobDisabled.setResize(0.0f, std::round(mSize.y * 0.7f));
     mKnobDisabled.setOrigin(0.5f, 0.0f);
@@ -109,10 +109,19 @@ void SliderComponent::render(const glm::mat4& parentTrans)
     mSliderText->render(trans);
     mRenderer->setMatrix(trans);
 
-    mRenderer->drawRect(
-        mKnob.getSize().x / 2.0f, mBarPosY, mBarLength, mBarHeight,
-        (mMenuColorSecondary & 0xFFFFFF00) | static_cast<unsigned int>(mOpacity * 160.0f),
-        (mMenuColorSecondary & 0xFFFFFF00) | static_cast<unsigned int>(mOpacity * 160.0f));
+    // A rounded track with the part up to the knob filled in the accent (DESIGN.md).
+    {
+        const float alpha {mOpacity * 255.0f};
+        const unsigned int track {(mMenuColorTrack & 0xFFFFFF00) | static_cast<unsigned int>(alpha)};
+        const unsigned int fill {(mMenuColorAccent & 0xFFFFFF00) | static_cast<unsigned int>(alpha)};
+        const float knobCentre {mKnob.getPosition().x};
+        const float barStart {mKnob.getSize().x / 2.0f};
+        mRenderer->drawRoundedRect(trans, barStart, mBarPosY, mBarLength, mBarHeight, track,
+                                   mBarHeight / 2.0f);
+        if (knobCentre > barStart)
+            mRenderer->drawRoundedRect(trans, barStart, mBarPosY, knobCentre - barStart, mBarHeight,
+                                       fill, mBarHeight / 2.0f);
+    }
 
     if (mOpacity > DISABLED_OPACITY)
         mKnob.render(trans);
@@ -164,9 +173,9 @@ void SliderComponent::onValueChanged()
     mKnob.setResize(0.0f, std::round(mSize.y * 0.7f));
 
     if (mRenderer->getScreenWidth() > mRenderer->getScreenHeight())
-        mBarHeight = std::round(2.0f * mRenderer->getScreenHeightModifier());
+        mBarHeight = std::round(6.0f * mRenderer->getScreenHeightModifier());
     else
-        mBarHeight = std::round(2.0f * std::round(mRenderer->getScreenWidthModifier()));
+        mBarHeight = std::round(6.0f * std::round(mRenderer->getScreenWidthModifier()));
 
     // For very low resolutions, make sure the bar height is not rounded to zero.
     if (mBarHeight < 1.0f)

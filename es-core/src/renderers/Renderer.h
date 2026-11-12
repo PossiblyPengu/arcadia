@@ -179,6 +179,18 @@ public:
                   const BlendFactor srcBlendFactor = BlendFactor::SRC_ALPHA,
                   const BlendFactor dstBlendFactor = BlendFactor::ONE_MINUS_SRC_ALPHA,
                   const float cornerRadius = 0.0f);
+    // Arcadia: a filled rounded rectangle at (x, y) within trans. The rounded-corner shader measures from
+    // the rectangle's own origin, so this draws at (0, 0) under a translated matrix; the matrix is left
+    // set to trans afterwards.
+    void drawRoundedRect(const glm::mat4& trans,
+                         const float x,
+                         const float y,
+                         const float w,
+                         const float h,
+                         const unsigned int color,
+                         const float cornerRadius,
+                         const float opacity = 1.0f,
+                         const float dimming = 1.0f);
 
     const glm::mat4& getProjectionMatrix() { return mProjectionMatrix; }
     const glm::mat4& getProjectionMatrixNormal() { return mProjectionMatrixNormal; }

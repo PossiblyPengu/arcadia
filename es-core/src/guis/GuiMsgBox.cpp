@@ -19,13 +19,7 @@
 #define VERTICAL_PADDING_MODIFIER 1.225f
 
 // Arcadia (DESIGN.md: never upper case for sentences): English messages are shown in sentence case.
-static std::string readable(const std::string& text)
-{
-    const std::string locale {Utils::Localization::sCurrentLocale};
-    if (!locale.empty() && locale.substr(0, 2) != "en")
-        return text;
-    return Utils::String::toSentenceCase(text);
-}
+using Utils::Localization::readable;
 
 GuiMsgBox::GuiMsgBox(const std::string& text,
                      const std::string& name1,

@@ -19,6 +19,7 @@
 #include "GuiComponent.h"
 #include "Log.h"
 #include "Window.h"
+#include "utils/LocalizationUtil.h"
 
 #include <algorithm>
 
@@ -336,7 +337,7 @@ private:
                     getSelectedObjects().size());
             }
 
-            mText.setText(ss.str());
+            mText.setText(Utils::Localization::readable(ss.str()));
             mText.setSize(0, mText.getSize().y);
             setSize(
                 (mText.getTextCache() == nullptr ? 0.0f : mText.getTextCache()->metrics.size.x) +
@@ -353,10 +354,11 @@ private:
                     if (it->maxNameLength > 0.0f) {
                         // A maximum length parameter is passed to make sure the text is
                         // abbreviated if it doesn't fit.
-                        mText.setText(it->name, true, it->maxNameLength);
+                        mText.setText(Utils::Localization::readable(it->name), true,
+                                     it->maxNameLength);
                     }
                     else {
-                        mText.setText(it->name);
+                        mText.setText(Utils::Localization::readable(it->name));
                     }
 
                     mText.setSize(0.0f, mText.getSize().y);

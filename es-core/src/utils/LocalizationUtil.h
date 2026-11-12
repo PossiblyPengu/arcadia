@@ -35,6 +35,10 @@ namespace Utils
         std::pair<std::string, std::string> getLocale();
         void setLocale();
 
+        // Arcadia: menu text is written in capitals; in English it is shown in sentence case instead
+        // ("Show consoles with no games"). Other languages are left as they are.
+        std::string readable(const std::string& text);
+
     } // namespace Localization
 
 } // namespace Utils

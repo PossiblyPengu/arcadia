@@ -116,6 +116,9 @@ public:
             mScrollIndicatorChangedCallback(mScrollIndicatorStatus, false);
     }
 
+    // Arcadia: the settings rail marks its chosen section with a cream pill instead of the focus ring.
+    void setPillSelector(bool state) { mPillSelector = state; }
+
     void setCursorChangedCallback(const std::function<void(CursorState state)>& callback)
     {
         mCursorChangedCallback = callback;
@@ -147,6 +150,7 @@ private:
     float mRowHeight;
     float mHorizontalPadding;
     float mSelectorBarOffset;
+    bool mPillSelector {false};
     float mCameraOffset;
 
     std::function<void(CursorState state)> mCursorChangedCallback;

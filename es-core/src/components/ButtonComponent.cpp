@@ -10,6 +10,7 @@
 
 #include "Settings.h"
 #include "resources/Font.h"
+#include "utils/LocalizationUtil.h"
 #include "utils/StringUtil.h"
 
 ButtonComponent::ButtonComponent(const std::string& text,
@@ -82,7 +83,8 @@ void ButtonComponent::setText(const std::string& text,
                               bool upperCase,
                               bool resize)
 {
-    mText = upperCase ? Utils::String::toUpper(text) : text;
+    // Arcadia: button labels read in sentence case ("Save", "Back").
+    mText = Utils::Localization::readable(upperCase ? Utils::String::toUpper(text) : text);
     mHelpText = helpText;
     mButtonText->setText(mText);
 

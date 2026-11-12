@@ -379,6 +379,22 @@ void Renderer::popClipRect()
         setScissor(mClipStack.top());
 }
 
+void Renderer::drawRoundedRect(const glm::mat4& trans,
+                               const float x,
+                               const float y,
+                               const float w,
+                               const float h,
+                               const unsigned int color,
+                               const float cornerRadius,
+                               const float opacity,
+                               const float dimming)
+{
+    setMatrix(glm::translate(trans, glm::vec3 {std::round(x), std::round(y), 0.0f}));
+    drawRect(0.0f, 0.0f, w, h, color, color, false, opacity, dimming, BlendFactor::SRC_ALPHA,
+             BlendFactor::ONE_MINUS_SRC_ALPHA, cornerRadius);
+    setMatrix(trans);
+}
+
 void Renderer::drawRect(const float x,
                         const float y,
                         const float w,

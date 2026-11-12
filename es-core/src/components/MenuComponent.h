@@ -26,7 +26,8 @@ class MenuComponent : public GuiComponent
 public:
     MenuComponent(std::string title,
                   const std::shared_ptr<Font>& titleFont =
-                      Font::get(FONT_SIZE_LARGE * Utils::Localization::sMenuTitleScaleFactor));
+                      Font::get(FONT_SIZE_LARGE * Utils::Localization::sMenuTitleScaleFactor,
+                                FONT_PATH_TITLE));
     virtual ~MenuComponent();
 
     void save();
@@ -91,9 +92,19 @@ private:
     float getButtonGridHeight() const;
 
 public:
-    // Where menu sheets sit on screen (DESIGN.md), for the menus that place themselves.
+    // Where menu sheets sit on screen (DESIGN.md), for the menus that place themselves. While the
+    // settings screen is open its section rail runs down the left, and every other menu becomes a card
+    // to the right of it.
     static glm::vec2 sheetMargin();
     static glm::vec3 sheetPosition();
+    static float railWidth();
+    static float headerHeight();
+    static inline bool sRailOpen {false};
+
+    // Turns this menu into the section rail: no card behind it, a large title, a cream pill on the
+    // chosen section.
+    void setRailStyle();
+    bool isRail() const { return mRail; }
 
 private:
 
@@ -111,6 +122,8 @@ private:
     std::vector<std::function<void()>> mSaveFuncs;
 
     bool mNeedsSaving;
+    bool mRail {false};
+    bool mCard {false};
 };
 
 #endif // ES_CORE_COMPONENTS_MENU_COMPONENT_H

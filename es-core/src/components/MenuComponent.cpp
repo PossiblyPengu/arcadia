@@ -32,7 +32,9 @@ MenuComponent::MenuComponent(std::string title, const std::shared_ptr<Font>& tit
     mTitle->setAutoCalcExtent(glm::ivec2 {0, 0});
     mTitle->setHorizontalAlignment(ALIGN_LEFT);
     mTitle->setColor(mMenuColorTitle);
-    setTitle(title, titleFont);
+    // A card next to the settings rail carries a smaller heading; the rail's title heads the screen.
+    mCard = sRailOpen && !Renderer::getIsVerticalOrientation();
+    setTitle(title, mCard ? Font::get(FONT_SIZE_LARGE * 0.74f, FONT_PATH_TITLE) : titleFont);
     mGrid.setEntry(mTitle, glm::ivec2 {0, 0}, false, true, glm::ivec2 {2, 2});
 
     // Set up list which will never change (externally, anyway).
@@ -82,12 +84,14 @@ void MenuComponent::save()
 
 void MenuComponent::setTitle(std::string title, const std::shared_ptr<Font>& font)
 {
-    mTitle->setText(title);
+    mTitle->setText(Utils::Localization::readable(title));
     mTitle->setFont(font);
 }
 
 float MenuComponent::getButtonGridHeight() const
 {
+    if (!mButtonGrid && (mRail || mCard))
+        return std::round(mRenderer->getScreenHeight() * 0.02f);
     return (mButtonGrid ? mButtonGrid->getSize().y :
                           Font::get(FONT_SIZE_MEDIUM)->getSize() * 1.5f + BUTTON_GRID_VERT_PADDING);
 }
@@ -96,9 +100,20 @@ void MenuComponent::updateSize()
 {
     // Arcadia (DESIGN.md): every menu is a sheet down the left side of the screen, the full height
     // apart from a small margin, so the game or console you came from stays in view on the right.
-    // The bottom margin leaves the button hints visible below the sheet.
+    // The bottom margin leaves the button hints visible below the sheet. On the settings screen the
+    // rail takes the left and the menus are cards beside it.
     const glm::vec2 margin {sheetMargin()};
-    const float height {mRenderer->getScreenHeight() - margin.y - mRenderer->getScreenHeight() * 0.1f};
+    const float bottom {mRenderer->getScreenHeight() * 0.9f};
+    if (mRail) {
+        setSize(railWidth(), bottom - margin.y);
+        return;
+    }
+    if (mCard) {
+        const glm::vec3 pos {sheetPosition()};
+        setSize(mRenderer->getScreenWidth() - pos.x - margin.x, bottom - pos.y);
+        return;
+    }
+    const float height {bottom - margin.y};
     const float width {mRenderer->getIsVerticalOrientation() ?
                            mRenderer->getScreenWidth() - 2.0f * margin.x :
                            std::max(mRenderer->getScreenWidth() * 0.52f,
@@ -110,32 +125,63 @@ void MenuComponent::updateSize()
 glm::vec2 MenuComponent::sheetMargin()
 {
     Renderer* renderer {Renderer::getInstance()};
-    return glm::vec2 {std::round(renderer->getScreenWidth() * 0.025f),
+    return glm::vec2 {std::round(renderer->getScreenWidth() * 0.034f),
                       std::round(renderer->getScreenHeight() * 0.04f)};
 }
 
 glm::vec3 MenuComponent::sheetPosition()
 {
     const glm::vec2 margin {sheetMargin()};
+    if (sRailOpen && !Renderer::getIsVerticalOrientation())
+        return glm::vec3 {std::round(margin.x + railWidth() +
+                                     Renderer::getInstance()->getScreenWidth() * 0.02f),
+                          std::round(margin.y + headerHeight()), 0.0f};
     return glm::vec3 {margin.x, margin.y, 0.0f};
+}
+
+float MenuComponent::railWidth()
+{
+    return std::round(Renderer::getInstance()->getScreenWidth() * 0.235f);
+}
+
+float MenuComponent::headerHeight()
+{
+    return std::round(Renderer::getInstance()->getScreenHeight() * 0.1f);
+}
+
+void MenuComponent::setRailStyle()
+{
+    mRail = true;
+    mCard = false;
+    mBackground.setVisible(false);
+    mList->setPillSelector(true);
+    updateSize();
 }
 
 void MenuComponent::onSizeChanged()
 {
     mBackground.fitTo(mSize);
 
-    // Update grid row/column sizes.
-    mGrid.setRowHeightPerc(0, TITLE_HEIGHT / mSize.y / 2.0f);
-    mGrid.setRowHeightPerc(1, TITLE_HEIGHT / mSize.y / 2.0f);
+    // Update grid row/column sizes. The rail's title is the screen header, so it gets the header's height.
+    const float titleHeight {mRail ? headerHeight() : TITLE_HEIGHT};
+    mGrid.setRowHeightPerc(0, titleHeight / mSize.y / 2.0f);
+    mGrid.setRowHeightPerc(1, titleHeight / mSize.y / 2.0f);
     mGrid.setRowHeightPerc(3, getButtonGridHeight() / mSize.y);
 
     mGrid.setColWidthPerc(1, 0.055f);
 
     mGrid.setSize(mSize);
 
-    // The title sits on the left like the rows below it, leaving room on the right for the
-    // scroll indicators.
-    const float indent {mSize.x * 0.028f};
+    // Cards keep their rows a little in from the edge so the focus ring has room; the rail runs flush.
+    const float inset {mRail ? 0.0f : std::round(mRenderer->getScreenWidth() * 0.012f)};
+    if (inset > 0.0f) {
+        mList->setPosition(mList->getPosition().x + inset, mList->getPosition().y);
+        mList->setSize(mList->getSize().x - inset * 2.0f, mList->getSize().y);
+    }
+
+    // The title sits on the left, lined up with the text of the rows below it, leaving room on the right
+    // for the scroll indicators.
+    const float indent {inset + std::round(28.0f * mRenderer->getScreenWidthModifier())};
     const float indicatorsSize {mSize.x * 0.09f};
 
     glm::vec2 titleSize {mTitle->getSize()};

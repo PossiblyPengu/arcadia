@@ -236,6 +236,13 @@ namespace Utils
         }
 
 
+        std::string readable(const std::string& text)
+        {
+            if (!sCurrentLocale.empty() && sCurrentLocale.substr(0, 2) != "en")
+                return text;
+            return Utils::String::toSentenceCase(text);
+        }
+
     } // namespace Localization
 
 } // namespace Utils

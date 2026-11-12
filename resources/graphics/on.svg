@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Arcadia: a filled pill with the knob cut out on the right (tinted by the program). -->
-<svg xmlns="http://www.w3.org/2000/svg" width="44" height="22" viewBox="0 0 44 22">
-  <path fill="#ffffff" fill-rule="evenodd" d="M11 0h22a11 11 0 0 1 0 22H11A11 11 0 0 1 11 0z M33 4a7 7 0 1 0 0 14a7 7 0 1 0 0-14z"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="56" height="32" viewBox="0 0 56 32">
+  <path fill="#ffffff" fill-rule="evenodd" d="M16 0h24a16 16 0 0 1 0 32H16A16 16 0 0 1 16 0z M40 5a11 11 0 1 0 0 22a11 11 0 1 0 0-22z"/>
 </svg>

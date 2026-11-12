@@ -228,7 +228,7 @@ bool RendererOpenGL::createContext()
 #endif
 
 
-    GL_CHECK_ERROR(glClearColor(0.0627f, 0.0706f, 0.102f, 1.0f));
+    GL_CHECK_ERROR(glClearColor(0.1098f, 0.0863f, 0.0745f, 1.0f));
     GL_CHECK_ERROR(glActiveTexture(GL_TEXTURE0));
     GL_CHECK_ERROR(glEnable(GL_BLEND));
     GL_CHECK_ERROR(glPixelStorei(GL_PACK_ALIGNMENT, 1));

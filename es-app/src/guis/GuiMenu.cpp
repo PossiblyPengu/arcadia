@@ -45,35 +45,45 @@
 
 GuiMenu::GuiMenu()
     : mRenderer {Renderer::getInstance()}
-    , mMenu {_("MAIN MENU")}
+    , mMenu {_("SETTINGS")}
     , mThemeDownloaderReloadCounter {0}
 {
     const bool isFullUI {UIModeController::getInstance()->isUIModeFull()};
+
+    // Arcadia (DESIGN.md): the main menu is the settings screen. Its sections run down a rail on the
+    // left and each opens as a card beside it. A portrait screen keeps the older single sheet.
+    mRailMode = !mRenderer->getIsVerticalOrientation();
+    if (mRailMode) {
+        MenuComponent::sRailOpen = true;
+        mMenu.setRailStyle();
+        sRail = this;
+    }
 
     if (isFullUI)
         addEntry(_("SETUP"), mMenuColorPrimary, true, [this] { openSetup(); }, "setup");
 
     if (isFullUI)
-        addEntry(_("SCRAPER"), mMenuColorPrimary, true, [this] { openScraperOptions(); }, "scraper");
+        addEntry(_("LOOK AND FEEL"), mMenuColorPrimary, true, [this] { openUIOptions(); }, "ui");
+
+    addEntry(_("SOUND"), mMenuColorPrimary, true, [this] { openSoundOptions(); }, "sound");
 
     if (isFullUI)
-        addEntry(_("UI SETTINGS"), mMenuColorPrimary, true, [this] { openUIOptions(); }, "ui");
-
-    addEntry(_("SOUND SETTINGS"), mMenuColorPrimary, true, [this] { openSoundOptions(); }, "sound");
-
-    if (isFullUI)
-        addEntry(_("INPUT DEVICE SETTINGS"), mMenuColorPrimary, true,
-                 [this] { openInputDeviceOptions(); }, "input");
+        addEntry(_("CONTROLLERS"), mMenuColorPrimary, true, [this] { openInputDeviceOptions(); },
+                 "input");
 
     if (isFullUI)
-        addEntry(_("GAME COLLECTION SETTINGS"), mMenuColorPrimary, true,
+        addEntry(_("COVERS AND INFO"), mMenuColorPrimary, true, [this] { openScraperOptions(); },
+                 "scraper");
+
+    if (isFullUI)
+        addEntry(_("COLLECTIONS"), mMenuColorPrimary, true,
                  [this] { openCollectionSystemOptions(); }, "collections");
 
     if (isFullUI)
-        addEntry(_("OTHER SETTINGS"), mMenuColorPrimary, true, [this] { openOtherOptions(); }, "other");
+        addEntry(_("ADVANCED"), mMenuColorPrimary, true, [this] { openOtherOptions(); }, "other");
 
     if (isFullUI)
-        addEntry(_("UTILITIES"), mMenuColorPrimary, true, [this] { openUtilities(); }, "utilities");
+        addEntry(_("TOOLS"), mMenuColorPrimary, true, [this] { openUtilities(); }, "utilities");
 
     if (!Settings::getInstance()->getBool("ForceKiosk") &&
         Settings::getInstance()->getString("UIMode") != "kiosk") {
@@ -86,11 +96,20 @@ GuiMenu::GuiMenu()
     addChild(&mMenu);
     addVersionInfo();
     setSize(mMenu.getSize());
-    setPosition(MenuComponent::sheetPosition());
+    setPosition(mRailMode ? glm::vec3 {MenuComponent::sheetMargin(), 0.0f} :
+                            MenuComponent::sheetPosition());
+    if (mRailMode)
+        mWindow->setRailGui(this);
 }
 
 GuiMenu::~GuiMenu()
 {
+    if (mRailMode) {
+        MenuComponent::sRailOpen = false;
+        sRail = nullptr;
+        mWindow->setRailGui(nullptr);
+    }
+
     if (ViewController::getInstance()->getState().viewing != ViewController::ViewMode::NOTHING) {
         // This is required for the situation where scrolling started just before the menu
         // was openened. Without this, the scrolling would run until manually stopped after
@@ -101,15 +120,41 @@ GuiMenu::~GuiMenu()
     }
 }
 
+void GuiMenu::render(const glm::mat4& parentTrans)
+{
+    // The settings screen has its own ground; the view behind only shows through a little.
+    if (mRailMode) {
+        mRenderer->setMatrix(parentTrans);
+        const float w {mRenderer->getScreenWidth()};
+        mRenderer->drawRect(-w * 0.1f, 0.0f, w * 1.2f, mRenderer->getScreenHeight(),
+                            (mMenuColorFrameLaunchScreen & 0xFFFFFF00) | 0xF0,
+                            (mMenuColorFrameLaunchScreen & 0xFFFFFF00) | 0xF0);
+    }
+    GuiComponent::render(parentTrans);
+}
+
+void GuiMenu::stepSection(int direction)
+{
+    if (mSections.empty())
+        return;
+    auto list = mMenu.getList();
+    const int current {list->getCursorId()};
+    const int target {std::clamp(current + direction, 0, static_cast<int>(mSections.size()) - 1)};
+    if (target == current)
+        return;
+    list->moveCursor(target - current);
+    mSections.at(target)();
+}
+
 void GuiMenu::openScraperOptions()
 {
     // Open the scraper menu.
-    mWindow->pushGui(new GuiScraperMenu(_("SCRAPER")));
+    mWindow->pushGui(new GuiScraperMenu(_("COVERS AND INFO")));
 }
 
 void GuiMenu::openUIOptions()
 {
-    auto s = new GuiSettings(_("UI SETTINGS"));
+    auto s = new GuiSettings(_("LOOK AND FEEL"));
 
     // Theme options section.
 
@@ -745,23 +790,33 @@ void GuiMenu::openUIOptions()
         }
     });
 
-    // Menu color scheme.
-    auto menuColorScheme =
-        std::make_shared<OptionListComponent<std::string>>(_("MENU COLOR SCHEME"), false);
-    const std::string selectedMenuColor {Settings::getInstance()->getString("MenuColorScheme")};
-    menuColorScheme->add(_("INK"), "ink", selectedMenuColor != "oled" && selectedMenuColor != "paper");
-    menuColorScheme->add(_("OLED BLACK"), "oled", selectedMenuColor == "oled");
-    menuColorScheme->add(_("PAPER"), "paper", selectedMenuColor == "paper");
-    // If there are no objects returned, then there must be a manually modified entry in the
-    // configuration file. Simply set the menu color scheme to "ink" in this case.
+    // Colours: one warm ground, three accents, and a light scheme for bright rooms. With the Arcadia theme the
+    // console and game views follow the same choice.
+    auto menuColorScheme = std::make_shared<OptionListComponent<std::string>>(_("COLOURS"), false);
+    std::string selectedMenuColor {Settings::getInstance()->getString("MenuColorScheme")};
+    if (selectedMenuColor == "paper" || selectedMenuColor == "light")
+        selectedMenuColor = "linen";
+    menuColorScheme->add(_("EMBER"), "ember",
+                         selectedMenuColor != "moss" && selectedMenuColor != "dusk" &&
+                             selectedMenuColor != "linen");
+    menuColorScheme->add(_("MOSS"), "moss", selectedMenuColor == "moss");
+    menuColorScheme->add(_("DUSK"), "dusk", selectedMenuColor == "dusk");
+    menuColorScheme->add(_("LINEN (LIGHT)"), "linen", selectedMenuColor == "linen");
     if (menuColorScheme->getSelectedObjects().size() == 0)
         menuColorScheme->selectEntry(0);
-    s->addWithLabel(_("MENU COLOR SCHEME"), menuColorScheme);
+    s->addWithLabel(_("COLOURS"), menuColorScheme);
     s->addSaveFunc([this, menuColorScheme, s] {
         if (menuColorScheme->getSelected() !=
             Settings::getInstance()->getString("MenuColorScheme")) {
             Settings::getInstance()->setString("MenuColorScheme", menuColorScheme->getSelected());
             ViewController::getInstance()->setMenuColors();
+            if (Settings::getInstance()->getString("Theme") == "arcadia") {
+                Settings::getInstance()->setString("ThemeColorScheme",
+                                                   menuColorScheme->getSelected());
+                s->setNeedsReloading();
+                s->setNeedsClearHelpPromptsImageCache();
+                s->setInvalidateCachedBackground();
+            }
             s->setNeedsSaving();
             if (mThemeDownloaderReloadCounter == 0)
                 s->setNeedsCloseMenu([this] { delete this; });
@@ -1213,7 +1268,7 @@ void GuiMenu::openUIOptions()
 
 void GuiMenu::openSoundOptions()
 {
-    auto s = new GuiSettings(_("SOUND SETTINGS"));
+    auto s = new GuiSettings(_("SOUND"));
 
 
 // TODO: Implement system volume support for macOS and Android.
@@ -1322,7 +1377,7 @@ void GuiMenu::openSoundOptions()
 
 void GuiMenu::openInputDeviceOptions()
 {
-    auto s = new GuiSettings(_("INPUT DEVICE SETTINGS"));
+    auto s = new GuiSettings(_("CONTROLLERS"));
 
     // Controller type.
     auto inputControllerType =
@@ -1444,7 +1499,7 @@ void GuiMenu::openConfigInput(GuiSettings* settings)
 
 void GuiMenu::openOtherOptions()
 {
-    auto s = new GuiSettings(_("OTHER SETTINGS"));
+    auto s = new GuiSettings(_("ADVANCED"));
 
     // Alternative emulators GUI.
     ComponentListRow alternativeEmulatorsRow;
@@ -2044,7 +2099,7 @@ void GuiMenu::openSetup()
 
 void GuiMenu::openUtilities()
 {
-    auto s = new GuiSettings(_("UTILITIES"));
+    auto s = new GuiSettings(_("TOOLS"));
 
     auto gameImporterUpdateFunc = [&, s]() {
         delete s;
@@ -2259,15 +2314,14 @@ void GuiMenu::openQuitMenu()
 
 void GuiMenu::addVersionInfo()
 {
-    mVersion.setFont(Font::get(FONT_SIZE_SMALL));
+    mVersion.setFont(Font::get(FONT_SIZE_MINI));
     mVersion.setAutoCalcExtent(glm::ivec2 {0, 0});
     mVersion.setColor(mMenuColorTertiary);
 
     // Arcadia's own version, and the ES-DE release it is based on.
-    mVersion.setText("ARCADIA 0.1   -   BASED ON ES-DE " +
-                     Utils::String::toUpper(PROGRAM_VERSION_STRING));
+    mVersion.setText("Arcadia 0.1  ·  ES-DE " + std::string(PROGRAM_VERSION_STRING));
 
-    mVersion.setHorizontalAlignment(ALIGN_CENTER);
+    mVersion.setHorizontalAlignment(mRailMode ? ALIGN_LEFT : ALIGN_CENTER);
     addChild(&mVersion);
 }
 
@@ -2307,13 +2361,14 @@ void GuiMenu::openScreensaverOptions()
 
 void GuiMenu::openCollectionSystemOptions()
 {
-    mWindow->pushGui(new GuiCollectionSystemsOptions(_("GAME COLLECTION SETTINGS")));
+    mWindow->pushGui(new GuiCollectionSystemsOptions(_("COLLECTIONS")));
 }
 
 void GuiMenu::onSizeChanged()
 {
-    mVersion.setSize(mSize.x, 0.0f);
-    mVersion.setPosition(0.0f, mSize.y - mVersion.getSize().y);
+    const float indent {mRailMode ? std::round(28.0f * mRenderer->getScreenWidthModifier()) : 0.0f};
+    mVersion.setSize(mSize.x - indent, 0.0f);
+    mVersion.setPosition(indent, mSize.y - mVersion.getSize().y);
 }
 
 void GuiMenu::addEntry(const std::string& name,
@@ -2324,13 +2379,13 @@ void GuiMenu::addEntry(const std::string& name,
 {
     std::shared_ptr<Font> font {Font::get(FONT_SIZE_MEDIUM)};
 
-    // Populate the list. Arcadia: each main menu entry starts with a line icon (resources/graphics/menu).
+    // Populate the list. Arcadia: each section starts with a line icon (resources/graphics/menu).
     ComponentListRow row;
     if (!icon.empty()) {
         auto image = std::make_shared<ImageComponent>();
         image->setResize(0.0f, std::round(font->getLetterHeight() * 1.35f));
         image->setImage(":/graphics/menu/" + icon + ".svg");
-        image->setColorShift(mMenuColorSecondary);
+        image->setColorShift(mRailMode ? mMenuColorPrimary : mMenuColorSecondary);
         row.addElement(image, false);
         auto spacer = std::make_shared<GuiComponent>();
         spacer->setSize(std::round(font->getLetterHeight() * 0.9f), 0.0f);
@@ -2338,13 +2393,16 @@ void GuiMenu::addEntry(const std::string& name,
     }
     row.addElement(std::make_shared<TextComponent>(name, font, color), true);
 
-    if (add_arrow) {
+    // The rail needs no arrows: the card beside it shows where each section leads.
+    if (add_arrow && !mRailMode) {
         std::shared_ptr<ImageComponent> bracket {mMenu.makeArrow()};
         row.addElement(bracket, false);
     }
 
     row.makeAcceptInputHandler(func);
     mMenu.addRow(row);
+    if (icon != "quit")
+        mSections.push_back(func);
 }
 
 void GuiMenu::close(bool closeAllWindows)
@@ -2381,8 +2439,7 @@ std::vector<HelpPrompt> GuiMenu::getHelpPrompts()
 {
     std::vector<HelpPrompt> prompts;
     prompts.push_back(HelpPrompt("up/down", _("choose")));
-    prompts.push_back(HelpPrompt("a", _("select")));
-    prompts.push_back(HelpPrompt("b", _("close menu")));
-    prompts.push_back(HelpPrompt("start", _("close menu")));
+    prompts.push_back(HelpPrompt("a", _("open")));
+    prompts.push_back(HelpPrompt("b", _("done")));
     return prompts;
 }

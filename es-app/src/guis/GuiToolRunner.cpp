@@ -28,7 +28,7 @@ GuiToolRunner::GuiToolRunner(const std::string& title,
     addChild(&mGrid);
 
     mTitle = std::make_shared<TextComponent>(
-        title, Font::get(FONT_SIZE_LARGE * Utils::Localization::sMenuTitleScaleFactor),
+        Utils::Localization::readable(title), Font::get(FONT_SIZE_LARGE * Utils::Localization::sMenuTitleScaleFactor, FONT_PATH_TITLE),
         mMenuColorTitle, ALIGN_CENTER);
     mGrid.setEntry(mTitle, glm::ivec2 {0, 0}, false, true, glm::ivec2 {3, 1},
                    GridFlags::BORDER_NONE);

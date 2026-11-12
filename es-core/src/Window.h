@@ -90,6 +90,8 @@ public:
     static Window* getInstance();
 
     void pushGui(GuiComponent* gui);
+    // Arcadia: the settings rail stays on screen behind the section card opened from it.
+    void setRailGui(GuiComponent* gui) { mRailGui = gui; }
     void removeGui(GuiComponent* gui);
     GuiComponent* peekGui();
     int getGuiStackSize() { return static_cast<int>(mGuiStack.size()); }
@@ -239,6 +241,7 @@ private:
 
     float mBackgroundOverlayOpacity;
     std::vector<GuiComponent*> mGuiStack;
+    GuiComponent* mRailGui {nullptr};
     std::vector<std::shared_ptr<Font>> mDefaultFonts;
     std::unique_ptr<TextComponent> mGPUStatisticsText;
 

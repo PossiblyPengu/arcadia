@@ -65,8 +65,8 @@ GuiScraperMulti::GuiScraperMulti(
 
     // Set up grid.
     mTitle = std::make_shared<TextComponent>(
-        _("SCRAPING IN PROGRESS"),
-        Font::get(FONT_SIZE_LARGE * Utils::Localization::sMenuTitleScaleFactor), mMenuColorTitle,
+        Utils::Localization::readable(_("SCRAPING IN PROGRESS")),
+        Font::get(FONT_SIZE_LARGE * Utils::Localization::sMenuTitleScaleFactor, FONT_PATH_TITLE), mMenuColorTitle,
         ALIGN_CENTER);
     mGrid.setEntry(mTitle, glm::ivec2 {0, 0}, false, true, glm::ivec2 {2, 2});
 

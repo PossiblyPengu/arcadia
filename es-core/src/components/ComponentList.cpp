@@ -7,6 +7,7 @@
 //
 
 #include "components/ComponentList.h"
+#include "components/TextComponent.h"
 
 #include "resources/Font.h"
 #include "utils/LocalizationUtil.h"
@@ -20,7 +21,8 @@ ComponentList::ComponentList()
     , mSetupCompleted {false}
     , mBottomCameraOffset {false}
     , mSingleRowScroll {false}
-    , mRowHeight {std::round(Font::get(FONT_SIZE_MEDIUM)->getHeight())}
+    // Arcadia: roomy rows, easy to hit from the couch (DESIGN.md).
+    , mRowHeight {std::round(Font::get(FONT_SIZE_MEDIUM)->getHeight() * 1.65f)}
     , mSelectorBarOffset {0.0f}
     , mCameraOffset {0.0f}
     , mScrollIndicatorStatus {SCROLL_NONE}
@@ -44,8 +46,16 @@ void ComponentList::addRow(const ComponentListRow& row, bool setCursorHere)
     this->add(entry);
 
     for (auto it = mEntries.back().data.elements.cbegin();
-         it != mEntries.back().data.elements.cend(); ++it)
+         it != mEntries.back().data.elements.cend(); ++it) {
+        // Arcadia: row labels read in sentence case (see Utils::Localization::readable).
+        if (TextComponent* text {dynamic_cast<TextComponent*>(it->component.get())}) {
+            const std::string value {text->getValue()};
+            const std::string converted {Utils::Localization::readable(value)};
+            if (converted != value)
+                text->setText(converted);
+        }
         addChild(it->component.get());
+    }
 
     updateElementSize(mEntries.back().data);
     updateElementPosition(mEntries.back().data);
@@ -257,25 +267,25 @@ void ComponentList::render(const glm::mat4& parentTrans)
     // Move camera the scroll distance.
     trans = glm::translate(trans, glm::vec3 {0.0f, -mCameraOffset, 0.0f});
 
-    const bool darkColorScheme {Settings::getInstance()->getString("MenuColorScheme") != "paper" &&
-                                Settings::getInstance()->getString("MenuColorScheme") != "light"};
+    // Arcadia draws the same selector in every colour scheme, so the light-scheme inversion is never used.
+    const bool darkColorScheme {true};
 
-    // Draw selector bar if we're using the dark color scheme.
-    if (mFocused && mOpacity == 1.0f && darkColorScheme) {
-        mRenderer->setMatrix(trans);
-        mRenderer->drawRect(0.0f, mSelectorBarOffset, mSize.x, mRowHeight, mMenuColorSelector,
-                            mMenuColorSelector, false, mOpacity, mDimming);
-        // The focus ring (DESIGN.md): a white outline round the focused row, drawn inside it so nothing shifts.
+    // The focused row (DESIGN.md): a raised, rounded card with an accent ring round it. The ring is the
+    // accent drawn full size with the raised fill inset on top, so it needs no outline primitive.
+    if (mFocused && mOpacity == 1.0f && mPillSelector) {
+        mRenderer->drawRoundedRect(trans, 0.0f, mSelectorBarOffset, mSize.x, mRowHeight,
+                                   mMenuColorPill, std::round(mRowHeight * 0.38f), mOpacity,
+                                   mDimming);
+    }
+    else if (mFocused && mOpacity == 1.0f) {
         const float ring {std::max(2.0f, std::round(mRenderer->getScreenHeight() * 0.004f))};
-        const unsigned int white {0xFFFFFFFF};
-        mRenderer->drawRect(0.0f, mSelectorBarOffset, mSize.x, ring, white, white, false, mOpacity,
-                            mDimming);
-        mRenderer->drawRect(0.0f, mSelectorBarOffset + mRowHeight - ring, mSize.x, ring, white,
-                            white, false, mOpacity, mDimming);
-        mRenderer->drawRect(0.0f, mSelectorBarOffset, ring, mRowHeight, white, white, false,
-                            mOpacity, mDimming);
-        mRenderer->drawRect(mSize.x - ring, mSelectorBarOffset, ring, mRowHeight, white, white,
-                            false, mOpacity, mDimming);
+        const float radius {std::round(std::min(mRowHeight * 0.34f,
+                                                mRenderer->getScreenHeight() * 0.028f))};
+        mRenderer->drawRoundedRect(trans, 0.0f, mSelectorBarOffset, mSize.x, mRowHeight,
+                                   mMenuColorAccent, radius, mOpacity, mDimming);
+        mRenderer->drawRoundedRect(trans, ring, mSelectorBarOffset + ring, mSize.x - ring * 2.0f,
+                                   mRowHeight - ring * 2.0f, mMenuColorSelector, radius - ring,
+                                   mOpacity, mDimming);
     }
 
     // Draw our entries.
@@ -285,11 +295,29 @@ void ComponentList::render(const glm::mat4& parentTrans)
         auto& entry = mEntries.at(i);
         drawAll = !mFocused || i != static_cast<unsigned int>(mCursor);
         for (auto it = entry.data.elements.cbegin(); it != entry.data.elements.cend(); ++it) {
+            if (mPillSelector && mFocused && i == static_cast<size_t>(mCursor)) {
+                // Text and icons on the cream pill are drawn dark.
+                TextComponent* text {dynamic_cast<TextComponent*>(it->component.get())};
+                if (text != nullptr) {
+                    const unsigned int origColor {text->getColor()};
+                    text->setColor(mMenuColorPillText);
+                    text->render(trans);
+                    text->setColor(origColor);
+                }
+                else {
+                    const unsigned int origShift {it->component->getColorShift()};
+                    it->component->setColorShift(mMenuColorPillText);
+                    it->component->render(trans);
+                    it->component->setColorShift(origShift);
+                }
+                continue;
+            }
             if (drawAll || it->invertWhenSelected) {
                 // For the row where the cursor is at, we want to remove any hue from the
                 // font or image before inverting, as it would otherwise lead to an ugly
                 // inverted color (e.g. red inverting to a green hue).
-                if (mFocused && i == static_cast<size_t>(mCursor) &&
+                // Arcadia: the selector isn't inverted, so focused rows keep their own colours.
+                if (!darkColorScheme && mFocused && i == static_cast<size_t>(mCursor) &&
                     it->component->getValue() != "") {
                     // Check if we're dealing with text or an image component.
                     bool isTextComponent {true};
@@ -357,16 +385,18 @@ void ComponentList::render(const glm::mat4& parentTrans)
             mRenderer->setMatrix(trans);
     }
 
-    // Draw separators.
-    float offsetY {0.0f};
-    for (unsigned int i {0}; i < mEntries.size(); ++i) {
-        mRenderer->drawRect(0.0f, offsetY, mSize.x, 1.0f * mRenderer->getScreenResolutionModifier(),
-                            mMenuColorSeparators, mMenuColorSeparators, false, mOpacity, mDimming);
+    // Separators: a faint hairline between rows, inset from the card edges, and left out next to the
+    // focused row so its rounded shape reads cleanly.
+    const float inset {std::round(mRenderer->getScreenWidth() * 0.016f)};
+    const float hairline {std::max(1.0f, std::round(mRenderer->getScreenResolutionModifier()))};
+    float offsetY {mRowHeight};
+    for (int i {1}; i < static_cast<int>(mEntries.size()) && !mPillSelector; ++i) {
+        if (!(mFocused && (i == mCursor || i == mCursor + 1)))
+            mRenderer->drawRect(inset, offsetY, mSize.x - inset * 2.0f, hairline,
+                                mMenuColorSeparators, mMenuColorSeparators, false, mOpacity,
+                                mDimming);
         offsetY += mRowHeight;
     }
-
-    mRenderer->drawRect(0.0f, offsetY, mSize.x, 1.0f * mRenderer->getScreenResolutionModifier(),
-                        mMenuColorSeparators, mMenuColorSeparators, false, mOpacity, mDimming);
     mRenderer->popClipRect();
 }
 

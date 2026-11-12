@@ -411,6 +411,14 @@ protected:
     static inline unsigned int mMenuColorDateTimeEditMarker {0x00000022};
     static inline unsigned int mMenuColorDetectDeviceHeld {0x44444400};
 
+    // Arcadia: the accent (focus ring, switches that are on, the main button), the text that sits on it,
+    // slider and progress tracks, and the cream "pill" used for the chosen section and button glyphs.
+    static inline unsigned int mMenuColorAccent {0xF4A259FF};
+    static inline unsigned int mMenuColorAccentText {0x2A1708FF};
+    static inline unsigned int mMenuColorTrack {0x4A3A30FF};
+    static inline unsigned int mMenuColorPill {0xF7ECDEFF};
+    static inline unsigned int mMenuColorPillText {0x1C1613FF};
+
     glm::vec3 mPosition;
     glm::vec2 mOrigin;
     glm::vec2 mRotationOrigin;

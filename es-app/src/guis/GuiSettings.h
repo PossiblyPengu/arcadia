@@ -76,6 +76,7 @@ private:
     std::function<void()> mCloseMenuFunction;
     SystemData* mGoToSystem;
 
+    bool mRailSection {false};
     bool mNeedsSaving;
     bool mNeedsCollectionsUpdate;
     bool mNeedsSorting;
