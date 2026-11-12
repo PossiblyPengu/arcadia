@@ -124,3 +124,4 @@ CPackSourceConfig.cmake
 # VSCode
 .vscode/
 .continueignore
+__pycache__/

@@ -220,7 +220,11 @@ namespace Utils
                 {"OLED", "OLED"}, {"URL", "URL"}, {"API", "API"}, {"DLC", "DLC"},
                 {"HTTP", "HTTP"}, {"HTTPS", "HTTPS"}, {"I", "I"}, {"FAQ", "FAQ"},
                 {"APPIMAGE", "AppImage"}, {"FLATPAK", "Flatpak"}, {"STEAM", "Steam"},
-                {"LINUX", "Linux"}, {"GAMELIST", "game list"}, {"GAMELISTS", "game lists"}};
+                {"LINUX", "Linux"}, {"GAMELIST", "game list"}, {"GAMELISTS", "game lists"},
+                // Emulator and console names that are written in capitals (Setup's Emulators screen).
+                {"PCSX2", "PCSX2"}, {"PPSSPP", "PPSSPP"}, {"RPCS3", "RPCS3"}, {"PSP", "PSP"},
+                {"NES", "NES"}, {"SNES", "SNES"}, {"GBA", "GBA"}, {"N64", "N64"}, {"DS", "DS"},
+                {"3DS", "3DS"}};
             // Only text written in capitals is changed: if anything other than a path has lower case
             // letters, the text was written that way on purpose.
             {

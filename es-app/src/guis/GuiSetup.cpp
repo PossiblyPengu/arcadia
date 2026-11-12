@@ -10,6 +10,7 @@
 #include "Log.h"
 #include "Window.h"
 #include "components/MenuComponent.h"
+#include "guis/GuiEmulators.h"
 #include "guis/GuiMenu.h"
 #include "guis/GuiToolRunner.h"
 #include "utils/FileSystemUtil.h"
@@ -43,7 +44,7 @@ namespace
     const std::vector<Tool> sTools {{"Sort downloads", "sort-roms.sh"},
                                     {"Sort inside folders", "sort-roms.sh\" --deep \""},
                                     {"Undo the last sort", "sort-roms.sh\" --undo \""},
-                                    {"Update emulators", "update-emulators.sh"},
+                                    {"Emulators", ""},
                                     {"Sync saves now", "save-sync-now.sh"},
                                     {"Back up settings", "backup.sh"},
                                     {"Restore a backup", "backup.sh\" --restore \""},
@@ -95,7 +96,10 @@ GuiSetup::GuiSetup(const std::string& toolsDirectory)
                        true);
         const std::string title {tool.label};
         const std::string command {"\"" + mToolsDirectory + "/" + tool.command + "\""};
-        row.makeAcceptInputHandler([this, title, command] { runTool(title, command); });
+        if (std::string {tool.command}.empty())
+            row.makeAcceptInputHandler([this] { openEmulators(); });
+        else
+            row.makeAcceptInputHandler([this, title, command] { runTool(title, command); });
         mTools->addRow(row);
     }
 
@@ -248,7 +252,10 @@ void GuiSetup::showStatus()
 
         const std::string title {step.label};
         const std::string command {"\"" + mToolsDirectory + "/" + action->tool + "\""};
-        row.makeAcceptInputHandler([this, title, command] { runTool(title, command); });
+        if (step.key == "emulators")
+            row.makeAcceptInputHandler([this] { openEmulators(); });
+        else
+            row.makeAcceptInputHandler([this, title, command] { runTool(title, command); });
         mSteps->addRow(row);
     }
     (void)newGames;
@@ -283,6 +290,11 @@ void GuiSetup::showStatus()
 void GuiSetup::runTool(const std::string& title, const std::string& command)
 {
     mWindow->pushGui(new GuiToolRunner(title, command, [this] { readStatus(); }));
+}
+
+void GuiSetup::openEmulators()
+{
+    mWindow->pushGui(new GuiEmulators(mToolsDirectory, [this] { readStatus(); }));
 }
 
 void GuiSetup::setFocusColumn(int column)

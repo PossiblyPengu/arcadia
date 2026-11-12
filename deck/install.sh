@@ -50,7 +50,12 @@ fi
 mkdir -p "$TARGET" "$ESDE/logs"
 rm -rf "$TARGET/lib" "$TARGET/tools"
 cp -r "$HERE/lib" "$HERE/tools" "$TARGET/"
-chmod +x "$TARGET"/lib/controls.py
+chmod +x "$TARGET"/lib/controls.py "$TARGET"/lib/emulators.py
+# Arcadia's console list and where it looks for emulators: the emulator installer reads them to know what your games need.
+if [ -d "$HERE/../resources/systems/linux" ]; then
+  mkdir -p "$TARGET/lib/systems"
+  cp "$HERE/../resources/systems/linux/es_systems.xml" "$HERE/../resources/systems/linux/es_find_rules.xml" "$TARGET/lib/systems/"
+fi
 chmod +x "$TARGET"/tools/*.sh
 
 for ev in "${EVENTS[@]}"; do

@@ -59,6 +59,7 @@ GuiToolRunner::GuiToolRunner(const std::string& title,
         if (onClose)
             onClose();
     });
+    mCloseButton->setText(_("WORKING…"), "");
     buttons.push_back(mCloseButton);
     mButtons = MenuComponent::makeButtonGrid(buttons);
     mGrid.setEntry(mButtons, glm::ivec2 {0, 3}, true, false, glm::ivec2 {3, 1},
@@ -92,7 +93,8 @@ GuiToolRunner::~GuiToolRunner()
 // without LD_PRELOAD: started from Steam, Arcadia carries Steam's overlay libraries there (one 32-bit, one 64-bit),
 // and every program a tool starts would print "cannot be preloaded (wrong ELF class)" for the one that doesn't fit,
 // burying the tool's real output. (Games are launched elsewhere and keep the overlay.)
-static bool runWithoutPreload(const std::string& cmd, std::string& output)
+bool GuiToolRunner::runWithoutPreload(const std::string& cmd,
+                                      const std::function<void(const std::string&)>& onOutput)
 {
     int fds[2];
     if (pipe(fds) != 0)
@@ -129,47 +131,66 @@ static bool runWithoutPreload(const std::string& cmd, std::string& output)
     std::array<char, 512> buffer {};
     ssize_t count {0};
     while ((count = read(fds[0], buffer.data(), buffer.size())) > 0)
-        output.append(buffer.data(), static_cast<size_t>(count));
+        onOutput(std::string(buffer.data(), static_cast<size_t>(count)));
     close(fds[0]);
     int status {0};
     waitpid(pid, &status, 0);
     return true;
 }
 
+std::string GuiToolRunner::toolEnvironment()
+{
+    return "ARCADIA_OUTPUT=stdout ARCADIA_HOME=\"" + Utils::FileSystem::getAppDataDirectory() +
+           "\" ARCADIA_ROMS=\"" + FileData::getROMDirectory() + "\" ";
+}
+
 void GuiToolRunner::run()
 {
-    std::string output;
-    const std::string cmd {"ARCADIA_OUTPUT=stdout ARCADIA_HOME=\"" +
-                           Utils::FileSystem::getAppDataDirectory() + "\" ARCADIA_ROMS=\"" +
-                           FileData::getROMDirectory() + "\" " + mCommand};
-    if (!runWithoutPreload(cmd, output))
-        output = "The tool couldn't be started.";
-    LOG(LogInfo) << "GuiToolRunner: finished \"" << mCommand << "\"";
-    {
+    // What the tool prints is shown as it comes, so a long job (installing emulators) shows where it is.
+    const bool started {runWithoutPreload(toolEnvironment() + mCommand, [this](const std::string& chunk) {
         std::unique_lock<std::mutex> lock {mMutex};
-        mOutput = output;
+        mOutput += chunk;
+        mChanged = true;
+    })};
+    LOG(LogInfo) << "GuiToolRunner: finished \"" << mCommand << "\"";
+    if (!started) {
+        std::unique_lock<std::mutex> lock {mMutex};
+        mOutput = "The tool couldn't be started.";
+        mChanged = true;
     }
     mRunning = false;
     mFinished = true;
+}
+
+void GuiToolRunner::showOutput()
+{
+    std::string text;
+    {
+        std::unique_lock<std::mutex> lock {mMutex};
+        text = mOutput;
+        mChanged = false;
+    }
+    while (!text.empty() && (text.back() == '\n' || text.back() == ' '))
+        text.pop_back();
+    if (text.empty() && mRunning)
+        return;
+    mBody->setValue(text.empty() ? _("Done.") : text);
+    mBody->setSize(mContainer->getSize().x, 0.0f);
+    mContainer->resetComponent();
 }
 
 void GuiToolRunner::update(int deltaTime)
 {
     if (mRunning) {
         mBusyAnim.update(deltaTime);
+        if (mChanged)
+            showOutput();
     }
     else if (mFinished) {
-        std::string text;
-        {
-            std::unique_lock<std::mutex> lock {mMutex};
-            text = mOutput;
-        }
-        while (!text.empty() && (text.back() == '\n' || text.back() == ' '))
-            text.pop_back();
-        mBody->setValue(text.empty() ? _("Done.") : text);
-        mBody->setSize(mContainer->getSize().x, 0.0f);
-        mContainer->resetComponent();
+        showOutput();
+        mCloseButton->setText(_("CLOSE"), _("close"));
         mFinished = false;
+        updateHelpPrompts();
     }
     GuiComponent::update(deltaTime);
 }
@@ -179,7 +200,8 @@ void GuiToolRunner::render(const glm::mat4& parentTrans)
     glm::mat4 trans {parentTrans * getTransform()};
     renderChildren(trans);
 
-    if (mRunning)
+    // The busy box until the tool says something; then its words show where it is.
+    if (mRunning && mBody->getValue().empty())
         mBusyAnim.render(trans);
 }
 

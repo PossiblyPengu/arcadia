@@ -22,8 +22,10 @@ if [ "${1:-}" = "--status" ]; then
   if [ "$games" -gt 0 ]; then d="$(plural "$games" game games) found in $(plural "$systems" console consoles)"; else d="none found in $roms yet"; fi
   [ "$inbox_n" -gt 0 ] && d="$d, $(plural "$inbox_n" "new one" "new ones") in Downloads"
   printf 'games|%s|Games|%s\n' "$([ "$games" -gt 0 ] && echo 1 || echo 0)" "$d"
-  if [ "$emus" -gt 0 ]; then d="$emus installed"; else d="none installed yet"; fi
-  printf 'emulators|%s|Emulators|%s\n' "$([ "$emus" -gt 0 ] && echo 1 || echo 0)" "$d"
+  # What your games need (apps and RetroArch cores), worked out by the emulator installer.
+  st="$(ARCADIA_ROMS="$roms" python3 "$(dirname "$(readlink -f "$0")")/../lib/emulators.py" status 2>/dev/null)"
+  if [ -z "$st" ]; then st="$([ "$emus" -gt 0 ] && echo 1 || echo 0)|$([ "$emus" -gt 0 ] && echo "$emus installed" || echo "none installed yet")"; fi
+  printf 'emulators|%s|Emulators|%s\n' "${st%%|*}" "${st#*|}"
   if deck_is_done controls; then d="set up for DuckStation, PCSX2 and RetroArch"; else d="not set up yet"; fi
   printf 'controls|%s|Controls|%s\n' "$(deck_is_done controls && echo 1 || echo 0)" "$d"
   if deck_is_done folder-access; then d="emulators can see your games"; else d="emulators can't see your games yet"; fi

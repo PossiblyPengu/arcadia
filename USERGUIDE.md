@@ -76,7 +76,7 @@ what it did) and the checklist is read again afterwards. On the right (press rig
 | Sort downloads | Moves ROMs from your Downloads folder into the right system folders. It checks each file's header, extension and disc contents, keeps cue sheets with their tracks, joins multi-disc games with an `.m3u` playlist and groups Switch updates and DLC with their game. Anything it isn't sure about is listed and left alone. Nothing is overwritten or deleted. |
 | Sort inside folders | The same, looking inside the folders in Downloads too |
 | Undo the last sort | Puts the last sort's files back where they came from |
-| Emulators / Update emulators | Installs or updates the Flatpak emulators: RetroArch, DuckStation, PCSX2, PPSSPP, Dolphin, melonDS, Azahar, mGBA, Flycast, RPCS3, Cemu and xemu |
+| Emulators | Opens the Emulators screen: what your games need (worked out from your ROM folders, RetroArch cores included) and every other emulator Arcadia can install (RetroArch, DuckStation, PCSX2, PPSSPP, Dolphin, melonDS, Azahar, mGBA, Flycast, RPCS3, Cemu, xemu). **X** installs everything your games need, **A** installs one (or updates or removes it), **Y** updates them all |
 | BIOS files | Lists which BIOS files are present and which are missing (by file name only) |
 | Controls | Gives DuckStation and PCSX2 the Deck's buttons, and RetroArch its hotkeys (hold Select, then Start quits, X opens the menu, L1 / R1 load / save a state). Bindings you made yourself are kept. |
 | Folder access | Lets the Flatpak emulators read your ROM, BIOS and save folders |
@@ -104,8 +104,13 @@ The *Cloud saves* step shows whether rclone and the remote are ready.
 
 ## Emulators and BIOS files
 
-Arcadia finds emulators installed as Flatpaks, which is how they're installed on a Deck. *Install emulators* installs
-the usual ones. To change which emulator a system uses, go to *Settings > Advanced > Alternative emulators*. For a
+Arcadia finds emulators installed as Flatpaks, which is how they're installed on a Deck. Setup's *Emulators* screen looks at
+the games in your ROM folders and Arcadia's own choice of emulator for each console, and lists what they need first; press
+**X** to install it all, with progress shown as it goes. Most classic consoles play through RetroArch, which needs a *core*
+for each console: the screen installs those too (from libretro's build server, the place RetroArch's own Core Downloader
+uses, each checked against the checksum the server publishes). New emulators are allowed to see your ROM, BIOS and save
+folders straight away. Windows games are pointed to Deckhand, and a console whose emulator isn't on Flathub (Switch) says
+which one Arcadia uses. To change which emulator a system uses, go to *Settings > Advanced > Alternative emulators*. For a
 single game, use the View button > *EDIT THIS GAME'S METADATA* (after turning on *ENABLE ALTERNATIVE EMULATORS PER
 GAME* in the same settings menu). BIOS files have to come from your own consoles. Put them in `~/Emulation/bios` (or the folder set as
 `BIOS_DIR`), and use *Check BIOS files* to see what's missing.
@@ -160,8 +165,8 @@ Arcadia_x64_SteamDeck.AppImage [options]
 
 ## When something goes wrong
 
-- **A game doesn't start:** the emulator probably isn't installed, or can't see the ROM folder. Run *Install emulators*,
-  then *Let emulators see ROM folders*.
+- **A game doesn't start:** the emulator or its RetroArch core probably isn't installed, or can't see the ROM folder.
+  Open Setup → *Emulators* and press **X**, then run *Folder access*.
 - **Games are missing:** check they are in the right system folder (the *Games* step in Setup shows the ROM folder), then
   restart Arcadia.
 - **A tool's message cuts off:** the full text is in `~/Arcadia/logs/deck.log`.

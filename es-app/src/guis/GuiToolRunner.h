@@ -20,6 +20,7 @@
 #include "components/TextComponent.h"
 
 #include <atomic>
+#include <functional>
 #include <mutex>
 #include <thread>
 
@@ -36,8 +37,16 @@ public:
     void update(int deltaTime) override;
     void render(const glm::mat4& parentTrans) override;
 
+    // ARCADIA_OUTPUT=stdout, ARCADIA_HOME and ARCADIA_ROMS, as a prefix for a tool's command.
+    static std::string toolEnvironment();
+    // Runs a command through sh without Steam's LD_PRELOAD, handing what it prints (both streams) to onOutput as it
+    // comes. False if it couldn't be started.
+    static bool runWithoutPreload(const std::string& cmd,
+                                  const std::function<void(const std::string&)>& onOutput);
+
 private:
     void run();
+    void showOutput();
     void onSizeChanged() override;
     bool input(InputConfig* config, Input input) override;
     std::vector<HelpPrompt> getHelpPrompts() override;
@@ -59,6 +68,7 @@ private:
     std::string mOutput;
     std::atomic<bool> mRunning;
     std::atomic<bool> mFinished;
+    std::atomic<bool> mChanged {false};
 };
 
 #endif // ES_APP_GUIS_GUI_TOOL_RUNNER_H
