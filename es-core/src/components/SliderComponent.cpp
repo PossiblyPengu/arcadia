@@ -42,7 +42,7 @@ SliderComponent::SliderComponent(float min, float max, float increment, const st
     mKnob.setResize(0.0f, std::round(mSize.y * 0.9f));
     mKnob.setOrigin(0.5f, 0.0f);
     mKnob.setImage(":/graphics/slider_knob.svg");
-    mKnob.setColorShift(mMenuColorPill);
+    mKnob.setColorShift(mMenuColorKnob);
 
     mKnobDisabled.setResize(0.0f, std::round(mSize.y * 0.9f));
     mKnobDisabled.setOrigin(0.5f, 0.0f);

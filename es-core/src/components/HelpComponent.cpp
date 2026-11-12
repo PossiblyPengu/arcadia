@@ -90,6 +90,7 @@ void HelpComponent::applyTheme(const std::shared_ptr<ThemeData>& theme,
 
     if (!elem)
         return;
+    mThemed = true;
 
     if (elem->has("pos"))
         mHelpPosition = elem->get<glm::vec2>("pos") *
@@ -633,6 +634,12 @@ void HelpComponent::updateGrid()
     }
 
     const bool isDimmed {mWindow->isBackgroundDimmed()};
+
+    // Arcadia: with no theme to say otherwise, the hints follow the menu colour scheme.
+    if (!mThemed) {
+        mTextColor = mTextColorDimmed = mMenuColorSecondary;
+        mIconColor = mIconColorDimmed = mMenuColorPrimary;
+    }
 
     std::shared_ptr<Font>& font {isDimmed ? mFontDimmed : mFont};
     mGrid = std::make_shared<ComponentGrid>(glm::ivec2 {static_cast<int>(mPrompts.size()) * 5, 1});

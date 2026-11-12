@@ -25,15 +25,15 @@ TITLE_FONT = ROOT.parent.parent / "resources" / "fonts" / "Fraunces-SemiBold.ttf
 
 # Arcadia's pastels and the dark ink drawn on each (DESIGN.md).
 PASTELS = [
-    ((0xF4, 0xA2, 0x59), (0x2A, 0x17, 0x08)),  # amber
-    ((0xF2, 0xC2, 0x7A), (0x33, 0x24, 0x0B)),  # sand
-    ((0xA8, 0xC6, 0x9F), (0x1C, 0x2A, 0x1B)),  # sage
-    ((0x9F, 0xD0, 0xC4), (0x13, 0x2C, 0x27)),  # mint
-    ((0x9F, 0xB8, 0xD6), (0x16, 0x24, 0x36)),  # blue
-    ((0xB9, 0xA6, 0xDC), (0x2B, 0x22, 0x40)),  # lavender
-    ((0xE6, 0xA3, 0xC4), (0x3A, 0x18, 0x2A)),  # pink
-    ((0xE9, 0x89, 0x7A), (0x3A, 0x1F, 0x19)),  # rose
-    ((0xC9, 0xB8, 0xA6), (0x2A, 0x21, 0x1C)),  # oat, for greys
+    ((0xF7, 0xC1, 0x9A), (0x4A, 0x2A, 0x14)),  # peach
+    ((0xF5, 0xDD, 0x9B), (0x46, 0x38, 0x12)),  # butter
+    ((0xBC, 0xD9, 0xB0), (0x26, 0x39, 0x1F)),  # sage
+    ((0xAD, 0xDF, 0xCF), (0x16, 0x3A, 0x31)),  # mint
+    ((0xB3, 0xCD, 0xEF), (0x1B, 0x2C, 0x45)),  # sky
+    ((0xCD, 0xBD, 0xF0), (0x2F, 0x24, 0x48)),  # lavender
+    ((0xF2, 0xB6, 0xCF), (0x4A, 0x1F, 0x33)),  # pink
+    ((0xF4, 0xB0, 0xA6), (0x4A, 0x22, 0x1C)),  # rose
+    ((0xD4, 0xCE, 0xE0), (0x2E, 0x2A, 0x3A)),  # cloud, for greys
 ]
 TILE = (440, 500)
 def glow(color: tuple[int, int, int], size: int = 256) -> Image.Image:
@@ -60,17 +60,17 @@ def metadata(name: str) -> dict[str, str]:
 
 # Familiar consoles get the pastel nearest their own colours; the rest get a stable pastel from their name.
 FAMILIAR = {
-    "amber": "dreamcast pcengine pcenginecd tg16 tg-cd atari2600 atari7800 atari5200 atarilynx amiga amigacd32 scummvm",
-    "sand": "arcade mame fbneo fba neogeo neogeocd cps cps1 cps2 cps3 ngp ngpc gameandwatch auto-favorites",
+    "peach": "dreamcast pcengine pcenginecd tg16 tg-cd atari2600 atari7800 atari5200 atarilynx amiga amigacd32 scummvm",
+    "butter": "arcade mame fbneo fba neogeo neogeocd cps cps1 cps2 cps3 ngp ngpc gameandwatch auto-favorites",
     "sage": "gb sgb n64 n64dd xbox xbox360 xboxone virtualboy pokemini",
     "mint": "gamegear wonderswan wonderswancolor nds psvita",
-    "blue": "genesis megadrive megadrivejp segacd megacd saturn sega32x ps2 ps3 ps4 psp wii wiiu auto-allgames",
+    "sky": "genesis megadrive megadrivejp segacd megacd saturn sega32x ps2 ps3 ps4 psp wii wiiu auto-allgames",
     "lavender": "snes sfc snesna satellaview gba gc auto-lastplayed",
     "pink": "gbc",
     "rose": "nes famicom fds mastersystem mark3 switch n3ds sg-1000",
-    "oat": "psx c64 dos pc windows",
+    "cloud": "psx c64 dos pc windows",
 }
-NAMED = {n: i for i, key in enumerate(["amber", "sand", "sage", "mint", "blue", "lavender", "pink", "rose", "oat"])
+NAMED = {n: i for i, key in enumerate(["peach", "butter", "sage", "mint", "sky", "lavender", "pink", "rose", "cloud"])
          for n in FAMILIAR[key].split()}
 
 
@@ -176,9 +176,9 @@ def ring(size: tuple[int, int], radius: float) -> str:
             f'fill="none" stroke="#ffffff" stroke-width="{stroke}"/></svg>\n')
 
 
-def play_button() -> str:
-    """The Play button: a pill with a play mark and the word cut out of it, white so the theme can tint it.
-    The cut-outs show the ground through, which gives dark text on the accent."""
+def play_button() -> tuple[str, str]:
+    """The Play button as two layers of the same size, both white so the theme can tint them: the pill (accent) and
+    the play mark with the word (the text colour that goes on the accent)."""
     from fontTools.pens.svgPathPen import SVGPathPen
     from fontTools.pens.transformPen import TransformPen
     from fontTools.ttLib import TTFont
@@ -196,18 +196,19 @@ def play_button() -> str:
     r = h / 2
     pill = f"M{r} 0H{w - r}A{r} {r} 0 0 1 {w - r} {h}H{r}A{r} {r} 0 0 1 {r} 0Z"
     tri = "M44 21.5v21a1.6 1.6 0 0 0 2.4 1.4l16.8-10.5a1.6 1.6 0 0 0 0-2.8L46.4 20.1A1.6 1.6 0 0 0 44 21.5Z"
-    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}">'
-            f'<path fill="#ffffff" fill-rule="evenodd" d="{pill} {tri} {" ".join(parts)}"/></svg>\n')
+    head = f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}">'
+    return (f'{head}<path fill="#ffffff" d="{pill}"/></svg>\n',
+            f'{head}<path fill="#ffffff" d="{tri} {" ".join(parts)}"/></svg>\n')
 
 
 def placeholder() -> Image.Image:
-    """The cover shown in the list variant for a game without art: a warm tile with a small gamepad."""
+    """The cover shown in the list variant for a game without art: a soft lavender tile with a gamepad."""
     s = 2
     W, H = COVER[0] * s, COVER[1] * s
     img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    d.rounded_rectangle([0, 0, W - 1, H - 1], radius=int(W * 0.1), fill=(0x36, 0x2A, 0x23, 255))
-    ink, lw = (0x6B, 0x57, 0x48, 255), int(W * 0.03)
+    d.rounded_rectangle([0, 0, W - 1, H - 1], radius=int(W * 0.1), fill=(0xE4, 0xDA, 0xF3, 255))
+    ink, lw = (0xA9, 0x9C, 0xC8, 255), int(W * 0.03)
     cx, cy, pw, ph = W / 2, H * 0.46, W * 0.5, W * 0.22
     d.rounded_rectangle([cx - pw / 2, cy - ph / 2, cx + pw / 2, cy + ph / 2], radius=int(ph / 2), outline=ink, width=lw)
     d.line([(cx - pw * 0.3, cy), (cx - pw * 0.1, cy)], fill=ink, width=lw)
@@ -218,10 +219,28 @@ def placeholder() -> Image.Image:
     return img.resize(COVER, Image.LANCZOS)
 
 
+def pastel_variables() -> None:
+    """One small include per system with its pastel and ink, for the theme's title tiles and header chip."""
+    out = ASSETS / "pastels"
+    out.mkdir(exist_ok=True)
+
+    def xml(color: tuple[int, int, int], ink: tuple[int, int, int]) -> str:
+        hexed = lambda c: "".join(f"{v:02x}" for v in c)
+        return (f"<theme>\n    <variables>\n        <systemPastel>{hexed(color)}</systemPastel>\n"
+                f"        <systemInk>{hexed(ink)}</systemInk>\n    </variables>\n</theme>\n")
+
+    (out / "_default.xml").write_text(xml(*PASTELS[-1]))
+    for f in sorted((ASSETS / "tiles").glob("*.webp")):
+        (out / f"{f.stem}.xml").write_text(xml(*pastel(f.stem)))
+
+
 def vectors() -> None:
     (ASSETS / "ring.svg").write_text(ring(TILE, TILE[0] * 0.13))
     (ASSETS / "cover-ring.svg").write_text(ring(COVER, COVER[0] * 0.1))
-    (ASSETS / "play.svg").write_text(play_button())
+    pill, label = play_button()
+    (ASSETS / "play-pill.svg").write_text(pill)
+    (ASSETS / "play-label.svg").write_text(label)
+    (ASSETS / "play.svg").unlink(missing_ok=True)
     placeholder().save(ASSETS / "placeholder.png", optimize=True)
 
 
@@ -237,10 +256,15 @@ def main() -> None:
     for name in sorted(names):
         glow(pastel(name)[0]).save(ASSETS / "glow" / f"{name}.png", optimize=True)
         tile(name).save(ASSETS / "tiles" / f"{name}.webp", quality=88, method=6)
+    pastel_variables()
     print(len(names), "system tiles and glows")
 
 
 if __name__ == "__main__":
     import sys
 
-    vectors() if "--vectors" in sys.argv else main()
+    if "--vectors" in sys.argv:
+        vectors()
+        pastel_variables()
+    else:
+        main()

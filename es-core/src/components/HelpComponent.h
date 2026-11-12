@@ -103,6 +103,7 @@ private:
     float mHelpOpacity;
     float mHelpOpacityDimmed;
     std::string mLetterCase;
+    bool mThemed {false};
 
     struct CustomButtonIcons {
         // Generic

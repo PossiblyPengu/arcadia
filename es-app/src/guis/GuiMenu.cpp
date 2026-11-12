@@ -27,6 +27,7 @@
 #include "guis/GuiGameImporter.h"
 #include "guis/GuiMediaViewerOptions.h"
 #include "guis/GuiMsgBox.h"
+#include "components/ImageComponent.h"
 #include "guis/GuiSetup.h"
 #include "guis/GuiToolRunner.h"
 #include "guis/GuiOrphanedDataCleanup.h"
@@ -43,6 +44,50 @@
 
 #include <SDL2/SDL_events.h>
 #include <algorithm>
+#include <map>
+
+namespace
+{
+    // Arcadia (DESIGN.md): each settings section has its own pastel, shown as a rounded chip behind its icon.
+    class SectionChip : public GuiComponent
+    {
+    public:
+        SectionChip(const std::string& icon, unsigned int color, float size)
+            : mColor {color}
+        {
+            setSize(size, size);
+            mIcon.setResize(0.0f, std::round(size * 0.6f));
+            mIcon.setImage(":/graphics/menu/" + icon + ".svg");
+            mIcon.setColorShift(0x2F2448FF);
+            mIcon.setPosition(std::round((size - mIcon.getSize().x) / 2.0f),
+                              std::round((size - mIcon.getSize().y) / 2.0f));
+        }
+        void render(const glm::mat4& parentTrans) override
+        {
+            const glm::mat4 trans {parentTrans * getTransform()};
+            Renderer::getInstance()->drawRoundedRect(trans, 0.0f, 0.0f, mSize.x, mSize.y, mColor,
+                                                     std::round(mSize.x * 0.32f));
+            mIcon.render(trans);
+        }
+        // The chip keeps its own colours, also on the chosen section's pill.
+        void setColorShift(unsigned int) override {}
+        unsigned int getColorShift() const override { return 0; }
+
+    private:
+        ImageComponent mIcon;
+        unsigned int mColor;
+    };
+
+    unsigned int sectionPastel(const std::string& icon)
+    {
+        static const std::map<std::string, unsigned int> pastels {
+            {"setup", 0xF7C19AFF},     {"ui", 0xCDBDF0FF},        {"sound", 0xB3CDEFFF},
+            {"input", 0xADDFCFFF},     {"scraper", 0xF5DD9BFF},   {"collections", 0xF2B6CFFF},
+            {"other", 0xBCD9B0FF},     {"utilities", 0xF4B0A6FF}, {"quit", 0xD4CEE0FF}};
+        const auto it = pastels.find(icon);
+        return it == pastels.cend() ? 0xD4CEE0FF : it->second;
+    }
+} // namespace
 
 GuiMenu::GuiMenu()
     : mRenderer {Renderer::getInstance()}
@@ -791,18 +836,12 @@ void GuiMenu::openUIOptions()
         }
     });
 
-    // Colours: one warm ground, three accents, and a light scheme for bright rooms. With the Arcadia theme the
-    // console and game views follow the same choice.
+    // Colours: cloud (light pastels) or dusk (pastels on deep violet). With the Arcadia theme the console and
+    // game views follow the same choice.
     auto menuColorScheme = std::make_shared<OptionListComponent<std::string>>(_("COLOURS"), false);
-    std::string selectedMenuColor {Settings::getInstance()->getString("MenuColorScheme")};
-    if (selectedMenuColor == "paper" || selectedMenuColor == "light")
-        selectedMenuColor = "linen";
-    menuColorScheme->add(_("EMBER"), "ember",
-                         selectedMenuColor != "moss" && selectedMenuColor != "dusk" &&
-                             selectedMenuColor != "linen");
-    menuColorScheme->add(_("MOSS"), "moss", selectedMenuColor == "moss");
-    menuColorScheme->add(_("DUSK"), "dusk", selectedMenuColor == "dusk");
-    menuColorScheme->add(_("LINEN (LIGHT)"), "linen", selectedMenuColor == "linen");
+    const bool duskSelected {Settings::getInstance()->getString("MenuColorScheme") == "dusk"};
+    menuColorScheme->add(_("CLOUD (LIGHT PASTELS)"), "cloud", !duskSelected);
+    menuColorScheme->add(_("DUSK (PASTELS IN THE DARK)"), "dusk", duskSelected);
     if (menuColorScheme->getSelectedObjects().size() == 0)
         menuColorScheme->selectEntry(0);
     s->addWithLabel(_("COLOURS"), menuColorScheme);
@@ -2349,11 +2388,19 @@ void GuiMenu::addEntry(const std::string& name,
 
     // Populate the list. Arcadia: each section starts with a line icon (resources/graphics/menu).
     ComponentListRow row;
-    if (!icon.empty()) {
+    if (!icon.empty() && mRailMode) {
+        row.addElement(std::make_shared<SectionChip>(icon, sectionPastel(icon),
+                                                     std::round(font->getLetterHeight() * 2.1f)),
+                       false);
+        auto spacer = std::make_shared<GuiComponent>();
+        spacer->setSize(std::round(font->getLetterHeight() * 0.75f), 0.0f);
+        row.addElement(spacer, false);
+    }
+    else if (!icon.empty()) {
         auto image = std::make_shared<ImageComponent>();
         image->setResize(0.0f, std::round(font->getLetterHeight() * 1.35f));
         image->setImage(":/graphics/menu/" + icon + ".svg");
-        image->setColorShift(mRailMode ? mMenuColorPrimary : mMenuColorSecondary);
+        image->setColorShift(mMenuColorSecondary);
         row.addElement(image, false);
         auto spacer = std::make_shared<GuiComponent>();
         spacer->setSize(std::round(font->getLetterHeight() * 0.9f), 0.0f);

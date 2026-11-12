@@ -12,7 +12,7 @@ and separate so upstream updates stay easy to merge:
 - `CMakeLists.txt`: the upstream application updater is off by default (it would replace the fork with stock ES-DE); use the deck's *Update ES-DE* instead.
 - `deck/lib/romsort/`: the ROM sorter from Arcadia, as a command line tool.
 - Trimmed to Linux and the Steam Deck: the Android, macOS, Windows, Haiku, iOS, web and BSD code and files were removed (they stay in git history). The `--no-update-check` option went with the upstream updater.
-- A cozy look of its own (`DESIGN.md`): Nunito and Fraunces, warm colour schemes (ember, moss, dusk, linen), rounded rows with
+- A cozy look of its own (`DESIGN.md`): Nunito and Fraunces, pastel colour schemes (cloud, light and the default, and dusk), rounded rows with
   an accent focus ring, pill switches and buttons, sentence-case labels, and the `arcadia` theme (pastel console cards and a
   cover carousel, both ringed in the accent).
 - The main menu is the settings screen: a rail of sections on the left, each opening as a card beside it (L1 / R1 step

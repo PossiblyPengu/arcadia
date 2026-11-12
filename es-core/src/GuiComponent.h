@@ -418,6 +418,9 @@ protected:
     static inline unsigned int mMenuColorTrack {0x4A3A30FF};
     static inline unsigned int mMenuColorPill {0xF7ECDEFF};
     static inline unsigned int mMenuColorPillText {0x1C1613FF};
+    static inline unsigned int mMenuColorKnob {0xF7ECDEFF};
+    // The accent as text on a card, deeper than the accent itself where the card is light.
+    static inline unsigned int mMenuColorAccentInk {0xC4567CFF};
 
     glm::vec3 mPosition;
     glm::vec2 mOrigin;

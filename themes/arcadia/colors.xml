@@ -1,61 +1,34 @@
 <theme>
-    <!-- Ember: the default. A warm dark ground, cream text, one amber accent (DESIGN.md). -->
-    <colorScheme name="ember">
+    <!-- Cloud: the default. A pale lavender ground, white cards, pastel console cards, plum text and a pink accent
+         (DESIGN.md). -->
+    <colorScheme name="cloud">
         <variables>
-            <groundColor>1c1613</groundColor>
-            <surfaceColor>2a211c</surfaceColor>
-            <raisedColor>362a23</raisedColor>
-            <lineColor>3a2e27</lineColor>
-            <textColor>f7ecde</textColor>
-            <mutedColor>c9b8a6</mutedColor>
-            <faintColor>8a7666</faintColor>
-            <accentColor>f4a259</accentColor>
-            <glowTint>ffffffcc</glowTint>
+            <groundColor>f4eff8</groundColor>
+            <surfaceColor>ffffff</surfaceColor>
+            <raisedColor>ece4f6</raisedColor>
+            <lineColor>eee7f4</lineColor>
+            <textColor>3a3150</textColor>
+            <mutedColor>7d7394</mutedColor>
+            <faintColor>a9a0bd</faintColor>
+            <accentColor>f08fae</accentColor>
+            <accentTextColor>3a1f2e</accentTextColor>
+            <glowTint>ffffffff</glowTint>
         </variables>
     </colorScheme>
 
-    <!-- Moss: the same ground with a sage accent. -->
-    <colorScheme name="moss">
-        <variables>
-            <groundColor>1c1613</groundColor>
-            <surfaceColor>2a211c</surfaceColor>
-            <raisedColor>362a23</raisedColor>
-            <lineColor>3a2e27</lineColor>
-            <textColor>f7ecde</textColor>
-            <mutedColor>c9b8a6</mutedColor>
-            <faintColor>8a7666</faintColor>
-            <accentColor>a8c69f</accentColor>
-            <glowTint>ffffffcc</glowTint>
-        </variables>
-    </colorScheme>
-
-    <!-- Dusk: the same ground with a lavender accent. -->
+    <!-- Dusk: the same pastels on a deep violet, for playing in the dark. -->
     <colorScheme name="dusk">
         <variables>
-            <groundColor>1c1613</groundColor>
-            <surfaceColor>2a211c</surfaceColor>
-            <raisedColor>362a23</raisedColor>
-            <lineColor>3a2e27</lineColor>
-            <textColor>f7ecde</textColor>
-            <mutedColor>c9b8a6</mutedColor>
-            <faintColor>8a7666</faintColor>
-            <accentColor>b9a6dc</accentColor>
+            <groundColor>1f1d2e</groundColor>
+            <surfaceColor>2b2940</surfaceColor>
+            <raisedColor>37344f</raisedColor>
+            <lineColor>3a3752</lineColor>
+            <textColor>f6f1fa</textColor>
+            <mutedColor>bdb6d0</mutedColor>
+            <faintColor>8a84a3</faintColor>
+            <accentColor>f7b2c4</accentColor>
+            <accentTextColor>3a1f2e</accentTextColor>
             <glowTint>ffffffcc</glowTint>
-        </variables>
-    </colorScheme>
-
-    <!-- Linen: for bright rooms. Warm paper, dark brown text, a deeper amber. -->
-    <colorScheme name="linen">
-        <variables>
-            <groundColor>f4ebdf</groundColor>
-            <surfaceColor>fbf5ec</surfaceColor>
-            <raisedColor>efe2d2</raisedColor>
-            <lineColor>e6d8c7</lineColor>
-            <textColor>2a1f19</textColor>
-            <mutedColor>6e5b4c</mutedColor>
-            <faintColor>a89280</faintColor>
-            <accentColor>c8621e</accentColor>
-            <glowTint>ffffff99</glowTint>
         </variables>
     </colorScheme>
 </theme>

@@ -119,7 +119,7 @@ screenshots, descriptions and more from ScreenScraper (a free account gives bett
 
 Arcadia's design language is in [`DESIGN.md`](DESIGN.md). In **Settings > Look and feel**:
 
-- **Colours:** *Ember* (warm amber, the default), *Moss* (sage), *Dusk* (lavender) or *Linen* (light, for bright rooms).
+- **Colours:** *Cloud* (light pastels, the default) or *Dusk* (the same pastels on a deep violet, for playing in the dark).
   With the Arcadia theme this sets the consoles and games screens and the menus together.
 - **Theme variant:** *Cover shelf* (the default, a carousel of covers) or *Plain list* for big libraries.
 - **Theme transitions:** *Slide* or *Fade*.

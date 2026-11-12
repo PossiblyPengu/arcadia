@@ -67,93 +67,83 @@ ViewController* ViewController::getInstance()
 
 void ViewController::setMenuColors()
 {
-    // Arcadia's colour schemes (see DESIGN.md). Ember, moss and dusk share the same warm dark ground and
-    // differ only in the accent; linen is the light one for bright rooms. Older values are mapped across.
-    std::string scheme {Settings::getInstance()->getString("MenuColorScheme")};
-    if (scheme == "light" || scheme == "paper")
-        scheme = "linen";
-    else if (scheme != "moss" && scheme != "dusk" && scheme != "linen")
-        scheme = "ember";
+    // Arcadia's colour schemes (see DESIGN.md): cloud, light pastel and the default, and dusk, pastels on a deep
+    // violet for playing in the dark. Older values (ember, ink, oled, paper and so on) become cloud.
+    const bool dusk {Settings::getInstance()->getString("MenuColorScheme") == "dusk"};
 
-    if (scheme != "linen") {
-        mMenuColorFrame = 0x2A211CFF;
-        mMenuColorFrameLaunchScreen = 0x1C1613FF;
-        mMenuColorFrameBusyComponent = 0x2A211CFF;
-        mMenuColorPanelDimmed = 0x00000040;
-
-        mMenuColorTitle = 0xF7ECDEFF;
-        mMenuColorPrimary = 0xF7ECDEFF;
-        mMenuColorSecondary = 0xC9B8A6FF;
-        mMenuColorTertiary = 0xC9B8A6FF;
-        mMenuColorRed = 0xE9897AFF;
-        mMenuColorGreen = 0xA8C69FFF;
-
-        mMenuColorSelector = 0x362A23FF;
-        mMenuColorSeparators = 0x3A2E27FF;
-        mMenuColorBusyComponent = 0xC9B8A6FF;
-        mMenuColorScrollIndicators = 0x6B5748FF;
-        mMenuColorPopupText = 0xF7ECDEFF;
-
-        mMenuColorButtonTextUnfocused = 0xF7ECDEFF;
-        mMenuColorButtonFlatUnfocused = 0x362A23FF;
-        mMenuColorKeyboardModifier = 0xE9897AFF;
-        mMenuColorKeyboardCursorUnfocused = 0x6B5748FF;
-        mMenuColorKeyboardText = 0xF7ECDE00;
-        mMenuColorTextInputFrameUnfocused = 0x362A23FF;
-        mMenuColorSliderKnobDisabled = 0x4A3A30FF;
-        mMenuColorDateTimeEditMarker = 0xFFFFFF22;
-        mMenuColorDetectDeviceHeld = 0xF7ECDE00;
-        mMenuColorTrack = 0x4A3A30FF;
-        mMenuColorPill = 0xF7ECDEFF;
-        mMenuColorPillText = 0x1C1613FF;
-
-        if (scheme == "moss") {
-            mMenuColorAccent = 0xA8C69FFF;
-            mMenuColorAccentText = 0x1C2A1BFF;
-        }
-        else if (scheme == "dusk") {
-            mMenuColorAccent = 0xB9A6DCFF;
-            mMenuColorAccentText = 0x2B2240FF;
-        }
-        else {
-            mMenuColorAccent = 0xF4A259FF;
-            mMenuColorAccentText = 0x2A1708FF;
-        }
-    }
-    else {
-        mMenuColorFrame = 0xFBF5ECFF;
-        mMenuColorFrameLaunchScreen = 0xF2E8DBFF;
-        mMenuColorFrameBusyComponent = 0xFBF5ECFF;
+    if (!dusk) {
+        mMenuColorFrame = 0xFFFFFFFF;
+        mMenuColorFrameLaunchScreen = 0xF4EFF8FF;
+        mMenuColorFrameBusyComponent = 0xFFFFFFFF;
         mMenuColorPanelDimmed = 0x00000012;
 
-        mMenuColorTitle = 0x2A1F19FF;
-        mMenuColorPrimary = 0x2A1F19FF;
-        mMenuColorSecondary = 0x6E5B4CFF;
-        mMenuColorTertiary = 0x6E5B4CFF;
-        mMenuColorRed = 0xB5453AFF;
-        mMenuColorGreen = 0x4F7A45FF;
+        mMenuColorTitle = 0x3A3150FF;
+        mMenuColorPrimary = 0x3A3150FF;
+        mMenuColorSecondary = 0x7D7394FF;
+        mMenuColorTertiary = 0x7D7394FF;
+        mMenuColorRed = 0xD9707FFF;
+        mMenuColorGreen = 0x86BF7FFF;
 
-        mMenuColorSelector = 0xEFE2D2FF;
-        mMenuColorSeparators = 0xE6D8C7FF;
-        mMenuColorBusyComponent = 0x6E5B4CFF;
-        mMenuColorScrollIndicators = 0xA89280FF;
-        mMenuColorPopupText = 0x2A1F19FF;
+        mMenuColorSelector = 0xF6F0FCFF;
+        mMenuColorSeparators = 0xEEE7F4FF;
+        mMenuColorBusyComponent = 0x7D7394FF;
+        mMenuColorScrollIndicators = 0xC3BAD3FF;
+        mMenuColorPopupText = 0x3A3150FF;
 
-        mMenuColorButtonTextUnfocused = 0x2A1F19FF;
-        mMenuColorButtonFlatUnfocused = 0xEFE2D2FF;
-        mMenuColorKeyboardModifier = 0xB5453AFF;
-        mMenuColorKeyboardCursorUnfocused = 0xA89280FF;
-        mMenuColorKeyboardText = 0x2A1F1900;
-        mMenuColorTextInputFrameUnfocused = 0xEFE2D2FF;
-        mMenuColorSliderKnobDisabled = 0xD8C8B6FF;
+        mMenuColorButtonTextUnfocused = 0x3A3150FF;
+        mMenuColorButtonFlatUnfocused = 0xF1EBF8FF;
+        mMenuColorKeyboardModifier = 0xD9707FFF;
+        mMenuColorKeyboardCursorUnfocused = 0xC3BAD3FF;
+        mMenuColorKeyboardText = 0x3A315000;
+        mMenuColorTextInputFrameUnfocused = 0xF1EBF8FF;
+        mMenuColorSliderKnobDisabled = 0xDCD5E6FF;
         mMenuColorDateTimeEditMarker = 0x00000022;
-        mMenuColorDetectDeviceHeld = 0x2A1F1900;
-        mMenuColorTrack = 0xDCCBB8FF;
-        mMenuColorPill = 0x2A1F19FF;
-        mMenuColorPillText = 0xFBF5ECFF;
+        mMenuColorDetectDeviceHeld = 0x3A315000;
+        mMenuColorTrack = 0xE9E2F1FF;
+        mMenuColorPill = 0x3A3150FF;
+        mMenuColorPillText = 0xFFFFFFFF;
+        mMenuColorKnob = 0x3A3150FF;
 
-        mMenuColorAccent = 0xC8621EFF;
-        mMenuColorAccentText = 0xFFF8F0FF;
+        mMenuColorAccent = 0xF08FAEFF;
+        mMenuColorAccentText = 0x3A1F2EFF;
+        mMenuColorAccentInk = 0xC4567CFF;
+    }
+    else {
+        mMenuColorFrame = 0x2B2940FF;
+        mMenuColorFrameLaunchScreen = 0x1F1D2EFF;
+        mMenuColorFrameBusyComponent = 0x2B2940FF;
+        mMenuColorPanelDimmed = 0x00000040;
+
+        mMenuColorTitle = 0xF6F1FAFF;
+        mMenuColorPrimary = 0xF6F1FAFF;
+        mMenuColorSecondary = 0xBDB6D0FF;
+        mMenuColorTertiary = 0xBDB6D0FF;
+        mMenuColorRed = 0xF2A39AFF;
+        mMenuColorGreen = 0xA8D5A2FF;
+
+        mMenuColorSelector = 0x37344FFF;
+        mMenuColorSeparators = 0x3A3752FF;
+        mMenuColorBusyComponent = 0xBDB6D0FF;
+        mMenuColorScrollIndicators = 0x6E6889FF;
+        mMenuColorPopupText = 0xF6F1FAFF;
+
+        mMenuColorButtonTextUnfocused = 0xF6F1FAFF;
+        mMenuColorButtonFlatUnfocused = 0x37344FFF;
+        mMenuColorKeyboardModifier = 0xF2A39AFF;
+        mMenuColorKeyboardCursorUnfocused = 0x6E6889FF;
+        mMenuColorKeyboardText = 0xF6F1FA00;
+        mMenuColorTextInputFrameUnfocused = 0x37344FFF;
+        mMenuColorSliderKnobDisabled = 0x4A4666FF;
+        mMenuColorDateTimeEditMarker = 0xFFFFFF22;
+        mMenuColorDetectDeviceHeld = 0xF6F1FA00;
+        mMenuColorTrack = 0x4A4666FF;
+        mMenuColorPill = 0xF6F1FAFF;
+        mMenuColorPillText = 0x1F1D2EFF;
+        mMenuColorKnob = 0xF6F1FAFF;
+
+        mMenuColorAccent = 0xF7B2C4FF;
+        mMenuColorAccentText = 0x3A1F2EFF;
+        mMenuColorAccentInk = 0xF7B2C4FF;
     }
 
     // The accent drives every "this one" signal: focus rings, pressed buttons, switches that are on, cursors.

@@ -7,7 +7,7 @@ Arcadia is a full fork of [ES-DE](https://es-de.org) (MIT licence). It keeps ES-
 themes, controller input) and has its own look (`DESIGN.md`), its own defaults for the Deck, and its own setup tools.
 
 - **A cozy look of its own:** carousels of pastel console cards and game covers, a settings screen with a section rail,
-  warm colours, rounded shapes and plain words. `DESIGN.md`
+  soft pastels, rounded shapes and plain words. `DESIGN.md`
 - **Windowed on the desktop, full screen in Game Mode**, controller works with no Steam layout
 - **Setup tools:** sort downloaded ROMs into the right folders (with undo), install and update emulators, check BIOS files,
   starter controller settings, cloud save sync (rclone / Google Drive), backup and restore, self-update. `deck/README.md`

@@ -233,7 +233,7 @@ void GuiSetup::showStatus()
         std::shared_ptr<TextComponent> todo;
         if (!step.done)
             todo = std::make_shared<TextComponent>("  " + std::string {action->todo},
-                                                   Font::get(FONT_SIZE_SMALL), mMenuColorAccent,
+                                                   Font::get(FONT_SIZE_SMALL), mMenuColorAccentInk,
                                                    ALIGN_RIGHT);
         // The detail gets whatever room the row has left, and is shortened with an ellipsis to fit.
         const float room {mSteps->getSize().x -

@@ -80,6 +80,12 @@ Window* Window::getInstance()
     return &instance;
 }
 
+namespace
+{
+    // Arcadia: the boot screen follows the colour scheme (DESIGN.md): cloud is light, dusk is dark.
+    bool duskScheme() { return Settings::getInstance()->getString("MenuColorScheme") == "dusk"; }
+} // namespace
+
 void Window::pushGui(GuiComponent* gui)
 {
     mGuiStack.push_back(gui);
@@ -151,7 +157,7 @@ bool Window::init(bool resized)
         mSplash->setResize(0.0f, glm::clamp(mRenderer->getScreenHeight() * 0.62f, 0.0f,
                                             mRenderer->getScreenWidth() * 0.42f));
 
-    mSplash->setImage(":/graphics/splash.svg");
+    mSplash->setImage(duskScheme() ? ":/graphics/splash-dusk.svg" : ":/graphics/splash.svg");
     mSplash->setPosition((mRenderer->getScreenWidth() - mSplash->getSize().x) / 2.0f,
                          (mRenderer->getScreenHeight() - mSplash->getSize().y) / 2.0f * 0.6f);
 
@@ -167,7 +173,7 @@ bool Window::init(bool resized)
     progressBarRect.barPosX =
         (mRenderer->getScreenWidth() / 2.0f) - (progressBarRect.barWidth / 2.0f);
     progressBarRect.barPosY = mSplashTextPositions.y + (progressBarRect.barHeight * 2.0f);
-    progressBarRect.color = 0x4A3A30FF;
+    progressBarRect.color = duskScheme() ? 0x4A4666FF : 0xE3DAEEFF;
     mProgressBarRectangles.emplace_back(progressBarRect);
 
     const float borderThickness {std::ceil(2.0f * mRenderer->getScreenResolutionModifier())};
@@ -176,14 +182,14 @@ bool Window::init(bool resized)
     progressBarRect.barHeight -= borderThickness * 2.0f;
     progressBarRect.barPosX += borderThickness;
     progressBarRect.barPosY += borderThickness;
-    progressBarRect.color = 0x1C1613FF;
+    progressBarRect.color = duskScheme() ? 0x1F1D2EFF : 0xF4EFF8FF;
     mProgressBarRectangles.emplace_back(progressBarRect);
 
     progressBarRect.barWidth -= borderThickness * 2.0f;
     progressBarRect.barHeight -= borderThickness * 2.0f;
     progressBarRect.barPosX += borderThickness;
     progressBarRect.barPosY += borderThickness;
-    progressBarRect.color = 0xF4A259FF;
+    progressBarRect.color = duskScheme() ? 0xF7B2C4FF : 0xF08FAEFF;
     mProgressBarRectangles.emplace_back(progressBarRect);
 
     mBackgroundOverlay->setResize(mRenderer->getScreenWidth(), mRenderer->getScreenHeight());
@@ -577,8 +583,8 @@ void Window::render()
                     backgroundParameters.blurStrength = 1.75f;
 
                     // Also dim the background slightly.
-                    if (Settings::getInstance()->getString("MenuColorScheme") == "linen")
-                        backgroundParameters.dimming = 0.60f;
+                    if (Settings::getInstance()->getString("MenuColorScheme") != "dusk")
+                        backgroundParameters.dimming = 0.94f;
                     else
                         backgroundParameters.dimming = 0.80f;
 
@@ -589,8 +595,8 @@ void Window::render()
                 }
                 else {
                     // Dim the background slightly.
-                    if (Settings::getInstance()->getString("MenuColorScheme") == "linen")
-                        backgroundParameters.dimming = 0.60f;
+                    if (Settings::getInstance()->getString("MenuColorScheme") != "dusk")
+                        backgroundParameters.dimming = 0.94f;
                     else
                         backgroundParameters.dimming = 0.80f;
 
@@ -779,16 +785,17 @@ void Window::render()
 
 void Window::updateSplashScreenText()
 {
+    const unsigned int textColor {duskScheme() ? 0xBDB6D0FF : 0x7D7394FF};
     mSplashTextScanning = std::make_unique<TextComponent>(_("Searching for games..."),
-                                                          Font::get(FONT_SIZE_MEDIUM), 0xC9B8A6FF);
+                                                          Font::get(FONT_SIZE_MEDIUM), textColor);
     mSplashTextPopulating = std::make_unique<TextComponent>(
-        _("Loading systems..."), Font::get(FONT_SIZE_MEDIUM), 0xC9B8A6FF);
+        _("Loading systems..."), Font::get(FONT_SIZE_MEDIUM), textColor);
     mSplashTextReloading =
-        std::make_unique<TextComponent>(_("Reloading..."), Font::get(FONT_SIZE_MEDIUM), 0xC9B8A6FF);
+        std::make_unique<TextComponent>(_("Reloading..."), Font::get(FONT_SIZE_MEDIUM), textColor);
     mSplashTextResourceCopy = std::make_unique<TextComponent>(
-        _("Copying resources..."), Font::get(FONT_SIZE_MEDIUM), 0xC9B8A6FF);
+        _("Copying resources..."), Font::get(FONT_SIZE_MEDIUM), textColor);
     mSplashTextDirCreation = std::make_unique<TextComponent>(
-        _("Creating system directories..."), Font::get(FONT_SIZE_MEDIUM), 0xC9B8A6FF);
+        _("Creating system directories..."), Font::get(FONT_SIZE_MEDIUM), textColor);
 
     mSplashTextPositions.x =
         (mRenderer->getScreenWidth() - mSplashTextScanning->getSize().x) / 2.0f;
@@ -805,7 +812,8 @@ void Window::renderSplashScreen(SplashScreenState state, float progress)
     glm::mat4 trans {mRenderer->getIdentity()};
     mRenderer->setMatrix(trans);
     mRenderer->drawRect(0.0f, 0.0f, mRenderer->getScreenWidth(), mRenderer->getScreenHeight(),
-                        0x1C1613FF, 0x1C1613FF);
+                        duskScheme() ? 0x1F1D2EFF : 0xF4EFF8FF,
+                        duskScheme() ? 0x1F1D2EFF : 0xF4EFF8FF);
     mSplash->render(trans);
     mRenderer->setMatrix(trans);
 

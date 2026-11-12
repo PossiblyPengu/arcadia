@@ -34,21 +34,13 @@
     <aspectRatio>4:3</aspectRatio>
     <aspectRatio>21:9</aspectRatio>
 
-    <colorScheme name="ember">
-        <label language="en_US">Ember</label>
-        <label language="en_GB">Ember</label>
-    </colorScheme>
-    <colorScheme name="moss">
-        <label language="en_US">Moss</label>
-        <label language="en_GB">Moss</label>
+    <colorScheme name="cloud">
+        <label language="en_US">Cloud (light pastels)</label>
+        <label language="en_GB">Cloud (light pastels)</label>
     </colorScheme>
     <colorScheme name="dusk">
-        <label language="en_US">Dusk</label>
-        <label language="en_GB">Dusk</label>
-    </colorScheme>
-    <colorScheme name="linen">
-        <label language="en_US">Linen (light)</label>
-        <label language="en_GB">Linen (light)</label>
+        <label language="en_US">Dusk (pastels in the dark)</label>
+        <label language="en_GB">Dusk (pastels in the dark)</label>
     </colorScheme>
 
     <variant name="shelf">
