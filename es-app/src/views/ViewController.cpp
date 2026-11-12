@@ -226,9 +226,9 @@ void ViewController::invalidSystemsFileDialog()
 void ViewController::noGamesDialog()
 {
     mNoGamesErrorMessage = _("Welcome to Arcadia. No games were found yet.\n\nPut your games in the ROM "
-                             "directory below, one folder per system (CREATE makes the folders), or "
-                             "choose SETUP and then Sort downloads into ROM folders to move them there "
-                             "for you.\n\nThe ROM directory is ");
+                             "folder below, one folder per console (Create makes the folders), or "
+                             "choose Setup and then Sort downloads to move them there for you."
+                             "\n\nThe ROM folder is ");
 
     mRomDirectory = FileData::getROMDirectory();
 

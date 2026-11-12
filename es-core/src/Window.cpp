@@ -780,15 +780,15 @@ void Window::render()
 void Window::updateSplashScreenText()
 {
     mSplashTextScanning = std::make_unique<TextComponent>(_("Searching for games..."),
-                                                          Font::get(FONT_SIZE_MEDIUM), 0x9AA1B4FF);
+                                                          Font::get(FONT_SIZE_MEDIUM), 0xC9B8A6FF);
     mSplashTextPopulating = std::make_unique<TextComponent>(
-        _("Loading systems..."), Font::get(FONT_SIZE_MEDIUM), 0x9AA1B4FF);
+        _("Loading systems..."), Font::get(FONT_SIZE_MEDIUM), 0xC9B8A6FF);
     mSplashTextReloading =
-        std::make_unique<TextComponent>(_("Reloading..."), Font::get(FONT_SIZE_MEDIUM), 0x9AA1B4FF);
+        std::make_unique<TextComponent>(_("Reloading..."), Font::get(FONT_SIZE_MEDIUM), 0xC9B8A6FF);
     mSplashTextResourceCopy = std::make_unique<TextComponent>(
-        _("Copying resources..."), Font::get(FONT_SIZE_MEDIUM), 0x9AA1B4FF);
+        _("Copying resources..."), Font::get(FONT_SIZE_MEDIUM), 0xC9B8A6FF);
     mSplashTextDirCreation = std::make_unique<TextComponent>(
-        _("Creating system directories..."), Font::get(FONT_SIZE_MEDIUM), 0x9AA1B4FF);
+        _("Creating system directories..."), Font::get(FONT_SIZE_MEDIUM), 0xC9B8A6FF);
 
     mSplashTextPositions.x =
         (mRenderer->getScreenWidth() - mSplashTextScanning->getSize().x) / 2.0f;
@@ -813,11 +813,12 @@ void Window::renderSplashScreen(SplashScreenState state, float progress)
         // We need to render three rectangles: border, black center and actual progress bar.
         for (size_t i {0}; i < mProgressBarRectangles.size(); ++i) {
             const float rectWidth {i == mProgressBarRectangles.size() - 1 ? progress : 1.0f};
-            mRenderer->drawRect(
-                mProgressBarRectangles.at(i).barPosX, mProgressBarRectangles.at(i).barPosY,
-                mProgressBarRectangles.at(i).barWidth * rectWidth,
-                mProgressBarRectangles.at(i).barHeight, mProgressBarRectangles.at(i).color,
-                mProgressBarRectangles.at(i).color);
+            // Arcadia: a rounded bar (DESIGN.md).
+            const auto& bar = mProgressBarRectangles.at(i);
+            if (bar.barWidth * rectWidth >= bar.barHeight)
+                mRenderer->drawRoundedRect(trans, bar.barPosX, bar.barPosY,
+                                           bar.barWidth * rectWidth, bar.barHeight, bar.color,
+                                           bar.barHeight / 2.0f);
         }
     }
 

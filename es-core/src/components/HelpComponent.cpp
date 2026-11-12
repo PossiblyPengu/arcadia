@@ -28,10 +28,10 @@ HelpComponent::HelpComponent(std::shared_ptr<Font> font)
     , mHelpOrigin {glm::vec2 {0.0f, 0.0f}}
     , mHelpOriginDimmed {mHelpOrigin}
     , mHelpRotationOrigin {0.5f, 0.5f}
-    , mTextColor {0x777777FF}
-    , mTextColorDimmed {0x777777FF}
-    , mIconColor {0x777777FF}
-    , mIconColorDimmed {0x777777FF}
+    , mTextColor {0xC9B8A6FF} // Arcadia: muted text and cream glyphs when no theme says otherwise
+    , mTextColorDimmed {0xC9B8A6FF}
+    , mIconColor {0xF7ECDEFF}
+    , mIconColorDimmed {0xF7ECDEFF}
     , mBackgroundColor {0x00000000}
     , mBackgroundColorEnd {0x00000000}
     , mBackgroundHorizontalPadding {0.0f, 0.0f}
@@ -49,7 +49,7 @@ HelpComponent::HelpComponent(std::shared_ptr<Font> font)
     , mIconTextSpacingDimmed {mIconTextSpacing}
     , mHelpOpacity {1.0f}
     , mHelpOpacityDimmed {mHelpOpacity}
-    , mLetterCase {"uppercase"}
+    , mLetterCase {"sentence"} // Arcadia: sentence case when no theme says otherwise
 {
     assignIcons();
     updateGrid();

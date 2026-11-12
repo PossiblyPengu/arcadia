@@ -12,12 +12,17 @@ and separate so upstream updates stay easy to merge:
 - `CMakeLists.txt`: the upstream application updater is off by default (it would replace the fork with stock ES-DE); use the deck's *Update ES-DE* instead.
 - `deck/lib/romsort/`: the ROM sorter from Arcadia, as a command line tool.
 - Trimmed to Linux and the Steam Deck: the Android, macOS, Windows, Haiku, iOS, web and BSD code and files were removed (they stay in git history). The `--no-update-check` option went with the upstream updater.
-- Menus and dialogs use the Arcadia colour schemes (ink, oled, paper) and a white focus ring, see `DESIGN.md`.
+- A cozy look of its own (`DESIGN.md`): Nunito and Fraunces, warm colour schemes (ember, moss, dusk, linen), rounded rows with
+  an accent focus ring, pill switches and buttons, sentence-case labels, and the `arcadia` theme (pastel console cards and a
+  cover carousel, both ringed in the accent).
+- The main menu is the settings screen: a rail of sections on the left, each opening as a card beside it (L1 / R1 step
+  between them). `MenuComponent` lays out the rail and the cards; `Window` keeps the rail drawn under the card.
 - Renamed to Arcadia (binary, folder `~/Arcadia`, app ID `io.github.PossiblyPengu.Arcadia`). The ScreenScraper account name stays "ES-DE" because
   that service registers software by name.
-- A native **SETUP** screen at the top of the main menu runs the deck tools (get started, sort ROMs, emulators, BIOS, controls, folder
-  access, saves, backup, update) and shows what they say. The no-games dialog at first start points to it.
-- Build files are Linux only; the program ships its `deck/` folder and installs the tools into the data folder when SETUP opens.
-- Button hints are shorter (the game screen shows six instead of eight), the empty screen behind dialogs is the ink colour instead of black,
+- A native **Setup** screen (`GuiSetup`), first in Settings: a progress ring and checklist read from `get-started.sh --status`,
+  each step running its deck tool, beside a card of the other tools (sort ROMs, update emulators, saves, backup, update).
+  The no-games dialog at first start points to it.
+- Build files are Linux only; the program ships its `deck/` folder and installs the tools into the data folder when Setup opens.
+- Button hints are shorter (the game screen shows six instead of eight), the empty screen behind dialogs is the warm ground colour instead of black,
   the boot screen and window icon are Arcadia's, and the screensaver dims by default.
 - Documents: `USERGUIDE.md` is Arcadia's own guide; ES-DE's documents moved to `docs/es-de/`.

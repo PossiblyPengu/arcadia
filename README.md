@@ -6,7 +6,8 @@ right emulator, keep your saves in the cloud, and set it all up from inside the 
 Arcadia is a full fork of [ES-DE](https://es-de.org) (MIT licence). It keeps ES-DE's engine (scanning, scraping, launching,
 themes, controller input) and has its own look (`DESIGN.md`), its own defaults for the Deck, and its own setup tools.
 
-- **Console ring and game shelf** with a design language of its own. `DESIGN.md`
+- **A cozy look of its own:** carousels of pastel console cards and game covers, a settings screen with a section rail,
+  warm colours, rounded shapes and plain words. `DESIGN.md`
 - **Windowed on the desktop, full screen in Game Mode**, controller works with no Steam layout
 - **Setup tools:** sort downloaded ROMs into the right folders (with undo), install and update emulators, check BIOS files,
   starter controller settings, cloud save sync (rclone / Google Drive), backup and restore, self-update. `deck/README.md`
@@ -20,9 +21,9 @@ Taken from the program itself at 1280x800 (the Deck's screen), with test games t
 |---|---|
 | ![Boot](docs/screenshots/boot.png) | ![Consoles](docs/screenshots/consoles.png) |
 | ![Game shelf](docs/screenshots/games-shelf.png) | ![Game list](docs/screenshots/games-list.png) |
-| ![Main menu](docs/screenshots/main-menu.png) | ![Setup](docs/screenshots/setup.png) |
-| ![Get started](docs/screenshots/setup-checklist.png) | ![Sorting ROMs](docs/screenshots/setup-sort.png) |
-| ![First start](docs/screenshots/first-start.png) | |
+| ![Settings](docs/screenshots/main-menu.png) | ![Setup](docs/screenshots/setup.png) |
+| ![Sound settings](docs/screenshots/sound-settings.png) | ![BIOS check](docs/screenshots/setup-checklist.png) |
+| ![Sorting ROMs](docs/screenshots/setup-sort.png) | ![First start](docs/screenshots/first-start.png) |
 
 ## Build
 
