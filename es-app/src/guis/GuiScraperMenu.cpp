@@ -20,12 +20,23 @@
 #include "guis/GuiScraperMulti.h"
 #include "utils/LocalizationUtil.h"
 
+namespace
+{
+    // Arcadia: in English the scraper's own words ("scrape", "miximage") are replaced by plain ones; other languages
+    // keep their translation of the original. (English is written in capitals and shown in sentence case.)
+    std::string plain(const char* english, const std::string& translated)
+    {
+        const std::string& locale {Utils::Localization::sCurrentLocale};
+        return (locale.empty() || locale.substr(0, 2) == "en") ? std::string {english} : translated;
+    }
+} // namespace
+
 GuiScraperMenu::GuiScraperMenu(std::string title)
     : mRenderer {Renderer::getInstance()}
     , mMenu {title}
 {
     // Scraper service.
-    mScraper = std::make_shared<OptionListComponent<std::string>>(_("SCRAPE FROM"), false);
+    mScraper = std::make_shared<OptionListComponent<std::string>>(plain("GET COVERS AND INFO FROM", _("SCRAPE FROM")), false);
     const std::string selectedScraper {Settings::getInstance()->getString("Scraper")};
     mScraper->add(("SCREENSCRAPER"), "screenscraper", selectedScraper == "screenscraper");
     mScraper->add(("THEGAMESDB"), "thegamesdb", selectedScraper == "thegamesdb");
@@ -34,12 +45,12 @@ GuiScraperMenu::GuiScraperMenu(std::string title)
     if (mScraper->getSelectedObjects().size() == 0)
         mScraper->selectEntry(0);
 
-    mMenu.addWithLabel(_("SCRAPE FROM"), mScraper);
+    mMenu.addWithLabel(plain("GET COVERS AND INFO FROM", _("SCRAPE FROM")), mScraper);
 
     // Search filters, getSearches() will generate a queue of games to scrape
     // based on the outcome of the checks below.
     mFilters =
-        std::make_shared<OptionListComponent<GameFilterFunc>>(_("SCRAPE THESE GAMES"), false);
+        std::make_shared<OptionListComponent<GameFilterFunc>>(plain("WHICH GAMES", _("SCRAPE THESE GAMES")), false);
     mFilters->add(
         _("ALL GAMES"),
         [](SystemData*, FileData*) -> bool {
@@ -84,7 +95,7 @@ GuiScraperMenu::GuiScraperMenu(std::string title)
         false);
 
     mFilters->selectEntry(Settings::getInstance()->getInt("ScraperFilter"));
-    mMenu.addWithLabel(_("SCRAPE THESE GAMES"), mFilters);
+    mMenu.addWithLabel(plain("WHICH GAMES", _("SCRAPE THESE GAMES")), mFilters);
 
     mMenu.addSaveFunc([this] {
         if (mScraper->getSelected() != Settings::getInstance()->getString("Scraper")) {
@@ -99,7 +110,7 @@ GuiScraperMenu::GuiScraperMenu(std::string title)
     });
 
     // Add systems (all systems with an existing platform ID are listed).
-    mSystems = std::make_shared<OptionListComponent<SystemData*>>(_("SCRAPE THESE SYSTEMS"), true);
+    mSystems = std::make_shared<OptionListComponent<SystemData*>>(plain("WHICH CONSOLES", _("SCRAPE THESE SYSTEMS")), true);
     for (unsigned int i {0}; i < SystemData::sSystemVector.size(); ++i) {
         if (!SystemData::sSystemVector[i]->hasPlatformId(PlatformIds::PLATFORM_IGNORE)) {
             mSystems->add(Utils::String::toUpper(SystemData::sSystemVector[i]->getFullName()),
@@ -109,13 +120,17 @@ GuiScraperMenu::GuiScraperMenu(std::string title)
                                                             mSystems->unselectEntry(i);
         }
     }
-    mMenu.addWithLabel(_("SCRAPE THESE SYSTEMS"), mSystems);
+    // Arcadia: with none chosen yet, all of them (the consoles listed are the ones you have games for), so "Get
+    // covers" works the first time instead of saying nothing is selected.
+    if (mSystems->getSelectedObjects().empty())
+        mSystems->selectAll();
+    mMenu.addWithLabel(plain("WHICH CONSOLES", _("SCRAPE THESE SYSTEMS")), mSystems);
 
-    addEntry(_("ACCOUNT SETTINGS"), mMenuColorPrimary, true, [this] {
+    addEntry(plain("YOUR SCREENSCRAPER ACCOUNT", _("ACCOUNT SETTINGS")), mMenuColorPrimary, true, [this] {
         // Open the account options menu.
         openAccountOptions();
     });
-    addEntry(_("CONTENT SETTINGS"), mMenuColorPrimary, true, [this] {
+    addEntry(plain("WHAT TO GET", _("CONTENT SETTINGS")), mMenuColorPrimary, true, [this] {
         // If the scraper service has been changed before entering this menu, then save the
         // settings so that the specific options supported by the respective scrapers
         // can be enabled or disabled.
@@ -123,11 +138,11 @@ GuiScraperMenu::GuiScraperMenu(std::string title)
             mMenu.save();
         openContentOptions();
     });
-    addEntry(_("MIXIMAGE SETTINGS"), mMenuColorPrimary, true, [this] {
+    addEntry(plain("COMBINED IMAGES (MIXIMAGES)", _("MIXIMAGE SETTINGS")), mMenuColorPrimary, true, [this] {
         // Open the miximage options menu.
         openMiximageOptions();
     });
-    addEntry(_("OTHER SETTINGS"), mMenuColorPrimary, true, [this] {
+    addEntry(plain("MORE OPTIONS", _("OTHER SETTINGS")), mMenuColorPrimary, true, [this] {
         // If the scraper service has been changed before entering this menu, then save the
         // settings so that the specific options supported by the respective scrapers
         // can be enabled or disabled.
@@ -138,7 +153,7 @@ GuiScraperMenu::GuiScraperMenu(std::string title)
 
     addChild(&mMenu);
 
-    mMenu.addButton(_("START"), _("start scraper"), std::bind(&GuiScraperMenu::pressedStart, this));
+    mMenu.addButton(plain("GET COVERS", _("START")), plain("get covers", _("start scraper")), std::bind(&GuiScraperMenu::pressedStart, this));
     mMenu.addButton(_("BACK"), _("back"), [&] { delete this; });
 
     setSize(mMenu.getSize());
@@ -169,7 +184,7 @@ GuiScraperMenu::~GuiScraperMenu()
 
 void GuiScraperMenu::openAccountOptions()
 {
-    auto s = new GuiSettings(_("ACCOUNT SETTINGS"));
+    auto s = new GuiSettings(plain("YOUR SCREENSCRAPER ACCOUNT", _("ACCOUNT SETTINGS")));
 
     // ScreenScraper username.
     auto scraperUsernameScreenScraper = std::make_shared<TextComponent>(
@@ -228,7 +243,7 @@ void GuiScraperMenu::openAccountOptions()
 
 void GuiScraperMenu::openContentOptions()
 {
-    auto s = new GuiSettings(_("CONTENT SETTINGS"));
+    auto s = new GuiSettings(plain("WHAT TO GET", _("CONTENT SETTINGS")));
 
     // Scrape game names.
     auto scrapeGameNames = std::make_shared<SwitchComponent>();
@@ -453,7 +468,7 @@ void GuiScraperMenu::openContentOptions()
 
 void GuiScraperMenu::openMiximageOptions()
 {
-    auto s = new GuiSettings(_("MIXIMAGE SETTINGS"));
+    auto s = new GuiSettings(plain("COMBINED IMAGES (MIXIMAGES)", _("MIXIMAGE SETTINGS")));
 
     // Miximage resolution.
     auto miximageResolution =
@@ -816,7 +831,7 @@ void GuiScraperMenu::openOfflineGenerator(GuiSettings* settings)
 
 void GuiScraperMenu::openOtherOptions()
 {
-    auto s = new GuiSettings(_("OTHER SETTINGS"));
+    auto s = new GuiSettings(plain("MORE OPTIONS", _("OTHER SETTINGS")));
 
     // Scraper region.
     auto scraperRegion = std::make_shared<OptionListComponent<std::string>>(_("REGION"), false);
@@ -1441,6 +1456,6 @@ std::vector<HelpPrompt> GuiScraperMenu::getHelpPrompts()
 {
     std::vector<HelpPrompt> prompts {mMenu.getHelpPrompts()};
     prompts.push_back(HelpPrompt("b", _("back")));
-    prompts.push_back(HelpPrompt("y", _("start scraper")));
+    prompts.push_back(HelpPrompt("y", plain("get covers", _("start scraper"))));
     return prompts;
 }

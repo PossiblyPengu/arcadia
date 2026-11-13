@@ -199,9 +199,10 @@ void MenuComponent::addButton(const std::string& name,
     updateGrid();
     updateSize();
     // A card keeps its size when buttons are added, so setSize() does nothing and the button row would
-    // keep the height it had without buttons, leaving the buttons half outside the card.
+    // keep the height it had without buttons, leaving the buttons half outside the card. Lay the whole card
+    // out again (setting only that row's height re-placed the title and rows without their inset).
     if (mSize.y > 0.0f)
-        mGrid.setRowHeightPerc(3, getButtonGridHeight() / mSize.y);
+        onSizeChanged();
 }
 
 void MenuComponent::updateGrid()

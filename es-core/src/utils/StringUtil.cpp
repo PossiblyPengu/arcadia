@@ -268,6 +268,10 @@ namespace Utils
                                             (i > 0 && stringArg[i - 1] == '/'))};
                     if (known != keep.end()) {
                         word = known->second;
+                        // ("GAMELIST OPTIONS" → "Game list options": a replaced word starting a sentence
+                        // gets a capital too.)
+                        if (sentenceStart && !word.empty() && std::islower(static_cast<unsigned char>(word[0])))
+                            word[0] = static_cast<char>(std::toupper(static_cast<unsigned char>(word[0])));
                     }
                     else if (buttonPair) {
                     }

@@ -264,7 +264,11 @@ GuiGamelistOptions::GuiGamelistOptions(SystemData* system)
 
     // The menu sheet on the left (DESIGN.md).
     setSize(Renderer::getScreenWidth(), Renderer::getScreenHeight());
-    mMenu.setPosition(MenuComponent::sheetPosition());
+    // Arcadia: centred over the game list (it isn't part of the settings screen).
+    mMenu.setPosition(MenuComponent::sRailOpen ?
+                          MenuComponent::sheetPosition() :
+                          glm::vec3 {std::round((Renderer::getScreenWidth() - mMenu.getSize().x) / 2.0f),
+                                     MenuComponent::sheetPosition().y, 0.0f});
 }
 
 GuiGamelistOptions::~GuiGamelistOptions()
@@ -577,8 +581,8 @@ std::vector<HelpPrompt> GuiGamelistOptions::getHelpPrompts()
         mIsCustomCollection || CollectionSystemsManager::getInstance()->isEditing())
         prompts.push_back(HelpPrompt("a", _("select")));
     if (mSystem->getRootFolder()->getChildren().size() > 0 && mSystem->getName() != "recent") {
-        prompts.push_back(HelpPrompt("b", _("close (apply)")));
-        prompts.push_back(HelpPrompt("back", _("close (cancel)")));
+        prompts.push_back(HelpPrompt("b", _("done")));
+        prompts.push_back(HelpPrompt("back", _("cancel")));
     }
     else {
         prompts.push_back(HelpPrompt("b", _("close")));
