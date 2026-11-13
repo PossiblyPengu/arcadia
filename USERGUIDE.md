@@ -126,10 +126,13 @@ Arcadia's design language is in [`DESIGN.md`](DESIGN.md). In **Settings > Look a
 
 - **Colours:** *Cloud* (light pastels, the default) or *Dusk* (the same pastels on a deep violet, for playing in the dark).
   With the Arcadia theme this sets the consoles and games screens and the menus together.
-- **Theme variant:** *Cover shelf* (the default, a carousel of covers) or *Plain list* for big libraries.
-- **Theme transitions:** *Slide* or *Fade*.
+- **Collections:** which automatic collections (Favorites, Last played, All games) appear among the consoles.
+- **Theme variant** (under *More options*): *Cover shelf* (the default, a carousel of covers) or *Plain list* for big
+  libraries. **Theme transitions** (also there): *Slide* or *Fade*.
 
-In Settings, choose a section with up and down and open it with A; B goes back to the list of sections.
+In Settings, choose a section with up and down and open it with A; B goes back to the list of sections. Each section
+shows the settings most people change; the rest are under **More options** at the end of it. The sections are Setup,
+Look and feel, Sound, Controllers, Covers and info and Advanced (which has the Tools: game importer, cleanup, rescan).
 
 The other themes that come with ES-DE (Linear, Modern, Slate) are still there under *Theme*.
 

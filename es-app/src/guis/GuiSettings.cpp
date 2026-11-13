@@ -27,6 +27,7 @@
 GuiSettings::GuiSettings(std::string title)
     : mRenderer {Renderer::getInstance()}
     , mMenu {title}
+    , mTitle {title}
     , mGoToSystem {nullptr}
     , mNeedsSaving {false}
     , mNeedsCollectionsUpdate {false}
@@ -56,6 +57,8 @@ GuiSettings::~GuiSettings()
 {
     // Save on exit.
     save();
+    if (mOnClose)
+        mOnClose();
 }
 
 void GuiSettings::save()
@@ -284,6 +287,70 @@ void GuiSettings::addEditableTextComponent(const std::string label,
     addRow(row);
 
     ed->setValue(value);
+}
+
+std::string GuiSettings::labelOf(const ComponentListRow& row)
+{
+    for (const auto& element : row.elements) {
+        if (auto text = std::dynamic_pointer_cast<TextComponent>(element.component))
+            return text->getValue();
+    }
+    return "";
+}
+
+void GuiSettings::update(int deltaTime)
+{
+    if (mFiltering)
+        showEssentials();
+    GuiComponent::update(deltaTime);
+}
+
+void GuiSettings::showEssentials()
+{
+    // Called once, after the section has added all its rows: the everyday ones in the order given, then a row that
+    // opens the rest.
+    mFiltering = false;
+    std::vector<bool> used(mHeld.size(), false);
+    for (const std::string& label : mEssentials) {
+        for (size_t i {0}; i < mHeld.size(); ++i) {
+            if (!used[i] && mHeld[i].first == label) {
+                mMenu.addRow(mHeld[i].second);
+                used[i] = true;
+            }
+        }
+    }
+    for (size_t i {0}; i < mHeld.size(); ++i) {
+        if (!used[i])
+            mMore.push_back(mHeld[i].second);
+    }
+    mHeld.clear();
+    if (mMore.empty())
+        return;
+
+    ComponentListRow row;
+    row.addElement(std::make_shared<TextComponent>(_("MORE OPTIONS"), Font::get(FONT_SIZE_MEDIUM),
+                                                   mMenuColorPrimary),
+                   true);
+    row.addElement(std::make_shared<TextComponent>(std::to_string(mMore.size()) + " more  ",
+                                                   Font::get(FONT_SIZE_SMALL), mMenuColorSecondary),
+                   false);
+    row.addElement(mMenu.makeArrow(), false);
+    row.makeAcceptInputHandler([this] {
+        // The rows are shown on a card of their own and keep working there: their settings are saved when this
+        // section closes. When that card closes they go back to this section's hidden list.
+        auto more = new GuiSettings(mTitle + ": " + _("MORE OPTIONS"));
+        for (const ComponentListRow& r : mMore)
+            more->addRow(r);
+        more->setOnClose([this] {
+            for (const ComponentListRow& r : mMore) {
+                for (const auto& element : r.elements)
+                    mStaging->addChild(element.component.get());
+            }
+        });
+        more->setSize(mSize);
+        mWindow->pushGui(more);
+    });
+    mMenu.addRow(row);
 }
 
 bool GuiSettings::input(InputConfig* config, Input input)

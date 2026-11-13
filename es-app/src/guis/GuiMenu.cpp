@@ -125,14 +125,9 @@ GuiMenu::GuiMenu()
                  "scraper");
 
     if (isFullUI)
-        addEntry(_("COLLECTIONS"), mMenuColorPrimary, true,
-                 [this] { openCollectionSystemOptions(); }, "collections");
-
-    if (isFullUI)
         addEntry(_("ADVANCED"), mMenuColorPrimary, true, [this] { openOtherOptions(); }, "other");
 
-    if (isFullUI)
-        addEntry(_("TOOLS"), mMenuColorPrimary, true, [this] { openUtilities(); }, "utilities");
+    // (Collections now live in Look and feel, and the tools in Advanced: fewer places to look.)
 
     if (!Settings::getInstance()->getBool("ForceKiosk") &&
         Settings::getInstance()->getString("UIMode") != "kiosk") {
@@ -182,6 +177,19 @@ void GuiMenu::render(const glm::mat4& parentTrans)
     GuiComponent::render(parentTrans);
 }
 
+// A row that opens another screen: its name and an arrow.
+static ComponentListRow linkRow(const std::string& label,
+                                MenuComponent& menu,
+                                unsigned int color,
+                                const std::function<void()>& open)
+{
+    ComponentListRow row;
+    row.addElement(std::make_shared<TextComponent>(label, Font::get(FONT_SIZE_MEDIUM), color), true);
+    row.addElement(menu.makeArrow(), false);
+    row.makeAcceptInputHandler(open);
+    return row;
+}
+
 void GuiMenu::openScraperOptions()
 {
     // Open the scraper menu.
@@ -191,6 +199,11 @@ void GuiMenu::openScraperOptions()
 void GuiMenu::openUIOptions()
 {
     auto s = new GuiSettings(_("LOOK AND FEEL"));
+    // Arcadia: what most people change; everything else is behind "More options".
+    s->setEssentials({_("COLOURS"), _("THEME"), _("COLLECTIONS"), _("GAMES DEFAULT SORT ORDER"),
+                      _("SORT FAVORITE GAMES ABOVE NON-FAVORITES"), _("DISPLAY CLOCK"),
+                      _("LAUNCH SCREEN DURATION"), _("SCREENSAVER SETTINGS"), _("APPLICATION LANGUAGE")});
+    s->addRow(linkRow(_("COLLECTIONS"), mMenu, mMenuColorPrimary, [this] { openCollectionSystemOptions(); }));
 
     // Theme options section.
 
@@ -1299,6 +1312,8 @@ void GuiMenu::openUIOptions()
 void GuiMenu::openSoundOptions()
 {
     auto s = new GuiSettings(_("SOUND"));
+    s->setEssentials({_("ENABLE NAVIGATION SOUNDS"), _("NAVIGATION SOUNDS VOLUME"), _("VIDEO PLAYER VOLUME"),
+                      _("PLAY AUDIO FOR GAMELIST AND SYSTEM VIEW VIDEOS")});
 
 
 // TODO: Implement system volume support for macOS and Android.
@@ -1408,6 +1423,8 @@ void GuiMenu::openSoundOptions()
 void GuiMenu::openInputDeviceOptions()
 {
     auto s = new GuiSettings(_("CONTROLLERS"));
+    s->setEssentials({_("CONTROLLER TYPE"), _("SWAP THE A/B AND X/Y BUTTONS"),
+                      _("CONFIGURE KEYBOARD AND CONTROLLERS")});
 
     // Controller type.
     auto inputControllerType =
@@ -1530,6 +1547,10 @@ void GuiMenu::openConfigInput(GuiSettings* settings)
 void GuiMenu::openOtherOptions()
 {
     auto s = new GuiSettings(_("ADVANCED"));
+    s->setEssentials({_("TOOLS"), _("ALTERNATIVE EMULATORS"), _("ENABLE ALTERNATIVE EMULATORS PER GAME"),
+                      _("SHOW HIDDEN GAMES"), _("CHECK FOR APPLICATION UPDATES"),
+                      _("RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)")});
+    s->addRow(linkRow(_("TOOLS"), mMenu, mMenuColorPrimary, [this] { openUtilities(); }));
 
     // Alternative emulators GUI.
     ComponentListRow alternativeEmulatorsRow;

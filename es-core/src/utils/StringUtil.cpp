@@ -262,8 +262,14 @@ namespace Utils
                         if (std::islower(static_cast<unsigned char>(ch)))
                             hasLower = true;
                     const auto known = keep.find(word);
+                    // A single letter beside a slash is a button pair ("A/B", "X/Y"): it keeps its capital.
+                    const bool buttonPair {word.size() == 1 &&
+                                           ((j < stringArg.size() && stringArg[j] == '/') ||
+                                            (i > 0 && stringArg[i - 1] == '/'))};
                     if (known != keep.end()) {
                         word = known->second;
+                    }
+                    else if (buttonPair) {
                     }
                     else if (!hasLower) {
                         std::string lower {toLower(word)};

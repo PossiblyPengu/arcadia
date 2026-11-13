@@ -25,12 +25,35 @@ public:
     void save();
     void addRow(const ComponentListRow& row, bool setCursorHere = false)
     {
+        if (mFiltering) {
+            // Held on a list that isn't shown, so the row has a parent from the start (some rows reach
+            // for theirs as soon as they're made).
+            mHeld.emplace_back(labelOf(row), row);
+            mStaging->addRow(row);
+            return;
+        }
         mMenu.addRow(row, setCursorHere);
     }
     void addWithLabel(const std::string& label, const std::shared_ptr<GuiComponent>& comp)
     {
-        mMenu.addWithLabel(label, comp);
+        ComponentListRow row;
+        row.addElement(std::make_shared<TextComponent>(label, Font::get(FONT_SIZE_MEDIUM), mMenuColorPrimary,
+                                                       ALIGN_LEFT, ALIGN_CENTER, glm::ivec2 {0, 0}),
+                       true);
+        row.addElement(comp, false, true);
+        addRow(row);
     }
+    // Arcadia: keep a section simple. Only the rows with these labels (as passed to addWithLabel, in this order) are
+    // shown; every other row waits behind "More options" at the end, which opens them all on a card of their own.
+    void setEssentials(const std::vector<std::string>& labels)
+    {
+        mEssentials = labels;
+        mFiltering = true;
+        mStaging = std::make_shared<ComponentList>();
+    }
+    // Called when this card closes (before its rows are let go).
+    void setOnClose(const std::function<void()>& func) { mOnClose = func; }
+    void update(int deltaTime) override;
     void addEditableTextComponent(const std::string label,
                                   std::shared_ptr<GuiComponent> ed,
                                   std::string value,
@@ -70,8 +93,18 @@ public:
     std::vector<HelpPrompt> getHelpPrompts() override;
 
 private:
+    void showEssentials();
+    static std::string labelOf(const ComponentListRow& row);
+
     Renderer* mRenderer;
     MenuComponent mMenu;
+    std::string mTitle;
+    std::vector<std::string> mEssentials;
+    bool mFiltering {false};
+    std::vector<std::pair<std::string, ComponentListRow>> mHeld; // every row (and its label), until shown
+    std::vector<ComponentListRow> mMore; // the rows behind "More options"
+    std::shared_ptr<ComponentList> mStaging; // where they live while not on screen
+    std::function<void()> mOnClose;
     std::vector<std::function<void()>> mSaveFuncs;
     std::function<void()> mCloseMenuFunction;
     SystemData* mGoToSystem;
