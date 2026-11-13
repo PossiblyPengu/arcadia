@@ -1780,6 +1780,18 @@ void GuiMenu::openOtherOptions()
             s->setNeedsSaving();
         }
     });
+#else
+    // Arcadia: its own once-a-day check for a newer release (see ViewController::startUpdateCheck).
+    auto arcadiaUpdateCheck = std::make_shared<SwitchComponent>();
+    arcadiaUpdateCheck->setState(Settings::getInstance()->getString("ApplicationUpdaterFrequency") != "never");
+    s->addWithLabel(_("CHECK FOR APPLICATION UPDATES"), arcadiaUpdateCheck);
+    s->addSaveFunc([arcadiaUpdateCheck, s] {
+        const std::string value {arcadiaUpdateCheck->getState() ? "always" : "never"};
+        if (value != Settings::getInstance()->getString("ApplicationUpdaterFrequency")) {
+            Settings::getInstance()->setString("ApplicationUpdaterFrequency", value);
+            s->setNeedsSaving();
+        }
+    });
 #endif
 
 #if defined(APPLICATION_UPDATER)

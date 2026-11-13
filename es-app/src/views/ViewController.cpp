@@ -12,6 +12,13 @@
 
 #include "views/ViewController.h"
 
+#include "guis/GuiToolRunner.h"
+
+#include <ctime>
+#include <sstream>
+#include <sys/stat.h>
+#include <thread>
+
 #include "ApplicationUpdater.h"
 #include "AudioManager.h"
 #include "CollectionSystemsManager.h"
@@ -1238,8 +1245,75 @@ bool ViewController::input(InputConfig* config, Input input)
     return false;
 }
 
+void ViewController::startUpdateCheck()
+{
+    const std::string current {ARCADIA_VERSION};
+    if (current == "dev" || Settings::getInstance()->getString("ApplicationUpdaterFrequency") == "never")
+        return;
+    // At most once a day (the stamp's age says when it last asked).
+    const std::string stamp {Utils::FileSystem::getAppDataDirectory() + "/deck/.update-checked"};
+    struct stat info {};
+    if (stat(stamp.c_str(), &info) == 0 && std::time(nullptr) - info.st_mtime < 20 * 60 * 60)
+        return;
+    std::string tool;
+    std::vector<std::string> places {Utils::FileSystem::getExePath() + "/deck",
+                                     Utils::FileSystem::getExePath() + "/../share/arcadia/deck",
+                                     Utils::FileSystem::getAppDataDirectory() + "/deck"};
+    if (const char* appDir {std::getenv("APPDIR")})
+        places.insert(places.begin(), std::string {appDir} + "/usr/share/arcadia/deck");
+    for (const std::string& place : places) {
+        if (Utils::FileSystem::exists(place + "/lib/selfupdate.py")) {
+            tool = place + "/lib/selfupdate.py";
+            break;
+        }
+    }
+    if (tool.empty())
+        return;
+    mUpdateCheck = std::make_shared<UpdateCheck>();
+    std::thread([check = mUpdateCheck, tool, stamp, current] {
+        std::string output;
+        int code {1};
+        GuiToolRunner::runWithoutPreload(GuiToolRunner::toolEnvironment() + "python3 \"" + tool + "\" --latest",
+                                         [&output](const std::string& chunk) { output += chunk; }, &code);
+        Utils::FileSystem::createDirectory(Utils::FileSystem::getParent(stamp));
+        if (FILE* f {fopen(stamp.c_str(), "w")})
+            fclose(f);
+        while (!output.empty() && (output.back() == '\n' || output.back() == ' '))
+            output.pop_back();
+        // Newer by its numbers ("0.1.10" is newer than "0.1.9").
+        auto numbers = [](const std::string& v) {
+            std::vector<int> n;
+            std::istringstream parts {v};
+            std::string part;
+            while (std::getline(parts, part, '.'))
+                n.push_back(std::atoi(part.c_str()));
+            return n;
+        };
+        if (code == 0 && !output.empty() && output.find('\n') == std::string::npos &&
+            numbers(output) > numbers(current)) {
+            std::unique_lock<std::mutex> lock {check->mutex};
+            check->newer = output;
+        }
+        check->done = true;
+    }).detach();
+}
+
 void ViewController::update(int deltaTime)
 {
+    // The update check's answer, said once (popups are queued from here, the main thread).
+    if (mUpdateCheck && mUpdateCheck->done) {
+        std::string newer;
+        {
+            std::unique_lock<std::mutex> lock {mUpdateCheck->mutex};
+            newer = mUpdateCheck->newer;
+        }
+        mUpdateCheck.reset();
+        if (!newer.empty())
+            mWindow->queueInfoPopup(Utils::String::format(_("ARCADIA %s IS AVAILABLE"), newer.c_str()) + "\n" +
+                                        _("SETUP → UPDATE ARCADIA INSTALLS IT"),
+                                    8000);
+    }
+
 
     if (mWindow->getChangedTheme())
         cancelViewTransitions();

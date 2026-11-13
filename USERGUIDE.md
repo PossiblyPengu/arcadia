@@ -151,9 +151,10 @@ The other themes that come with ES-DE (Linear, Modern, Slate) are still there un
 
 ## Updating
 
-*Settings > Setup > Update Arcadia* downloads the latest release and replaces the AppImage (the old one is kept next to it as
-`.previous`). It needs a published release. Until the project publishes one, download a new AppImage from the Actions tab
-instead.
+Once a day, when it starts, Arcadia asks GitHub whether a newer release is out (in the background; nothing is downloaded)
+and if so says *Arcadia 0.1.5 is available*. *Settings > Setup > Update Arcadia* then downloads it, checks it against the
+checksum the release lists, and replaces the AppImage (the old one is kept next to it as `.previous`). Turning off
+*Settings > Advanced > Check for application updates* stops the daily check.
 
 ## Starting Arcadia from the command line
 

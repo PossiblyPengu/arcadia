@@ -269,6 +269,7 @@ sleep 1
 printf 'OLD-APPIMAGE' > "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage"
 export DECK_RELEASE_API="http://127.0.0.1:$PORT/latest"
 DECK_APPIMAGE="$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" bash "$HERE/tools/update-arcadia.sh" --check
+check "--latest prints just the newest version, for Arcadia's own daily check" '[ "$(python3 "$HERE/lib/selfupdate.py" --latest)" = 9.9.9 ]'
 check "check says a newer release exists without changing anything" 'grep -q "newer release is available: v9.9.9" "$ARCADIA_HOME/logs/deck.log" && grep -q OLD-APPIMAGE "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage"'
 DECK_APPIMAGE="$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" bash "$HERE/tools/update-arcadia.sh"
 check "update replaces the AppImage and keeps the old one" 'grep -q NEW-APPIMAGE "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" && grep -q OLD-APPIMAGE "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage.previous" && [ -x "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" ]'

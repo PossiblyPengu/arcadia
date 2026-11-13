@@ -800,6 +800,7 @@ int main(int argc, char* argv[])
 
         if (!loadSystemsStatus)
             ViewController::getInstance()->goToStart(true);
+        ViewController::getInstance()->startUpdateCheck();
 
         // Check if any of the enabled systems have an invalid alternative emulator entry,
         // which means that a label is present in the gamelist.xml file which is not matching

@@ -158,6 +158,14 @@ def update(check_only: bool = False) -> str:
 
 
 def main(argv: list[str]) -> int:
+    if "--latest" in argv:
+        # Just the newest release's version ("0.1.5"), for Arcadia's own once-a-day check; nothing is downloaded.
+        try:
+            print(str(latest()["tag_name"]).lstrip("v"))
+            return 0
+        except UpdateError as exc:
+            print(f"Couldn't check: {exc}", file=sys.stderr)
+            return 1
     try:
         print(update("--check" in argv))
         return 0

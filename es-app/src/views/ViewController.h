@@ -19,6 +19,9 @@
 #include "renderers/Renderer.h"
 #include "utils/StringUtil.h"
 
+#include <atomic>
+#include <memory>
+#include <mutex>
 #include <vector>
 
 class GamelistView;
@@ -38,6 +41,8 @@ public:
     void unsafeUpgradeDialog();
     void invalidSystemsFileDialog();
     void noGamesDialog();
+    // Arcadia: once a day, in the background, ask whether a newer Arcadia has been released, and say so.
+    void startUpdateCheck();
     void invalidAlternativeEmulatorDialog();
     void updateAvailableDialog();
 
@@ -182,6 +187,13 @@ private:
     std::string mNoGamesErrorMessage;
     std::string mRomDirectory;
     GuiMsgBox* mNoGamesMessageBox;
+    // What the update check found ("" while it runs or if nothing is newer). Shared with its thread.
+    struct UpdateCheck {
+        std::mutex mutex;
+        std::string newer;
+        std::atomic<bool> done {false};
+    };
+    std::shared_ptr<UpdateCheck> mUpdateCheck;
 
     void playViewTransition(ViewTransition transitionType, bool instant = false);
     int getSystemId(SystemData* system);

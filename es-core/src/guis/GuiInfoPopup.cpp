@@ -16,6 +16,8 @@
 
 #include <SDL2/SDL_timer.h>
 
+#include <sstream>
+
 // Arcadia: a notification is a card at the top of the screen with a badge that says what it is about (done, a
 // problem, information) beside the message, in sentence case. It slides down a little as it fades in.
 GuiInfoPopup::GuiInfoPopup(std::string message, int duration)
@@ -45,9 +47,15 @@ GuiInfoPopup::GuiInfoPopup(std::string message, int duration)
     mBadge->setResize(side, side);
 
     const float textRoom {maxWidth - side - padX * 3.0f};
-    if (mText->getSize().x > textRoom) {
+    // As wide as its longest line (a short message on two lines keeps its line break), wrapped if wider than the
+    // room there is.
+    float longest {0.0f};
+    std::istringstream lines {shown};
+    for (std::string line; std::getline(lines, line);)
+        longest = std::max(longest, font->sizeText(line).x);
+    if (shown.find('\n') != std::string::npos || mText->getSize().x > textRoom) {
         mText->setAutoCalcExtent(glm::ivec2 {0, 1});
-        mText->setSize(textRoom, 0.0f);
+        mText->setSize(std::min(std::ceil(longest) + 2.0f, textRoom), 0.0f);
     }
     const float textHeight {std::min(mText->getSize().y, Renderer::getScreenHeight() * 0.2f)};
     mText->setSize(mText->getSize().x, textHeight);
