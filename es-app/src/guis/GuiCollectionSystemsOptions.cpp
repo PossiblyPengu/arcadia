@@ -341,7 +341,8 @@ GuiCollectionSystemsOptions::GuiCollectionSystemsOptions(std::string title)
             setNeedsSortingCollections();
             setNeedsCollectionsUpdate();
             setNeedsReloading();
-            setNeedsGoToSystem(SystemData::sSystemVector.front());
+            if (!SystemData::sSystemVector.empty())
+                setNeedsGoToSystem(SystemData::sSystemVector.front());
             setInvalidateCachedBackground();
         }
     });

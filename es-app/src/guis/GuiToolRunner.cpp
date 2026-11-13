@@ -61,8 +61,7 @@ GuiToolRunner::GuiToolRunner(const std::string& title,
     , mTitleText {Utils::Localization::readable(title)}
     , mCommand {command}
     , mOnClose {onClose}
-    , mRunning {false}
-    , mFinished {false}
+    , mShared {std::make_shared<Shared>()}
     , mWorked {true}
     , mProgressDone {0}
     , mProgressTotal {0}
@@ -93,7 +92,7 @@ GuiToolRunner::~GuiToolRunner()
 {
     // The tool keeps running if the screen is closed early, but its output is no longer wanted.
     if (mThread) {
-        if (mRunning)
+        if (mShared->running)
             mThread->detach();
         else
             mThread->join();
@@ -104,17 +103,14 @@ void GuiToolRunner::start()
 {
     if (mThread && mThread->joinable())
         mThread->join();
-    {
-        std::unique_lock<std::mutex> lock {mMutex};
-        mOutput.clear();
-    }
+    mShared = std::make_shared<Shared>();
     mWorked = true;
     mProgressDone = mProgressTotal = 0;
     mScroll = 0.0f;
     mFollow = true;
-    mFinished = false;
-    mRunning = true;
-    mChanged = true;
+    mShared->finished = false;
+    mShared->running = true;
+    mShared->changed = true;
     mStarted = std::chrono::steady_clock::now();
     mBadge.setColorShift(mMenuColorAccent);
     mBadge.setImage(":/graphics/busy_0.svg");
@@ -128,7 +124,7 @@ void GuiToolRunner::start()
     mButtonGrid->onFocusGained(); // (the first button is the one A presses)
     addChild(mButtonGrid.get());
     rebuild();
-    mThread = std::make_unique<std::thread>(&GuiToolRunner::run, this);
+    mThread = std::make_unique<std::thread>(&GuiToolRunner::run, mShared, mCommand);
 }
 
 // Runs a command through sh and collects what it prints (both streams). The command gets Arcadia's environment
@@ -189,26 +185,27 @@ std::string GuiToolRunner::toolEnvironment()
            "\" ARCADIA_ROMS=\"" + FileData::getROMDirectory() + "\" ";
 }
 
-void GuiToolRunner::run()
+void GuiToolRunner::run(std::shared_ptr<Shared> shared, std::string command)
 {
-    // What the tool prints is shown as it comes, so a long job (installing emulators) shows where it is.
+    // What the tool prints is shown as it comes, so a long job (installing emulators) shows where it is. (Only the
+    // shared state is touched here: the screen may be gone by the time the tool finishes.)
     int code {0};
     const bool started {runWithoutPreload(
-        toolEnvironment() + mCommand,
-        [this](const std::string& chunk) {
-            std::unique_lock<std::mutex> lock {mMutex};
-            mOutput += chunk;
-            mChanged = true;
+        toolEnvironment() + command,
+        [&shared](const std::string& chunk) {
+            std::unique_lock<std::mutex> lock {shared->mutex};
+            shared->output += chunk;
+            shared->changed = true;
         },
         &code)};
-    LOG(LogInfo) << "GuiToolRunner: finished \"" << mCommand << "\" (" << code << ")";
+    LOG(LogInfo) << "GuiToolRunner: finished \"" << command << "\" (" << code << ")";
     if (!started) {
-        std::unique_lock<std::mutex> lock {mMutex};
-        mOutput = "\u2717 The tool couldn't be started.";
+        std::unique_lock<std::mutex> lock {shared->mutex};
+        shared->output = "\u2717 The tool couldn't be started.";
     }
-    mExitCode = started ? code : 1;
-    mRunning = false;
-    mFinished = true;
+    shared->exitCode = started ? code : 1;
+    shared->running = false;
+    shared->finished = true;
 }
 
 std::vector<GuiToolRunner::Line> GuiToolRunner::parse(const std::string& output,
@@ -276,13 +273,13 @@ void GuiToolRunner::rebuild()
 {
     std::string output;
     {
-        std::unique_lock<std::mutex> lock {mMutex};
-        output = mOutput;
-        mChanged = false;
+        std::unique_lock<std::mutex> lock {mShared->mutex};
+        output = mShared->output;
+        mShared->changed = false;
     }
     int done {mProgressDone};
     int total {mProgressTotal};
-    const std::vector<Line> lines {parse(output, !mRunning, done, total)};
+    const std::vector<Line> lines {parse(output, !mShared->running, done, total)};
     mProgressDone = done;
     mProgressTotal = total;
 
@@ -395,8 +392,8 @@ void GuiToolRunner::finish()
 {
     std::string said;
     {
-        std::unique_lock<std::mutex> lock {mMutex};
-        said = mOutput;
+        std::unique_lock<std::mutex> lock {mShared->mutex};
+        said = mShared->output;
     }
     // It didn't work if the tool says so: an error exit, a line marked ✗, or a summary that reads like a problem
     // (some tools explain what went wrong and still exit normally). A checklist that lists what's missing is fine.
@@ -406,7 +403,7 @@ void GuiToolRunner::finish()
     const bool failedLine {std::any_of(lines.cbegin(), lines.cend(), [](const Line& l) { return l.kind == "fail"; })};
     const bool badSummary {!lines.empty() && lines.back().kind == "summary" &&
                            MessageTone::of(lines.back().text) == "warning"};
-    mWorked = mExitCode == 0 && !failedLine && !badSummary;
+    mWorked = mShared->exitCode == 0 && !failedLine && !badSummary;
     mBadge.setColorShift(0xFFFFFFFF);
     mBadge.setImage(MessageTone::badge(mWorked ? "success" : "warning"));
     const long seconds {static_cast<long>(std::chrono::duration_cast<std::chrono::seconds>(
@@ -445,22 +442,22 @@ void GuiToolRunner::closeRunner()
 
 void GuiToolRunner::update(int deltaTime)
 {
-    if (mRunning) {
+    if (mShared->running) {
         mSpinTime += deltaTime;
         if (mSpinTime >= 160) {
             mSpinTime = 0;
             mSpinFrame = (mSpinFrame + 1) % 4;
             mBadge.setImage(":/graphics/busy_" + std::to_string(mSpinFrame) + ".svg");
         }
-        if (mChanged) {
+        if (mShared->changed) {
             rebuild();
             if (mProgressTotal > 0)
                 mStatus.setText("Step " + std::to_string(std::min(mProgressDone + 1, mProgressTotal)) + " of " +
                                 std::to_string(mProgressTotal) + "… this can take a few minutes");
         }
     }
-    else if (mFinished) {
-        mFinished = false;
+    else if (mShared->finished) {
+        mShared->finished = false;
         finish();
     }
     GuiComponent::update(deltaTime);
@@ -548,7 +545,7 @@ bool GuiToolRunner::input(InputConfig* config, Input input)
         scrollBy(step);
         return true;
     }
-    if (mRunning)
+    if (mShared->running)
         return true; // Nothing else to do while it works.
 
     if (input.value != 0 && (config->isMappedTo("b", input) || config->isMappedTo("back", input))) {
@@ -563,7 +560,7 @@ std::vector<HelpPrompt> GuiToolRunner::getHelpPrompts()
     std::vector<HelpPrompt> prompts;
     if (maxScroll() > 0.0f)
         prompts.push_back(HelpPrompt("up/down", _("scroll")));
-    if (mRunning)
+    if (mShared->running)
         return prompts;
     prompts.push_back(HelpPrompt("a", mWorked ? _("close") : _("choose")));
     if (!mWorked)

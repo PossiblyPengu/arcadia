@@ -24,6 +24,7 @@
 #include "components/TextComponent.h"
 
 #include <atomic>
+#include <memory>
 #include <chrono>
 #include <functional>
 #include <mutex>
@@ -68,7 +69,6 @@ private:
     };
 
     void start();
-    void run();
     void rebuild();
     void layout();
     void finish();
@@ -92,13 +92,20 @@ private:
     std::string mTitleText;
     std::string mCommand;
     std::function<void()> mOnClose;
+    // What the tool's thread writes. Shared with the thread, so closing this screen (or quitting Arcadia) while a
+    // tool still runs can't leave the thread writing into freed memory.
+    struct Shared {
+        std::mutex mutex;
+        std::string output;
+        std::atomic<bool> running {false};
+        std::atomic<bool> finished {false};
+        std::atomic<bool> changed {false};
+        std::atomic<int> exitCode {0};
+    };
+    static void run(std::shared_ptr<Shared> shared, std::string command);
+
     std::unique_ptr<std::thread> mThread;
-    std::mutex mMutex;
-    std::string mOutput;
-    std::atomic<bool> mRunning;
-    std::atomic<bool> mFinished;
-    std::atomic<bool> mChanged {false};
-    std::atomic<int> mExitCode {0};
+    std::shared_ptr<Shared> mShared;
     std::chrono::steady_clock::time_point mStarted;
 
     bool mWorked;

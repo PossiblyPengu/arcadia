@@ -89,6 +89,11 @@ void GuiSettings::save()
         ViewController::getInstance()->rescanROMDirectory();
     }
 
+    // Arcadia: with no games (the first-start screen) there are no consoles to sort, reload or go to: the settings
+    // are saved and take effect once there are games. (Going to "the first console" of an empty list crashed.)
+    if (SystemData::sSystemVector.empty())
+        return;
+
     if (mNeedsCollectionsUpdate) {
         CollectionSystemsManager::getInstance()->loadEnabledListFromSettings();
         CollectionSystemsManager::getInstance()->updateSystemsList();

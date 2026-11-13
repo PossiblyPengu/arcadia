@@ -981,8 +981,9 @@ void GuiMenu::openUIOptions()
                         (*it)->getIndex()->resetFilters();
                     }
                     ViewController::getInstance()->reloadAll();
-                    ViewController::getInstance()->goToSystem(SystemData::sSystemVector.front(),
-                                                              false);
+                    if (!SystemData::sSystemVector.empty())
+                        ViewController::getInstance()->goToSystem(SystemData::sSystemVector.front(),
+                                                                  false);
                     mWindow->invalidateCachedBackground();
                 },
                 _("NO"), nullptr, "", nullptr, "", nullptr, nullptr, true));
@@ -1000,7 +1001,8 @@ void GuiMenu::openUIOptions()
             s->setNeedsSortingCollections();
             s->setNeedsResetFilters();
             s->setNeedsReloading();
-            s->setNeedsGoToSystem(SystemData::sSystemVector.front());
+            if (!SystemData::sSystemVector.empty())
+                s->setNeedsGoToSystem(SystemData::sSystemVector.front());
             s->setInvalidateCachedBackground();
         }
     });

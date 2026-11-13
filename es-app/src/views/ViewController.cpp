@@ -423,6 +423,9 @@ void ViewController::goToStart(bool playTransition)
     // Needed to avoid segfaults during emergency shutdown.
     if (mRenderer->getSDLWindow() == nullptr)
         return;
+    // Arcadia: with no games there is no start to go to (the first-start screen stays).
+    if (SystemData::sSystemVector.empty())
+        return;
 
     // If the system view does not exist, then create it. We do this here as it would
     // otherwise not be done if jumping directly into a gamelist on startup.
@@ -467,6 +470,8 @@ void ViewController::ReloadAndGoToStart()
 {
     mWindow->renderSplashScreen(Window::SplashScreenState::RELOADING, 0.0f);
     reloadAll();
+    if (SystemData::sSystemVector.empty())
+        return;
     if (mState.viewing == ViewMode::GAMELIST) {
         goToSystemView(SystemData::sSystemVector.front(), false);
         goToSystem(SystemData::sSystemVector.front(), false);
