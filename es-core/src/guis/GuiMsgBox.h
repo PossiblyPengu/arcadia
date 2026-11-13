@@ -50,6 +50,7 @@ public:
     void changeText(const std::string& newText);
 
     bool input(InputConfig* config, Input input) override;
+    void update(int deltaTime) override;
     void onSizeChanged() override;
 
     std::vector<HelpPrompt> getHelpPrompts() override;
@@ -68,6 +69,7 @@ private:
     std::shared_ptr<ImageComponent> mBadge;
     std::shared_ptr<TextComponent> mTitle;
     std::vector<std::string> mButtonNames;
+    unsigned int mColors; // the frame colour it was drawn with (see update())
     std::vector<std::shared_ptr<ButtonComponent>> mButtons;
     std::shared_ptr<ComponentGrid> mButtonGrid;
     const std::function<void()> mBackFunc;

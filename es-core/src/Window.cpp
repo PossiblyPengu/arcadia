@@ -1022,6 +1022,12 @@ void Window::startMediaViewer(FileData* game)
 
             mRenderMediaViewer = true;
         }
+        else {
+            // Arcadia: say why nothing opened, and where pictures come from.
+            queueInfoPopup(_("NO PICTURES OR VIDEO FOR THIS GAME YET") + "\n" +
+                               _("SETTINGS → COVERS AND INFO CAN GET THEM"),
+                           4000);
+        }
     }
 }
 

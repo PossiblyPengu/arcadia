@@ -181,10 +181,12 @@ std::vector<HelpPrompt> ButtonComponent::getHelpPrompts()
 
 unsigned int ButtonComponent::getCurTextColor() const
 {
+    // Arcadia: the current colours (not the ones at creation), like the button's fill, so a button that was open
+    // while the colours changed stays readable.
     if (!mFocused)
-        return mTextColorUnfocused;
+        return mMenuColorButtonTextUnfocused;
     else
-        return mTextColorFocused;
+        return mMenuColorButtonTextFocused;
 }
 
 void ButtonComponent::updateImage()

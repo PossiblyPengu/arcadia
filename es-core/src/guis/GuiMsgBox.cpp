@@ -147,6 +147,7 @@ GuiMsgBox::GuiMsgBox(const std::string& text,
     setPosition((mRenderer->getScreenWidth() - mSize.x) / 2.0f,
                 (mRenderer->getScreenHeight() - mSize.y) / 2.0f);
 
+    mColors = mMenuColorFrame;
     addChild(&mBackground);
     addChild(mBadge.get());
     addChild(mTitle.get());
@@ -241,6 +242,19 @@ bool GuiMsgBox::input(InputConfig* config, Input input)
     }
 
     return GuiComponent::input(config, input);
+}
+
+void GuiMsgBox::update(int deltaTime)
+{
+    // Arcadia: follow a change of colours made while this was open underneath (the first-start screen stays up
+    // under Settings); its buttons already do, the card and the words didn't.
+    if (mColors != mMenuColorFrame) {
+        mColors = mMenuColorFrame;
+        mBackground.setFrameColor(mMenuColorFrame);
+        mTitle->setColor(mMenuColorTitle);
+        mMsg->setColor(mTitle->isVisible() ? mMenuColorSecondary : mMenuColorPrimary);
+    }
+    GuiComponent::update(deltaTime);
 }
 
 void GuiMsgBox::onSizeChanged()

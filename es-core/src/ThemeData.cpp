@@ -1007,6 +1007,17 @@ void ThemeData::setThemeTransitions()
     int transitionAnim {ViewTransitionAnimation::INSTANT};
     setTransitionsFunc(transitionAnim);
 
+    // Arcadia: the current theme is looked up when a console loads its theme. With no games no console has, so it
+    // may never have been looked up, and a reload (changing the colours, say) then crashed here. Look it up now;
+    // with no theme to be found, transitions stay instant.
+    if (sThemes.empty())
+        populateThemes();
+    if (sCurrentTheme == std::map<std::string, Theme, StringComparator>::iterator {} ||
+        sCurrentTheme == sThemes.end())
+        sCurrentTheme = sThemes.find(Settings::getInstance()->getString("Theme"));
+    if (sCurrentTheme == sThemes.end())
+        return;
+
     const std::string& transitionsSetting {Settings::getInstance()->getString("ThemeTransitions")};
     std::string profile;
     size_t profileEntry {0};
@@ -1085,6 +1096,9 @@ ThemeData::getCurrentThemeSelectedVariantOverrides()
 
 const void ThemeData::themeLoadedLogOutput()
 {
+    if (sCurrentTheme == std::map<std::string, Theme, StringComparator>::iterator {} ||
+        sCurrentTheme == sThemes.end())
+        return;
     LOG(LogInfo) << "Finished loading theme \"" << sCurrentTheme->first << "\"";
 
     if (sSelectedAspectRatio != "") {

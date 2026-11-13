@@ -1235,6 +1235,7 @@ bool ViewController::input(InputConfig* config, Input input)
 
 void ViewController::update(int deltaTime)
 {
+
     if (mWindow->getChangedTheme())
         cancelViewTransitions();
 
@@ -1435,6 +1436,14 @@ void ViewController::reloadAll()
 {
     if (mRenderer->getSDLWindow() == nullptr)
         return;
+
+    // Arcadia: with no games there are no consoles and no views to rebuild (the first-start screen is up), and
+    // rebuilding them anyway went to the first console of an empty list and crashed. A setting changed meanwhile
+    // (the colours, the theme) takes effect when the games are loaded.
+    if (SystemData::sSystemVector.empty()) {
+        LOG(LogInfo) << "ViewController::reloadAll(): No game systems, nothing to reload";
+        return;
+    }
 
     cancelViewTransitions();
 
