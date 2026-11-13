@@ -28,13 +28,12 @@ def word_paths(text: str, size: float, tracking: float) -> tuple[str, float]:
     return " ".join(parts), x - tracking
 
 
-# The mark: a lavender tile with a gamepad drawn into it in plum, the same shape as the console cards.
-MARK = '''  <g transform="translate(530 140)">
-    <rect x="0" y="0" width="220" height="220" rx="64" fill="#cdbdf0"/>
-    <path d="M58 84h104a30 30 0 0 1 0 60h-14l-14-12H74l-14 12H58a30 30 0 0 1 0-60z" fill="none" stroke="#2f2448" stroke-width="10" stroke-linejoin="round"/>
-    <path d="M70 114h28M84 100v28" stroke="#2f2448" stroke-width="10" stroke-linecap="round"/>
-    <circle cx="140" cy="106" r="7" fill="#f08fae"/>
-    <circle cx="158" cy="122" r="7" fill="#2f2448"/>
+# The mark (es-app/assets/arcadia.svg): a lowercase "a" and a pink dot on a lavender tile, the sister of Deckhand's "d.".
+MARK = '''  <g transform="translate(530 140) scale(0.859375)">
+    <rect width="256" height="256" rx="58" fill="#cdbdf0"/>
+    <circle cx="110" cy="144" r="41" fill="none" stroke="#2f2448" stroke-width="27"/>
+    <path d="M151 103v82" stroke="#2f2448" stroke-width="27" stroke-linecap="round"/>
+    <circle cx="194" cy="178" r="15" fill="#f08fae"/>
   </g>'''
 
 
@@ -71,15 +70,18 @@ def window_icon(path: str = "resources/graphics/window_icon_256.png") -> None:
     W = 256 * s
     img = Image.new("RGBA", (W, W), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    d.rounded_rectangle([8 * s, 8 * s, 248 * s, 248 * s], radius=70 * s, fill=(0xCD, 0xBD, 0xF0, 255))
+    d.rounded_rectangle([0, 0, W - 1, W - 1], radius=58 * s, fill=(0xCD, 0xBD, 0xF0, 255))
     ink = (0x2F, 0x24, 0x48, 255)
-    w = 11 * s
-    # gamepad outline
-    d.rounded_rectangle([50 * s, 96 * s, 206 * s, 164 * s], radius=34 * s, outline=ink, width=w)
-    d.line([(78 * s, 130 * s), (110 * s, 130 * s)], fill=ink, width=w)
-    d.line([(94 * s, 114 * s), (94 * s, 146 * s)], fill=ink, width=w)
-    for (cx, cy), c in (((158, 120), (0xF0, 0x8F, 0xAE, 255)), ((178, 140), ink)):
-        d.ellipse([(cx - 8) * s, (cy - 8) * s, (cx + 8) * s, (cy + 8) * s], fill=c)
+    w = 27 * s
+    # the bowl of the "a": a ring
+    r = 41 * s + w // 2
+    d.ellipse([110 * s - r, 144 * s - r, 110 * s + r, 144 * s + r], outline=ink, width=w)
+    # its stem, with round ends
+    d.line([(151 * s, 103 * s), (151 * s, 185 * s)], fill=ink, width=w)
+    for y in (103, 185):
+        d.ellipse([151 * s - w // 2, y * s - w // 2, 151 * s + w // 2, y * s + w // 2], fill=ink)
+    # the dot
+    d.ellipse([(194 - 15) * s, (178 - 15) * s, (194 + 15) * s, (178 + 15) * s], fill=(0xF0, 0x8F, 0xAE, 255))
     img.resize((256, 256), Image.LANCZOS).save(path)
     print("wrote", path)
 

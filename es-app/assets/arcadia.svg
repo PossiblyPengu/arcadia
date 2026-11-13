@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Arcadia's mark: a lavender tile with a gamepad drawn into it (see DESIGN.md). -->
+<!-- Arcadia's mark: a lowercase "a" and a pink dot on a lavender tile, the sister of Deckhand's "d." (see DESIGN.md). -->
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
-  <rect x="8" y="8" width="240" height="240" rx="70" fill="#cdbdf0"/>
-  <rect x="55.5" y="101.5" width="145" height="57" rx="28.5" fill="none" stroke="#2f2448" stroke-width="11"/>
-  <path d="M78 130h32M94 114v32" stroke="#2f2448" stroke-width="11" stroke-linecap="round"/>
-  <circle cx="158" cy="120" r="8" fill="#f08fae"/>
-  <circle cx="178" cy="140" r="8" fill="#2f2448"/>
+  <rect width="256" height="256" rx="58" fill="#cdbdf0"/>
+  <circle cx="110" cy="144" r="41" fill="none" stroke="#2f2448" stroke-width="27"/>
+  <path d="M151 103v82" stroke="#2f2448" stroke-width="27" stroke-linecap="round"/>
+  <circle cx="194" cy="178" r="15" fill="#f08fae"/>
 </svg>
