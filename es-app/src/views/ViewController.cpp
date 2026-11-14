@@ -222,10 +222,10 @@ void ViewController::invalidSystemsFileDialog()
 
 void ViewController::noGamesDialog()
 {
-    mNoGamesErrorMessage = _("Welcome to Arcadia. No games were found yet.\n\nPut your games in the ROM "
-                             "folder below, one folder per console (Create makes the folders), or "
-                             "choose Setup and then Sort downloads to move them there for you."
-                             "\n\nThe ROM folder is ");
+    mNoGamesErrorMessage = _("Welcome to Arcadia. No games were found yet.\n\nChoose Setup and then Free "
+                             "games for homebrew to play right away, or put your own games in the ROM folder "
+                             "below, one folder per console (Create makes the folders; Sort downloads in Setup "
+                             "moves them there for you).\n\nThe ROM folder is ");
 
     mRomDirectory = FileData::getROMDirectory();
 
@@ -1643,6 +1643,12 @@ void ViewController::checkWindowSizeChanged()
 
 void ViewController::rescanROMDirectory()
 {
+    // Arcadia: the welcome screen (no games) is decided again by this scan: games found means it goes, none means a
+    // fresh one. (It may already have been closed with everything else: then it's only forgotten.)
+    if (mNoGamesMessageBox != nullptr && mWindow->hasGui(mNoGamesMessageBox))
+        delete mNoGamesMessageBox;
+    mNoGamesMessageBox = nullptr;
+
     mWindow->setBlockInput(true);
     resetCamera();
 

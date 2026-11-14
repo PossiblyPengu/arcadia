@@ -113,6 +113,11 @@ void Window::removeGui(GuiComponent* gui)
     }
 }
 
+bool Window::hasGui(const GuiComponent* gui) const
+{
+    return std::find(mGuiStack.cbegin(), mGuiStack.cend(), gui) != mGuiStack.cend();
+}
+
 GuiComponent* Window::peekGui()
 {
     if (mGuiStack.size() == 0)
@@ -682,6 +687,19 @@ void Window::render()
                                       mGuiStack.cend()};
             if (railShown)
                 mRailGui->render(top == mRailGui ? topTrans : trans);
+
+            // Arcadia: a dialog shows over the screen it came from (a Setup screen, a list), dimmed a little, so it's
+            // clear what it's about. Only the top and bottom of the stack are drawn otherwise.
+            if (!mRenderLaunchScreen && top->isDialog() && mGuiStack.size() > 2) {
+                GuiComponent* under {mGuiStack[mGuiStack.size() - 2]};
+                if (under != mRailGui && under != bottom) {
+                    under->render(trans);
+                    mRenderer->setMatrix(trans);
+                    const unsigned int scrim {0x1C182A40}; // (the ink colour, a quarter strength)
+                    mRenderer->drawRect(0.0f, 0.0f, mRenderer->getScreenWidth(), mRenderer->getScreenHeight(),
+                                        scrim, scrim);
+                }
+            }
 
             if (!mRenderedHelpPrompts) {
                 if (mHelpComponents != nullptr) {

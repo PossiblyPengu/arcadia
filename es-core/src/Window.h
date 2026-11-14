@@ -94,6 +94,8 @@ public:
     void setRailGui(GuiComponent* gui) { mRailGui = gui; }
     void removeGui(GuiComponent* gui);
     GuiComponent* peekGui();
+    // Whether this GUI is still open (the pointer is only compared, never followed).
+    bool hasGui(const GuiComponent* gui) const;
     int getGuiStackSize() { return static_cast<int>(mGuiStack.size()); }
     bool isBackgroundDimmed();
 

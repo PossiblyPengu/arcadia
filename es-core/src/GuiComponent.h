@@ -250,6 +250,8 @@ public:
 
     virtual void stopGamelistFadeAnimations() {}
     virtual bool isListScrolling() { return false; }
+    // Arcadia: a dialog is drawn over the screen it was opened from, not just over the background.
+    virtual bool isDialog() const { return false; }
     virtual void stopListScrolling() {}
     virtual const float getBrightness() const { return mBrightness; }
     virtual const float getOpacity() const { return mOpacity; }

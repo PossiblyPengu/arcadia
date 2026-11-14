@@ -25,6 +25,7 @@ can be tested and changed without rebuilding the program. To use them, see [`USE
 | `lib/romsort/` | The ROM sorter, ported from the earlier Arcadia app: headers, extensions, disc images, cue sheets, multi-disc playlists, Switch updates and DLC. Run with `python3 -m romsort --help`. |
 | `lib/controls.py` | Starter controller settings for DuckStation, PCSX2 and RetroArch (Flatpak) |
 | `lib/emulators.py` | What your games need (from your ROM folders and Arcadia's console list, which `install.sh` copies to `lib/systems/`), and installing it: Flatpak apps from Flathub and RetroArch cores from libretro's build server, checked against its published checksums. Behind Setup's Emulators screen (`es-app/src/guis/GuiEmulators.cpp`). |
+| `lib/freegames.py` | Free games: homebrew from Homebrew Hub's database (games only; nothing marked commercial) and libretro's freeware, listed by console and installed into the right ROM folder with a game-list entry and a cover. Downloads only from those two hosts, refuses error pages, keeps the list for a day (and uses it offline). Behind Setup's Free games screen (`es-app/src/guis/GuiFreeGames.cpp`) through `tools/free-games.sh`. |
 | `lib/selfupdate.py` | Updates the AppImage and these tools from the project's GitHub releases |
 | `tools/*.sh` | One script per SETUP entry |
 | `scripts/` | The event scripts |

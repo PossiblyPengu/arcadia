@@ -11,6 +11,7 @@
 #include "Window.h"
 #include "components/MenuComponent.h"
 #include "guis/GuiEmulators.h"
+#include "guis/GuiFreeGames.h"
 #include "guis/GuiMenu.h"
 #include "guis/GuiToolRunner.h"
 #include "utils/FileSystemUtil.h"
@@ -29,7 +30,7 @@ namespace
         const char* todo;
     };
     const std::vector<StepAction> sStepActions {
-        {"games", "get-started.sh", "Show me"},
+        {"games", "get-started.sh", "Get free ones"},
         {"emulators", "install-emulators.sh", "Install"},
         {"controls", "setup-controls.sh", "Set up"},
         {"access", "grant-access.sh", "Allow"},
@@ -41,10 +42,11 @@ namespace
         const char* label;
         const char* command;
     };
-    const std::vector<Tool> sTools {{"Sort downloads", "sort-roms.sh"},
+    const std::vector<Tool> sTools {{"Free games", "@free-games"},
+                                    {"Sort downloads", "sort-roms.sh"},
                                     {"Sort inside folders", "sort-roms.sh\" --deep \""},
                                     {"Undo the last sort", "sort-roms.sh\" --undo \""},
-                                    {"Emulators", ""},
+                                    {"Emulators", "@emulators"},
                                     {"Sync saves now", "save-sync-now.sh"},
                                     {"Back up settings", "backup.sh"},
                                     {"Restore a backup", "backup.sh\" --restore \""},
@@ -96,8 +98,10 @@ GuiSetup::GuiSetup(const std::string& toolsDirectory)
                        true);
         const std::string title {tool.label};
         const std::string command {"\"" + mToolsDirectory + "/" + tool.command + "\""};
-        if (std::string {tool.command}.empty())
+        if (std::string {tool.command} == "@emulators")
             row.makeAcceptInputHandler([this] { openEmulators(); });
+        else if (std::string {tool.command} == "@free-games")
+            row.makeAcceptInputHandler([this] { openFreeGames(); });
         else
             row.makeAcceptInputHandler([this, title, command] { runTool(title, command); });
         mTools->addRow(row);
@@ -254,6 +258,8 @@ void GuiSetup::showStatus()
         const std::string command {"\"" + mToolsDirectory + "/" + action->tool + "\""};
         if (step.key == "emulators")
             row.makeAcceptInputHandler([this] { openEmulators(); });
+        else if (step.key == "games" && !step.done) // (no games yet: some to play right away)
+            row.makeAcceptInputHandler([this] { openFreeGames(); });
         else
             row.makeAcceptInputHandler([this, title, command] { runTool(title, command); });
         mSteps->addRow(row);
@@ -295,6 +301,11 @@ void GuiSetup::runTool(const std::string& title, const std::string& command)
 void GuiSetup::openEmulators()
 {
     mWindow->pushGui(new GuiEmulators(mToolsDirectory, [this] { readStatus(); }));
+}
+
+void GuiSetup::openFreeGames()
+{
+    mWindow->pushGui(new GuiFreeGames(mToolsDirectory, [this] { readStatus(); }));
 }
 
 void GuiSetup::setFocusColumn(int column)

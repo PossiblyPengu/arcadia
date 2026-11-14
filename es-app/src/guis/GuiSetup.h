@@ -45,6 +45,7 @@ private:
     void showStatus();
     void runTool(const std::string& title, const std::string& command);
     void openEmulators();
+    void openFreeGames();
     void setFocusColumn(int column);
     std::shared_ptr<ComponentList> focusedList() { return mColumn == 0 ? mSteps : mTools; }
 

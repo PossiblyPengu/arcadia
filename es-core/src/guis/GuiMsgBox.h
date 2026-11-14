@@ -54,6 +54,7 @@ public:
     void onSizeChanged() override;
 
     std::vector<HelpPrompt> getHelpPrompts() override;
+    bool isDialog() const override { return true; }
 
 private:
     void deleteMeAndCall(const std::function<void()>& func);

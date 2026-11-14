@@ -46,6 +46,7 @@ set(ES_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiScreensaverOptions.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiSettings.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiEmulators.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiFreeGames.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiSetup.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiToolRunner.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiSystemStatusOptions.h
@@ -102,6 +103,7 @@ set(ES_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiScreensaverOptions.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiSettings.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiEmulators.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiFreeGames.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiSetup.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiToolRunner.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/guis/GuiSystemStatusOptions.cpp
