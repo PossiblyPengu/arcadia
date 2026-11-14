@@ -13,15 +13,14 @@ Arcadia is built on ES-DE. Anything this guide doesn't cover works as in ES-DE's
 2. [First start](#first-start)
 3. [Getting around](#getting-around)
 4. [The Setup screen](#the-setup-screen)
-5. [Free games](#free-games)
-6. [Saves in the cloud](#saves-in-the-cloud)
-7. [Emulators and BIOS files](#emulators-and-bios-files)
-8. [Covers and game information](#covers-and-game-information)
-9. [Look and feel](#look-and-feel)
-10. [Where things are](#where-things-are)
-11. [Updating](#updating)
-12. [Starting Arcadia from the command line](#starting-arcadia-from-the-command-line)
-13. [When something goes wrong](#when-something-goes-wrong)
+5. [Saves in the cloud](#saves-in-the-cloud)
+6. [Emulators and BIOS files](#emulators-and-bios-files)
+7. [Covers and game information](#covers-and-game-information)
+8. [Look and feel](#look-and-feel)
+9. [Where things are](#where-things-are)
+10. [Updating](#updating)
+11. [Starting Arcadia from the command line](#starting-arcadia-from-the-command-line)
+12. [When something goes wrong](#when-something-goes-wrong)
 
 ## Installing on a Steam Deck
 
@@ -40,9 +39,8 @@ Arcadia opens full screen in Game Mode and in a window on the desktop.
 If Arcadia finds no games, it says so and shows where it looks for them (the ROM directory, `~/ROMs` unless you change
 it). From that screen:
 
-- **Setup** opens Settings with Setup chosen. *Games* (the first step) opens [Free games](#free-games): homebrew you can
-  download and play straight away. *Sort downloads* (under Tools) moves the ROMs in your Downloads folder into the right
-  place.
+- **Setup** opens Settings with Setup chosen. *Sort downloads* (under Tools) moves the ROMs in your Downloads folder into
+  the right place.
 - **Change** sets a different ROM folder, for example `~/Emulation/roms` if you used EmuDeck.
 - **Create** makes one folder per system inside the ROM folder, each with a note saying which files it takes.
 
@@ -74,8 +72,7 @@ what it did) and the checklist is read again afterwards. On the right (press rig
 
 | Step or tool | What it does |
 |---|---|
-| Games | With no games yet, opens Free games (below). Afterwards it shows where your games go, and how many Arcadia found |
-| Free games | Homebrew and freeware to download, by console (see [Free games](#free-games)) |
+| Games | Shows where your games go, and how many Arcadia found |
 | Sort downloads | Moves ROMs from your Downloads folder into the right system folders. It checks each file's header, extension and disc contents, keeps cue sheets with their tracks, joins multi-disc games with an `.m3u` playlist and groups Switch updates and DLC with their game. Anything it isn't sure about is listed and left alone. Nothing is overwritten or deleted. |
 | Sort inside folders | The same, looking inside the folders in Downloads too |
 | Undo the last sort | Puts the last sort's files back where they came from |
@@ -89,23 +86,6 @@ what it did) and the checklist is read again afterwards. On the right (press rig
 
 The tools' settings are in `~/Arcadia/deck.conf`: the Downloads folder to sort (`INBOX`), whether to sort it every
 time Arcadia starts (`AUTO_SORT=1`), the BIOS folder (`BIOS_DIR`) and the cloud remote (`SYNC_REMOTE`).
-
-## Free games
-
-Setup → *Free games* lists games their makers give away, so you can play something before you have games of your own:
-about 1,300, most for Game Boy, Game Boy Color and Game Boy Advance, then WASM-4, NES, Vectrex and Mega Drive, a few for
-SNES, N64, PC Engine, Virtual Boy and other consoles, and the shareware episode of Doom. They come from
-[Homebrew Hub](https://hh.gbdev.io) (the community archive of Game Boy and NES homebrew; demos, tools and anything
-marked commercial are left out) and libretro's freeware library.
-
-Pick a console, then a game. **A** shows what it is, who made it, its licence and its page; *Get it* downloads it into
-that console's ROM folder, with its name, description and title screen (as its cover) in the game list. Games you have
-say *Added*. **Y** (on the consoles) fetches the list again; otherwise it's kept for a day, and used as it was when the
-Deck is offline. When you leave after getting something, Arcadia looks through the ROM folders again and shows that
-console, so the new games are there straight away.
-
-Only these two sites are downloaded from. Arcadia doesn't download commercial games: those you copy from cartridges and
-discs you own.
 
 ## Saves in the cloud
 
