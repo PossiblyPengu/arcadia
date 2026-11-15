@@ -133,12 +133,12 @@ check "and one installed before this Arcadia is set up at its next update" '[ "$
 FAKE_INSTALLED=org.libretro.RetroArch ARCADIA_ROMS="$G" ROM_ROOT="$G" bash "$HERE/tools/install-emulators.sh" >/dev/null
 check "outside Arcadia (a desktop dialog) the progress lines aren't shown" 'grep -q "Emulators:" "$ARCADIA_HOME/logs/deck.log" && ! grep -q "@progress" "$ARCADIA_HOME/logs/deck.log"'
 check "progress is shown as it goes, and the end says what happened" 'grep -q "Installing RetroArch (1 of 1)" <<<"$out" && grep -q "✓ Sony PlayStation" <<<"$out" && grep -q "All done" <<<"$out"'
-check "the checklist names what is missing" '[ "$(FAKE_INSTALLED=none ARCADIA_ROMS="$G" python3 "$EMU" status)" = "0|needs RetroArch" ]'
+check "the checklist names what is missing" '[ "$(FAKE_INSTALLED=none ARCADIA_ROMS="$G" python3 "$EMU" status)" = "0|needs RetroArch|needs;RetroArch" ]'
 check "with everything in place the checklist step is done" '[ "$(FAKE_INSTALLED=org.libretro.RetroArch ARCADIA_ROMS="$G" python3 "$EMU" status | cut -d"|" -f1)" = 1 ]'
 check "and the Emulators screen says RetroArch is ready" 'grep -q "^emu|org.libretro.RetroArch|RetroArch|ready|1|" <<<"$(FAKE_INSTALLED=org.libretro.RetroArch ARCADIA_ROMS="$G" python3 "$EMU" plan)"'
 rm "$TMP/ra-cores/snes9x_libretro.so"
 check "a missing core shows up even when RetroArch is installed (first, so it isn't cut off)" 'grep -q "^emu|org.libretro.RetroArch|RetroArch|cores|1|1 core to add · for your" <<<"$(FAKE_INSTALLED=org.libretro.RetroArch ARCADIA_ROMS="$G" python3 "$EMU" plan)"'
-check "and the checklist says so" '[ "$(FAKE_INSTALLED=org.libretro.RetroArch ARCADIA_ROMS="$G" python3 "$EMU" status)" = "0|cores missing" ]'
+check "and the checklist says so" '[ "$(FAKE_INSTALLED=org.libretro.RetroArch ARCADIA_ROMS="$G" python3 "$EMU" status)" = "0|cores missing|cores" ]'
 mkdir -p "$G/bad"
 mkdir -p "$ARCADIA_HOME/custom_systems"; cp "$ARCADIA_HOME/custom_systems/es_systems.xml" "$TMP/sys.bak" 2>/dev/null
 printf '<?xml version="1.0"?>\n<systemList>\n<system><name>badsys</name><fullname>Tampered Console</fullname><path>%%ROMPATH%%/bad</path><extension>.bin</extension><command label="Bad">%%EMULATOR_RETROARCH%% -L %%CORE_RETROARCH%%/bad_libretro.so %%ROM%%</command><platform>x</platform><theme>x</theme></system>\n</systemList>\n' > "$ARCADIA_HOME/custom_systems/es_systems.xml"

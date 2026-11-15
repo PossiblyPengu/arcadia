@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Arcadia\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-11-15 10:18-0500\n"
+"POT-Creation-Date: 2026-11-15 13:10-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <info@es-de.org>\n"
@@ -2052,6 +2052,103 @@ msgid "Restore a backup"
 msgstr ""
 
 msgid "Update Arcadia"
+msgstr ""
+
+msgid "Games"
+msgstr ""
+
+msgid "Controls"
+msgstr ""
+
+msgid "Folder access"
+msgstr ""
+
+msgid "Cloud saves"
+msgstr ""
+
+msgid "BIOS files"
+msgstr ""
+
+#, c-format
+msgid "%i game found"
+msgid_plural "%i games found"
+msgstr[0] ""
+msgstr[1] ""
+
+#, c-format
+msgid "in %i console"
+msgid_plural "in %i consoles"
+msgstr[0] ""
+msgstr[1] ""
+
+#, c-format
+msgid "%i new one in Downloads"
+msgid_plural "%i new ones in Downloads"
+msgstr[0] ""
+msgstr[1] ""
+
+#, c-format
+msgid "none found in %s yet"
+msgstr ""
+
+msgid "add games first"
+msgstr ""
+
+#, c-format
+msgid "%i installed"
+msgid_plural "%i installed"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "ready for all your games"
+msgstr ""
+
+msgid "cores missing"
+msgstr ""
+
+#, c-format
+msgid "needs %s"
+msgstr ""
+
+#, c-format
+msgid "set up for %s"
+msgstr ""
+
+msgid "set up"
+msgstr ""
+
+#, c-format
+msgid "set up for %s and %s"
+msgstr ""
+
+msgid "not set up yet"
+msgstr ""
+
+msgid "emulators can see your games"
+msgstr ""
+
+msgid "emulators can't see your games yet"
+msgstr ""
+
+msgid "syncing to Google Drive"
+msgstr ""
+
+msgid "not connected yet"
+msgstr ""
+
+msgid "all the ones needed are there"
+msgstr ""
+
+#, c-format
+msgid "%i missing"
+msgid_plural "%i missing"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Deckhand is installed"
+msgstr ""
+
+msgid "not installed yet: Arcadia's sister app"
 msgstr ""
 
 msgid "Setup"

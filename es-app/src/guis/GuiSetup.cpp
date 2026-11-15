@@ -51,6 +51,71 @@ namespace
                                     {N_("Back up settings"), "backup.sh"},
                                     {N_("Restore a backup"), "backup.sh\" --restore \""},
                                     {N_("Update Arcadia"), "update-arcadia.sh"}};
+    // The checklist's words. The setup tool sends each step as key|done|label|detail|code;values: the label and
+    // detail are English, the code is turned into words here, so they can be translated. A step or code this version
+    // doesn't know keeps the tool's English.
+    std::string stepLabel(const std::string& key, const std::string& english)
+    {
+        static const std::vector<std::pair<const char*, const char*>> labels {
+            {"games", N_("Games")},           {"emulators", N_("Emulators")},   {"controls", N_("Controls")},
+            {"access", N_("Folder access")},  {"saves", N_("Cloud saves")},     {"bios", N_("BIOS files")},
+            {"deckhand", N_("Windows games")}};
+        for (const auto& [k, label] : labels) {
+            if (key == k)
+                return _(label);
+        }
+        return english;
+    }
+
+    std::string stepDetail(const std::string& key, const std::vector<std::string>& c, const std::string& english)
+    {
+        using Utils::String::format;
+        const std::string what {c.empty() ? "" : c[0]};
+        auto num = [&c](size_t i) { return i < c.size() ? std::atoi(c[i].c_str()) : 0; };
+        auto arg = [&c](size_t i) { return i < c.size() ? c[i] : std::string {}; };
+        if (key == "games" && what == "found") {
+            std::string d {format(_n("%i game found", "%i games found", num(1)), num(1)) + " " +
+                           format(_n("in %i console", "in %i consoles", num(2)), num(2))};
+            if (c.size() > 3)
+                d += ", " + format(_n("%i new one in Downloads", "%i new ones in Downloads", num(3)), num(3));
+            return d;
+        }
+        if (key == "games" && what == "none")
+            return format(_("none found in %s yet"), arg(1).c_str());
+        if (key == "emulators") {
+            if (what == "none")
+                return _("add games first");
+            if (what == "installed")
+                return format(_n("%i installed", "%i installed", num(1)), num(1));
+            if (what == "ready")
+                return _("ready for all your games");
+            if (what == "cores")
+                return _("cores missing");
+            if (what == "needs")
+                return format(_("needs %s"), arg(1).c_str());
+        }
+        if (key == "controls") {
+            if (what == "set" && c.size() > 1)
+                return format(_("set up for %s"), arg(1).c_str());
+            if (what == "set")
+                return _("set up");
+            if (what == "setmany")
+                return format(_("set up for %s and %s"), arg(1).c_str(), arg(2).c_str());
+            if (what == "todo")
+                return _("not set up yet");
+        }
+        if (key == "access" && (what == "yes" || what == "no"))
+            return what == "yes" ? _("emulators can see your games") : _("emulators can't see your games yet");
+        if (key == "saves" && (what == "on" || what == "off"))
+            return what == "on" ? _("syncing to Google Drive") : _("not connected yet");
+        if (key == "bios" && what == "ok")
+            return _("all the ones needed are there");
+        if (key == "bios" && what == "missing")
+            return format(_n("%i missing", "%i missing", num(1)), num(1));
+        if (key == "deckhand" && (what == "yes" || what == "no"))
+            return what == "yes" ? _("Deckhand is installed") : _("not installed yet: Arcadia's sister app");
+        return english;
+    }
 } // namespace
 
 GuiSetup::GuiSetup(const std::string& toolsDirectory)
@@ -180,8 +245,16 @@ void GuiSetup::readStatus()
             std::string field;
             while (std::getline(parts, field, '|'))
                 fields.push_back(field);
-            if (fields.size() >= 4)
-                steps.push_back({fields[0], fields[1] != "0", fields[2], fields[3]});
+            if (fields.size() >= 4) {
+                std::vector<std::string> code;
+                if (fields.size() >= 5) {
+                    std::istringstream codeParts {fields[4]};
+                    std::string value;
+                    while (std::getline(codeParts, value, ';'))
+                        code.push_back(value);
+                }
+                steps.push_back({fields[0], fields[1] != "0", fields[2], fields[3], code});
+            }
         }
         {
             std::unique_lock<std::mutex> lock {shared->mutex};
@@ -238,7 +311,7 @@ void GuiSetup::showStatus()
         auto spacer = std::make_shared<GuiComponent>();
         spacer->setSize(std::round(font->getLetterHeight() * 0.8f), 0.0f);
         row.addElement(spacer, false);
-        auto label = std::make_shared<TextComponent>(step.label, font, mMenuColorPrimary);
+        auto label = std::make_shared<TextComponent>(stepLabel(step.key, step.label), font, mMenuColorPrimary);
         std::shared_ptr<TextComponent> todo;
         if (!step.done)
             todo = std::make_shared<TextComponent>("  " + _(action->todo),
@@ -251,12 +324,12 @@ void GuiSetup::showStatus()
                           (todo ? todo->getSize().x : 0.0f) - font->getLetterHeight()};
         row.addElement(label, false);
         auto detail = std::make_shared<TextComponent>("", quiet, mMenuColorSecondary, ALIGN_LEFT);
-        detail->setText("  ·  " + step.detail, true, std::max(room, 0.0f));
+        detail->setText("  ·  " + stepDetail(step.key, step.code, step.detail), true, std::max(room, 0.0f));
         row.addElement(detail, true);
         if (todo)
             row.addElement(todo, false);
 
-        const std::string title {step.label};
+        const std::string title {stepLabel(step.key, step.label)};
         const std::string command {"\"" + mToolsDirectory + "/" + action->tool + "\""};
         if (step.key == "emulators")
             row.makeAcceptInputHandler([this] { openEmulators(); });

@@ -285,18 +285,19 @@ def plan_lines(plan: Plan) -> list[str]:
 
 
 def status_line(plan: Plan) -> str:
-    """done|detail for the Setup checklist (a short line: it shares the row)."""
+    """done|detail|code for the Setup checklist (a short line: it shares the row). The code (with its values after
+    ";") is what Arcadia translates; the English detail is for anything that can't."""
     need = plan.needed()
     if not need:
         n = sum(e.installed for e in plan.emulators)
-        return f"0|{f'{n} installed' if n else 'add games first'}"
+        return f"0|{n} installed|installed;{n}" if n else "0|add games first|none"
     todo = [e for e in need if not e.ready]
     if not todo:
-        return "1|ready for all your games"
+        return "1|ready for all your games|ready"
     if len(todo) == 1 and todo[0].installed:
-        return "0|cores missing"
+        return "0|cores missing|cores"
     names = ", ".join(e.name for e in todo[:2]) + (f" +{len(todo) - 2}" if len(todo) > 2 else "")
-    return f"0|needs {names}"
+    return f"0|needs {names}|needs;{names}"
 
 
 # ---- installing -------------------------------------------------------------------------------------------------------

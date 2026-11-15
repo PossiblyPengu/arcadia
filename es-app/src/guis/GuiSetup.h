@@ -38,6 +38,7 @@ private:
         bool done;
         std::string label;
         std::string detail;
+        std::vector<std::string> code; // what the detail says, as a code and its values (translated here)
     };
 
     void layout();

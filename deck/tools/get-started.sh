@@ -19,9 +19,11 @@ if command -v rclone >/dev/null 2>&1 && [ -n "$SYNC_REMOTE" ] && rclone listremo
 inbox_n=0; [ -d "$INBOX" ] && inbox_n="$(find "$INBOX" -maxdepth 1 -type f \( -iname '*.nes' -o -iname '*.sfc' -o -iname '*.smc' -o -iname '*.gba' -o -iname '*.gb' -o -iname '*.gbc' -o -iname '*.z64' -o -iname '*.n64' -o -iname '*.md' -o -iname '*.iso' -o -iname '*.chd' -o -iname '*.nds' -o -iname '*.cue' \) 2>/dev/null | wc -l)"
 if [ "${1:-}" = "--status" ]; then
   plural() { [ "$1" -eq 1 ] && printf '%s %s' "$1" "$2" || printf '%s %s' "$1" "$3"; }
-  if [ "$games" -gt 0 ]; then d="$(plural "$games" game games) found in $(plural "$systems" console consoles)"; else d="none found in $roms yet"; fi
-  [ "$inbox_n" -gt 0 ] && d="$d, $(plural "$inbox_n" "new one" "new ones") in Downloads"
-  printf 'games|%s|Games|%s\n' "$([ "$games" -gt 0 ] && echo 1 || echo 0)" "$d"
+  # (Each line: key|done|label|detail in English|code;values, which Arcadia turns into words it can translate.)
+  if [ "$games" -gt 0 ]; then d="$(plural "$games" game games) found in $(plural "$systems" console consoles)"; c="found;$games;$systems"
+  else d="none found in $roms yet"; c="none;$roms"; fi
+  [ "$inbox_n" -gt 0 ] && d="$d, $(plural "$inbox_n" "new one" "new ones") in Downloads" && c="$c;$inbox_n"
+  printf 'games|%s|Games|%s|%s\n' "$([ "$games" -gt 0 ] && echo 1 || echo 0)" "$d" "$c"
   # What your games need (apps and RetroArch cores), worked out by the emulator installer.
   st="$(ARCADIA_ROMS="$roms" python3 "$(dirname "$(readlink -f "$0")")/../lib/emulators.py" status 2>/dev/null)"
   if [ -z "$st" ]; then st="$([ "$emus" -gt 0 ] && echo 1 || echo 0)|$([ "$emus" -gt 0 ] && echo "$emus installed" || echo "none installed yet")"; fi
@@ -29,19 +31,19 @@ if [ "${1:-}" = "--status" ]; then
   if deck_is_done controls; then
     set_up=(); for e in org.duckstation.DuckStation:DuckStation net.pcsx2.PCSX2:PCSX2 org.libretro.RetroArch:RetroArch; do
       deck_flatpak_installed "${e%%:*}" && set_up+=("${e#*:}"); done
-    if [ "${#set_up[@]}" -eq 0 ]; then d="set up"; elif [ "${#set_up[@]}" -eq 1 ]; then d="set up for ${set_up[0]}"
-    else d="set up for $(IFS=,; echo "${set_up[*]:0:${#set_up[@]}-1}" | sed 's/,/, /g') and ${set_up[-1]}"; fi
-  else d="not set up yet"; fi
-  printf 'controls|%s|Controls|%s\n' "$(deck_is_done controls && echo 1 || echo 0)" "$d"
-  if deck_is_done folder-access; then d="emulators can see your games"; else d="emulators can't see your games yet"; fi
-  printf 'access|%s|Folder access|%s\n' "$(deck_is_done folder-access && echo 1 || echo 0)" "$d"
-  if [ "$remote_ok" -eq 1 ]; then d="syncing to Google Drive"; else d="not connected yet"; fi
-  printf 'saves|%s|Cloud saves|%s\n' "$remote_ok" "$d"
-  if [ "$bios_missing" -eq 0 ]; then d="all the ones needed are there"; else d="$bios_missing missing"; fi
-  printf 'bios|%s|BIOS files|%s\n' "$([ "$bios_missing" -eq 0 ] && echo 1 || echo 0)" "$d"
+    if [ "${#set_up[@]}" -eq 0 ]; then d="set up"; c="set"; elif [ "${#set_up[@]}" -eq 1 ]; then d="set up for ${set_up[0]}"; c="set;${set_up[0]}"
+    else names="$(IFS=,; echo "${set_up[*]:0:${#set_up[@]}-1}" | sed 's/,/, /g') and ${set_up[-1]}"; d="set up for $names"; c="setmany;$(IFS=,; echo "${set_up[*]:0:${#set_up[@]}-1}" | sed 's/,/, /g');${set_up[-1]}"; fi
+  else d="not set up yet"; c="todo"; fi
+  printf 'controls|%s|Controls|%s|%s\n' "$(deck_is_done controls && echo 1 || echo 0)" "$d" "$c"
+  if deck_is_done folder-access; then d="emulators can see your games"; c="yes"; else d="emulators can't see your games yet"; c="no"; fi
+  printf 'access|%s|Folder access|%s|%s\n' "$(deck_is_done folder-access && echo 1 || echo 0)" "$d" "$c"
+  if [ "$remote_ok" -eq 1 ]; then d="syncing to Google Drive"; c="on"; else d="not connected yet"; c="off"; fi
+  printf 'saves|%s|Cloud saves|%s|%s\n' "$remote_ok" "$d" "$c"
+  if [ "$bios_missing" -eq 0 ]; then d="all the ones needed are there"; c="ok"; else d="$bios_missing missing"; c="missing;$bios_missing"; fi
+  printf 'bios|%s|BIOS files|%s|%s\n' "$([ "$bios_missing" -eq 0 ] && echo 1 || echo 0)" "$d" "$c"
   dh="$(deck_deckhand_ok)"
-  if [ "$dh" = 1 ]; then d="Deckhand is installed"; else d="not installed yet: Arcadia's sister app"; fi
-  printf 'deckhand|%s|Windows games|%s\n' "$dh" "$d"
+  if [ "$dh" = 1 ]; then d="Deckhand is installed"; c="yes"; else d="not installed yet: Arcadia's sister app"; c="no"; fi
+  printf 'deckhand|%s|Windows games|%s|%s\n' "$dh" "$d" "$c"
   printf 'inbox|%s|Downloads|%s\n' "$inbox_n" "$INBOX"
   exit 0
 fi
