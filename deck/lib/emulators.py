@@ -12,6 +12,7 @@ folders, exactly what is needed (the Flatpak apps and the RetroArch cores) and i
     emulators.py install ID [ID…]         those apps (Flatpak ids or names), plus the cores your games need from them
     emulators.py remove ID                uninstall one app
     emulators.py update                   update the installed apps, and refresh RetroArch cores that changed
+    emulators.py link-bios                link BIOS files into the folders RetroArch's PS2 and Dreamcast cores look in
 
 Apps come from Flathub (a user-level install, like Discover's). Cores come from libretro's own build server, the place
 RetroArch's Core Downloader uses; each is checked against the server's published checksum before it is put in place.
@@ -393,6 +394,42 @@ def link_bios(app_id: str) -> str | None:
     return f"{name} finds BIOS files in {bios}"
 
 
+# RetroArch cores that look in a folder of their own inside RetroArch's system folder (which is your BIOS folder, linked
+# above) rather than at its top, where Arcadia says to put BIOS files. Each matching file there gets a link in that
+# folder; nothing is moved. PS2: the PCEE2 core (Arcadia's default for PS2); Dreamcast: the Flycast core.
+CORE_BIOS_DIRS = {
+    ("pcsx2", "bios"): ("scph*.bin", "ps2-*.bin"),
+    ("dc",): ("dc_boot.bin", "dc_flash.bin"),
+}
+PS1_BIOS = {"scph5500.bin", "scph5501.bin", "scph5502.bin", "scph1001.bin", "scph7001.bin", "scph7502.bin"}
+
+
+def link_core_bios() -> list[str]:
+    """Link BIOS files at the top of your BIOS folder into the folders RetroArch's cores look in. Returns what was
+    linked."""
+    bios = os.environ.get("ARCADIA_BIOS_DIR", "")
+    if not bios or not Path(bios).is_dir():
+        return []
+    top = Path(bios)
+    done = []
+    for sub, patterns in CORE_BIOS_DIRS.items():
+        files = sorted({f for p in patterns for f in top.glob(p) if f.is_file() and f.name not in PS1_BIOS})
+        if not files:
+            continue
+        folder = top.joinpath(*sub)
+        for f in files:
+            link = folder / f.name
+            if link.exists() or link.is_symlink():
+                continue
+            try:
+                folder.mkdir(parents=True, exist_ok=True)
+                link.symlink_to(os.path.relpath(f, folder))
+                done.append(f.name)
+            except OSError:
+                continue
+    return [f"RetroArch's cores find {', '.join(done)} in your BIOS folder"] if done else []
+
+
 def set_up_installed(exe: str, plan: "Plan") -> list[str]:
     """What every installed emulator needs from Arcadia, for ones installed now and ones there before: access to your
     folders, its BIOS folder pointed at yours, and starter controls. Only fills in what's missing."""
@@ -406,6 +443,8 @@ def set_up_installed(exe: str, plan: "Plan") -> list[str]:
         for msg in (link_bios(e.id), controls.seed_for(e.id)):
             if msg:
                 done.append(msg)
+        if e.id == "org.libretro.RetroArch":
+            done += link_core_bios()
     return done
 
 
@@ -599,6 +638,10 @@ def resolve(plan: Plan, names: list[str]) -> list[str]:
 def main(argv: list[str]) -> int:
     roms = Path(os.environ.get("ARCADIA_ROMS") or HOME / "ROMs")
     cmd, args = (argv[0] if argv else "plan"), argv[1:]
+    if cmd == "link-bios":  # (Check BIOS files: new files at the top of the BIOS folder, for RetroArch's cores)
+        for msg in link_core_bios():
+            print(msg)
+        return 0
     plan = plan_from_disk(roms)
     if cmd == "plan":
         print("\n".join(plan_lines(plan)))

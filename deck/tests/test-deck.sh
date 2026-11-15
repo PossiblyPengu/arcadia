@@ -122,6 +122,11 @@ check "the new emulator can see the ROM folder straight away" 'grep -q "^overrid
 check "the cores the games need are put where RetroArch and Arcadia look" '[ "$(cat "$TMP/ra-cores/mednafen_psx_libretro.so")" = "$(printf "\x7fELF psx core")" ] && [ -f "$TMP/ra-cores/snes9x_libretro.so" ]'
 check "it reports its progress for Arcadia's bar (start, then each step)" 'grep -q "^@progress 0/3$" <<<"$out" && grep -q "^@progress 3/3$" <<<"$out"'
 check "the new emulator finds BIOS files in your BIOS folder (its own folder links there)" '[ "$(readlink "$HOME/.var/app/org.libretro.RetroArch/config/retroarch/system")" = "$HOME/Emulation/bios" ]'
+B="$TMP/bios-cores"; mkdir -p "$B"; touch "$B/scph39001.bin" "$B/scph5501.bin" "$B/dc_boot.bin" "$B/notes.txt"
+ARCADIA_BIOS_DIR="$B" python3 "$EMU" link-bios >/dev/null
+check "PS2 and Dreamcast BIOS files are linked where RetroArch's cores look (PS1 ones aren't)" '[ "$(readlink "$B/pcsx2/bios/scph39001.bin")" = "../../scph39001.bin" ] && [ -f "$B/dc/dc_boot.bin" ] && [ ! -e "$B/pcsx2/bios/scph5501.bin" ] && [ ! -e "$B/dc/notes.txt" ]'
+ARCADIA_BIOS_DIR="$B" python3 "$EMU" link-bios >/dev/null
+check "linking again changes nothing" '[ "$(ls "$B/pcsx2/bios")" = "scph39001.bin" ]'
 check "and gets its starter controls as it installs" 'grep -q "input_exit_emulator_btn" "$HOME/.var/app/org.libretro.RetroArch/config/retroarch/retroarch.cfg"'
 rm -rf "$HOME/.var/app/net.pcsx2.PCSX2/config/PCSX2/bios"; mkdir -p "$HOME/.var/app/net.pcsx2.PCSX2/config/PCSX2/bios"; touch "$HOME/.var/app/net.pcsx2.PCSX2/config/PCSX2/bios/mine.bin"
 FAKE_INSTALLED=net.pcsx2.PCSX2 ARCADIA_ROMS="$G" ROM_ROOT="$G" ARCADIA_OUTPUT=stdout bash "$HERE/tools/update-emulators.sh" >/dev/null

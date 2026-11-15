@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Which BIOS files are present, and which are missing (names only: it can't tell whether a dump is good).
 . "$(dirname "$(readlink -f "$0")")/../lib/deck-lib.sh"
+deck_emulator_env  # (ARCADIA_BIOS_DIR, for the links below)
+python3 "$(dirname "$(readlink -f "$0")")/../lib/emulators.py" link-bios >/dev/null 2>&1  # PS2 and Dreamcast cores' folders
 report="$(deck_bios_report)"; rc=$?
 missing="$(printf '%s\n' "$report" | awk -F'\t' '$1=="missing"{printf "  • %s (%s)\n",$3,$2}')"
 optional="$(printf '%s\n' "$report" | awk -F'\t' '$1=="optional"{n++} END{print n+0}')"
