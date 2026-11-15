@@ -93,7 +93,7 @@ GuiScraperSearch::GuiScraperSearch(SearchType type, unsigned int scrapeCount, in
     mMD_Rating = std::make_shared<RatingComponent>(false, true);
     mMD_ReleaseDate = std::make_shared<DateTimeEditComponent>();
     mMD_ReleaseDate->setColor(mdColor);
-    mMD_ReleaseDate->setUppercase(true);
+    mMD_ReleaseDate->setUppercase(false);
     mMD_Developer = std::make_shared<TextComponent>("", font, mdColor, ALIGN_LEFT);
     mMD_Publisher = std::make_shared<TextComponent>("", font, mdColor, ALIGN_LEFT);
     mMD_Genre = std::make_shared<TextComponent>("", font, mdColor, ALIGN_LEFT);
@@ -105,18 +105,18 @@ GuiScraperSearch::GuiScraperSearch(SearchType type, unsigned int scrapeCount, in
 
     if (mScrapeRatings)
         mMD_Pairs.push_back(MetaDataPair(
-            std::make_shared<TextComponent>(_("RATING:"), font, mdLblColor), mMD_Rating, false));
+            std::make_shared<TextComponent>(Utils::Localization::readable(_("RATING:")), font, mdLblColor), mMD_Rating, false));
 
     mMD_Pairs.push_back(MetaDataPair(
-        std::make_shared<TextComponent>(_("RELEASED:"), font, mdLblColor), mMD_ReleaseDate));
+        std::make_shared<TextComponent>(Utils::Localization::readable(_("RELEASED:")), font, mdLblColor), mMD_ReleaseDate));
     mMD_Pairs.push_back(MetaDataPair(
-        std::make_shared<TextComponent>(_("DEVELOPER:"), font, mdLblColor), mMD_Developer));
+        std::make_shared<TextComponent>(Utils::Localization::readable(_("DEVELOPER:")), font, mdLblColor), mMD_Developer));
     mMD_Pairs.push_back(MetaDataPair(
-        std::make_shared<TextComponent>(_("PUBLISHER:"), font, mdLblColor), mMD_Publisher));
+        std::make_shared<TextComponent>(Utils::Localization::readable(_("PUBLISHER:")), font, mdLblColor), mMD_Publisher));
     mMD_Pairs.push_back(
-        MetaDataPair(std::make_shared<TextComponent>(_("GENRE:"), font, mdLblColor), mMD_Genre));
+        MetaDataPair(std::make_shared<TextComponent>(Utils::Localization::readable(_("GENRE:")), font, mdLblColor), mMD_Genre));
     mMD_Pairs.push_back(MetaDataPair(
-        std::make_shared<TextComponent>(_("PLAYERS:"), font, mdLblColor), mMD_Players));
+        std::make_shared<TextComponent>(Utils::Localization::readable(_("PLAYERS:")), font, mdLblColor), mMD_Players));
 
     // If no rating is being scraped, add a filler to make sure that the fonts keep the same
     // size so the GUI looks consistent.
@@ -257,7 +257,9 @@ void GuiScraperSearch::resizeMetadata()
 {
     mMD_Grid->setSize(mGrid.getColWidth(2), mGrid.getRowHeight(1));
     if (mMD_Grid->getSize().y > mMD_Pairs.size()) {
-        const float fontHeight {mMD_Grid->getSize().y / mMD_Pairs.size() * 0.8f};
+        // (Arcadia: no bigger than the menus' small text, so a label such as "Publisher:" fits its column.)
+        const float fontHeight {std::min(mMD_Grid->getSize().y / mMD_Pairs.size() * 0.8f,
+                                         Font::get(FONT_SIZE_SMALL)->getHeight() * 0.9f)};
         auto fontLbl = Font::get(fontHeight, FONT_PATH_REGULAR);
         auto fontComp = Font::get(fontHeight, FONT_PATH_LIGHT);
 

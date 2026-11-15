@@ -242,11 +242,11 @@ void GuiScraperMulti::doNextSearch()
     if (mQueueCountPerSystem.size() > 1) {
         const int totalGameCount {mQueueCountPerSystem[mSearchQueue.front().system].second};
         const std::string gameCountText {_n("GAME", "GAMES", totalGameCount)};
-        mSystem->setText(Utils::String::toUpper(mSearchQueue.front().system->getFullName()) + " [" +
-                         std::to_string(totalGameCount) + " " + gameCountText + "]");
+        mSystem->setText(mSearchQueue.front().system->getFullName() + "  ·  " + std::to_string(totalGameCount) +
+                         " " + Utils::Localization::readable(gameCountText));
     }
     else {
-        mSystem->setText(Utils::String::toUpper(mSearchQueue.front().system->getFullName()));
+        mSystem->setText(mSearchQueue.front().system->getFullName());
     }
     std::string scrapeName;
 
@@ -282,7 +282,7 @@ void GuiScraperMulti::doNextSearch()
     ss.str("");
     const std::string gameCounterText {
         Utils::String::format(_("GAME %i OF %i"), mCurrentGame + 1, mTotalGames)};
-    ss << gameCounterText << " - " << folderPath << scrapeName
+    ss << Utils::Localization::readable(gameCounterText) << "  ·  " << folderPath << scrapeName
        << ((mSearchQueue.front().game->getType() == FOLDER) ? "  " + ViewController::FOLDER_CHAR :
                                                               "");
     mSubtitle->setText(ss.str());
@@ -325,7 +325,25 @@ void GuiScraperMulti::finish()
                          (mSearchQueue.empty() ? "finished" : "stopped"), "");
 
     std::stringstream ss;
-    if (mTotalSuccessful == 0) {
+    const std::string& locale {Utils::Localization::sCurrentLocale};
+    const bool english {locale.empty() || locale.substr(0, 2) == "en"};
+    const std::string service {Settings::getInstance()->getString("Scraper") == "thegamesdb" ? "TheGamesDB" :
+                                                                                               "ScreenScraper"};
+    if (english && mTotalSuccessful == 0 && mTotalSkipped > 0) {
+        // Arcadia: say why, and what can be done (the bare "No games were scraped" left people guessing).
+        ss << "Nothing was found for " << (mTotalSkipped == 1 ? "this game" : "these games") << ".\n\n"
+           << service << " doesn't know " << (mTotalSkipped == 1 ? "it" : std::to_string(mTotalSkipped) + " of them")
+           << ". Homebrew, hacks and translations are often missing, and a file named very differently from the game "
+              "can't be matched: rename it to the game's title and try again, or type the details in yourself "
+              "(View button → Edit this game's metadata).";
+    }
+    else if (english && mTotalSuccessful > 0) {
+        ss << "Covers and info added for " << mTotalSuccessful << (mTotalSuccessful == 1 ? " game." : " games.");
+        if (mTotalSkipped > 0)
+            ss << "\n\n" << mTotalSkipped << (mTotalSkipped == 1 ? " game wasn't" : " games weren't") << " found on "
+               << service << " (homebrew, hacks and renamed files often aren't listed).";
+    }
+    else if (mTotalSuccessful == 0) {
         ss << _("NO GAMES WERE SCRAPED");
     }
     else {

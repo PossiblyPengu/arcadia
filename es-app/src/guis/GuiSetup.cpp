@@ -348,6 +348,10 @@ bool GuiSetup::input(InputConfig* config, Input input)
         setFocusColumn(0);
         return true;
     }
+    if (input.value != 0 && config->isMappedTo("left", input) && mColumn == 0) {
+        delete this; // (left of the checklist is the settings rail: the same as B)
+        return true;
+    }
     if (input.value != 0 && config->isMappedTo("right", input) && mColumn == 0) {
         setFocusColumn(1);
         return true;

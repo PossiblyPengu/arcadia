@@ -36,6 +36,9 @@ PASTELS = [
     ((0xD4, 0xCE, 0xE0), (0x2E, 0x2A, 0x3A)),  # cloud, for greys
 ]
 TILE = (440, 500)
+# Names that would be ambiguous on Arcadia's shelf of consoles (Linear calls the NES just "Nintendo", which is every
+# Nintendo console): the card and the game list's header use these instead.
+NAMES = {"nes": "NES"}
 def glow(color: tuple[int, int, int], size: int = 256) -> Image.Image:
     """A soft ellipse of light, brightest at the centre, fading to nothing before the edge."""
     img = Image.new("RGBA", (size, size), color + (0,))
@@ -150,7 +153,7 @@ def tile(name: str) -> Image.Image:
         img = Image.alpha_composite(img, shadow.filter(ImageFilter.GaussianBlur(W * 0.012)))
         img.alpha_composite(pic, (px, py))
         d = ImageDraw.Draw(img)
-    label = meta.get("systemName") or name
+    label = NAMES.get(name) or meta.get("systemName") or name
     font, lines = fit_text(d, label, int(W * 0.84), range(int(46 * s), int(26 * s), -2 * s))
     line_h = font.size * 1.12
     y = H * 0.79 - line_h * len(lines) / 2
@@ -224,14 +227,15 @@ def pastel_variables() -> None:
     out = ASSETS / "pastels"
     out.mkdir(exist_ok=True)
 
-    def xml(color: tuple[int, int, int], ink: tuple[int, int, int]) -> str:
+    def xml(color: tuple[int, int, int], ink: tuple[int, int, int], name: str = "") -> str:
         hexed = lambda c: "".join(f"{v:02x}" for v in c)
+        named = f"        <systemName>{name}</systemName>\n" if name else ""
         return (f"<theme>\n    <variables>\n        <systemPastel>{hexed(color)}</systemPastel>\n"
-                f"        <systemInk>{hexed(ink)}</systemInk>\n    </variables>\n</theme>\n")
+                f"        <systemInk>{hexed(ink)}</systemInk>\n{named}    </variables>\n</theme>\n")
 
     (out / "_default.xml").write_text(xml(*PASTELS[-1]))
     for f in sorted((ASSETS / "tiles").glob("*.webp")):
-        (out / f"{f.stem}.xml").write_text(xml(*pastel(f.stem)))
+        (out / f"{f.stem}.xml").write_text(xml(*pastel(f.stem), NAMES.get(f.stem, "")))
 
 
 def vectors() -> None:

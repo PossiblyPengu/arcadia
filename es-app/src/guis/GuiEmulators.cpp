@@ -265,8 +265,8 @@ void GuiEmulators::render(const glm::mat4& parentTrans)
 
 bool GuiEmulators::input(InputConfig* config, Input input)
 {
-    if (input.value != 0 && config->isMappedTo("b", input)) {
-        close();
+    if (input.value != 0 && (config->isMappedTo("b", input) || config->isMappedTo("left", input))) {
+        close(); // (left goes back towards the settings rail, as B does)
         return true;
     }
     if (input.value != 0 && config->isMappedTo("x", input) && missingNeeded() > 0) {
