@@ -1,0 +1,23 @@
+name: CI
+
+# Work in progress is tested on every branch but main, as Deckhand's is (main is tested and built by
+# steamdeck-appimage.yml, which also releases). The setup tools' checks are quick; the AppImage is built on main.
+on:
+  push:
+    branches-ignore: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Version
+        run: |
+          VERSION="$(tr -d '[:space:]' < VERSION)"
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "VERSION must look like 1.2.3, not '$VERSION'"; exit 1; }
+
+      - name: Test the setup tools
+        run: bash deck/tests/test-deck.sh

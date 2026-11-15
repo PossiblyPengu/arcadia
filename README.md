@@ -50,6 +50,14 @@ cmake -G Ninja -DCMAKE_BUILD_TYPE=Release . && ninja
 The Steam Deck AppImage is built by `.github/workflows/steamdeck-appimage.yml` (or `tools/create_AppImage_SteamDeck.sh`).
 After first start, run `./deck/install.sh` to add the setup tools.
 
+## Releasing
+
+The same way as Deckhand's: change the version in `VERSION`, write what changed in `RELEASE_NOTES.md`, and push to
+`main`. The Steam Deck AppImage workflow tests and builds every push to `main` (the build is in the run's Artifacts),
+and when `v<version>` isn't released yet it publishes it, with the AppImage, the Deck extras and those notes. Deckhand
+installs Arcadia from the latest release, and Arcadia's Setup → Update Arcadia updates from it. Other branches run the
+setup tools' tests only (`ci.yml`).
+
 ## Documents
 
 - `USERGUIDE.md` how to install and use Arcadia
