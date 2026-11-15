@@ -21,3 +21,12 @@ jobs:
 
       - name: Test the setup tools
         run: bash deck/tests/test-deck.sh
+
+      # Lint reports, warnings only for now (they don't fail the run): shellcheck for the setup tools, flake8 for their
+      # Python.
+      - name: Lint (warnings only)
+        continue-on-error: true
+        run: |
+          shellcheck deck/install.sh deck/tools/*.sh deck/lib/*.sh deck/scripts/*/*.sh || true
+          python3 -m pip install flake8 >/dev/null
+          python3 -m flake8 --max-line-length 120 deck/lib || true
