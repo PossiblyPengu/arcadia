@@ -208,12 +208,13 @@ public:
         }
     }
 
+    // Returns true if at least one component on the stack is processing. (Public for the main loop: Arcadia keeps the
+    // full frame rate while something is processing.)
+    bool isProcessing();
+
 private:
     Window() noexcept;
     ~Window();
-
-    // Returns true if at least one component on the stack is processing.
-    bool isProcessing();
 
     struct ProgressBarRectangle {
         float barWidth;

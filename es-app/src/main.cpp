@@ -443,7 +443,15 @@ void onExit()
 
 void applicationLoop()
 {
+    // Arcadia: after a few seconds without input, frames are spaced to about 30 a second instead of the screen's
+    // full rate (90 on a Steam Deck OLED): the screen hardly changes then (what moves, like videos and scrolling
+    // text, is made for 30), and drawing it three times as often only costs battery. Any input brings the full rate
+    // back on the very next frame.
+    constexpr int idleAfterMs {3000};
+    constexpr int idleFrameMs {33};
+    int lastInputTime {static_cast<int>(SDL_GetTicks())};
     while (true) {
+        const int frameStart {static_cast<int>(SDL_GetTicks())};
         if (SDL_PollEvent(&event)) {
             do {
                 InputManager::getInstance().parseEvent(event);
@@ -451,6 +459,7 @@ void applicationLoop()
                 if (event.type == SDL_QUIT)
                     return;
             } while (SDL_PollEvent(&event));
+            lastInputTime = frameStart;
         }
 
         int curTime {static_cast<int>(SDL_GetTicks())};
@@ -467,6 +476,13 @@ void applicationLoop()
 
         renderer->swapBuffers();
         Log::flush();
+
+        const int now {static_cast<int>(SDL_GetTicks())};
+        if (now - lastInputTime > idleAfterMs && !window->isProcessing()) {
+            const int spent {now - frameStart};
+            if (spent >= 0 && spent < idleFrameMs)
+                SDL_Delay(static_cast<Uint32>(idleFrameMs - spent));
+        }
     }
 }
 
