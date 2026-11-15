@@ -77,6 +77,9 @@ void ViewController::setMenuColors()
     // Arcadia's colour schemes (see DESIGN.md): cloud, light pastel and the default, and dusk, pastels on a deep
     // violet for playing in the dark. Older values (ember, ink, oled, paper and so on) become cloud.
     const bool dusk {Settings::getInstance()->getString("MenuColorScheme") == "dusk"};
+    // The screen's ground too (seen with no games, behind the welcome screen), once there is a window to draw in.
+    if (mRenderer->getSDLWindow() != nullptr)
+        mRenderer->setGroundColor(dusk);
 
     if (!dusk) {
         mMenuColorFrame = 0xFFFFFFFF;

@@ -91,8 +91,17 @@ void GuiSettings::save()
 
     // Arcadia: with no games (the first-start screen) there are no consoles to sort, reload or go to: the settings
     // are saved and take effect once there are games. (Going to "the first console" of an empty list crashed.)
-    if (SystemData::sSystemVector.empty())
+    // The steps that don't need games still run: the menu is closed (so it's built again in new colours), the
+    // button hints' pictures are made again and the background behind the menu is redrawn.
+    if (SystemData::sSystemVector.empty()) {
+        if (mNeedsClearHelpPromptsImageCache)
+            mWindow->clearHelpPromptsImageCache();
+        if (mCloseMenuFunction)
+            mCloseMenuFunction();
+        if (mInvalidateCachedBackground)
+            mWindow->invalidateCachedBackground();
         return;
+    }
 
     if (mNeedsCollectionsUpdate) {
         CollectionSystemsManager::getInstance()->loadEnabledListFromSettings();
@@ -329,6 +338,13 @@ void GuiSettings::showEssentials()
             mMore.push_back(mHeld[i].second);
     }
     mHeld.clear();
+    // The hidden list now holds only what's behind "More options". (It held every row while they were being added: a
+    // row there that lays its list out again, as the theme's options do when the theme changes, would otherwise move
+    // the rows shown on this card to where the hidden list keeps them, and they'd vanish.)
+    auto staging = std::make_shared<ComponentList>();
+    for (const ComponentListRow& r : mMore)
+        staging->addRow(r);
+    mStaging = staging;
     if (mMore.empty())
         return;
 

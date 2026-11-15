@@ -23,4 +23,4 @@ extra=()
 if [ "${1:-}" = "--saves" ]; then for d in "${SAVE_DIRS[@]}"; do [ -d "$d" ] && extra+=("$d"); done; fi
 if [ "${#have[@]}" -eq 0 ] && [ "${#extra[@]}" -eq 0 ]; then deck_say "Backup" "There's nothing to back up yet."; exit 0; fi
 args=(-C "$DECK_HOME" "${have[@]}"); for d in "${extra[@]}"; do args+=(-C / "${d#/}"); done
-if tar -czf "$out" "${args[@]}"; then deck_say "Backup" "Saved $(basename "$out") ($(du -h "$out" | cut -f1)) in $B."; else deck_say "Backup" "The backup couldn't be made."; rm -f "$out"; fi
+if tar -czf "$out" "${args[@]}"; then deck_say "Backup" "Saved $(basename "$out") ($(du -h --apparent-size "$out" | cut -f1)) in $B."; else deck_say "Backup" "The backup couldn't be made."; rm -f "$out"; fi

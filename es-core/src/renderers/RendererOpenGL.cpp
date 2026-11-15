@@ -228,11 +228,7 @@ bool RendererOpenGL::createContext()
 #endif
 
 
-    // Arcadia: the ground of the colour scheme (cloud #f4eff8, dusk #1f1d2e).
-    if (Settings::getInstance()->getString("MenuColorScheme") == "dusk")
-        GL_CHECK_ERROR(glClearColor(0.1216f, 0.1137f, 0.1804f, 1.0f));
-    else
-        GL_CHECK_ERROR(glClearColor(0.9569f, 0.9373f, 0.9725f, 1.0f));
+    setGroundColor(Settings::getInstance()->getString("MenuColorScheme") == "dusk");
     GL_CHECK_ERROR(glActiveTexture(GL_TEXTURE0));
     GL_CHECK_ERROR(glEnable(GL_BLEND));
     GL_CHECK_ERROR(glPixelStorei(GL_PACK_ALIGNMENT, 1));
@@ -356,6 +352,15 @@ void RendererOpenGL::setSwapInterval()
         SDL_GL_SetSwapInterval(0);
         LOG(LogInfo) << "VSync: disabled";
     }
+}
+
+void RendererOpenGL::setGroundColor(bool dusk)
+{
+    // Arcadia: the ground of the colour scheme (cloud #f4eff8, dusk #1f1d2e).
+    if (dusk)
+        GL_CHECK_ERROR(glClearColor(0.1216f, 0.1137f, 0.1804f, 1.0f));
+    else
+        GL_CHECK_ERROR(glClearColor(0.9569f, 0.9373f, 0.9725f, 1.0f));
 }
 
 void RendererOpenGL::swapBuffers()

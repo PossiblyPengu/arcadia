@@ -244,6 +244,8 @@ public:
     virtual void setScissor(const Rect& scissor) = 0;
     virtual void setSwapInterval() = 0;
     virtual void swapBuffers() = 0;
+    // Arcadia: the colour the screen is cleared to, the ground of the colour scheme (cloud or dusk).
+    virtual void setGroundColor(bool dusk) = 0;
 
 protected:
     Rect mViewport;
