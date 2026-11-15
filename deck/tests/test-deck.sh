@@ -141,11 +141,12 @@ check "PPSSPP and Dolphin too (Dolphin: GameCube and Wii)" 'grep -qx "CurrentDir
 check "Flycast finds BIOS files in the BIOS folder and games in the ROM folder" 'grep -qx "Dreamcast.BiosPath = $FB" "$A/org.flycast.Flycast/config/flycast/emu.cfg" && grep -qx "Dreamcast.ContentPath = $FR/dreamcast" "$A/org.flycast.Flycast/config/flycast/emu.cfg"'
 check "mGBA uses the GBA BIOS from the BIOS folder" 'grep -qx "gba.bios=$FB/gba_bios.bin" "$A/io.mgba.mGBA/config/mgba/config.ini" && grep -qx "useBios=1" "$A/io.mgba.mGBA/config/mgba/config.ini"'
 M="$A/net.kuribo64.melonDS/config/melonDS/melonDS.toml"
-check "melonDS: the ROM folder, and the DS BIOS files turned on (a TOML file)" '[ "$(head -1 "$M")" = "LastROMFolder = \"$FR/nds\"" ] && python3 -c "import tomllib,sys; d=tomllib.load(open(sys.argv[1],\"rb\")); assert d[\"Emu\"][\"ExternalBIOSEnable\"] is True and d[\"DS\"][\"BIOS7Path\"].endswith(\"bios7.bin\")" "$M"'
+check "melonDS: the ROM folder, and the DS BIOS files turned on (a TOML file)" '[ "$(head -1 "$M")" = "LastROMFolder = \"$FR/nds\"" ] && grep -A1 "^\[Emu\]" "$M" | grep -qx "ExternalBIOSEnable = true" && grep -qx "BIOS7Path = \"$FB/bios7.bin\"" "$M" && grep -qx "FirmwarePath = \"$FB/firmware.bin\"" "$M"'
 check "Azahar and Eden list games from their folders (beside their own entries)" 'grep -qx "Paths\\\\gameListRootDir=$FR/n3ds" "$A/org.azahar_emu.Azahar/config/azahar-emu/qt-config.ini" && grep -qx "Paths\\\\gameListRootDir=$FR/switch" "$A/dev.eden_emu.eden/config/eden/qt-config.ini"'
 check "Eden and Cemu use keys from the BIOS folder" '[ "$(readlink "$A/dev.eden_emu.eden/data/eden/keys/prod.keys")" = "$FB/prod.keys" ] && [ "$(readlink "$A/info.cemu.Cemu/data/Cemu/keys.txt")" = "$FB/keys.txt" ]'
 check "Cemu lists games from the Wii U folder" 'grep -q "<Entry>$FR/wiiu</Entry>" "$A/info.cemu.Cemu/config/Cemu/settings.xml"'
-check "xemu uses the Xbox BIOS files" 'python3 -c "import tomllib,sys; f=tomllib.load(open(sys.argv[1],\"rb\"))[\"sys\"][\"files\"]; assert f[\"bootrom_path\"].endswith(\"mcpx_1.0.bin\") and f[\"flashrom_path\"].endswith(\"Complex_4627.bin\")" "$A/app.xemu.xemu/data/xemu/xemu/xemu.toml"'
+X="$A/app.xemu.xemu/data/xemu/xemu/xemu.toml"
+check "xemu uses the Xbox BIOS files" '[ "$(head -1 "$X")" = "[sys.files]" ] && grep -qx "bootrom_path = \"$FB/mcpx_1.0.bin\"" "$X" && grep -qx "flashrom_path = \"$FB/Complex_4627.bin\"" "$X"'
 check "the console folders are made where missing" '[ -d "$FR/psx" ] && [ -d "$FR/switch" ]'
 check "a second run changes nothing" '[ -z "$(fo org.libretro.RetroArch net.pcsx2.PCSX2 org.DolphinEmu.dolphin-emu net.kuribo64.melonDS org.azahar_emu.Azahar info.cemu.Cemu app.xemu.xemu)" ]'
 # A folder you chose yourself stays; a new setting goes into the file you have, which is backed up.
