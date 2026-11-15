@@ -37,6 +37,7 @@ private:
     void pressedStart();
     void mainWindow();
     void selectorWindow();
+    void importEntries();
 
     void androidpackageRule(std::vector<std::pair<std::string, std::string>> appList);
     void fileRule(std::pair<const std::string, ImportRules::ImportRule> importRule);
@@ -60,6 +61,7 @@ private:
     std::shared_ptr<SwitchComponent> mImportMediaOverwrite;
     std::shared_ptr<SwitchComponent> mGamesOnly;
     std::vector<std::shared_ptr<ImageComponent>> mCheckboxes;
+    std::vector<std::pair<std::string, std::string>> mFileList;
 
     std::unique_ptr<std::thread> mImportThread;
 

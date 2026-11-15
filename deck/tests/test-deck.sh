@@ -92,7 +92,7 @@ check "Windows games are pointed to Deckhand" 'grep -q "^none|Microsoft Windows|
 mkdir -p "$TMP/g2"/{ps3,switch,ports}; touch "$TMP/g2/ps3/A.ps3" "$TMP/g2/switch/B.nsp" "$TMP/g2/ports/C.sh"
 plan2="$(FAKE_INSTALLED=none ARCADIA_ROMS="$TMP/g2" python3 "$EMU" plan)"
 check "a shortcut-based default still needs its emulator (PlayStation 3: RPCS3)" 'grep -q "^emu|net.rpcs3.RPCS3|RPCS3|missing|1|for your Sony PlayStation 3" <<<"$plan2"'
-check "a console whose emulator isn't on Flathub says which one Arcadia uses" 'grep -q "^none|Nintendo Switch|1|Eden$" <<<"$plan2"'
+check "an emulator found from its Flathub release is offered (Nintendo Switch: Eden)" 'grep -q "^emu|dev.eden_emu.eden|Eden|missing|1|for your Nintendo Switch" <<<"$plan2"'
 check "scripts and shortcuts (ports) need nothing installed" '! grep -q "Ports" <<<"$plan2" && ! grep -q "|1|For your.*Ports" <<<"$plan2"'
 check "the needed ones come first" '[ "$(head -n 1 <<<"$plan" | cut -d"|" -f2)" = org.libretro.RetroArch ]'
 # A stand-in for libretro's build server: two cores, and the checksums it publishes for them.

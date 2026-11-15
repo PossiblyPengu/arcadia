@@ -144,6 +144,23 @@ bool Window::init(bool resized)
     mBackgroundOverlayOpacity = 0.0f;
     mProgressBarRectangles.clear();
 
+    // The user can customize the progress bar color in es_settings.xml.
+    unsigned int progressBarColor {duskScheme() ? 0xF7B2C4FFu : 0xF08FAEFFu}; // (Arcadia's own colours by default)
+    const std::string progressBarColorSetting {
+        Utils::String::trim(Settings::getInstance()->getString("SplashScreenProgressBarColor"))};
+
+    if (progressBarColorSetting != "") {
+        const size_t length {progressBarColorSetting.size()};
+        if (length == 6 || length == 8) {
+            std::stringstream ss;
+            ss << progressBarColorSetting;
+            ss >> std::hex >> progressBarColor;
+
+            if (length == 6)
+                progressBarColor = (progressBarColor << 8) | 0xFF;
+        }
+    }
+
     // Keep a reference to the default fonts, so they don't keep getting destroyed/recreated.
     if (mDefaultFonts.empty()) {
         mDefaultFonts.push_back(Font::get(FONT_SIZE_SMALL));
@@ -194,7 +211,7 @@ bool Window::init(bool resized)
     progressBarRect.barHeight -= borderThickness * 2.0f;
     progressBarRect.barPosX += borderThickness;
     progressBarRect.barPosY += borderThickness;
-    progressBarRect.color = duskScheme() ? 0xF7B2C4FF : 0xF08FAEFF;
+    progressBarRect.color = progressBarColor;
     mProgressBarRectangles.emplace_back(progressBarRect);
 
     mBackgroundOverlay->setResize(mRenderer->getScreenWidth(), mRenderer->getScreenHeight());
@@ -1031,10 +1048,10 @@ bool Window::stopScreensaver()
     return false;
 }
 
-void Window::startMediaViewer(FileData* game)
+void Window::startMediaViewer(FileData* game, bool fromPDFViewer)
 {
     if (mMediaViewer) {
-        if (mMediaViewer->startMediaViewer(game)) {
+        if (mMediaViewer->startMediaViewer(game, fromPDFViewer)) {
             setAllowTextScrolling(false);
             setAllowFileAnimation(false);
 

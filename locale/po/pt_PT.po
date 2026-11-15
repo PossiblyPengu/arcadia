@@ -1,14 +1,14 @@
-# Arcadia Frontend translation strings.
+# ES-DE Frontend translation strings.
 # Copyright (c) 2024-2026 Northwestern Software AB
-# This file is distributed under the same license as the Arcadia Frontend package.
+# This file is distributed under the same license as the ES-DE Frontend package.
 # Northwestern Software <info@es-de.org>, 2024-2026.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Arcadia Frontend\n"
+"Project-Id-Version: ES-DE Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-11-15 13:45-0500\n"
-"PO-Revision-Date: 2025-10-19 16:57+0100\n"
+"POT-Creation-Date: 2026-11-15 16:19-0500\n"
+"PO-Revision-Date: 2026-09-08 19:45+0200\n"
 "Last-Translator: Northwestern Software <info@es-de.org>\n"
 "Language-Team: Português (Portugal) <info@es-de.org>\n"
 "Language: pt_PT\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.8\n"
+"X-Generator: Poedit 3.9\n"
 
 msgid "Network error (status:"
 msgstr "Erro de rede (estado:"
@@ -650,6 +650,48 @@ msgstr "NÃO SELECIONADAS"
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "REMOVER CARACTERES ESPECIAIS"
 
+msgid "MEDIA TARGET TYPE"
+msgstr "TIPO DE MÍDIA DE DESTINO"
+
+msgid "SCREENSHOTS"
+msgstr "CAPTURAS DE ECRÃ"
+
+msgid "TITLE SCREENS"
+msgstr "ECRÃS DE TÍTULO"
+
+msgid "COVERS"
+msgstr "CAPAS"
+
+msgid "BACK COVERS"
+msgstr "CAPAS TRASEIRAS"
+
+msgid "MARQUEES (WHEELS)"
+msgstr "MARQUEES (RODAS)"
+
+msgid "3D BOXES"
+msgstr "CAIXAS 3D"
+
+msgid "PHYSICAL MEDIA"
+msgstr "SUPORTE FÍSICO"
+
+msgid "FAN ART"
+msgstr "ARTE DE FÃS"
+
+msgid "MIXIMAGES"
+msgstr "MIXIMAGES"
+
+msgid "IMPORT MEDIA"
+msgstr "IMPORTAR MÍDIA"
+
+msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+msgstr "IMPORTAR BANNERS OU LOGOS SE DISPONÍVEIS"
+
+msgid "OVERWRITE MEDIA FILES"
+msgstr "SUBSTITUIR FICHEIROS DE MÍDIA"
+
+msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+msgstr "INCLUIR APENAS APPS MARCADAS COMO JOGOS"
+
 msgid "START"
 msgstr "INICIAR"
 
@@ -661,6 +703,9 @@ msgstr "A PROCESSAR..."
 
 msgid "COULDN'T FIND ANYTHING TO IMPORT"
 msgstr "NÃO FOI ENCONTRADO NADA PARA IMPORTAR"
+
+msgid "import"
+msgstr "importar"
 
 #, c-format
 msgid ""
@@ -680,15 +725,6 @@ msgstr "FAÇA A SUA SELEÇÃO"
 msgid "IMPORT"
 msgstr "IMPORTAR"
 
-msgid "import"
-msgstr "importar"
-
-#, c-format
-msgid "IMPORTED %i ENTRY"
-msgid_plural "IMPORTED %i ENTRIES"
-msgstr[0] "IMPORTADA %i ENTRADA"
-msgstr[1] "IMPORTADAS %i ENTRADAS"
-
 msgid "SELECT ALL"
 msgstr "TODOS"
 
@@ -700,6 +736,12 @@ msgstr "NENHUM"
 
 msgid "select none"
 msgstr "nenhum"
+
+#, c-format
+msgid "IMPORTED %i ENTRY"
+msgid_plural "IMPORTED %i ENTRIES"
+msgstr[0] "IMPORTADA %i ENTRADA"
+msgstr[1] "IMPORTADAS %i ENTRADAS"
 
 msgid "FILTER GAMELIST"
 msgstr "FILTRAR LISTA DE JOGOS"
@@ -1216,6 +1258,12 @@ msgstr "DECODIFICAÇÃO DE VÍDEO POR HARDWARE (EXPERIMENTAL)"
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "ESCALAR VÍDEOS PARA 60 FPS"
 
+msgid "QUERY INSTALLED RETROARCH CORES (EXPERIMENTAL)"
+msgstr "LISTAR NÚCLEOS INSTALADOS DO RETROARCH (EXPERIMENTAL)"
+
+msgid "USE RETROARCH IN SAF MODE (NOT RECOMMENDED)"
+msgstr "USAR O RETROARCH EM MODO SAF (NÃO RECOMENDADO)"
+
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "MOSTRAR FICHEIROS E PASTAS OCULTOS"
 
@@ -1224,6 +1272,9 @@ msgstr "ATIVAR SCRIPTS PERSONALIZADOS"
 
 msgid "BROWSING CUSTOM EVENTS"
 msgstr "ATIVAR SCRIPTS DE NAVEGAÇÃO"
+
+msgid "RUN BROWSING EVENTS AS NON-BLOCKING"
+msgstr "RODAR EVENTOS DE NAVEGAÇÃO SEM BLOQUEIO"
 
 msgid "ONLY SHOW GAMES FROM GAMELIST.XML FILES"
 msgstr "INCLUIR APENAS JOGOS DO GAMELIST.XML"
@@ -1321,8 +1372,26 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "SCREENSAVER"
 
+msgid "LAUNCH ON OTHER SCREEN"
+msgstr "ABRIR EM OUTRA TELA"
+
+msgid "ENABLE LAUNCH ON OTHER SCREEN"
+msgstr "ATIVAR EXECUÇÃO EM OUTRA TELA"
+
 msgid "open"
 msgstr ""
+
+msgid "System default (Other)"
+msgstr "Padrão do sistema (Outro)"
+
+msgid "System default (Primary)"
+msgstr "Padrão do sistema (Primário)"
+
+msgid "Always on other"
+msgstr "Sempre no outro"
+
+msgid "Always on primary"
+msgstr "Sempre no primário"
 
 msgid "EDIT METADATA"
 msgstr "EDITAR METADADOS"
@@ -2585,9 +2654,6 @@ msgstr "CAPA TRASEIRA DA CAIXA"
 msgid "TITLE SCREEN"
 msgstr "ECRÃ DE TÍTULO"
 
-msgid "FAN ART"
-msgstr "ARTE DE FÃS"
-
 msgid "MIXIMAGE"
 msgstr "MIXIMAGE"
 
@@ -2733,6 +2799,14 @@ msgstr "EMULADOR ALTERNATIVO"
 msgctxt "metadata"
 msgid "SELECT ALTERNATIVE EMULATOR"
 msgstr "EMULADOR ALTERNATIVO"
+
+msgctxt "metadata"
+msgid "LAUNCH ON SCREEN"
+msgstr "ABRIR NA TELA"
+
+msgctxt "metadata"
+msgid "LAUNCH ON WHICH SCREEN"
+msgstr "ABRIR EM QUAL TELA"
 
 msgctxt "metadata"
 msgid "FOLDER LINK"
@@ -3378,179 +3452,3 @@ msgstr ""
 
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "ERRO: INCAPAZ DE GERAR FICHEIRO PDF"
-
-#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-#~ msgstr "ERRO: FICHEIRO DA APLICAÇÃO OU ALIAS NÃO EXISTE OU NÃO É LEGÍVEL"
-
-#~ msgid "MEDIA TARGET TYPE"
-#~ msgstr "TIPO DE MÍDIA DE DESTINO"
-
-#~ msgid "SCREENSHOTS"
-#~ msgstr "CAPTURAS DE ECRÃ"
-
-#~ msgid "TITLE SCREENS"
-#~ msgstr "ECRÃS DE TÍTULO"
-
-#~ msgid "COVERS"
-#~ msgstr "CAPAS"
-
-#~ msgid "BACK COVERS"
-#~ msgstr "CAPAS TRASEIRAS"
-
-#~ msgid "MARQUEES (WHEELS)"
-#~ msgstr "MARQUEES (RODAS)"
-
-#~ msgid "3D BOXES"
-#~ msgstr "CAIXAS 3D"
-
-#~ msgid "PHYSICAL MEDIA"
-#~ msgstr "SUPORTE FÍSICO"
-
-#~ msgid "MIXIMAGES"
-#~ msgstr "MIXIMAGES"
-
-#~ msgid "IMPORT MEDIA"
-#~ msgstr "IMPORTAR MÍDIA"
-
-#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-#~ msgstr "IMPORTAR BANNERS OU LOGOS SE DISPONÍVEIS"
-
-#~ msgid "OVERWRITE MEDIA FILES"
-#~ msgstr "SUBSTITUIR FICHEIROS DE MÍDIA"
-
-#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-#~ msgstr "INCLUIR APENAS APPS MARCADAS COMO JOGOS"
-
-#~ msgid "close (apply)"
-#~ msgstr "fechar (aplicar)"
-
-#~ msgid "close (cancel)"
-#~ msgstr "fechar (cancelar)"
-
-#~ msgid "MAIN MENU"
-#~ msgstr "MENU PRINCIPAL"
-
-#~ msgid "SCRAPER"
-#~ msgstr "SCRAPER"
-
-#~ msgid "UI SETTINGS"
-#~ msgstr "INTERFACE"
-
-#~ msgid "SOUND SETTINGS"
-#~ msgstr "AUDIO"
-
-#~ msgid "INPUT DEVICE SETTINGS"
-#~ msgstr "DISPOSITIVOS DE ENTRADA"
-
-#~ msgid "GAME COLLECTION SETTINGS"
-#~ msgstr "COLEÇÕES DE JOGOS"
-
-#~ msgid "UTILITIES"
-#~ msgstr "UTILITÁRIOS"
-
-#~ msgid "MENU COLOR SCHEME"
-#~ msgstr "CORES DO MENU"
-
-#~ msgid "DARK"
-#~ msgstr "ESCURO"
-
-#~ msgid "DARK AND RED"
-#~ msgstr "ESCURO E VERMELHO"
-
-#~ msgid "LIGHT"
-#~ msgstr "CLARO"
-
-#~ msgid "AUDIO DRIVER"
-#~ msgstr "DRIVER DE ÁUDIO"
-
-#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
-#~ msgstr "DRIVER DE ÁUDIO (REQUER REINÍCIO)"
-
-#~ msgid "TOUCH OVERLAY SIZE"
-#~ msgstr "TAMANHO DO OVERLAY TÁTIL"
-
-#~ msgid "EXTRA SMALL"
-#~ msgstr "EXTRA PEQUENO"
-
-#~ msgid "TOUCH OVERLAY OPACITY"
-#~ msgstr "OPACIDADE DO OVERLAY TÁTIL"
-
-#~ msgid "VERY LOW"
-#~ msgstr "MUITO BAIXO"
-
-#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
-#~ msgstr "DESVANECIMENTO DO OVERLAY TÁTIL"
-
-#~ msgid "ENABLE TOUCH OVERLAY"
-#~ msgstr "ATIVAR OVERLAY TÁTIL"
-
-#~ msgid ""
-#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
-#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
-#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-#~ msgstr ""
-#~ "NÃO DESATIVE O OVERLAY TÁTIL A MENOS QUE ESTEJA A USAR UM COMANDO, CASO "
-#~ "CONTRÁRIO FICARÁ BLOQUEADO NA APLICAÇÃO. SE ISSO ACONTECER, TERÁ DE LIGAR "
-#~ "TEMPORARIAMENTE UM COMANDO OU TECLADO PARA ATIVAR NOVAMENTE ESTA "
-#~ "DEFINIÇÃO, OU PODE LIMPAR O ARMAZENAMENTO DO ARCADIA NAS DEFINIÇÕES DA "
-#~ "APLICAÇÃO ANDROID PARA FORÇAR A EXECUÇÃO DO CONFIGURADOR NA PRÓXIMA "
-#~ "INICIALIZAÇÃO"
-
-#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
-#~ msgstr "OCULTAR BARRA DE TAREFAS (REQUER REINÍCIO)"
-
-#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-#~ msgstr "INICIAR JOGOS NO OUTRO ECRÃ"
-
-#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-#~ msgstr "BOTÃO VOLTAR/GESTO DE VOLTAR SAI DA APP"
-
-#~ msgid "close menu"
-#~ msgstr "fechar menu"
-
-#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
-#~ msgstr "INDICADOR DE CELULAR"
-
-#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
-#~ msgstr "ISTO IRÁ APAGAR COMPLETAMENTE O TEMA"
-
-#~ msgid "system"
-#~ msgstr "sistema"
-
-#~ msgid "view media"
-#~ msgstr "ver mídia"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
-#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
-#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
-#~ "THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "NENHUM FICHEIRO DE JOGO FOI ENCONTRADO. IMPORTE ALGUNS JOGOS OU COLOQUE-"
-#~ "OS MANUALMENTE NA PASTA ROM CONFIGURADA. OPCIONALMENTE PODE GERAR A "
-#~ "ESTRUTURA DA PASTA ROM, O QUE CRIARÁ UM FICHEIRO DE TEXTO PARA CADA "
-#~ "SISTEMA COM ALGUMAS INFORMAÇÕES COMO AS EXTENSÕES DE FICHEIRO SUPORTADAS. "
-#~ "ESTA É A PASTA ROM CONFIGURADA:\n"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
-#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
-#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
-#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "NENHUM FICHEIRO DE JOGO FOI ENCONTRADO. IMPORTE ALGUNS JOGOS OU COLOQUE-"
-#~ "OS MANUALMENTE NA PASTA ROM ATUALMENTE CONFIGURADA. TAMBÉM PODE ALTERAR O "
-#~ "CAMINHO DA PASTA ROM E OPCIONALMENTE GERAR A ESTRUTURA DA PASTA ROM, QUE "
-#~ "CRIARÁ UM FICHEIRO DE TEXTO PARA CADA SISTEMA COM INFORMAÇÕES COMO AS "
-#~ "EXTENSÕES DE FICHEIRO SUPORTADAS. ESTA É A PASTA ROM CONFIGURADA:\n"
-
-#, c-format
-#~ msgctxt "theme"
-#~ msgid "%i second ago"
-#~ msgid_plural "%i seconds ago"
-#~ msgstr[0] "há %i segundo"
-#~ msgstr[1] "há %i segundos"

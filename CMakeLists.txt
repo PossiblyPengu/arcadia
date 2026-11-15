@@ -13,7 +13,7 @@ cmake_minimum_required(VERSION 3.13)
 project(arcadia)
 
 # Application version, update this when making a new release.
-set(ES_VERSION 3.4.1)
+set(ES_VERSION 3.5.0)
 
 # Arcadia's own version: the VERSION file. Bumping it and pushing to main publishes a release (see the workflow).
 file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/VERSION" ARCADIA_VERSION LIMIT_COUNT 1)
@@ -141,7 +141,13 @@ endif()
 if(CMAKE_BUILD_TYPE MATCHES Debug)
     # Enable the C++17 standard and disable optimizations as it's a debug build.
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O0 -g3 -Wall -Wpedantic -Wsign-compare -Wnarrowing -Wmissing-field-initializers -Wunused-macros")
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O0")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
+    # The NOPTIMIZE macro is used to temporarily disable optimizations per function when debugging.
+    if(CMAKE_CXX_COMPILER_ID MATCHES GNU)
+        add_compile_options("-DNOPTIMIZE=__attribute__((optimize(\"O0\")))")
+    elseif(CMAKE_CXX_COMPILER_ID MATCHES Clang)
+        add_compile_options("-DNOPTIMIZE=__attribute__((optnone))")
+    endif()
     # If using Clang, then add additional debug data needed by GDB.
     # Comment this out if you're using LLDB for debugging as this flag makes the binary
     # much larger and the application much slower. On macOS this setting is never enabled
@@ -152,12 +158,12 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
 elseif(CMAKE_BUILD_TYPE MATCHES Profiling)
     # For the profiling build, we enable optimizations and supply the required profiler flags.
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O2 -g3 -Wall -Wpedantic -Wsign-compare -Wnarrowing -Wmissing-field-initializers -Wunused-macros")
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O2")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
 else()
     # Enable the C++17 standard and enable optimizations as it's a release build.
     # This will also disable all assert() macros. Strip the binary too.
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O2 -DNDEBUG -Wall -Wpedantic -Wsign-compare -Wnarrowing -Wmissing-field-initializers -Wunused-macros")
-            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -O2 -s")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")
 endif()
 
 # Silence some annoying warnings caused by invalid characters in some FreeImage source comments.

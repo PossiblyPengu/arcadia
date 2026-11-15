@@ -1,14 +1,14 @@
-# Arcadia Frontend translation strings.
+# ES-DE Frontend translation strings.
 # Copyright (c) 2024-2026 Northwestern Software AB
-# This file is distributed under the same license as the Arcadia Frontend package.
+# This file is distributed under the same license as the ES-DE Frontend package.
 # Northwestern Software <info@es-de.org>, 2024-2026.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Arcadia Frontend\n"
+"Project-Id-Version: ES-DE Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-11-15 13:45-0500\n"
-"PO-Revision-Date: 2025-10-13 20:58+0200\n"
+"POT-Creation-Date: 2026-11-15 16:19-0500\n"
+"PO-Revision-Date: 2026-09-08 20:53+0200\n"
 "Last-Translator: wakeboxer <ljhmd0825@gmail.com>\n"
 "Language-Team: 한국어 <info@es-de.org>\n"
 "Language: ko_KR\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.7\n"
+"X-Generator: Poedit 3.9\n"
 
 msgid "Network error (status:"
 msgstr "네트워크 오류 (상태:"
@@ -635,6 +635,48 @@ msgstr "선택되지 않은 모두"
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "스트립 스페셜 캐릭터"
 
+msgid "MEDIA TARGET TYPE"
+msgstr "미디어 타겟 유형"
+
+msgid "SCREENSHOTS"
+msgstr "스크린샷"
+
+msgid "TITLE SCREENS"
+msgstr "타이틀 스크린"
+
+msgid "COVERS"
+msgstr "커버"
+
+msgid "BACK COVERS"
+msgstr "백 커버"
+
+msgid "MARQUEES (WHEELS)"
+msgstr "마퀴 (휠)"
+
+msgid "3D BOXES"
+msgstr "3D 박스"
+
+msgid "PHYSICAL MEDIA"
+msgstr "피지컬 미디어"
+
+msgid "FAN ART"
+msgstr "팬아트"
+
+msgid "MIXIMAGES"
+msgstr "믹스이미지"
+
+msgid "IMPORT MEDIA"
+msgstr "미디어 가져오기"
+
+msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+msgstr "배너 또는 로고 이용 가능하면 가져오기"
+
+msgid "OVERWRITE MEDIA FILES"
+msgstr "미디어 파일 덮어쓰기"
+
+msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+msgstr "게임으로 분류된 앱만 포함"
+
 msgid "START"
 msgstr "시작"
 
@@ -646,6 +688,9 @@ msgstr "실행 중..."
 
 msgid "COULDN'T FIND ANYTHING TO IMPORT"
 msgstr "가져오기할 것을 찾을 수 없었습니다"
+
+msgid "import"
+msgstr "가져오기"
 
 #, c-format
 msgid ""
@@ -665,14 +710,6 @@ msgstr "선택하세요"
 msgid "IMPORT"
 msgstr "가져오기"
 
-msgid "import"
-msgstr "가져오기"
-
-#, c-format
-msgid "IMPORTED %i ENTRY"
-msgid_plural "IMPORTED %i ENTRIES"
-msgstr[0] "가져옴 %i 개 항목"
-
 msgid "SELECT ALL"
 msgstr "모두 선택"
 
@@ -684,6 +721,11 @@ msgstr "선택 해제"
 
 msgid "select none"
 msgstr "선택 해제"
+
+#, c-format
+msgid "IMPORTED %i ENTRY"
+msgid_plural "IMPORTED %i ENTRIES"
+msgstr[0] "가져옴 %i 개 항목"
 
 msgid "FILTER GAMELIST"
 msgstr "게임리스트 필터"
@@ -1199,6 +1241,12 @@ msgstr "비디오 하드웨어 디코딩 (실험적)"
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "60FPS까지 비디오 프레임 레이트 업스케일링"
 
+msgid "QUERY INSTALLED RETROARCH CORES (EXPERIMENTAL)"
+msgstr "설치된 RetroArch 코어 조회 (실험적 기능)"
+
+msgid "USE RETROARCH IN SAF MODE (NOT RECOMMENDED)"
+msgstr "SAF 모드에서 RetroArch 사용 (권장하지 않음)"
+
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "숨긴 파일 및 폴더 보이기"
 
@@ -1207,6 +1255,9 @@ msgstr "커스텀 이벤트 스크립트 사용 가능"
 
 msgid "BROWSING CUSTOM EVENTS"
 msgstr "커스텀 이벤트 탐색"
+
+msgid "RUN BROWSING EVENTS AS NON-BLOCKING"
+msgstr "브라우징 이벤트를 비차단(논블로킹) 방식으로 실행"
 
 msgid "ONLY SHOW GAMES FROM GAMELIST.XML FILES"
 msgstr "GAMELIST.XML 파일에 있는 게임만 보이기"
@@ -1303,8 +1354,26 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "화면보호기 설정"
 
+msgid "LAUNCH ON OTHER SCREEN"
+msgstr "다른 화면에서 실행"
+
+msgid "ENABLE LAUNCH ON OTHER SCREEN"
+msgstr "다른 화면에서 실행 활성화"
+
 msgid "open"
 msgstr ""
+
+msgid "System default (Other)"
+msgstr "시스템 기본값(기타)"
+
+msgid "System default (Primary)"
+msgstr "시스템 기본값(첫 번째)"
+
+msgid "Always on other"
+msgstr "항상 다른 화면에"
+
+msgid "Always on primary"
+msgstr "항상 첫 번째 화면에 표시"
 
 msgid "EDIT METADATA"
 msgstr "메타데이터 편집"
@@ -2522,9 +2591,6 @@ msgstr "박스 후면 커버"
 msgid "TITLE SCREEN"
 msgstr "타이틀 스크린"
 
-msgid "FAN ART"
-msgstr "팬아트"
-
 msgid "MIXIMAGE"
 msgstr "믹스이미지"
 
@@ -2670,6 +2736,14 @@ msgstr "대체 에뮬레이터"
 msgctxt "metadata"
 msgid "SELECT ALTERNATIVE EMULATOR"
 msgstr "대체 에뮬레이터 선택"
+
+msgctxt "metadata"
+msgid "LAUNCH ON SCREEN"
+msgstr "화면에서 실행"
+
+msgctxt "metadata"
+msgid "LAUNCH ON WHICH SCREEN"
+msgstr "어떤 화면에서 실행할까요"
 
 msgctxt "metadata"
 msgid "FOLDER LINK"
@@ -3297,176 +3371,3 @@ msgstr ""
 
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "오류: PDF 파일을 렌더링할 수 없습니다"
-
-#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-#~ msgstr "오류: 앱 또는 별칭 파일이 존재하지 않거나 읽을 수 없습니다"
-
-#~ msgid "MEDIA TARGET TYPE"
-#~ msgstr "미디어 타겟 유형"
-
-#~ msgid "SCREENSHOTS"
-#~ msgstr "스크린샷"
-
-#~ msgid "TITLE SCREENS"
-#~ msgstr "타이틀 스크린"
-
-#~ msgid "COVERS"
-#~ msgstr "커버"
-
-#~ msgid "BACK COVERS"
-#~ msgstr "백 커버"
-
-#~ msgid "MARQUEES (WHEELS)"
-#~ msgstr "마퀴 (휠)"
-
-#~ msgid "3D BOXES"
-#~ msgstr "3D 박스"
-
-#~ msgid "PHYSICAL MEDIA"
-#~ msgstr "피지컬 미디어"
-
-#~ msgid "MIXIMAGES"
-#~ msgstr "믹스이미지"
-
-#~ msgid "IMPORT MEDIA"
-#~ msgstr "미디어 가져오기"
-
-#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-#~ msgstr "배너 또는 로고 이용 가능하면 가져오기"
-
-#~ msgid "OVERWRITE MEDIA FILES"
-#~ msgstr "미디어 파일 덮어쓰기"
-
-#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-#~ msgstr "게임으로 분류된 앱만 포함"
-
-#~ msgid "close (apply)"
-#~ msgstr "닫기 (적용)"
-
-#~ msgid "close (cancel)"
-#~ msgstr "닫기 (취소)"
-
-#~ msgid "MAIN MENU"
-#~ msgstr "메인 메뉴"
-
-#~ msgid "SCRAPER"
-#~ msgstr "스크래퍼"
-
-#~ msgid "UI SETTINGS"
-#~ msgstr "UI 설정"
-
-#~ msgid "SOUND SETTINGS"
-#~ msgstr "사운드 설정"
-
-#~ msgid "INPUT DEVICE SETTINGS"
-#~ msgstr "입력 기기 설정"
-
-#~ msgid "GAME COLLECTION SETTINGS"
-#~ msgstr "게임 컬렉션 설정"
-
-#~ msgid "UTILITIES"
-#~ msgstr "유틸리티"
-
-#~ msgid "MENU COLOR SCHEME"
-#~ msgstr "메뉴 색상 구성"
-
-#~ msgid "DARK"
-#~ msgstr "다크"
-
-#~ msgid "DARK AND RED"
-#~ msgstr "다크 앤 레드"
-
-#~ msgid "LIGHT"
-#~ msgstr "라이트"
-
-#~ msgid "AUDIO DRIVER"
-#~ msgstr "오디오 드라이버"
-
-#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
-#~ msgstr "오디오 드라이버 (재시작 필요)"
-
-#~ msgid "TOUCH OVERLAY SIZE"
-#~ msgstr "터치 오버레이 크기"
-
-#~ msgid "EXTRA SMALL"
-#~ msgstr "엑스트라 스몰"
-
-#~ msgid "TOUCH OVERLAY OPACITY"
-#~ msgstr "터치 오버레이 불투명도"
-
-#~ msgid "VERY LOW"
-#~ msgstr "매우 낮음"
-
-#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
-#~ msgstr "터치 오버레이 페이드-아웃 타임"
-
-#~ msgid "ENABLE TOUCH OVERLAY"
-#~ msgstr "터치 오버레이 활성화"
-
-#~ msgid ""
-#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
-#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
-#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-#~ msgstr ""
-#~ "컨트롤러를 사용하지 않는 한 터치 오버레이를 비활성화하지 마십시오. 그렇지 "
-#~ "않으면 앱이 잠기게 됩니다. 이런 일이 발생하는 경우 컨트롤러나 키보드를 일"
-#~ "시적으로 연결하여 이 설정을 다시 활성화해야 하거나 Android 앱 설정에서 "
-#~ "Arcadia 저장소를 비워 다음 시작 시 구성자가 강제로 실행되도록 할 수 있습니"
-#~ "다"
-
-#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
-#~ msgstr "테스크바 숨김 (재시작 필요)"
-
-#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-#~ msgstr "다른 화면에서 게임 실행"
-
-#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-#~ msgstr "백 버튼/백 스와이프 로 앱 나가기"
-
-#~ msgid "close menu"
-#~ msgstr "메뉴 닫기"
-
-#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
-#~ msgstr "셀룰러 상태 표시"
-
-#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
-#~ msgstr "테마가 완전히 삭제됩니다"
-
-#~ msgid "system"
-#~ msgstr "시스템"
-
-#~ msgid "view media"
-#~ msgstr "미디어 보기"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
-#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
-#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
-#~ "THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "게임 파일을 찾을 수 없습니다. 일부 게임을 가져오거나 구성된 롬 디렉터리에 "
-#~ "수동으로 넣으세요. 롬 디렉터리 구조를 직접 생성하여 각 시스템별로 지원되"
-#~ "는 파일 확장자 등의 정보를 제공하는 텍스트 파일을 생성할 수도 있습니다. 구"
-#~ "성된 롬 디렉터리는 다음과 같습니다.\n"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
-#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
-#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
-#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "게임 파일을 찾을 수 없습니다. 일부 게임을 가져오거나 현재 구성된 롬 디렉터"
-#~ "리에 수동으로 넣으세요. 롬 경로를 변경하고, 원하는 경우 롬 디렉터리 구조"
-#~ "를 생성할 수도 있습니다. 이 구조는 각 시스템별로 지원되는 파일 확장자 등"
-#~ "의 정보를 제공하는 텍스트 파일을 생성합니다. 구성된 롬 디렉터리는 다음과 "
-#~ "같습니다.\n"
-
-#, c-format
-#~ msgctxt "theme"
-#~ msgid "%i second ago"
-#~ msgid_plural "%i seconds ago"
-#~ msgstr[0] "%i 초전"

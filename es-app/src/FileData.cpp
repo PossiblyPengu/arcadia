@@ -209,10 +209,12 @@ const std::string FileData::getPlayTimeString(const std::string& playTimeSeconds
     int playTimeValue {0};
 
     try {
-        playTimeValue = std::stoi(playTimeSeconds);
+        if (playTimeSeconds != "") {
+            playTimeValue = std::stoi(playTimeSeconds);
 
-        if (playTimeValue < 0)
-            playTimeValue = 0;
+            if (playTimeValue < 0)
+                playTimeValue = 0;
+        }
     }
     catch (...) {
         playTimeValue = 0;
@@ -953,6 +955,9 @@ void FileData::launchGame()
     SystemData* gameSystem {nullptr};
     std::string command;
     std::string alternativeEmulator;
+#if defined(__ANDROID__)
+    bool launchOnOtherScreen {false};
+#endif
 
     if (mSystem->isCollection())
         gameSystem = SystemData::getSystemByName(mSystemName);
@@ -1003,6 +1008,41 @@ void FileData::launchGame()
             LOG(LogDebug) << "FileData::launchGame(): Using default emulator";
         }
     }
+
+#if defined(__ANDROID__)
+    if (Settings::getInstance()->getBool("LaunchOnOtherScreen")) {
+        launchOnOtherScreen = gameSystem->getLaunchOnOtherScreen();
+        std::string screenValue {metadata.get("screen")};
+
+        if (screenValue != "" && screenValue != "other" && screenValue != "primary")
+            screenValue = "";
+
+        if (screenValue == "") {
+            if (launchOnOtherScreen) {
+                LOG(LogDebug)
+                    << "FileData::launchGame(): Launching game on other screen as configured "
+                       "for system \""
+                    << gameSystem->getName() << "\"";
+            }
+            else {
+                LOG(LogDebug)
+                    << "FileData::launchGame(): Launching game on primary screen as configured "
+                       "for system \""
+                    << gameSystem->getName() << "\"";
+            }
+        }
+        else if (screenValue == "other") {
+            LOG(LogDebug) << "FileData::launchGame(): Launching on other screen as configured "
+                             "for the specific game";
+            launchOnOtherScreen = true;
+        }
+        else if (screenValue == "primary") {
+            LOG(LogDebug) << "FileData::launchGame(): Launching on primary screen as configured "
+                             "for the specific game";
+            launchOnOtherScreen = false;
+        }
+    }
+#endif
 
     if (command.empty())
         command = mEnvData->mLaunchCommands.front().first;
@@ -1563,7 +1603,6 @@ void FileData::launchGame()
     if (isShortcut) {
         // Note that the following is not an attempt to implement the entire FreeDesktop standard
         // for .desktop files, for example argument parsing is not really usable in this context.
-        // There's essentially only enough functionality here to be able to run games and emulators.
         if (Utils::FileSystem::exists(Utils::String::replace(romPath, "\\", "")) &&
             !Utils::FileSystem::isDirectory(Utils::String::replace(romPath, "\\", ""))) {
             LOG(LogInfo) << "Parsing desktop file \"" << Utils::String::replace(romPath, "\\", "")
@@ -1580,8 +1619,27 @@ void FileData::launchGame()
                 line = Utils::String::trim(line);
                 if (line.substr(0, 2) == "#!")
                     continue;
-                if (line.find("[Desktop Entry]") != std::string::npos)
+                if (line.find("[Desktop Entry]") != std::string::npos) {
                     validFile = true;
+                    continue;
+                }
+                if (line.substr(0, 5) == "Path=" && startDirectory == "") {
+                    // We only parse the Path key if the %STARTDIR% variable has not been set in
+                    // es_systems.xml.
+                    const std::string startDirectoryTemp {
+                        Utils::FileSystem::expandHomePath(line.substr(5, line.size() - 5))};
+                    if (startDirectoryTemp.empty())
+                        continue;
+                    if (!Utils::FileSystem::isDirectory(startDirectoryTemp)) {
+                        LOG(LogWarning) << "Path key set to nonexistent directory \""
+                                        << startDirectoryTemp << "\"";
+                    }
+                    else {
+                        LOG(LogDebug) << "FileData::launchGame(): Setting start directory to \""
+                                      << startDirectoryTemp << "\" as defined by the Path key";
+                        startDirectory = Utils::FileSystem::getEscapedPath(startDirectoryTemp);
+                    }
+                }
                 if (line.substr(0, 5) == "Exec=") {
                     romPath = {line.substr(5, line.size() - 5)};
                     const std::string regexString {"[^%]%"};
@@ -1601,7 +1659,6 @@ void FileData::launchGame()
                     romPath = Utils::String::trim(romPath);
                     command = Utils::String::replace(command, emulator.first, "");
                     execEntry = true;
-                    break;
                 }
             }
             desktopFileStream.close();

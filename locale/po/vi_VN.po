@@ -1,14 +1,14 @@
-# Arcadia Frontend translation strings.
+# ES-DE Frontend translation strings.
 # Copyright (c) 2024-2026 Northwestern Software AB
-# This file is distributed under the same license as the Arcadia Frontend package.
+# This file is distributed under the same license as the ES-DE Frontend package.
 # Northwestern Software <info@es-de.org>, 2024-2026.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Arcadia Frontend\n"
+"Project-Id-Version: ES-DE Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-11-15 13:45-0500\n"
-"PO-Revision-Date: 2025-11-19 15:51+0700\n"
+"POT-Creation-Date: 2026-11-15 16:19-0500\n"
+"PO-Revision-Date: 2026-09-12 19:49+0200\n"
 "Last-Translator: Northwestern Software <info@es-de.org>\n"
 "Language-Team: Tiếng Việt <info@es-de.org>\n"
 "Language: vi_VN\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.2\n"
+"X-Generator: Poedit 3.9\n"
 
 msgid "Network error (status:"
 msgstr "Lỗi mạng (trạng thái:"
@@ -640,6 +640,48 @@ msgstr "BỎ CHỌN TẤT CẢ"
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "LOẠI BỎ KÝ TỰ ĐẶC BIỆT"
 
+msgid "MEDIA TARGET TYPE"
+msgstr "KIỂU PHƯƠNG TIỆN"
+
+msgid "SCREENSHOTS"
+msgstr "ẢNH CHỤP MÀN HÌNH"
+
+msgid "TITLE SCREENS"
+msgstr "MÀN HÌNH TIÊU ĐỀ"
+
+msgid "COVERS"
+msgstr "BÌA TRƯỚC"
+
+msgid "BACK COVERS"
+msgstr "BÌA SAU"
+
+msgid "MARQUEES (WHEELS)"
+msgstr "BIỂU NGỮ (XOAY VÒNG)"
+
+msgid "3D BOXES"
+msgstr "HỘP 3D"
+
+msgid "PHYSICAL MEDIA"
+msgstr "PHƯƠNG TIỆN VẬT LÝ"
+
+msgid "FAN ART"
+msgstr "HÌNH NGƯỜI HÂM MỘ"
+
+msgid "MIXIMAGES"
+msgstr "ẢNH TỔNG HỢP"
+
+msgid "IMPORT MEDIA"
+msgstr "NHẬP PHƯƠNG TIỆN"
+
+msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+msgstr "NHẬP BIỂU NGỮ HOẶC LOGO NẾU CÓ"
+
+msgid "OVERWRITE MEDIA FILES"
+msgstr "GHI ĐÈ TỆP PHƯƠNG TIỆN"
+
+msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+msgstr "CHỈ BAO GỒM ỨNG DỤNG ĐƯỢC PHÂN LOẠI LÀ TRÒ CHƠI"
+
 msgid "START"
 msgstr "BẮT ĐẦU"
 
@@ -651,6 +693,9 @@ msgstr "ĐANG XỬ LÝ..."
 
 msgid "COULDN'T FIND ANYTHING TO IMPORT"
 msgstr "KHÔNG TÌM THẤY GÌ ĐỂ NHẬP VÀO"
+
+msgid "import"
+msgstr "nhập"
 
 #, c-format
 msgid ""
@@ -670,14 +715,6 @@ msgstr "HÃY CHỌN"
 msgid "IMPORT"
 msgstr "NHẬP"
 
-msgid "import"
-msgstr "nhập"
-
-#, c-format
-msgid "IMPORTED %i ENTRY"
-msgid_plural "IMPORTED %i ENTRIES"
-msgstr[0] "ĐÃ NHẬP %i MỤC"
-
 msgid "SELECT ALL"
 msgstr "CHỌN TẤT CẢ"
 
@@ -689,6 +726,11 @@ msgstr "BỎ CHỌN TẤT CẢ"
 
 msgid "select none"
 msgstr "bỏ chọn"
+
+#, c-format
+msgid "IMPORTED %i ENTRY"
+msgid_plural "IMPORTED %i ENTRIES"
+msgstr[0] "ĐÃ NHẬP %i MỤC"
 
 msgid "FILTER GAMELIST"
 msgstr "LỌC DANH SÁCH TRÒ CHƠI"
@@ -1205,6 +1247,12 @@ msgstr "GIẢI MÃ VIDEO BẰNG PHẦN CỨNG (THỬ NGHIỆM)"
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "NÂNG TẦN SỐ KHUNG HÌNH VIDEO LÊN 60 FPS"
 
+msgid "QUERY INSTALLED RETROARCH CORES (EXPERIMENTAL)"
+msgstr "TRUY VẤN CÁC LÕI RETROARCH ĐÃ CÀI ĐẶT (THỬ NGHIỆM)"
+
+msgid "USE RETROARCH IN SAF MODE (NOT RECOMMENDED)"
+msgstr "SỬ DỤNG RETROARCH Ở CHẾ ĐỘ SAF (KHÔNG ĐƯỢC KHUYẾN NGHỊ)"
+
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "HIỂN THỊ TỆP VÀ THƯ MỤC ẨN"
 
@@ -1213,6 +1261,9 @@ msgstr "BẬT TẬP LỆNH SỰ KIỆN"
 
 msgid "BROWSING CUSTOM EVENTS"
 msgstr "TÙY CHỈNH KHI DUYỆT"
+
+msgid "RUN BROWSING EVENTS AS NON-BLOCKING"
+msgstr "CHẠY CÁC SỰ KIỆN DUYỆT WEB Ở CHẾ ĐỘ KHÔNG CHẶN"
 
 msgid "ONLY SHOW GAMES FROM GAMELIST.XML FILES"
 msgstr "CHỈ HIỂN THỊ TRÒ CHƠI TỪ TỆP GAMELIST.XML"
@@ -1310,8 +1361,26 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "CÀI ĐẶT MÀN HÌNH CHỜ"
 
+msgid "LAUNCH ON OTHER SCREEN"
+msgstr "MỞ TRÊN MÀN HÌNH KHÁC"
+
+msgid "ENABLE LAUNCH ON OTHER SCREEN"
+msgstr "KÍCH HOẠT CHỨC NĂNG KHỞI CHẠY TRÊN MÀN HÌNH KHÁC"
+
 msgid "open"
 msgstr ""
+
+msgid "System default (Other)"
+msgstr "Mặc định của hệ thống (Khác)"
+
+msgid "System default (Primary)"
+msgstr "Mặc định của hệ thống (Chính)"
+
+msgid "Always on other"
+msgstr "Khởi chạy trên màn hình khác"
+
+msgid "Always on primary"
+msgstr "Khởi chạy trên màn hình chính"
 
 msgid "EDIT METADATA"
 msgstr "CHỈNH SỬA DỮ LIỆU"
@@ -2542,9 +2611,6 @@ msgstr "BÌA SAU HỘP"
 msgid "TITLE SCREEN"
 msgstr "MÀN HÌNH TIÊU ĐỀ"
 
-msgid "FAN ART"
-msgstr "HÌNH NGƯỜI HÂM MỘ"
-
 msgid "MIXIMAGE"
 msgstr "HÌNH ẢNH TỔNG HỢP"
 
@@ -2690,6 +2756,14 @@ msgstr "TRÌNH GIẢ LẬP THAY THẾ"
 msgctxt "metadata"
 msgid "SELECT ALTERNATIVE EMULATOR"
 msgstr "CHỌN TRÌNH GIẢ LẬP THAY THẾ"
+
+msgctxt "metadata"
+msgid "LAUNCH ON SCREEN"
+msgstr "KHỞI CHẠY TRÊN MÀN HÌNH"
+
+msgctxt "metadata"
+msgid "LAUNCH ON WHICH SCREEN"
+msgstr "PHÁT TRÊN MÀN HÌNH NÀO"
 
 msgctxt "metadata"
 msgid "FOLDER LINK"
@@ -3319,177 +3393,3 @@ msgstr ""
 
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "LỖI: KHÔNG THỂ HIỂN THỊ TỆP PDF"
-
-#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-#~ msgstr "LỖI: TỆP ỨNG DỤNG HOẶC BIỆT DANH KHÔNG TỒN TẠI HOẶC KHÔNG ĐỌC ĐƯỢC"
-
-#~ msgid "MEDIA TARGET TYPE"
-#~ msgstr "KIỂU PHƯƠNG TIỆN"
-
-#~ msgid "SCREENSHOTS"
-#~ msgstr "ẢNH CHỤP MÀN HÌNH"
-
-#~ msgid "TITLE SCREENS"
-#~ msgstr "MÀN HÌNH TIÊU ĐỀ"
-
-#~ msgid "COVERS"
-#~ msgstr "BÌA TRƯỚC"
-
-#~ msgid "BACK COVERS"
-#~ msgstr "BÌA SAU"
-
-#~ msgid "MARQUEES (WHEELS)"
-#~ msgstr "BIỂU NGỮ (XOAY VÒNG)"
-
-#~ msgid "3D BOXES"
-#~ msgstr "HỘP 3D"
-
-#~ msgid "PHYSICAL MEDIA"
-#~ msgstr "PHƯƠNG TIỆN VẬT LÝ"
-
-#~ msgid "MIXIMAGES"
-#~ msgstr "ẢNH TỔNG HỢP"
-
-#~ msgid "IMPORT MEDIA"
-#~ msgstr "NHẬP PHƯƠNG TIỆN"
-
-#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-#~ msgstr "NHẬP BIỂU NGỮ HOẶC LOGO NẾU CÓ"
-
-#~ msgid "OVERWRITE MEDIA FILES"
-#~ msgstr "GHI ĐÈ TỆP PHƯƠNG TIỆN"
-
-#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-#~ msgstr "CHỈ BAO GỒM ỨNG DỤNG ĐƯỢC PHÂN LOẠI LÀ TRÒ CHƠI"
-
-#~ msgid "close (apply)"
-#~ msgstr "đóng (áp dụng)"
-
-#~ msgid "close (cancel)"
-#~ msgstr "đóng (hủy)"
-
-#~ msgid "MAIN MENU"
-#~ msgstr "MENU CHÍNH"
-
-#~ msgid "SCRAPER"
-#~ msgstr "THU THẬP DỮ LIỆU"
-
-#~ msgid "UI SETTINGS"
-#~ msgstr "CÀI ĐẶT GIAO DIỆN"
-
-#~ msgid "SOUND SETTINGS"
-#~ msgstr "CÀI ĐẶT ÂM THANH"
-
-#~ msgid "INPUT DEVICE SETTINGS"
-#~ msgstr "CÀI ĐẶT THIẾT BỊ NHẬP"
-
-#~ msgid "GAME COLLECTION SETTINGS"
-#~ msgstr "CÀI ĐẶT BỘ SƯU TẬP TRÒ CHƠI"
-
-#~ msgid "UTILITIES"
-#~ msgstr "TIỆN ÍCH"
-
-#~ msgid "MENU COLOR SCHEME"
-#~ msgstr "BẢNG MÀU MENU"
-
-#~ msgid "DARK"
-#~ msgstr "TỐI"
-
-#~ msgid "DARK AND RED"
-#~ msgstr "TỐI VÀ ĐỎ"
-
-#~ msgid "LIGHT"
-#~ msgstr "NHẸ"
-
-#~ msgid "AUDIO DRIVER"
-#~ msgstr "TRÌNH ÂM THANH"
-
-#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
-#~ msgstr "TRÌNH ÂM THANH"
-
-#~ msgid "TOUCH OVERLAY SIZE"
-#~ msgstr "KÍCH THƯỚC LỚP CẢM ỨNG"
-
-#~ msgid "EXTRA SMALL"
-#~ msgstr "RẤT NHỎ"
-
-#~ msgid "TOUCH OVERLAY OPACITY"
-#~ msgstr "ĐỘ MỜ CỦA LỚP CẢM ỨNG"
-
-#~ msgid "VERY LOW"
-#~ msgstr "RẤT THẤP"
-
-#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
-#~ msgstr "THỜI GIAN MỜ DẦN LỚP CẢM ỨNG"
-
-#~ msgid "ENABLE TOUCH OVERLAY"
-#~ msgstr "BẬT LỚP CẢM ỨNG"
-
-#~ msgid ""
-#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
-#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
-#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-#~ msgstr ""
-#~ "ĐỪNG TẮT LỚP CẢM ỨNG NẾU BẠN KHÔNG DÙNG TAY CẦM, NẾU KHÔNG BẠN SẼ KHÔNG "
-#~ "THỂ ĐIỀU KHIỂN ỨNG DỤNG. NẾU VIỆC NÀY XẢY RA, BẠN CẦN TẠM THỜI KẾT NỐI "
-#~ "TAY CẦM HOẶC BÀN PHÍM ĐỂ BẬT LẠI CÀI ĐẶT NÀY, HOẶC XÓA DỮ LIỆU LƯU TRỮ "
-#~ "CỦA ARCADIA TRONG CÀI ĐẶT ỨNG DỤNG ANDROID ĐỂ BẮT BUỘC TRÌNH CẤU HÌNH "
-#~ "KHỞI ĐỘNG LẠI LẦN SAU"
-
-#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
-#~ msgstr "ẨN THANH TÁC VỤ (CẦN KHỞI ĐỘNG LẠI)"
-
-#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-#~ msgstr "BẮT ĐẦU TRÒ CHƠI TRÊN MÀN HÌNH KHÁC"
-
-#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-#~ msgstr "NHẤN HOẶC VUỐT QUAY LẠI ĐỂ THOÁT"
-
-#~ msgid "close menu"
-#~ msgstr "đóng menu"
-
-#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
-#~ msgstr "HIỂN THỊ TRẠNG THÁI DI ĐỘNG"
-
-#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
-#~ msgstr "ĐIỀU NÀY SẼ XÓA HOÀN TOÀN GIAO DIỆN"
-
-#~ msgid "system"
-#~ msgstr "hệ thống"
-
-#~ msgid "view media"
-#~ msgstr "xem phương tiện"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
-#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
-#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
-#~ "THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "KHÔNG TÌM THẤY TỆP TRÒ CHƠI NÀO. HÃY NHẬP VÀO MỘT SỐ TRÒ CHƠI HOẶC ĐẶT "
-#~ "CHÚNG THỦ CÔNG VÀO THƯ MỤC ROM ĐÃ ĐƯỢC CẤU HÌNH. BẠN CŨNG CÓ THỂ TÙY CHỌN "
-#~ "TẠO CẤU TRÚC THƯ MỤC ROM, HÀNH ĐỘNG NÀY SẼ TẠO RA MỘT TỆP VĂN BẢN CHO MỖI "
-#~ "HỆ THỐNG CHỨA THÔNG TIN NHƯ CÁC PHẦN MỞ RỘNG TỆP ĐƯỢC HỖ TRỢ. ĐÂY LÀ THƯ "
-#~ "MỤC ROM ĐÃ CẤU HÌNH:\n"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
-#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
-#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
-#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "KHÔNG TÌM THẤY TỆP TRÒ CHƠI NÀO. HÃY NHẬP VÀO MỘT SỐ TRÒ CHƠI HOẶC ĐẶT "
-#~ "CHÚNG THỦ CÔNG VÀO THƯ MỤC ROM ĐANG ĐƯỢC CẤU HÌNH. BẠN CŨNG CÓ THỂ THAY "
-#~ "ĐỔI ĐƯỜNG DẪN ROM VÀ TÙY CHỌN TẠO CẤU TRÚC THƯ MỤC ROM, HÀNH ĐỘNG NÀY SẼ "
-#~ "TẠO RA MỘT TỆP VĂN BẢN CHO MỖI HỆ THỐNG CHỨA THÔNG TIN NHƯ CÁC PHẦN MỞ "
-#~ "RỘNG TỆP ĐƯỢC HỖ TRỢ. ĐÂY LÀ THƯ MỤC ROM ĐÃ CẤU HÌNH:\n"
-
-#, c-format
-#~ msgctxt "theme"
-#~ msgid "%i second ago"
-#~ msgid_plural "%i seconds ago"
-#~ msgstr[0] "cách đây %i giây"

@@ -1,14 +1,14 @@
-# Arcadia Frontend translation strings.
+# ES-DE Frontend translation strings.
 # Copyright (c) 2024-2026 Northwestern Software AB
-# This file is distributed under the same license as the Arcadia Frontend package.
+# This file is distributed under the same license as the ES-DE Frontend package.
 # Northwestern Software <info@es-de.org>, 2024-2026.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Arcadia Frontend\n"
+"Project-Id-Version: ES-DE Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-11-15 13:45-0500\n"
-"PO-Revision-Date: 2025-10-19 17:38+0400\n"
+"POT-Creation-Date: 2026-11-15 16:19-0500\n"
+"PO-Revision-Date: 2026-09-12 20:05+0200\n"
 "Last-Translator: Northwestern Software <info@es-de.org>\n"
 "Language-Team: Русский <info@es-de.org>\n"
 "Language: ru_RU\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 3.8\n"
+"X-Generator: Poedit 3.9\n"
 
 msgid "Network error (status:"
 msgstr "Ошибка сети (статус:"
@@ -654,6 +654,48 @@ msgstr "ВСЕ НЕВЫБРАННЫЕ"
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "РАЗДЕЛЯТЬ СПЕЦ. СИМВОЛЫ"
 
+msgid "MEDIA TARGET TYPE"
+msgstr "ТИП МЕДИА"
+
+msgid "SCREENSHOTS"
+msgstr "СКРИНШОТЫ"
+
+msgid "TITLE SCREENS"
+msgstr "ГЛАВНОЕ МЕНЮ"
+
+msgid "COVERS"
+msgstr "ОБЛОЖКИ"
+
+msgid "BACK COVERS"
+msgstr "ОБЛОЖКИ СЗАДИ"
+
+msgid "MARQUEES (WHEELS)"
+msgstr "ЛОГО (БАННЕРЫ)"
+
+msgid "3D BOXES"
+msgstr "3D-ОБЛОЖКИ"
+
+msgid "PHYSICAL MEDIA"
+msgstr "ФИЗИЧЕСКИЕ НОСИТЕЛИ"
+
+msgid "FAN ART"
+msgstr "ФАН-АРТ"
+
+msgid "MIXIMAGES"
+msgstr "МИКС-ИЗОБРАЖЕНИЯ"
+
+msgid "IMPORT MEDIA"
+msgstr "ИМПОРТИРОВАТЬ МЕДИА"
+
+msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+msgstr "ИМПОРТИРОВАТЬ БАННЕРЫ ИЛИ ЛОГОТИПЫ ЕСЛИ ДОСТУПНО"
+
+msgid "OVERWRITE MEDIA FILES"
+msgstr "ПЕРЕЗАПИСЫВАТЬ МЕДИАФАЙЛЫ"
+
+msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+msgstr "ВКЛЮЧАТЬ ТОЛЬКО ПРИЛОЖЕНИЯ ИЗ КАТЕГОРИИ ИГР"
+
 msgid "START"
 msgstr "СТАРТ"
 
@@ -665,6 +707,9 @@ msgstr "ВЫПОЛНЕНИЕ..."
 
 msgid "COULDN'T FIND ANYTHING TO IMPORT"
 msgstr "НЕ НАЙДЕНО НИЧЕГО ДЛЯ ИМПОРТА"
+
+msgid "import"
+msgstr "импорт"
 
 #, c-format
 msgid ""
@@ -684,16 +729,6 @@ msgstr "СДЕЛАЙТЕ ВЫБОР"
 msgid "IMPORT"
 msgstr "ИМПОРТ"
 
-msgid "import"
-msgstr "импорт"
-
-#, c-format
-msgid "IMPORTED %i ENTRY"
-msgid_plural "IMPORTED %i ENTRIES"
-msgstr[0] "ИМПОРТИРОВАНА %i ЗАПИСЬ"
-msgstr[1] "ИМПОРТИРОВАНО %i ЗАПИСИ"
-msgstr[2] "ИМПОРТИРОВАНО %i ЗАПИСЕЙ"
-
 msgid "SELECT ALL"
 msgstr "ВЫБРАТЬ ВСЁ"
 
@@ -705,6 +740,13 @@ msgstr "СНЯТЬ ВЫБОР"
 
 msgid "select none"
 msgstr "не выбирать"
+
+#, c-format
+msgid "IMPORTED %i ENTRY"
+msgid_plural "IMPORTED %i ENTRIES"
+msgstr[0] "ИМПОРТИРОВАНА %i ЗАПИСЬ"
+msgstr[1] "ИМПОРТИРОВАНО %i ЗАПИСИ"
+msgstr[2] "ИМПОРТИРОВАНО %i ЗАПИСЕЙ"
 
 msgid "FILTER GAMELIST"
 msgstr "ФИЛЬТР ГЕЙМЛИСТА"
@@ -1125,7 +1167,7 @@ msgid "SHOW HIDDEN GAMES"
 msgstr "ПОКАЗЫВАТЬ СКРЫТЫЕ ИГРЫ"
 
 msgid "CHECK FOR APPLICATION UPDATES"
-msgstr "ПРОВЕРЯТЬ НАЛИЧИЕ ОБНОВЛЕНИЙ Arcadia"
+msgstr "ПРОВЕРЯТЬ НАЛИЧИЕ ОБНОВЛЕНИЙ ES-DE"
 
 msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
 msgstr "РАБОТАТЬ В ФОНОВОМ РЕЖИМЕ (ИГРА ЗАПУЩЕНА)"
@@ -1221,6 +1263,12 @@ msgstr "АППАРАТНОЕ ДЕКОДИРОВАНИЕ ВИДЕО (ЭКСПЕР
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "УВЕЛИЧЕНИЕ ЧАСТОТЫ КАДРОВ ВИДЕО ДО 60 FPS"
 
+msgid "QUERY INSTALLED RETROARCH CORES (EXPERIMENTAL)"
+msgstr "ПРОВЕРКА УСТАНОВЛЕННЫХ ЯДЕР RETROARCH (ЭКСПЕР.)"
+
+msgid "USE RETROARCH IN SAF MODE (NOT RECOMMENDED)"
+msgstr "ИСПОЛЬЗУЙТЕ RETROARCH В РЕЖИМЕ SAF (НЕ РЕКОМЕНДУЕТСЯ)"
+
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "ПОКАЗЫВАТЬ СКРЫТЫЕ ФАЙЛЫ И ПАПКИ"
 
@@ -1229,6 +1277,9 @@ msgstr "РАЗРЕШИТЬ ПОЛЬЗ. СЦЕНАРИИ СОБЫТИЙ"
 
 msgid "BROWSING CUSTOM EVENTS"
 msgstr "ПОЛЬЗ. СОБЫТИЯ ПРИ НАВИГАЦИИ"
+
+msgid "RUN BROWSING EVENTS AS NON-BLOCKING"
+msgstr "ЗАПУСКАТЬ СОБЫТИЯ ПРОСМОТРА В НЕБЛОКИРУЮЩЕМ РЕЖИМЕ"
 
 msgid "ONLY SHOW GAMES FROM GAMELIST.XML FILES"
 msgstr "ПОКАЗЫВАТЬ ИГРЫ ТОЛЬКО ИЗ GAMELIST.XML"
@@ -1326,8 +1377,26 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "НАСТРОЙКИ ЗАСТАВКИ"
 
+msgid "LAUNCH ON OTHER SCREEN"
+msgstr "ЗАПУСТИТЬ НА ДРУГОМ ЭКРАНЕ"
+
+msgid "ENABLE LAUNCH ON OTHER SCREEN"
+msgstr "ВКЛЮЧИТЬ ЗАПУСК НА ДРУГОМ ЭКРАНЕ"
+
 msgid "open"
 msgstr ""
+
+msgid "System default (Other)"
+msgstr "По умолчанию (Другой)"
+
+msgid "System default (Primary)"
+msgstr "По умолчанию (Основной)"
+
+msgid "Always on other"
+msgstr "Всегда на другом"
+
+msgid "Always on primary"
+msgstr "Всегда на первичный"
 
 msgid "EDIT METADATA"
 msgstr "ИЗМЕНИТЬ МЕТАДАННЫЕ"
@@ -2583,9 +2652,6 @@ msgstr "ОБЛОЖКА СЗАДИ"
 msgid "TITLE SCREEN"
 msgstr "ГЛАВНОЕ МЕНЮ"
 
-msgid "FAN ART"
-msgstr "ФАН-АРТ"
-
 msgid "MIXIMAGE"
 msgstr "МИКС-ИЗОБРАЖЕНИЕ"
 
@@ -2731,6 +2797,14 @@ msgstr "АЛЬТЕРНАТИВНЫЕ ЭМУЛЯТОРЫ"
 msgctxt "metadata"
 msgid "SELECT ALTERNATIVE EMULATOR"
 msgstr "ВЫБЕРИТЕ АЛЬТ. ЭМУЛЯТОРЫ"
+
+msgctxt "metadata"
+msgid "LAUNCH ON SCREEN"
+msgstr "ЗАПУСТИТЬ НА ЭКРАНЕ"
+
+msgctxt "metadata"
+msgid "LAUNCH ON WHICH SCREEN"
+msgstr "ЗАПУСТИТЬ НА КАКОМ ЭКРАНЕ"
 
 msgctxt "metadata"
 msgid "FOLDER LINK"
@@ -3389,180 +3463,3 @@ msgstr ""
 
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "ОШИБКА: НЕ УДАЛОСЬ ОТОБРАЗИТЬ PDF-ФАЙЛ"
-
-#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-#~ msgstr "ОШИБКА: ФАЙЛ ПРИЛОЖЕНИЯ ИЛИ ПСЕВДОНИМА НЕ СУЩЕСТВУЕТ ИЛИ НЕЧИТАЕМ"
-
-#~ msgid "MEDIA TARGET TYPE"
-#~ msgstr "ТИП МЕДИА"
-
-#~ msgid "SCREENSHOTS"
-#~ msgstr "СКРИНШОТЫ"
-
-#~ msgid "TITLE SCREENS"
-#~ msgstr "ГЛАВНОЕ МЕНЮ"
-
-#~ msgid "COVERS"
-#~ msgstr "ОБЛОЖКИ"
-
-#~ msgid "BACK COVERS"
-#~ msgstr "ОБЛОЖКИ СЗАДИ"
-
-#~ msgid "MARQUEES (WHEELS)"
-#~ msgstr "ЛОГО (БАННЕРЫ)"
-
-#~ msgid "3D BOXES"
-#~ msgstr "3D-ОБЛОЖКИ"
-
-#~ msgid "PHYSICAL MEDIA"
-#~ msgstr "ФИЗИЧЕСКИЕ НОСИТЕЛИ"
-
-#~ msgid "MIXIMAGES"
-#~ msgstr "МИКС-ИЗОБРАЖЕНИЯ"
-
-#~ msgid "IMPORT MEDIA"
-#~ msgstr "ИМПОРТИРОВАТЬ МЕДИА"
-
-#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-#~ msgstr "ИМПОРТИРОВАТЬ БАННЕРЫ ИЛИ ЛОГОТИПЫ ЕСЛИ ДОСТУПНО"
-
-#~ msgid "OVERWRITE MEDIA FILES"
-#~ msgstr "ПЕРЕЗАПИСЫВАТЬ МЕДИАФАЙЛЫ"
-
-#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-#~ msgstr "ВКЛЮЧАТЬ ТОЛЬКО ПРИЛОЖЕНИЯ ИЗ КАТЕГОРИИ ИГР"
-
-#~ msgid "close (apply)"
-#~ msgstr "закр (прим.)"
-
-#~ msgid "close (cancel)"
-#~ msgstr "закр (отм.)"
-
-#~ msgid "MAIN MENU"
-#~ msgstr "ГЛАВНОЕ МЕНЮ"
-
-#~ msgid "SCRAPER"
-#~ msgstr "СКРЕЙПЕР"
-
-#~ msgid "UI SETTINGS"
-#~ msgstr "НАСТРОЙКИ ИНТЕРФЕЙСА"
-
-#~ msgid "SOUND SETTINGS"
-#~ msgstr "НАСТРОЙКИ ЗВУКА"
-
-#~ msgid "INPUT DEVICE SETTINGS"
-#~ msgstr "НАСТРОЙКИ ВВОДА"
-
-#~ msgid "GAME COLLECTION SETTINGS"
-#~ msgstr "НАСТРОЙКИ КОЛЛЕКЦИЙ"
-
-#~ msgid "UTILITIES"
-#~ msgstr "УТИЛИТЫ"
-
-#~ msgid "MENU COLOR SCHEME"
-#~ msgstr "ЦВЕТОВАЯ СХЕМА МЕНЮ"
-
-#~ msgid "DARK"
-#~ msgstr "ТЁМНАЯ"
-
-#~ msgid "DARK AND RED"
-#~ msgstr "ТЁМНАЯ И КРАСНАЯ"
-
-#~ msgid "LIGHT"
-#~ msgstr "СВЕТЛАЯ"
-
-#~ msgid "AUDIO DRIVER"
-#~ msgstr "АУДИО ДРАЙВЕР"
-
-#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
-#~ msgstr "АУДИО ДРАЙВЕР (НУЖЕН ПЕРЕЗАПУСК)"
-
-#~ msgid "TOUCH OVERLAY SIZE"
-#~ msgstr "РАЗМЕР СЕНСОРНОГО ОВЕРЛЕЯ"
-
-#~ msgid "EXTRA SMALL"
-#~ msgstr "ОЧЕНЬ МАЛЕНЬКИЙ"
-
-#~ msgid "TOUCH OVERLAY OPACITY"
-#~ msgstr "ПРОЗРАЧНОСТЬ СЕНСОРНОГО ОВЕРЛЕЯ"
-
-#~ msgid "VERY LOW"
-#~ msgstr "ОЧЕНЬ НИЗКАЯ"
-
-#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
-#~ msgstr "ЗАТУХАНИЕ СЕНСОРНОГО ОВЕРЛЕЯ"
-
-#~ msgid "ENABLE TOUCH OVERLAY"
-#~ msgstr "ВКЛЮЧИТЬ СЕНСОРНЫЙ ОВЕРЛЕЙ"
-
-#~ msgid ""
-#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
-#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
-#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-#~ msgstr ""
-#~ "НЕ ОТКЛЮЧАЙТЕ СЕНСОРНЫЙ ОВЕРЛЕЙ, ЕСЛИ ВЫ НЕ ИСПОЛЬЗУЕТЕ ВНЕШНИЙ "
-#~ "КОНТРОЛЛЕР, ИНАЧЕ ВЫ ЛИШИТЕСЬ УПРАВЛЕНИЯ В ПРИЛОЖЕНИИ. ЕСЛИ ЭТО "
-#~ "ПРОИЗОЙДЕТ, ВАМ ПРИДЕТСЯ ВРЕМЕННО ПОДКЛЮЧИТЬ КОНТРОЛЛЕР ИЛИ КЛАВИАТУРУ, "
-#~ "ЧТОБЫ СНОВА ВКЛЮЧИТЬ ЭТУ НАСТРОЙКУ, ИЛИ ЖЕ ВЫ МОЖЕТЕ ОЧИСТИТЬ ХРАНИЛИЩЕ "
-#~ "ДЛЯ ПРИЛОЖЕНИЯ Arcadia В НАСТРОЙКАХ ANDROID, ЧТОБЫ ЗАПУСТИТЬ "
-#~ "ПЕРВОНАЧАЛЬНУЮ НАСТРОЙКУ ПРИ СЛЕДУЮЩЕМ ЗАПУСКЕ"
-
-#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
-#~ msgstr "СКРЫТЬ ПАНЕЛЬ ЗАДАЧ (НУЖЕН ПЕРЕЗАПУСК)"
-
-#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-#~ msgstr "ЗАПУСКАТЬ ИГРЫ НА ДРУГОМ ЭКРАНЕ"
-
-#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-#~ msgstr "КНОПКА НАЗАД/СВАЙП НАЗАД ЗАКРЫВАЮТ ПРИЛОЖЕНИЕ"
-
-#~ msgid "close menu"
-#~ msgstr "закр. меню"
-
-#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
-#~ msgstr "ОТОБРАЖАТЬ СТАТУС СЕТИ"
-
-#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
-#~ msgstr "ЭТО ПРИВЕДЕТ К ПОЛНОМУ УДАЛЕНИЮ ТЕМЫ"
-
-#~ msgid "system"
-#~ msgstr "система"
-
-#~ msgid "view media"
-#~ msgstr "медиа"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
-#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
-#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
-#~ "THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "НЕ НАЙДЕНО ИГРОВЫХ ФАЙЛОВ. ИМПОРТИРУЙТЕ ИГРЫ ИЛИ ПОМЕСТИТЕ ИХ ВРУЧНУЮ В "
-#~ "КАТАЛОГ РОМОВ. ОПЦИОНАЛЬНО ВЫ МОЖЕТЕ СГЕНЕРИРОВАТЬ СТРУКТУРУ КАТАЛОГОВ "
-#~ "РОМОВ, ЧТО СОЗДАСТ ТЕКСТОВЫЙ ФАЙЛ ДЛЯ КАЖДОЙ СИСТЕМЫ, ДАЮЩИЙ НЕКОТОРУЮ "
-#~ "ИНФОРМАЦИЮ, НАПРИМЕР, ПОДДЕРЖИВАЕМЫЕ РАСШИРЕНИЯ ФАЙЛОВ. ТЕКУЩИЙ КАТАЛОГ "
-#~ "РОМОВ:\n"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
-#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
-#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
-#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "НЕ НАЙДЕНО ИГРОВЫХ ФАЙЛОВ. ИМПОРТИРУЙТЕ ИГРЫ ИЛИ ПОМЕСТИТЕ ИХ ВРУЧНУЮ В "
-#~ "КАТАЛОГ РОМОВ. ВЫ ТАКЖЕ МОЖЕТЕ СМЕНИТЬ ПУТЬ К РОМАМ И ОПЦИОНАЛЬНО "
-#~ "СГЕНЕРИРОВАТЬ СТРУКТУРУ КАТАЛОГОВ РОМОВ, ЧТО СОЗДАСТ ТЕКСТОВЫЙ ФАЙЛ ДЛЯ "
-#~ "КАЖДОЙ СИСТЕМЫ, ДАЮЩИЙ НЕКОТОРУЮ ИНФОРМАЦИЮ, НАПРИМЕР, ПОДДЕРЖИВАЕМЫЕ "
-#~ "РАСШИРЕНИЯ ФАЙЛОВ. ТЕКУЩИЙ КАТАЛОГ РОМОВ:\n"
-
-#, c-format
-#~ msgctxt "theme"
-#~ msgid "%i second ago"
-#~ msgid_plural "%i seconds ago"
-#~ msgstr[0] "%i секунд назад"
-#~ msgstr[1] "%i секунды назад"
-#~ msgstr[2] "%i секунд назад"

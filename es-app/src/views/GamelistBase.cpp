@@ -180,7 +180,7 @@ bool GamelistBase::input(InputConfig* config, Input input)
                 if (mRandomGame) {
                     stopListScrolling();
                     ViewController::getInstance()->cancelViewTransitions();
-                    mWindow->startMediaViewer(mRandomGame);
+                    mWindow->startMediaViewer(mRandomGame, false);
                     return true;
                 }
             }
@@ -189,7 +189,7 @@ bool GamelistBase::input(InputConfig* config, Input input)
                 stopGamelistFadeAnimations();
                 ViewController::getInstance()->cancelViewTransitions();
                 NavigationSounds::getInstance().playThemeNavigationSound(SCROLLSOUND);
-                mWindow->startMediaViewer(getCursor());
+                mWindow->startMediaViewer(getCursor(), false);
                 return true;
             }
         }

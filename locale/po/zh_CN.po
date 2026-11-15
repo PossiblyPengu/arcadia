@@ -1,14 +1,14 @@
-# Arcadia Frontend translation strings.
+# ES-DE Frontend translation strings.
 # Copyright (c) 2024-2026 Northwestern Software AB
-# This file is distributed under the same license as the Arcadia Frontend package.
+# This file is distributed under the same license as the ES-DE Frontend package.
 # Northwestern Software <info@es-de.org>, 2024-2026.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Arcadia Frontend\n"
+"Project-Id-Version: ES-DE Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-11-15 13:45-0500\n"
-"PO-Revision-Date: 2025-10-13 02:17+0800\n"
+"POT-Creation-Date: 2026-11-15 16:19-0500\n"
+"PO-Revision-Date: 2026-09-09 19:24+0800\n"
 "Last-Translator: Northwestern Software <info@es-de.org>\n"
 "Language-Team: 简体中文 <info@es-de.org>\n"
 "Language: zh_CN\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.9\n"
 
 msgid "Network error (status:"
 msgstr "网络错误（状态："
@@ -630,6 +630,48 @@ msgstr "所有未选择的"
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "删除特殊字符"
 
+msgid "MEDIA TARGET TYPE"
+msgstr "媒体目标类型"
+
+msgid "SCREENSHOTS"
+msgstr "截图"
+
+msgid "TITLE SCREENS"
+msgstr "标题画面"
+
+msgid "COVERS"
+msgstr "封面"
+
+msgid "BACK COVERS"
+msgstr "背封"
+
+msgid "MARQUEES (WHEELS)"
+msgstr "游戏标志"
+
+msgid "3D BOXES"
+msgstr "3D盒子"
+
+msgid "PHYSICAL MEDIA"
+msgstr "实体卡带"
+
+msgid "FAN ART"
+msgstr "粉丝自制"
+
+msgid "MIXIMAGES"
+msgstr "混合图像"
+
+msgid "IMPORT MEDIA"
+msgstr "导入媒体"
+
+msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+msgstr "如有可能导入横幅或LOGO"
+
+msgid "OVERWRITE MEDIA FILES"
+msgstr "覆写媒体文件"
+
+msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+msgstr "仅包含归类为游戏的应用"
+
 msgid "START"
 msgstr "开始"
 
@@ -641,6 +683,9 @@ msgstr "正在运行……"
 
 msgid "COULDN'T FIND ANYTHING TO IMPORT"
 msgstr "无法找到可导入内容"
+
+msgid "import"
+msgstr "导入"
 
 #, c-format
 msgid ""
@@ -659,14 +704,6 @@ msgstr "请选择"
 msgid "IMPORT"
 msgstr "导入"
 
-msgid "import"
-msgstr "导入"
-
-#, c-format
-msgid "IMPORTED %i ENTRY"
-msgid_plural "IMPORTED %i ENTRIES"
-msgstr[0] "已导入%i个项目"
-
 msgid "SELECT ALL"
 msgstr "选择全部"
 
@@ -678,6 +715,11 @@ msgstr "取消选择"
 
 msgid "select none"
 msgstr "取消选择"
+
+#, c-format
+msgid "IMPORTED %i ENTRY"
+msgid_plural "IMPORTED %i ENTRIES"
+msgstr[0] "已导入%i个项目"
 
 msgid "FILTER GAMELIST"
 msgstr "过滤游戏列表"
@@ -1192,6 +1234,12 @@ msgstr "视频硬件解码（实验性）"
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "将视频帧率提升至 60 FPS"
 
+msgid "QUERY INSTALLED RETROARCH CORES (EXPERIMENTAL)"
+msgstr "查询已安装的RETROARCH核心（实验性质）"
+
+msgid "USE RETROARCH IN SAF MODE (NOT RECOMMENDED)"
+msgstr "在存储访问框架模式上使用RETROARCH（不受推荐）"
+
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "显示隐藏文件和文件夹"
 
@@ -1200,6 +1248,9 @@ msgstr "启用自定义事件脚本"
 
 msgid "BROWSING CUSTOM EVENTS"
 msgstr "浏览自定义事件"
+
+msgid "RUN BROWSING EVENTS AS NON-BLOCKING"
+msgstr "以非阻塞方式运行浏览事件"
 
 msgid "ONLY SHOW GAMES FROM GAMELIST.XML FILES"
 msgstr "仅显示 gamelist.xml 文件中的游戏"
@@ -1293,8 +1344,26 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "屏保设置"
 
+msgid "LAUNCH ON OTHER SCREEN"
+msgstr "在其他屏幕上启动"
+
+msgid "ENABLE LAUNCH ON OTHER SCREEN"
+msgstr "启用在其他屏幕上启动"
+
 msgid "open"
 msgstr ""
+
+msgid "System default (Other)"
+msgstr "系统默认（其他）"
+
+msgid "System default (Primary)"
+msgstr "系统默认（首选）"
+
+msgid "Always on other"
+msgstr "总是在其他"
+
+msgid "Always on primary"
+msgstr "总是在首选"
 
 msgid "EDIT METADATA"
 msgstr "编辑元数据"
@@ -2495,9 +2564,6 @@ msgstr "盒装后盖"
 msgid "TITLE SCREEN"
 msgstr "标题"
 
-msgid "FAN ART"
-msgstr "粉丝自制"
-
 msgid "MIXIMAGE"
 msgstr "混合图像"
 
@@ -2643,6 +2709,14 @@ msgstr "备用模拟器"
 msgctxt "metadata"
 msgid "SELECT ALTERNATIVE EMULATOR"
 msgstr "请选择备用模拟器"
+
+msgctxt "metadata"
+msgid "LAUNCH ON SCREEN"
+msgstr "在屏幕上启动"
+
+msgctxt "metadata"
+msgid "LAUNCH ON WHICH SCREEN"
+msgstr "在哪个屏幕上启动"
 
 msgctxt "metadata"
 msgid "FOLDER LINK"
@@ -3254,171 +3328,3 @@ msgstr ""
 
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "错误：无法渲染PDF文件"
-
-#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-#~ msgstr "错误：应用程序或别名文件不存在或无法读取"
-
-#~ msgid "MEDIA TARGET TYPE"
-#~ msgstr "媒体目标类型"
-
-#~ msgid "SCREENSHOTS"
-#~ msgstr "截图"
-
-#~ msgid "TITLE SCREENS"
-#~ msgstr "标题画面"
-
-#~ msgid "COVERS"
-#~ msgstr "封面"
-
-#~ msgid "BACK COVERS"
-#~ msgstr "背封"
-
-#~ msgid "MARQUEES (WHEELS)"
-#~ msgstr "游戏标志"
-
-#~ msgid "3D BOXES"
-#~ msgstr "3D盒子"
-
-#~ msgid "PHYSICAL MEDIA"
-#~ msgstr "实体卡带"
-
-#~ msgid "MIXIMAGES"
-#~ msgstr "混合图像"
-
-#~ msgid "IMPORT MEDIA"
-#~ msgstr "导入媒体"
-
-#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-#~ msgstr "如有可能导入横幅或LOGO"
-
-#~ msgid "OVERWRITE MEDIA FILES"
-#~ msgstr "覆写媒体文件"
-
-#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-#~ msgstr "仅包含归类为游戏的应用"
-
-#~ msgid "close (apply)"
-#~ msgstr "关闭（应用）"
-
-#~ msgid "close (cancel)"
-#~ msgstr "关闭（取消）"
-
-#~ msgid "MAIN MENU"
-#~ msgstr "主菜单"
-
-#~ msgid "SCRAPER"
-#~ msgstr "刮削/抓取"
-
-#~ msgid "UI SETTINGS"
-#~ msgstr "界面设置"
-
-#~ msgid "SOUND SETTINGS"
-#~ msgstr "声音设置"
-
-#~ msgid "INPUT DEVICE SETTINGS"
-#~ msgstr "输入设备设置"
-
-#~ msgid "GAME COLLECTION SETTINGS"
-#~ msgstr "游戏收藏设置"
-
-#~ msgid "UTILITIES"
-#~ msgstr "工具"
-
-#~ msgid "MENU COLOR SCHEME"
-#~ msgstr "菜单配色方案"
-
-#~ msgid "DARK"
-#~ msgstr "暗黑"
-
-#~ msgid "DARK AND RED"
-#~ msgstr "暗红"
-
-#~ msgid "LIGHT"
-#~ msgstr "明亮"
-
-#~ msgid "AUDIO DRIVER"
-#~ msgstr "音频驱动程序"
-
-#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
-#~ msgstr "音频驱动程序（需要重启）"
-
-#~ msgid "TOUCH OVERLAY SIZE"
-#~ msgstr "虚拟按键大小"
-
-#~ msgid "EXTRA SMALL"
-#~ msgstr "极小"
-
-#~ msgid "TOUCH OVERLAY OPACITY"
-#~ msgstr "虚拟按键不透明度"
-
-#~ msgid "VERY LOW"
-#~ msgstr "很低"
-
-#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
-#~ msgstr "虚拟按键淡出时间"
-
-#~ msgid "ENABLE TOUCH OVERLAY"
-#~ msgstr "启用虚拟按键"
-
-#~ msgid ""
-#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
-#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
-#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-#~ msgstr ""
-#~ "除非您正在使用控制器，否则请不要禁用虚拟按键，否则您将无法再访问该应用。如"
-#~ "果发生这种情况，您需要暂时插入一个控制器或键盘来重新启用此设置，或者您可以"
-#~ "在Android应用设置中清除Arcadia存储，以强制配置器在下次启动时运行"
-
-#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
-#~ msgstr "隐藏任务栏（需要重启）"
-
-#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-#~ msgstr "在另一个屏幕上启动游戏"
-
-#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-#~ msgstr "返回键/向后滑动退出应用程序"
-
-#~ msgid "close menu"
-#~ msgstr "关闭菜单"
-
-#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
-#~ msgstr "显示移动网络状态图标"
-
-#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
-#~ msgstr "这将彻底删除主题"
-
-#~ msgid "system"
-#~ msgstr "切换平台"
-
-#~ msgid "view media"
-#~ msgstr "查看媒体"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
-#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
-#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
-#~ "THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "未找到任何游戏文件。请导入游戏文件或将其手动放置到配置的游戏目录中。你也可"
-#~ "以选择生成游戏目录结构，该操作会为每个游戏系统创建一个文本说明文件，其中包"
-#~ "含支持的文件扩展名等关键信息。当前配置的游戏目录为：\n"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
-#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
-#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
-#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "未找到任何游戏文件。请导入游戏文件或将其手动放置到当前配置的ROM目录中。你"
-#~ "也可以更改ROM路径，并可选生成ROM目录结构，该操作将为每个系统创建说明文本文"
-#~ "件，其中包含支持的文件扩展名等信息。当前配置的ROM目录为：\n"
-
-#, c-format
-#~ msgctxt "theme"
-#~ msgid "%i second ago"
-#~ msgid_plural "%i seconds ago"
-#~ msgstr[0] "%i 秒前"

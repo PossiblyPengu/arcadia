@@ -229,7 +229,9 @@ namespace Utils
 
             for (auto it = pathList.cbegin(); it != pathList.cend(); ++it) {
                 Utils::Platform::runSystemCommand("flatpak-spawn --host which " + *it + "/" +
-                                                  executable + " > " + tempFile + " 2>/dev/null");
+                                                      executable + " > " + tempFile +
+                                                      " 2>/dev/null",
+                                                  true);
                 std::ifstream tempFileStream;
                 tempFileStream.open(tempFile, std::ios::binary);
                 getline(tempFileStream, emulatorPath);
@@ -745,7 +747,7 @@ namespace Utils
             if (parent != genericPath)
                 createDirectory(parent);
 
-                // Try to create directory again now that the parent should exist.
+            // Try to create directory again now that the parent should exist.
 
             return (mkdir(genericPath.c_str(), 0755) == 0);
         }

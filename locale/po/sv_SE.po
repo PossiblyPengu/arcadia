@@ -1,14 +1,14 @@
-# Arcadia Frontend translation strings.
+# ES-DE Frontend translation strings.
 # Copyright (c) 2024-2026 Northwestern Software AB
-# This file is distributed under the same license as the Arcadia Frontend package.
+# This file is distributed under the same license as the ES-DE Frontend package.
 # Northwestern Software <info@es-de.org>, 2024-2026.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Arcadia Frontend\n"
+"Project-Id-Version: ES-DE Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-11-15 13:45-0500\n"
-"PO-Revision-Date: 2025-10-09 22:50+0200\n"
+"POT-Creation-Date: 2026-11-15 16:19-0500\n"
+"PO-Revision-Date: 2026-08-22 15:30+0200\n"
 "Last-Translator: Northwestern Software <info@es-de.org>\n"
 "Language-Team: Svenska <info@es-de.org>\n"
 "Language: sv_SE\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.7\n"
+"X-Generator: Poedit 3.9\n"
 
 msgid "Network error (status:"
 msgstr "Network error (status:"
@@ -646,6 +646,48 @@ msgstr "ALLA AVMARKERADE"
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "FILTRERA BORT SPECIALTECKEN"
 
+msgid "MEDIA TARGET TYPE"
+msgstr "MÅLTYP FÖR MEDIA"
+
+msgid "SCREENSHOTS"
+msgstr "SKÄRMDUMPAR"
+
+msgid "TITLE SCREENS"
+msgstr "TITELSKÄRMAR"
+
+msgid "COVERS"
+msgstr "LÅDOMSLAG"
+
+msgid "BACK COVERS"
+msgstr "LÅDBAKSIDOR"
+
+msgid "MARQUEES (WHEELS)"
+msgstr "MARQUEES (HJUL)"
+
+msgid "3D BOXES"
+msgstr "3D-LÅDOR"
+
+msgid "PHYSICAL MEDIA"
+msgstr "FYSISK MEDIA"
+
+msgid "FAN ART"
+msgstr "FAN-SKAPAT"
+
+msgid "MIXIMAGES"
+msgstr "MIXBILDER"
+
+msgid "IMPORT MEDIA"
+msgstr "IMPORTERA MEDIA"
+
+msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+msgstr "IMPORTERA TILLGÄNGLIGA BANNERS OCH LOGOTYPER"
+
+msgid "OVERWRITE MEDIA FILES"
+msgstr "SKRIV ÖVER MEDIAFILER"
+
+msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+msgstr "INKLUDERA ENBART APPAR KATEGORISERADE SOM SPEL"
+
 msgid "START"
 msgstr "STARTA"
 
@@ -657,6 +699,9 @@ msgstr "ARBETAR..."
 
 msgid "COULDN'T FIND ANYTHING TO IMPORT"
 msgstr "KUNDE INTE HITTA NÅGOT ATT IMPORTERA"
+
+msgid "import"
+msgstr "importera"
 
 #, c-format
 msgid ""
@@ -676,15 +721,6 @@ msgstr "GÖR DINA VAL"
 msgid "IMPORT"
 msgstr "IMPORTERA"
 
-msgid "import"
-msgstr "importera"
-
-#, c-format
-msgid "IMPORTED %i ENTRY"
-msgid_plural "IMPORTED %i ENTRIES"
-msgstr[0] "IMPORTERADE %i POST"
-msgstr[1] "IMPORTERADE %i POSTER"
-
 msgid "SELECT ALL"
 msgstr "VÄLJ ALLA"
 
@@ -696,6 +732,12 @@ msgstr "VÄLJ INGA"
 
 msgid "select none"
 msgstr "välj inga"
+
+#, c-format
+msgid "IMPORTED %i ENTRY"
+msgid_plural "IMPORTED %i ENTRIES"
+msgstr[0] "IMPORTERADE %i POST"
+msgstr[1] "IMPORTERADE %i POSTER"
 
 msgid "FILTER GAMELIST"
 msgstr "FILTRERA SPELLISTA"
@@ -1214,6 +1256,12 @@ msgstr "HÅRDVARUAVKODNING FÖR VIDEO (EXPERIMENTELLT)"
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "UPPSKALNING AV VIDEOBILDFREKVENS TILL 60 BILDER/S"
 
+msgid "QUERY INSTALLED RETROARCH CORES (EXPERIMENTAL)"
+msgstr "FRÅGA RETROARCH OM INSTALLERADE KÄRNOR (EXPER.)"
+
+msgid "USE RETROARCH IN SAF MODE (NOT RECOMMENDED)"
+msgstr "KÖR RETROARCH I SAF-LÄGE (EJ REKOMMENDERAT)"
+
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "VISA DOLDA FILER OCH KATALOGER"
 
@@ -1222,6 +1270,9 @@ msgstr "AKTIVERA ANPASSADE HÄNDELSESKRIPT"
 
 msgid "BROWSING CUSTOM EVENTS"
 msgstr "ANPASSAD HÄNDELSE VID BLÄDDRING"
+
+msgid "RUN BROWSING EVENTS AS NON-BLOCKING"
+msgstr "KÖR BLÄDDRINGS-HÄNDELSER SOM ICKE-BLOCKERANDE"
 
 msgid "ONLY SHOW GAMES FROM GAMELIST.XML FILES"
 msgstr "VISA BARA SPEL FRÅN GAMELIST.XML-FILERNA"
@@ -1319,8 +1370,26 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "INSTÄLLNINGAR SKÄRMSLÄCKARE"
 
+msgid "LAUNCH ON OTHER SCREEN"
+msgstr "STARTA PÅ DEN ANDRA SKÄRMEN"
+
+msgid "ENABLE LAUNCH ON OTHER SCREEN"
+msgstr "AKTIVERA START PÅ ANDRA SKÄRMEN"
+
 msgid "open"
 msgstr ""
+
+msgid "System default (Other)"
+msgstr "Standard för system (Den andra)"
+
+msgid "System default (Primary)"
+msgstr "Standard för system (Den primära)"
+
+msgid "Always on other"
+msgstr "Alltid på den andra"
+
+msgid "Always on primary"
+msgstr "Alltid på den primära"
 
 msgid "EDIT METADATA"
 msgstr "REDIGERA METADATA"
@@ -2558,9 +2627,6 @@ msgstr "LÅDBAKSIDA"
 msgid "TITLE SCREEN"
 msgstr "TITELSKÄRM"
 
-msgid "FAN ART"
-msgstr "FAN-SKAPAT"
-
 msgid "MIXIMAGE"
 msgstr "MIXBILD"
 
@@ -2706,6 +2772,14 @@ msgstr "ALTERNATIV EMULATOR"
 msgctxt "metadata"
 msgid "SELECT ALTERNATIVE EMULATOR"
 msgstr "VÄLJ ALTERNATIV EMULATOR"
+
+msgctxt "metadata"
+msgid "LAUNCH ON SCREEN"
+msgstr "STARTA PÅ SKÄRM"
+
+msgctxt "metadata"
+msgid "LAUNCH ON WHICH SCREEN"
+msgstr "STARTA PÅ VILKEN SKÄRM"
 
 msgctxt "metadata"
 msgid "FOLDER LINK"
@@ -3347,180 +3421,3 @@ msgstr ""
 
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "FEL: KUNDE INTE RENDERA PDF-FIL"
-
-#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-#~ msgstr "FEL: APP- ELLER ALIASFIL FINNS INTE ELLER ÄR OLÄSBAR"
-
-#~ msgid "MEDIA TARGET TYPE"
-#~ msgstr "MÅLTYP FÖR MEDIA"
-
-#~ msgid "SCREENSHOTS"
-#~ msgstr "SKÄRMDUMPAR"
-
-#~ msgid "TITLE SCREENS"
-#~ msgstr "TITELSKÄRMAR"
-
-#~ msgid "COVERS"
-#~ msgstr "LÅDOMSLAG"
-
-#~ msgid "BACK COVERS"
-#~ msgstr "LÅDBAKSIDOR"
-
-#~ msgid "MARQUEES (WHEELS)"
-#~ msgstr "MARQUEES (HJUL)"
-
-#~ msgid "3D BOXES"
-#~ msgstr "3D-LÅDOR"
-
-#~ msgid "PHYSICAL MEDIA"
-#~ msgstr "FYSISK MEDIA"
-
-#~ msgid "MIXIMAGES"
-#~ msgstr "MIXBILDER"
-
-#~ msgid "IMPORT MEDIA"
-#~ msgstr "IMPORTERA MEDIA"
-
-#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-#~ msgstr "IMPORTERA TILLGÄNGLIGA BANNERS OCH LOGOTYPER"
-
-#~ msgid "OVERWRITE MEDIA FILES"
-#~ msgstr "SKRIV ÖVER MEDIAFILER"
-
-#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-#~ msgstr "INKLUDERA ENBART APPAR KATEGORISERADE SOM SPEL"
-
-#~ msgid "close (apply)"
-#~ msgstr "stäng (tillämpa)"
-
-#~ msgid "close (cancel)"
-#~ msgstr "stäng (avbryt)"
-
-#~ msgid "MAIN MENU"
-#~ msgstr "HUVUDMENY"
-
-#~ msgid "SCRAPER"
-#~ msgstr "SCRAPER"
-
-#~ msgid "UI SETTINGS"
-#~ msgstr "INSTÄLLNINGAR FÖR GRÄNSSNITT"
-
-#~ msgid "SOUND SETTINGS"
-#~ msgstr "LJUDINSTÄLLNINGAR"
-
-#~ msgid "INPUT DEVICE SETTINGS"
-#~ msgstr "INPUTINSTÄLLNINGAR"
-
-#~ msgid "GAME COLLECTION SETTINGS"
-#~ msgstr "INSTÄLLNINGAR FÖR SPELSAMLING"
-
-#~ msgid "UTILITIES"
-#~ msgstr "VERKTYG"
-
-#~ msgid "MENU COLOR SCHEME"
-#~ msgstr "FÄRGSCHEMA FÖR MENY"
-
-#~ msgid "DARK"
-#~ msgstr "MÖRKT"
-
-#~ msgid "DARK AND RED"
-#~ msgstr "MÖRKT OCH RÖTT"
-
-#~ msgid "LIGHT"
-#~ msgstr "LJUST"
-
-#~ msgid "AUDIO DRIVER"
-#~ msgstr "LJUDDRIVRUTIN"
-
-#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
-#~ msgstr "LJUDDRIVRUTIN (KRÄVER OMSTART)"
-
-#~ msgid "TOUCH OVERLAY SIZE"
-#~ msgstr "STORLEK FÖR TOUCH-ÖVERLÄGG"
-
-#~ msgid "EXTRA SMALL"
-#~ msgstr "EXTRA LITEN"
-
-#~ msgid "TOUCH OVERLAY OPACITY"
-#~ msgstr "OPACITET FÖR TOUCH-ÖVERLÄGG"
-
-#~ msgid "VERY LOW"
-#~ msgstr "VÄLDIGT LÅG"
-
-#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
-#~ msgstr "UTTONINGSTID FÖR TOUCH-ÖVERLÄGG"
-
-#~ msgid "ENABLE TOUCH OVERLAY"
-#~ msgstr "AKTIVERA TOUCH-ÖVERLÄGG"
-
-#~ msgid ""
-#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
-#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
-#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-#~ msgstr ""
-#~ "INAKTIVERA INTE TOUCH-ÖVERLÄGG SÅVIDA DU INTE ANVÄNDER EN HANDKONTROLL "
-#~ "FÖR ANNARS LÅSER DU DIG UTE FRÅN APPEN. OM DETTA HÄNDER SÅ MÅSTE DU "
-#~ "TEMPORÄRT KOPPLA IN EN HANDKONTROLL ELLER ETT TANGENTBORD FÖR ATT "
-#~ "AKTIVERA DENNA INSTÄLLNING IGEN, ELLER SÅ KAN DU RENSA LAGRINGSUTRYMMET "
-#~ "FÖR ARCADIA I ANDROIDS APPINSTÄLLNINGAR FÖR ATT TVINGA KONFIGURATORN ATT "
-#~ "KÖRAS VID NÄSTA UPPSTART"
-
-#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
-#~ msgstr "DÖLJ VERKTYGSFÄLT (KRÄVER OMSTART)"
-
-#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-#~ msgstr "STARTA SPEL PÅ DEN ANDRA SKÄRMEN"
-
-#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-#~ msgstr "BAKÅTKNAPPEN/SVEPA BAKÅT AVSLUTAR APPLIKATIONEN"
-
-#~ msgid "close menu"
-#~ msgstr "stäng menyn"
-
-#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
-#~ msgstr "VISA STATUSINDIKATOR FÖR MOBILTRAFIK"
-
-#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
-#~ msgstr "DET HÄR KOMMER HELT OCH HÅLLET TA BORT TEMAT"
-
-#~ msgid "system"
-#~ msgstr "system"
-
-#~ msgid "view media"
-#~ msgstr "visa media"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
-#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
-#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
-#~ "THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "INGA SPELFILER HITTADES. IMPORTERA ANTINGEN ETT PAR SPEL ELLER PLACERA "
-#~ "DEM MANUELLT I DEN KONFIGURERADE ROM-KATALOGEN. ALTERNATIVT SÅ KAN DU "
-#~ "GENERERA KATALOGSTRUKTUREN VILKET SKAPAR EN TEXTFIL FÖR VARJE SYSTEM SOM "
-#~ "INNEHÅLLER INFORMATION SÅSOM VILKA FILÄNDELSER SOM STÖDS. DET HÄR ÄR DEN "
-#~ "KONFIGURERADE ROM-KATALOGEN:\n"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
-#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
-#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
-#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "INGA SPELFILER HITTADES. IMPORTERA ANTINGEN ETT PAR SPEL ELLER PLACERA "
-#~ "DEM MANUELLT I DEN KONFIGURERADE ROM-KATALOGEN. DU KAN OCKSÅ ÄNDRA ROM-"
-#~ "KATALOGENS SÖKVÄG OCH ALTERNATIVT SÅ KAN DU GENERERA KATALOGSTRUKTUREN "
-#~ "VILKET SKAPAR EN TEXTFIL FÖR VARJE SYSTEM SOM INNEHÅLLER INFORMATION "
-#~ "SÅSOM VILKA FILÄNDELSER SOM STÖDS. DET HÄR ÄR DEN KONFIGURERADE ROM-"
-#~ "KATALOGEN:\n"
-
-#, c-format
-#~ msgctxt "theme"
-#~ msgid "%i second ago"
-#~ msgid_plural "%i seconds ago"
-#~ msgstr[0] "%i sekund sedan"
-#~ msgstr[1] "%i sekunder sedan"

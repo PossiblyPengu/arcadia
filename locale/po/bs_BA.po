@@ -1,14 +1,14 @@
-# Arcadia Frontend translation strings.
+# ES-DE Frontend translation strings.
 # Copyright (c) 2024-2026 Northwestern Software AB
-# This file is distributed under the same license as the Arcadia Frontend package.
+# This file is distributed under the same license as the ES-DE Frontend package.
 # Northwestern Software <info@es-de.org>, 2024-2026.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Arcadia Frontend\n"
+"Project-Id-Version: ES-DE Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-11-15 13:45-0500\n"
-"PO-Revision-Date: 2025-10-15 09:29+0200\n"
+"POT-Creation-Date: 2026-11-15 16:19-0500\n"
+"PO-Revision-Date: 2026-09-04 12:33+0200\n"
 "Last-Translator: SecularSteve <info@es-de.org>\n"
 "Language-Team: Bosnian (Bosnia & Herzegovina) <info@es-de.org>\n"
 "Language: bs_BA\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.9\n"
 
 msgid "Network error (status:"
 msgstr "Greška mreže (status:"
@@ -663,6 +663,48 @@ msgstr "SVE NEODABRANO"
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "SKIDANJE SPECIJALNIH LIKOVA"
 
+msgid "MEDIA TARGET TYPE"
+msgstr "VRSTA CILJNE MEDIJSKE GRUPE"
+
+msgid "SCREENSHOTS"
+msgstr "SNIMCI EKRANA"
+
+msgid "TITLE SCREENS"
+msgstr "NASLOVNI EKRANI"
+
+msgid "COVERS"
+msgstr "NASLOVNICE"
+
+msgid "BACK COVERS"
+msgstr "IZA-NASLOVNICE"
+
+msgid "MARQUEES (WHEELS)"
+msgstr "ŠATORI (TOČKOVI)"
+
+msgid "3D BOXES"
+msgstr "3D KUTIJE"
+
+msgid "PHYSICAL MEDIA"
+msgstr "FIZIČKI MEDIJ"
+
+msgid "FAN ART"
+msgstr "UMJETNOST FANOVA"
+
+msgid "MIXIMAGES"
+msgstr "MIXIMAGES"
+
+msgid "IMPORT MEDIA"
+msgstr "UVEZITE MEDIJ"
+
+msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+msgstr "UVEZITE BARJAK ILI LOGO AKO SU DOSTUPNI"
+
+msgid "OVERWRITE MEDIA FILES"
+msgstr "PREPIŠITE MEDIJSKE DATOTEKE"
+
+msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+msgstr "UKLJUČITE SAMO APLIKACIJE KATEGORIZOVANE KAO IGRE"
+
 msgid "START"
 msgstr "POČETAK"
 
@@ -674,6 +716,9 @@ msgstr "RADOVI..."
 
 msgid "COULDN'T FIND ANYTHING TO IMPORT"
 msgstr "NIJE SE MOGLO PRONAĆI NIŠTA ZA UVOZ"
+
+msgid "import"
+msgstr "uvezite"
 
 #, c-format
 msgid ""
@@ -693,16 +738,6 @@ msgstr "NAPRAVITE SVOJ ODABIR"
 msgid "IMPORT"
 msgstr "UVEZITE"
 
-msgid "import"
-msgstr "uvezite"
-
-#, c-format
-msgid "IMPORTED %i ENTRY"
-msgid_plural "IMPORTED %i ENTRIES"
-msgstr[0] "UVEZEN %i UNOS"
-msgstr[1] "UVEZENA %i UNOSA"
-msgstr[2] "UVEZENO %i UNOSA"
-
 msgid "SELECT ALL"
 msgstr "ODABERI SVE"
 
@@ -714,6 +749,13 @@ msgstr "NE ODABERITE NIŠTA"
 
 msgid "select none"
 msgstr "ne biraj ništa"
+
+#, c-format
+msgid "IMPORTED %i ENTRY"
+msgid_plural "IMPORTED %i ENTRIES"
+msgstr[0] "UVEZEN %i UNOS"
+msgstr[1] "UVEZENA %i UNOSA"
+msgstr[2] "UVEZENO %i UNOSA"
 
 msgid "FILTER GAMELIST"
 msgstr "FILTRIRAJ LISTU IGRAČA"
@@ -1229,6 +1271,12 @@ msgstr "DEKODIRANJE VIDEO HARDVERA (EKSPERIMENTALNO)"
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "POVEĆAJTE BRZINU SLIČNOG VIDEO KADROVA NA 60 FPS"
 
+msgid "QUERY INSTALLED RETROARCH CORES (EXPERIMENTAL)"
+msgstr "UPIT INSTALIRANIH RETROARCH JEZGRIH (ISPITIVO)"
+
+msgid "USE RETROARCH IN SAF MODE (NOT RECOMMENDED)"
+msgstr "KORISTITE RETROARCH U SAF MODU (NE PREPORUČUJE SE)"
+
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "PRIKAŽI SKRIVENE DATOTEKE I MAPE"
 
@@ -1237,6 +1285,9 @@ msgstr "OMOGUĆI PRILAGOĐENI SKRIPTU ZA DOGAĐAJ"
 
 msgid "BROWSING CUSTOM EVENTS"
 msgstr "PREGLED PRILAGOĐENIH DOGAĐAJA"
+
+msgid "RUN BROWSING EVENTS AS NON-BLOCKING"
+msgstr "POKRENITE PREGLEDAVANJE DOGAĐAJA KAO NEBLOKIRAJUĆE"
 
 msgid "ONLY SHOW GAMES FROM GAMELIST.XML FILES"
 msgstr "PRIKAŽI SAMO IGRE IZ DATOTEKE GAMELIST.XML"
@@ -1334,8 +1385,26 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "POSTAVKE ČUVARA EKRANA"
 
+msgid "LAUNCH ON OTHER SCREEN"
+msgstr "POKRENI NA DRUGOM EKRANU"
+
+msgid "ENABLE LAUNCH ON OTHER SCREEN"
+msgstr "OMOGUĆITE POKRETANJE NA DRUGOM EKRANU"
+
 msgid "open"
 msgstr ""
+
+msgid "System default (Other)"
+msgstr "Sistemska zadana vrijednost (Ostalo)"
+
+msgid "System default (Primary)"
+msgstr "Sistemska zadana vrijednost (Primarna)"
+
+msgid "Always on other"
+msgstr "Uvijek na drugom"
+
+msgid "Always on primary"
+msgstr "Uvijek na primarnom"
 
 msgid "EDIT METADATA"
 msgstr "UREDI METAPODATEKE"
@@ -2593,9 +2662,6 @@ msgstr "POKLOPAC ZADNJE KUTIJE"
 msgid "TITLE SCREEN"
 msgstr "POČETNI EKRAN"
 
-msgid "FAN ART"
-msgstr "UMJETNOST FANOVA"
-
 msgid "MIXIMAGE"
 msgstr "MIXIMAGE"
 
@@ -2741,6 +2807,14 @@ msgstr "ALTERNATIVNI EMULATOR"
 msgctxt "metadata"
 msgid "SELECT ALTERNATIVE EMULATOR"
 msgstr "ODABERITE ALTERNATIVNI EMULATOR"
+
+msgctxt "metadata"
+msgid "LAUNCH ON SCREEN"
+msgstr "POKRENI NA EKRANU"
+
+msgctxt "metadata"
+msgid "LAUNCH ON WHICH SCREEN"
+msgstr "POKRENI NA KOJEM EKRANU"
 
 msgctxt "metadata"
 msgid "FOLDER LINK"
@@ -3395,181 +3469,3 @@ msgstr ""
 
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "GREŠKA: NIJE MOGUĆE PRIKAZATI PDF DATOTEKU"
-
-#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-#~ msgstr "GREŠKA: APLIKACIJA ILI ALIAS DATOTEKA NE POSTOJI ILI JE NEČITLJIVA"
-
-#~ msgid "MEDIA TARGET TYPE"
-#~ msgstr "VRSTA CILJNE MEDIJSKE GRUPE"
-
-#~ msgid "SCREENSHOTS"
-#~ msgstr "SNIMCI EKRANA"
-
-#~ msgid "TITLE SCREENS"
-#~ msgstr "NASLOVNI EKRANI"
-
-#~ msgid "COVERS"
-#~ msgstr "NASLOVNICE"
-
-#~ msgid "BACK COVERS"
-#~ msgstr "IZA-NASLOVNICE"
-
-#~ msgid "MARQUEES (WHEELS)"
-#~ msgstr "ŠATORI (TOČKOVI)"
-
-#~ msgid "3D BOXES"
-#~ msgstr "3D KUTIJE"
-
-#~ msgid "PHYSICAL MEDIA"
-#~ msgstr "FIZIČKI MEDIJ"
-
-#~ msgid "MIXIMAGES"
-#~ msgstr "MIXIMAGES"
-
-#~ msgid "IMPORT MEDIA"
-#~ msgstr "UVEZITE MEDIJ"
-
-#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-#~ msgstr "UVEZITE BARJAK ILI LOGO AKO SU DOSTUPNI"
-
-#~ msgid "OVERWRITE MEDIA FILES"
-#~ msgstr "PREPIŠITE MEDIJSKE DATOTEKE"
-
-#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-#~ msgstr "UKLJUČITE SAMO APLIKACIJE KATEGORIZOVANE KAO IGRE"
-
-#~ msgid "close (apply)"
-#~ msgstr "zatvori (primijeni)"
-
-#~ msgid "close (cancel)"
-#~ msgstr "zatvori (otkazati)"
-
-#~ msgid "MAIN MENU"
-#~ msgstr "GLAVNI MENI"
-
-#~ msgid "SCRAPER"
-#~ msgstr "STRUGAČ"
-
-#~ msgid "UI SETTINGS"
-#~ msgstr "POSTAVKE UI-ja"
-
-#~ msgid "SOUND SETTINGS"
-#~ msgstr "POSTAVKE ZVUKA"
-
-#~ msgid "INPUT DEVICE SETTINGS"
-#~ msgstr "POSTAVKE ULAZNOG UREĐAJA"
-
-#~ msgid "GAME COLLECTION SETTINGS"
-#~ msgstr "POSTAVKE KOLEKCIJE IGARA"
-
-#~ msgid "UTILITIES"
-#~ msgstr "KOMUNALNE USLUGE"
-
-#~ msgid "MENU COLOR SCHEME"
-#~ msgstr "ŠEMA BOJA MENIJA"
-
-#~ msgid "DARK"
-#~ msgstr "TAMNA"
-
-#~ msgid "DARK AND RED"
-#~ msgstr "TAMNA I CRVENA"
-
-#~ msgid "LIGHT"
-#~ msgstr "SVJETLA"
-
-#~ msgid "AUDIO DRIVER"
-#~ msgstr "AUDIO DRAJVER"
-
-#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
-#~ msgstr "AUDIO DRAJVER (POTREBNO RESTARTOVANJE)"
-
-#~ msgid "TOUCH OVERLAY SIZE"
-#~ msgstr "VELIČINA DODIRNOG PREKRIVAČA"
-
-#~ msgid "EXTRA SMALL"
-#~ msgstr "IZUZETNO MALO"
-
-#~ msgid "TOUCH OVERLAY OPACITY"
-#~ msgstr "NEPROZIRNOST PREKRIVAJUĆEG DODIRA"
-
-#~ msgid "VERY LOW"
-#~ msgstr "VEOMA NISKO"
-
-#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
-#~ msgstr "VRIJEME ZATAMNJIVANJA DODIRNOG PREKRIVAČA"
-
-#~ msgid "ENABLE TOUCH OVERLAY"
-#~ msgstr "OMOGUĆI DODIRNI PREKRIVAČ"
-
-#~ msgid ""
-#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
-#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
-#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-#~ msgstr ""
-#~ "NE ISKLJUČUJTE DODIRNI PREKRIVAČ OSIM AKO NE KORISTITE KONTROLER, U INAČE "
-#~ "ĆETE BITI ZAKLJUČANI IZ APLIKACIJE. UKOLIKO SE OVO DESI, MORAT ĆETE "
-#~ "PRIVREMENO POVEZATI KONTROLER ILI TASTATURU DA BISTE PONOVNO OMOGUĆILI "
-#~ "OVU POSTAVKU, ILI MOŽETE IZBRIŠATI ARCADIA MEMORIJU U POSTAVKAMA ANDROID "
-#~ "APLIKACIJE KAKO BISTE PRISILILI KONFIGURATOR DA SE POKRENE PRI SLJEDEĆEM "
-#~ "POKRETANJU RAČUNALA"
-
-#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
-#~ msgstr "SAKRIJ TRAKU ZADATAKA (POTREBNO PONOVNO POKRETANJE)"
-
-#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-#~ msgstr "POKRENITE IGRE NA DRUGOM EKRANU"
-
-#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-#~ msgstr "DUGME ZA NAZAD/POVUCITE IZLAZ IZ APLIKACIJE"
-
-#~ msgid "close menu"
-#~ msgstr "zatvori meni"
-
-#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
-#~ msgstr "INDIKATOR STATUSA MREŽE NA EKRANU"
-
-#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
-#~ msgstr "OVIM ĆE TEMA BITI POTPUNO IZBRISANA"
-
-#~ msgid "system"
-#~ msgstr "šuštanje"
-
-#~ msgid "view media"
-#~ msgstr "medijski prikaz"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
-#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
-#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
-#~ "THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "NISU PRONAĐENE DATOTEKE IGARA. ILI UVEZITE NEKE IGRE ILI IH RUČNO "
-#~ "POSTAVITE U KONFIGURIRANI ROM DIREKTORIJ. OPCIONALNO MOŽETE GENERIRATI "
-#~ "STRUKTURU ROM DIREKTORIJA KOJA ĆE SAGRADITI TEKSTUALNU DATOTEKU ZA SVAKI "
-#~ "SISTEM KOJA ĆE PRUŽATI NEKE INFORMACIJE KAO ŠTO SU PODRŽANI PRODUŽECI "
-#~ "DATOTEKA. OVO JE KONFIGURIRANI ROM DIREKTORIJ:\n"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
-#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
-#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
-#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "NISU PRONAĐENE DATOTEKE IGARA. ILI UVEZITE NEKE IGRE ILI IH RUČNO "
-#~ "POSTAVITE U TRENUTNO KONFIGURISANI ROM DIREKTORIJ. MOŽETE I PROMIJENITI "
-#~ "PUTANJU ROM-A I OPCIONALNO GENERIRATI STRUKTURU ROM DIREKTORIJA KOJA ĆE "
-#~ "SAGRADITI TEKSTUALNU DATOTEKU ZA SVAKI SISTEM KOJA ĆE PRUŽATI NEKE "
-#~ "INFORMACIJE KAO ŠTO SU PODRŽANI PRODUŽECI DATOTEKA. OVO JE KONFIGURIRANI "
-#~ "ROM DIREKTORIJ:\n"
-
-#, c-format
-#~ msgctxt "theme"
-#~ msgid "%i second ago"
-#~ msgid_plural "%i seconds ago"
-#~ msgstr[0] "prije %i sekund"
-#~ msgstr[1] "prije %i sekunde"
-#~ msgstr[2] "prije %i sekundih"

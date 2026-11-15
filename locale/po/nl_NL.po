@@ -1,15 +1,15 @@
-# Arcadia Frontend translation strings.
+# ES-DE Frontend translation strings.
 # Copyright (c) 2024-2026 Northwestern Software AB
-# This file is distributed under the same license as the Arcadia Frontend package.
+# This file is distributed under the same license as the ES-DE Frontend package.
 # Northwestern Software <info@es-de.org>, 2024-2026.
 # Stefan <s.vandenbroekprive@gmail.com>, 2024.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Arcadia Frontend\n"
+"Project-Id-Version: ES-DE Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-11-15 13:45-0500\n"
-"PO-Revision-Date: 2025-10-15 09:33+0200\n"
+"POT-Creation-Date: 2026-11-15 16:19-0500\n"
+"PO-Revision-Date: 2026-09-04 12:21+0200\n"
 "Last-Translator: Stefan <s.vandenbroekprive@gmail.com>\n"
 "Language-Team: Nederlands <info@es-de.org>\n"
 "Language: nl_NL\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.9\n"
 
 msgid "Network error (status:"
 msgstr "Netwerkfout (status:"
@@ -649,6 +649,48 @@ msgstr "ALLE ONGESELECTEERDE"
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "SPECIALE TEKENS STRIPPEN"
 
+msgid "MEDIA TARGET TYPE"
+msgstr "MEDIA TARGET TYPE"
+
+msgid "SCREENSHOTS"
+msgstr "SCHERMAFBEELDINGEN"
+
+msgid "TITLE SCREENS"
+msgstr "TITEL SCHERMEN"
+
+msgid "COVERS"
+msgstr "COVERS"
+
+msgid "BACK COVERS"
+msgstr "ACHTERKANT COVERS"
+
+msgid "MARQUEES (WHEELS)"
+msgstr "MARQUEES (WHEELS)"
+
+msgid "3D BOXES"
+msgstr "3D BOXES"
+
+msgid "PHYSICAL MEDIA"
+msgstr "FYSIEKE MEDIA"
+
+msgid "FAN ART"
+msgstr "FAN ART"
+
+msgid "MIXIMAGES"
+msgstr "MIXIMAGES"
+
+msgid "IMPORT MEDIA"
+msgstr "IMPORTEER MEDIA"
+
+msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+msgstr "BANNERS OF LOGO'S IMPORTEREN, INDIEN BESCHIKBAAR"
+
+msgid "OVERWRITE MEDIA FILES"
+msgstr "MEDIABESTANDEN OVERSCHRIJVEN"
+
+msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+msgstr "ALLEEN APPS BEVATTEN DIE ZIJN GECATEGORISEERD ALS GAMES"
+
 msgid "START"
 msgstr "BEGIN"
 
@@ -660,6 +702,9 @@ msgstr "BEZIG..."
 
 msgid "COULDN'T FIND ANYTHING TO IMPORT"
 msgstr "KON NIETS VINDEN OM TE IMPORTEREN"
+
+msgid "import"
+msgstr "importeren"
 
 #, c-format
 msgid ""
@@ -680,15 +725,6 @@ msgstr "MAAK UW KEUZE"
 msgid "IMPORT"
 msgstr "IMPORTEREN"
 
-msgid "import"
-msgstr "importeren"
-
-#, c-format
-msgid "IMPORTED %i ENTRY"
-msgid_plural "IMPORTED %i ENTRIES"
-msgstr[0] "GESELECTEERDE %i ENTRIES"
-msgstr[1] "GESELECTEERDE %i ENTRIES"
-
 msgid "SELECT ALL"
 msgstr "ALLES"
 
@@ -700,6 +736,12 @@ msgstr "GEEN"
 
 msgid "select none"
 msgstr "selecteer geen"
+
+#, c-format
+msgid "IMPORTED %i ENTRY"
+msgid_plural "IMPORTED %i ENTRIES"
+msgstr[0] "GESELECTEERDE %i ENTRIES"
+msgstr[1] "GESELECTEERDE %i ENTRIES"
 
 msgid "FILTER GAMELIST"
 msgstr "FILTER GAMELIJST"
@@ -1218,6 +1260,12 @@ msgstr "VIDEO HARDWARE DECODERING (EXPERIMENTEEL)"
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "UPSCALE VIDEOFRAME-SNELHEID NAAR 60 FPS"
 
+msgid "QUERY INSTALLED RETROARCH CORES (EXPERIMENTAL)"
+msgstr "ZOEK NAAR GEÏNSTALLEERDE RETROARCH-KERNEN (EXPERIMENTEEL)"
+
+msgid "USE RETROARCH IN SAF MODE (NOT RECOMMENDED)"
+msgstr "GEBRUIK RETROARCH IN DE SAF MODUS (NIET AANBEVOLEN)"
+
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "VERBORGEN BESTANDEN EN MAPPEN WEERGEVEN"
 
@@ -1226,6 +1274,9 @@ msgstr "AANGEPASTE EVENEMENTEN-SCRIPTS INSCHAKELEN"
 
 msgid "BROWSING CUSTOM EVENTS"
 msgstr "BLADEREN DOOR AANGEPASTE EVENEMENTEN"
+
+msgid "RUN BROWSING EVENTS AS NON-BLOCKING"
+msgstr "SURFEVENEMENTEN ALS NIET-BLOKKEREND UITVOEREN"
 
 msgid "ONLY SHOW GAMES FROM GAMELIST.XML FILES"
 msgstr "ALLEEN GAMES UIT GAMELIST.XML-BESTANDEN TONEN"
@@ -1323,8 +1374,26 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "SCREENSAVER-INSTELLINGEN"
 
+msgid "LAUNCH ON OTHER SCREEN"
+msgstr "OP EEN ANDER SCHERM STARTEN"
+
+msgid "ENABLE LAUNCH ON OTHER SCREEN"
+msgstr "START OP EEN ANDER SCHERM INSCHAKELEN"
+
 msgid "open"
 msgstr ""
+
+msgid "System default (Other)"
+msgstr "Systeemstandaard (Overig)"
+
+msgid "System default (Primary)"
+msgstr "Systeemstandaard (Primair)"
+
+msgid "Always on other"
+msgstr "Altijd op de andere"
+
+msgid "Always on primary"
+msgstr "Altijd op primair"
 
 msgid "EDIT METADATA"
 msgstr "METADATA BEWERKEN"
@@ -2575,9 +2644,6 @@ msgstr "DOOS ACHTERKANT"
 msgid "TITLE SCREEN"
 msgstr "TITELSCHERM"
 
-msgid "FAN ART"
-msgstr "FAN ART"
-
 msgid "MIXIMAGE"
 msgstr "MIXAFBEELDING"
 
@@ -2723,6 +2789,14 @@ msgstr "ALTERNATIEVE EMULATOR"
 msgctxt "metadata"
 msgid "SELECT ALTERNATIVE EMULATOR"
 msgstr "SELECTEER ALTERNATIEVE EMULATOR"
+
+msgctxt "metadata"
+msgid "LAUNCH ON SCREEN"
+msgstr "OP HET SCHERM STARTEN"
+
+msgctxt "metadata"
+msgid "LAUNCH ON WHICH SCREEN"
+msgstr "OP WELK SCHERM STARTEN"
 
 msgctxt "metadata"
 msgid "FOLDER LINK"
@@ -3369,179 +3443,3 @@ msgstr ""
 
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "FOUT: PDF-BESTAND KAN NIET WEERGEVEN"
-
-#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-#~ msgstr "FOUT: APP OF ALIAS-BESTAND BESTAAT NIET OF IS ONLEESBAAR"
-
-#~ msgid "MEDIA TARGET TYPE"
-#~ msgstr "MEDIA TARGET TYPE"
-
-#~ msgid "SCREENSHOTS"
-#~ msgstr "SCHERMAFBEELDINGEN"
-
-#~ msgid "TITLE SCREENS"
-#~ msgstr "TITEL SCHERMEN"
-
-#~ msgid "COVERS"
-#~ msgstr "COVERS"
-
-#~ msgid "BACK COVERS"
-#~ msgstr "ACHTERKANT COVERS"
-
-#~ msgid "MARQUEES (WHEELS)"
-#~ msgstr "MARQUEES (WHEELS)"
-
-#~ msgid "3D BOXES"
-#~ msgstr "3D BOXES"
-
-#~ msgid "PHYSICAL MEDIA"
-#~ msgstr "FYSIEKE MEDIA"
-
-#~ msgid "MIXIMAGES"
-#~ msgstr "MIXIMAGES"
-
-#~ msgid "IMPORT MEDIA"
-#~ msgstr "IMPORTEER MEDIA"
-
-#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-#~ msgstr "BANNERS OF LOGO'S IMPORTEREN, INDIEN BESCHIKBAAR"
-
-#~ msgid "OVERWRITE MEDIA FILES"
-#~ msgstr "MEDIABESTANDEN OVERSCHRIJVEN"
-
-#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-#~ msgstr "ALLEEN APPS BEVATTEN DIE ZIJN GECATEGORISEERD ALS GAMES"
-
-#~ msgid "close (apply)"
-#~ msgstr "sluiten (toepassen)"
-
-#~ msgid "close (cancel)"
-#~ msgstr "sluiten (annuleren)"
-
-#~ msgid "MAIN MENU"
-#~ msgstr "HOOFDMENU"
-
-#~ msgid "SCRAPER"
-#~ msgstr "SCRAPER"
-
-#~ msgid "UI SETTINGS"
-#~ msgstr "UI-INSTELLINGEN"
-
-#~ msgid "SOUND SETTINGS"
-#~ msgstr "GELUIDSINSTELLINGEN"
-
-#~ msgid "INPUT DEVICE SETTINGS"
-#~ msgstr "INSTELLINGEN INPUT-APPARAAT"
-
-#~ msgid "GAME COLLECTION SETTINGS"
-#~ msgstr "INSTELLINGEN VOOR SPELVERZAMELING"
-
-#~ msgid "UTILITIES"
-#~ msgstr "HULPPROGRAMMA'S"
-
-#~ msgid "MENU COLOR SCHEME"
-#~ msgstr "MENU KLEURENSCHEMA"
-
-#~ msgid "DARK"
-#~ msgstr "DONKER"
-
-#~ msgid "DARK AND RED"
-#~ msgstr "DONKER EN ROOD"
-
-#~ msgid "LIGHT"
-#~ msgstr "LICHT"
-
-#~ msgid "AUDIO DRIVER"
-#~ msgstr "AUDIOSTUURPROGRAMMA"
-
-#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
-#~ msgstr "AUDIOSTUURPROGRAMMA (VEREIST HERSTART)"
-
-#~ msgid "TOUCH OVERLAY SIZE"
-#~ msgstr "GROOTTE VAN DE TOUCH OVERLAY"
-
-#~ msgid "EXTRA SMALL"
-#~ msgstr "EXTRA KLEIN"
-
-#~ msgid "TOUCH OVERLAY OPACITY"
-#~ msgstr "TOUCH OVERLAY OPACITEIT"
-
-#~ msgid "VERY LOW"
-#~ msgstr "ZEER LAAG"
-
-#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
-#~ msgstr "TOUCH OVERLAY FADE-OUT TIJD"
-
-#~ msgid "ENABLE TOUCH OVERLAY"
-#~ msgstr "TOUCH OVERLAY INSCHAKELEN"
-
-#~ msgid ""
-#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
-#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
-#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-#~ msgstr ""
-#~ "SCHAKEL DE TOUCH OVERLAY NIET UIT, TENZIJ U EEN CONTROLLER GEBRUIKT, "
-#~ "ANDERS WORDT U UITGESLOTEN VAN DE APP. ALS DIT GEBEURT, MOET U TIJDELIJK "
-#~ "EEN CONTROLLER OF TOETSENBORD AANSLUITEN OM DEZE INSTELLING WEER IN TE "
-#~ "SCHAKELEN, OF U KUNT DE ARCADIA OPSLAG IN DE INSTELLINGEN VAN DE ANDROID-"
-#~ "APP WISSEN OM DE CONFIGURATOR TE DWINGEN OM BIJ DE VOLGENDE OPSTART TE "
-#~ "WORDEN UITGEVOERD"
-
-#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
-#~ msgstr "TAAKBALK VERBERGEN (VEREIST HERSTART)"
-
-#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-#~ msgstr "SPELLEN OP HET ANDERE SCHERM STARTEN"
-
-#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-#~ msgstr "TERUGKNOP/TERUGVEGEN APP AFSLUITEN"
-
-#~ msgid "close menu"
-#~ msgstr "menu sluiten"
-
-#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
-#~ msgstr "CELLULAIRE STATUSINDICATOR WEERGEVEN"
-
-#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
-#~ msgstr "DIT ZAL HET THEMA VOLLEDIG VERWIJDEREN"
-
-#~ msgid "system"
-#~ msgstr "systeem"
-
-#~ msgid "view media"
-#~ msgstr "media bekijken"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
-#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
-#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
-#~ "THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "ER ZIJN GEEN GAMEBESTANDEN GEVONDEN. IMPORTEER ENKELE GAMES OF PLAATS ZE "
-#~ "HANDMATIG IN DE GECONFIGUREERDE ROM-MAP. Optioneel kunt u de structuur "
-#~ "van de ROM-map genereren, waardoor er voor elk systeem een ​​tekstbestand "
-#~ "wordt aangemaakt met informatie zoals de ondersteunde bestandsextensies. "
-#~ "Dit is de GECONFIGUREERDE ROM-map:\n"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
-#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
-#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
-#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "ER ZIJN GEEN GAMEBESTANDEN GEVONDEN. IMPORTEER ENKELE SPELLEN OF PLAATS "
-#~ "ZE HANDMATIG IN DE HUIDIG GECONFIGUREERDE ROM-MAP. U KUNT OOK HET ROM-PAD "
-#~ "WIJZIGEN EN DESGEWENST DE ROM-MAPSTRUCTUUR GENEREREN, WAARDOOR VOOR ELK "
-#~ "SYSTEEM EEN TEKSTBESTAND WORDT AANGEMAAKT MET INFORMATIE, ZOALS DE "
-#~ "ONDERSTEUNDE BESTANDSEXTENSIES. DIT IS DE GECONFIGUREERDE ROM-MAP:\n"
-
-#, c-format
-#~ msgctxt "theme"
-#~ msgid "%i second ago"
-#~ msgid_plural "%i seconds ago"
-#~ msgstr[0] "%i seconde geleden"
-#~ msgstr[1] "%i seconden geleden"

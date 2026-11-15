@@ -533,7 +533,7 @@ void GuiOrphanedDataCleanup::cleanupGamelists()
         const pugi::xml_node& alternativeEmulator {sourceDoc.child("alternativeEmulator")};
         if (alternativeEmulator) {
             LOG(LogDebug)
-                << "GuiOrphanedDataCleanup::cleanupGamelists(): Found an alternativeEmulator tag ";
+                << "GuiOrphanedDataCleanup::cleanupGamelists(): Found an alternativeEmulator tag";
         }
 
         const pugi::xml_node& sourceRoot {sourceDoc.child("gameList")};
@@ -659,7 +659,13 @@ void GuiOrphanedDataCleanup::cleanupGamelists()
                 }
             }
             else {
-                LOG(LogInfo) << "Retaining unknown tag \"" << tag << "\"";
+                if (tag == "launchOnOtherScreen") {
+                    LOG(LogDebug) << "GuiOrphanedDataCleanup::cleanupGamelists(): Found a "
+                                     "launchOnOtherScreen tag";
+                }
+                else {
+                    LOG(LogInfo) << "Retaining unknown tag \"" << tag << "\"";
+                }
                 targetRoot.append_copy((*it));
             }
         }

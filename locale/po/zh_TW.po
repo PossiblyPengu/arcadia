@@ -1,14 +1,14 @@
-# Arcadia Frontend translation strings.
+# ES-DE Frontend translation strings.
 # Copyright (c) 2024-2026 Northwestern Software AB
-# This file is distributed under the same license as the Arcadia Frontend package.
+# This file is distributed under the same license as the ES-DE Frontend package.
 # Northwestern Software <info@es-de.org>, 2024-2026.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Arcadia Frontend\n"
+"Project-Id-Version: ES-DE Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-11-15 13:45-0500\n"
-"PO-Revision-Date: 2025-10-13 22:04+0200\n"
+"POT-Creation-Date: 2026-11-15 16:19-0500\n"
+"PO-Revision-Date: 2026-09-10 12:02+0200\n"
 "Last-Translator: Northwestern Software <info@es-de.org>\n"
 "Language-Team: 繁體中文 <info@es-de.org>\n"
 "Language: zh_TW\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.7\n"
+"X-Generator: Poedit 3.9\n"
 
 msgid "Network error (status:"
 msgstr "網路錯誤（狀態："
@@ -630,6 +630,48 @@ msgstr "所有未選擇的"
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "刪除特殊字符"
 
+msgid "MEDIA TARGET TYPE"
+msgstr "媒體目標類型"
+
+msgid "SCREENSHOTS"
+msgstr "截圖"
+
+msgid "TITLE SCREENS"
+msgstr "標題畫面"
+
+msgid "COVERS"
+msgstr "封面"
+
+msgid "BACK COVERS"
+msgstr "背封"
+
+msgid "MARQUEES (WHEELS)"
+msgstr "遊戲標誌"
+
+msgid "3D BOXES"
+msgstr "3D盒子"
+
+msgid "PHYSICAL MEDIA"
+msgstr "實體卡帶"
+
+msgid "FAN ART"
+msgstr "粉絲自制"
+
+msgid "MIXIMAGES"
+msgstr "混合影像"
+
+msgid "IMPORT MEDIA"
+msgstr "導入媒體"
+
+msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+msgstr "如有可能匯入橫幅或LOGO"
+
+msgid "OVERWRITE MEDIA FILES"
+msgstr "覆寫媒體文件"
+
+msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+msgstr "僅包含歸類為遊戲的應用"
+
 msgid "START"
 msgstr "開始"
 
@@ -641,6 +683,9 @@ msgstr "正在執行……"
 
 msgid "COULDN'T FIND ANYTHING TO IMPORT"
 msgstr "無法找到可導入內容"
+
+msgid "import"
+msgstr "導入"
 
 #, c-format
 msgid ""
@@ -659,14 +704,6 @@ msgstr "請選擇"
 msgid "IMPORT"
 msgstr "導入"
 
-msgid "import"
-msgstr "導入"
-
-#, c-format
-msgid "IMPORTED %i ENTRY"
-msgid_plural "IMPORTED %i ENTRIES"
-msgstr[0] "已導入%i個項目"
-
 msgid "SELECT ALL"
 msgstr "選擇全部"
 
@@ -678,6 +715,11 @@ msgstr "取消選擇"
 
 msgid "select none"
 msgstr "取消選擇"
+
+#, c-format
+msgid "IMPORTED %i ENTRY"
+msgid_plural "IMPORTED %i ENTRIES"
+msgstr[0] "已導入%i個項目"
 
 msgid "FILTER GAMELIST"
 msgstr "過濾遊戲列表"
@@ -1192,6 +1234,12 @@ msgstr "影片硬體解碼（實驗性）"
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "將影片幀率提升至 60 FPS"
 
+msgid "QUERY INSTALLED RETROARCH CORES (EXPERIMENTAL)"
+msgstr "查詢已安裝的RETROARCH核心（實驗性質）"
+
+msgid "USE RETROARCH IN SAF MODE (NOT RECOMMENDED)"
+msgstr "在儲存存取框架模式上使用RETROARCH（不受建議）"
+
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "顯示隱藏檔案和資料夾"
 
@@ -1200,6 +1248,9 @@ msgstr "啟用自定義事件指令碼"
 
 msgid "BROWSING CUSTOM EVENTS"
 msgstr "瀏覽自定義事件"
+
+msgid "RUN BROWSING EVENTS AS NON-BLOCKING"
+msgstr "以非阻塞方式運行瀏覽事件"
 
 msgid "ONLY SHOW GAMES FROM GAMELIST.XML FILES"
 msgstr "僅顯示 gamelist.xml 檔案中的遊戲"
@@ -1293,8 +1344,26 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "螢幕保護設定"
 
+msgid "LAUNCH ON OTHER SCREEN"
+msgstr "在其他螢幕上啟動"
+
+msgid "ENABLE LAUNCH ON OTHER SCREEN"
+msgstr "啟用在其他螢幕上啟動"
+
 msgid "open"
 msgstr ""
+
+msgid "System default (Other)"
+msgstr "系統預設（其他）"
+
+msgid "System default (Primary)"
+msgstr "系統預設（首選）"
+
+msgid "Always on other"
+msgstr "總是在其他"
+
+msgid "Always on primary"
+msgstr "總是在首選"
 
 msgid "EDIT METADATA"
 msgstr "編輯後設資料"
@@ -2495,9 +2564,6 @@ msgstr "盒裝後蓋"
 msgid "TITLE SCREEN"
 msgstr "標題"
 
-msgid "FAN ART"
-msgstr "粉絲自制"
-
 msgid "MIXIMAGE"
 msgstr "混合影象"
 
@@ -2643,6 +2709,14 @@ msgstr "備用模擬器"
 msgctxt "metadata"
 msgid "SELECT ALTERNATIVE EMULATOR"
 msgstr "請選擇備用模擬器"
+
+msgctxt "metadata"
+msgid "LAUNCH ON SCREEN"
+msgstr "在螢幕上啟動"
+
+msgctxt "metadata"
+msgid "LAUNCH ON WHICH SCREEN"
+msgstr "在哪個螢幕上啟動"
 
 msgctxt "metadata"
 msgid "FOLDER LINK"
@@ -3254,171 +3328,3 @@ msgstr ""
 
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "錯誤：無法渲染PDF檔案"
-
-#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-#~ msgstr "錯誤：應用程式或別名檔案不存在或無法讀取"
-
-#~ msgid "MEDIA TARGET TYPE"
-#~ msgstr "媒體目標類型"
-
-#~ msgid "SCREENSHOTS"
-#~ msgstr "截圖"
-
-#~ msgid "TITLE SCREENS"
-#~ msgstr "標題畫面"
-
-#~ msgid "COVERS"
-#~ msgstr "封面"
-
-#~ msgid "BACK COVERS"
-#~ msgstr "背封"
-
-#~ msgid "MARQUEES (WHEELS)"
-#~ msgstr "遊戲標誌"
-
-#~ msgid "3D BOXES"
-#~ msgstr "3D盒子"
-
-#~ msgid "PHYSICAL MEDIA"
-#~ msgstr "實體卡帶"
-
-#~ msgid "MIXIMAGES"
-#~ msgstr "混合影像"
-
-#~ msgid "IMPORT MEDIA"
-#~ msgstr "導入媒體"
-
-#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-#~ msgstr "如有可能匯入橫幅或LOGO"
-
-#~ msgid "OVERWRITE MEDIA FILES"
-#~ msgstr "覆寫媒體文件"
-
-#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-#~ msgstr "僅包含歸類為遊戲的應用"
-
-#~ msgid "close (apply)"
-#~ msgstr "關閉（應用）"
-
-#~ msgid "close (cancel)"
-#~ msgstr "關閉（取消）"
-
-#~ msgid "MAIN MENU"
-#~ msgstr "主選單"
-
-#~ msgid "SCRAPER"
-#~ msgstr "刮削/抓取"
-
-#~ msgid "UI SETTINGS"
-#~ msgstr "介面設定"
-
-#~ msgid "SOUND SETTINGS"
-#~ msgstr "聲音設定"
-
-#~ msgid "INPUT DEVICE SETTINGS"
-#~ msgstr "輸入裝置設定"
-
-#~ msgid "GAME COLLECTION SETTINGS"
-#~ msgstr "遊戲收藏設定"
-
-#~ msgid "UTILITIES"
-#~ msgstr "工具"
-
-#~ msgid "MENU COLOR SCHEME"
-#~ msgstr "選單配色方案"
-
-#~ msgid "DARK"
-#~ msgstr "暗黑"
-
-#~ msgid "DARK AND RED"
-#~ msgstr "暗紅"
-
-#~ msgid "LIGHT"
-#~ msgstr "明亮"
-
-#~ msgid "AUDIO DRIVER"
-#~ msgstr "音訊驅動程式"
-
-#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
-#~ msgstr "音訊驅動程式（需要重啟）"
-
-#~ msgid "TOUCH OVERLAY SIZE"
-#~ msgstr "虛擬按鍵大小"
-
-#~ msgid "EXTRA SMALL"
-#~ msgstr "極小"
-
-#~ msgid "TOUCH OVERLAY OPACITY"
-#~ msgstr "虛擬按鍵不透明度"
-
-#~ msgid "VERY LOW"
-#~ msgstr "很低"
-
-#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
-#~ msgstr "虛擬按鍵淡出時間"
-
-#~ msgid "ENABLE TOUCH OVERLAY"
-#~ msgstr "啟用虛擬按鍵"
-
-#~ msgid ""
-#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
-#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
-#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-#~ msgstr ""
-#~ "除非您正在使用控制器，否則請不要禁用虛擬按鍵，否則您將無法再訪問該應用。如"
-#~ "果發生這種情況，您需要暫時插入一個控制器或鍵盤來重新啟用此設定，或者您可以"
-#~ "在Android應用設定中清除Arcadia儲存，以強制配置器在下次啟動時執行"
-
-#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
-#~ msgstr "隱藏工作列（需要重啟）"
-
-#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-#~ msgstr "在另一個螢幕上啟動遊戲"
-
-#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-#~ msgstr "返回鍵/向後滑動退出應用程式"
-
-#~ msgid "close menu"
-#~ msgstr "關閉選單"
-
-#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
-#~ msgstr "顯示行動網路狀態圖示"
-
-#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
-#~ msgstr "這將徹底刪除主題"
-
-#~ msgid "system"
-#~ msgstr "切換平台"
-
-#~ msgid "view media"
-#~ msgstr "檢視媒體"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
-#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
-#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
-#~ "THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "未找到任何遊戲檔案。請匯入遊戲檔案或將其手動放置到配置的遊戲目錄中。你也可"
-#~ "以選擇產生遊戲目錄結構，該操作會為每個遊戲系統創建一個文字說明文件，其中包"
-#~ "含支援的文件副檔名等關鍵資訊。目前配置的遊戲目錄為：\n"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
-#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
-#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
-#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "未找到任何遊戲檔案。請匯入遊戲檔案或將其手動放置到目前配置的ROM目錄中。你"
-#~ "也可以更改ROM路徑，並可選地產生ROM目錄結構，該操作將為每個系統建立說明文字"
-#~ "文件，其中包含支援的文件副檔名等資訊。目前配置的ROM目錄為：\n"
-
-#, c-format
-#~ msgctxt "theme"
-#~ msgid "%i second ago"
-#~ msgid_plural "%i seconds ago"
-#~ msgstr[0] "%i 秒前"

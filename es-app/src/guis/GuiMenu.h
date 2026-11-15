@@ -45,6 +45,7 @@ private:
     void openSystemStatusOptions();
     void openMediaViewerOptions();
     void openScreensaverOptions();
+    void openScreenLaunchOptions();
     void openSoundOptions();
     void openInputDeviceOptions();
     void openConfigInput(GuiSettings* settings);

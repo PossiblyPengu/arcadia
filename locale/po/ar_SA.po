@@ -1,14 +1,14 @@
-# Arcadia Frontend translation strings.
+# ES-DE Frontend translation strings.
 # Copyright (c) 2024-2026 Northwestern Software AB
-# This file is distributed under the same license as the Arcadia Frontend package.
+# This file is distributed under the same license as the ES-DE Frontend package.
 # Northwestern Software <info@es-de.org>, 2024-2026.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Arcadia Frontend\n"
+"Project-Id-Version: ES-DE Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-11-15 13:45-0500\n"
-"PO-Revision-Date: 2025-09-17 14:34+0300\n"
+"POT-Creation-Date: 2026-11-15 16:19-0500\n"
+"PO-Revision-Date: 2026-09-05 18:04+0300\n"
 "Last-Translator: Northwestern Software <info@es-de.org>\n"
 "Language-Team: Arabic (Classical Arabic) <info@es-de.org>\n"
 "Language: ar_SA\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100 >= 3 "
 "&& n%100<=10 ? 3 : n%100 >= 11 && n%100<=99 ? 4 : 5;\n"
-"X-Generator: Poedit 3.7\n"
+"X-Generator: Poedit 3.9\n"
 
 msgid "Network error (status:"
 msgstr "خطأ في الشبكة (الحالة:"
@@ -172,58 +172,58 @@ msgstr[5] "%i ساعة"
 
 #, c-format
 msgid "ERROR: MISSING PRE-COMMAND FIND RULES CONFIGURATION FOR '%s'"
-msgstr "خطأ: تكوين قواعد البحث المسبق مفقود لـ '%s'"
+msgstr "خطأ تكوين قواعد البحث المسبق مفقود لـ '%s'"
 
 msgid "ERROR: COULDN'T FIND PRE-COMMAND, HAS IT BEEN PROPERLY INSTALLED?"
-msgstr "خطأ: لم يتم العثور على الأمر المسبق، هل تم تثبيته بشكل صحيح؟"
+msgstr "خطأ لم يتم العثور على الأمر المسبق، هل تم تثبيته بشكل صحيح؟"
 
 #, c-format
 msgid "ERROR: COULDN'T FIND PRE-COMMAND '%s', HAS IT BEEN PROPERLY INSTALLED?"
-msgstr "خطأ: تعذر العثور على الأمر المسبق '%s'، هل تم تثبيته بشكل صحيح؟"
+msgstr "خطأ تعذر العثور على الأمر المسبق '%s'، هل تم تثبيته بشكل صحيح؟"
 
 #, c-format
 msgid "ERROR: MISSING EMULATOR FIND RULES CONFIGURATION FOR '%s'"
-msgstr "خطأ: تكوين قواعد البحث عن المحاكي مفقود '%s'"
+msgstr "خطأ تكوين قواعد البحث عن المحاكي مفقود '%s'"
 
 msgid "ERROR: COULDN'T FIND APP, HAS IT BEEN PROPERLY INSTALLED?"
-msgstr "خطأ: لم يتم العثور على التطبيق، هل تم تثبيته بشكل صحيح؟"
+msgstr "خطأ لم يتم العثور على التطبيق، هل تم تثبيته بشكل صحيح؟"
 
 #, c-format
 msgid "ERROR: COULDN'T FIND APP '%s', HAS IT BEEN PROPERLY INSTALLED?"
-msgstr "خطأ: تعذر العثور على التطبيق '%s'، هل تم تثبيته بشكل صحيح؟"
+msgstr "خطأ تعذر العثور على التطبيق '%s'، هل تم تثبيته بشكل صحيح؟"
 
 msgid "ERROR: COULDN'T FIND EMULATOR, HAS IT BEEN PROPERLY INSTALLED?"
-msgstr "خطأ: لم يتم العثور على المحاكي، هل تم تثبيته بشكل صحيح؟"
+msgstr "خطأ لم يتم العثور على المحاكي، هل تم تثبيته بشكل صحيح؟"
 
 #, c-format
 msgid "ERROR: COULDN'T FIND EMULATOR '%s', HAS IT BEEN PROPERLY INSTALLED?"
-msgstr "خطأ: تعذر العثور على المحاكي '%s'، هل تم تثبيته بشكل صحيح؟"
+msgstr "خطأ تعذر العثور على المحاكي '%s'، هل تم تثبيته بشكل صحيح؟"
 
 #, c-format
 msgid "ERROR: COULDN'T FIND EMULATOR CORE FILE '%s'"
-msgstr "خطأ: تعذر العثور على ملف نواة المحاكي '%s'"
+msgstr "خطأ تعذر العثور على ملف نواة المحاكي '%s'"
 
 msgid "ERROR: INVALID ENTRY IN SYSTEMS CONFIGURATION FILE"
-msgstr "خطأ: إدخال غير صالح في ملف تكوين النظام"
+msgstr "خطأ إدخال غير صالح في ملف تكوين النظام"
 
 #, c-format
 msgid "ERROR: MISSING CORE CONFIGURATION FOR '%s'"
-msgstr "خطأ: تكوين أساسي مفقود لـ '%s'"
+msgstr "خطأ تكوين أساسي مفقود لـ '%s'"
 
 #, c-format
 msgid "ERROR: INVALID %s VARIABLE ENTRY"
-msgstr "خطأ: إدخال متغير %s غير صالح"
+msgstr "خطأ إدخال متغير %s غير صالح"
 
 #, c-format
 msgid ""
 "ERROR: DIRECTORY DEFINED BY %s COULD NOT BE CREATED, PERMISSION PROBLEMS?"
-msgstr "خطأ: لا يمكن إنشاء الدليل المحدد بواسطة %s، مشاكل الأذونات؟"
+msgstr "خطأ لا يمكن إنشاء الدليل المحدد بواسطة %s، مشاكل الأذونات؟"
 
 msgid "ERROR: DESKTOP FILE IS INVALID OR UNREADABLE"
-msgstr "خطأ: ملف سطح المكتب غير صالح أو غير قابل للقراءة"
+msgstr "خطأ ملف سطح المكتب غير صالح أو غير قابل للقراءة"
 
 msgid "ERROR: DESKTOP FILE DOESN'T EXIST OR IS UNREADABLE"
-msgstr "خطأ: ملف سطح المكتب غير موجود أو غير قابل للقراءة"
+msgstr "خطأ ملف سطح المكتب غير موجود أو غير قابل للقراءة"
 
 #, c-format
 msgid "ERROR LAUNCHING GAME '%s' (ERROR CODE %i)"
@@ -437,26 +437,26 @@ msgid "Downloaded file does not match expected MD5 checksum"
 msgstr "الملف الذي تم تنزيله لا يتطابق مع مجموع الاختبار MD5 المتوقع"
 
 msgid "Error: Couldn't delete temporary package file, permission problems?"
-msgstr "خطأ: لا يمكن حذف ملف الحزمة المؤقت، مشاكل الأذونات؟"
+msgstr "خطأ لا يمكن حذف ملف الحزمة المؤقت، مشاكل الأذونات؟"
 
 msgid "Error: Couldn't write package file, permission problems?"
-msgstr "خطأ: لا يمكن كتابة ملف الحزمة، مشاكل الأذونات?"
+msgstr "خطأ لا يمكن كتابة ملف الحزمة، مشاكل الأذونات?"
 
 msgid "Error: Couldn't set permissions on AppImage file"
-msgstr "خطأ: لا يمكن تعيين أذونات على ملف AppImage"
+msgstr "خطأ لا يمكن تعيين أذونات على ملف AppImage"
 
 #, c-format
 msgid "Downloaded %s"
 msgstr "تنزيل %s"
 
 msgid "Error: Couldn't open AppImage update file for reading"
-msgstr "خطأ: تعذر فتح ملف تحديث AppImage للقراءة"
+msgstr "خطأ تعذر فتح ملف تحديث AppImage للقراءة"
 
 msgid "Error: Downloaded file does not match expected MD5 checksum"
-msgstr "خطأ: الملف الذي تم تنزيله لا يتطابق مع مجموع الاختبار MD5 المتوقع"
+msgstr "خطأ الملف الذي تم تنزيله لا يتطابق مع مجموع الاختبار MD5 المتوقع"
 
 msgid "Error: Couldn't rename running AppImage file, permission problems?"
-msgstr "خطأ: تعذر إعادة تسمية ملف AppImage قيد التشغيل، مشاكل الأذونات؟"
+msgstr "خطأ تعذر إعادة تسمية ملف AppImage قيد التشغيل، مشاكل الأذونات؟"
 
 msgid "Error: Couldn't replace running AppImage file, permission problems?"
 msgstr "تعذر استبدال ملف AppImage قيد التشغيل، هل تواجه مشاكل في الأذونات؟"
@@ -641,7 +641,7 @@ msgid "Updating emulators"
 msgstr ""
 
 msgid "choose"
-msgstr "اختيار"
+msgstr "اختار"
 
 msgid "install or manage"
 msgstr ""
@@ -667,6 +667,48 @@ msgstr "جميعها غير محددة"
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "تجريد الشخصيات الخاصة"
 
+msgid "MEDIA TARGET TYPE"
+msgstr "نوع هدف الوسائط"
+
+msgid "SCREENSHOTS"
+msgstr "لقطات الشاشة"
+
+msgid "TITLE SCREENS"
+msgstr "شاشات العنوان"
+
+msgid "COVERS"
+msgstr "أغطية"
+
+msgid "BACK COVERS"
+msgstr "الأغطية الخلفية"
+
+msgid "MARQUEES (WHEELS)"
+msgstr "(عجلات) ماركي"
+
+msgid "3D BOXES"
+msgstr "3D صناديق"
+
+msgid "PHYSICAL MEDIA"
+msgstr "الوسائط المادية"
+
+msgid "FAN ART"
+msgstr "فن المعجبين"
+
+msgid "MIXIMAGES"
+msgstr "الصور المخطلطة"
+
+msgid "IMPORT MEDIA"
+msgstr "استيراد وسائط"
+
+msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+msgstr "استيراد لافتات أو شعارات إذا كانت متوفرة"
+
+msgid "OVERWRITE MEDIA FILES"
+msgstr "الكتابة فوق ملفات الوسائط"
+
+msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+msgstr "فقط تضمين التطبيقات المصنفة كألعاب"
+
 msgid "START"
 msgstr "أبدا"
 
@@ -678,6 +720,9 @@ msgstr "...عمل"
 
 msgid "COULDN'T FIND ANYTHING TO IMPORT"
 msgstr "لا يمكن العثور على أي شيء للاستيراد"
+
+msgid "import"
+msgstr "استيراد"
 
 #, c-format
 msgid ""
@@ -697,19 +742,6 @@ msgstr "قم باختيارك"
 msgid "IMPORT"
 msgstr "استيراد"
 
-msgid "import"
-msgstr "استيراد"
-
-#, c-format
-msgid "IMPORTED %i ENTRY"
-msgid_plural "IMPORTED %i ENTRIES"
-msgstr[0] "تم استيراد %i إدخال"
-msgstr[1] "تم استيراد إدخال %i"
-msgstr[2] "تم استيراد إدخالان"
-msgstr[3] "تم استيراد %i إدخالات"
-msgstr[4] "تم استيراد %i إدخالاً"
-msgstr[5] "تم استيراد %i إدخالاً"
-
 msgid "SELECT ALL"
 msgstr "حدد كل شيء"
 
@@ -721,6 +753,16 @@ msgstr "لا تحدد شيء"
 
 msgid "select none"
 msgstr "لا تحدد شيء"
+
+#, c-format
+msgid "IMPORTED %i ENTRY"
+msgid_plural "IMPORTED %i ENTRIES"
+msgstr[0] "تم استيراد %i إدخال"
+msgstr[1] "تم استيراد إدخال %i"
+msgstr[2] "تم استيراد إدخالان"
+msgstr[3] "تم استيراد %i إدخالات"
+msgstr[4] "تم استيراد %i إدخالاً"
+msgstr[5] "تم استيراد %i إدخالاً"
 
 msgid "FILTER GAMELIST"
 msgstr "تصفية قائمة الألعاب"
@@ -1236,6 +1278,12 @@ msgstr "(تجريبي) فك تشفير أجهزة الفيديو"
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "إطارًا في الثانية 60 رفع معدل إطارات الفيديو إلى"
 
+msgid "QUERY INSTALLED RETROARCH CORES (EXPERIMENTAL)"
+msgstr "(تجريبي) المثبتة RetroArch استعلام عن نوى"
+
+msgid "USE RETROARCH IN SAF MODE (NOT RECOMMENDED)"
+msgstr "(غير مستحسن) SAF في وضع RETROARCH استخدم"
+
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "إظهار الملفات والمجلدات المخفية"
 
@@ -1244,6 +1292,9 @@ msgstr "تمكين نصوص الأحداث المخصصة"
 
 msgid "BROWSING CUSTOM EVENTS"
 msgstr "تصفح الأحداث المخصصة"
+
+msgid "RUN BROWSING EVENTS AS NON-BLOCKING"
+msgstr "تشغيل أحداث التصفح كأحداث غير مانعة"
 
 msgid "ONLY SHOW GAMES FROM GAMELIST.XML FILES"
 msgstr "gamelist.xml عرض الألعاب فقط من ملفات"
@@ -1258,10 +1309,10 @@ msgid "DEBUG MODE"
 msgstr "وضع التصحيح"
 
 msgid "DISPLAY GPU STATISTICS OVERLAY"
-msgstr "عرض تراكب إحصائيات وحدة معالجة الرسومات"
+msgstr "عرض إحصائيات  كرت الشاشة"
 
 msgid "ENABLE MENU IN KID MODE"
-msgstr "تمكين القائمة في وضع الأطفال"
+msgstr "تفعيل القائمة في وضع الأطفال"
 
 msgid "SHOW QUIT MENU (REBOOT AND POWER OFF ENTRIES)"
 msgstr "(إيقاف وإعادة تشغيل الإدخالات) إظهر قائمة الخروج"
@@ -1340,8 +1391,26 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "إعدادات شاشة التوقف"
 
+msgid "LAUNCH ON OTHER SCREEN"
+msgstr "تشغيل على شاشة أخرى"
+
+msgid "ENABLE LAUNCH ON OTHER SCREEN"
+msgstr "تفعيل التشغيل على شاشة أخرى"
+
 msgid "open"
 msgstr ""
+
+msgid "System default (Other)"
+msgstr "الإعدادات الافتراضية للنظام (أخرى)"
+
+msgid "System default (Primary)"
+msgstr "الإعدادات الافتراضية للنظام (الأساسي)"
+
+msgid "Always on other"
+msgstr "دائماً على الآخر"
+
+msgid "Always on primary"
+msgstr "دائماً على الأساسي"
 
 msgid "EDIT METADATA"
 msgstr "تحرير البيانات الوصفية"
@@ -1445,7 +1514,7 @@ msgid "Processing:"
 msgstr "معالجة:"
 
 msgid "Last error message:"
-msgstr "آخر رسالة الخطأ:"
+msgstr "آخر رسالة الخطأ"
 
 msgid "start processing"
 msgstr "بدء المعالجة"
@@ -1516,7 +1585,7 @@ msgid "LAST PROCESSED SYSTEM:"
 msgstr "آخر نظام تمت معالجته:"
 
 msgid "LAST ERROR MESSAGE:"
-msgstr "آخر رسالة الخطأ:"
+msgstr "آخر رسالة الخطأ"
 
 msgid "MEDIA"
 msgstr "وسائط"
@@ -1833,7 +1902,7 @@ msgstr ""
 "تحديد نظام واحد على الأقل لتوليد الصور"
 
 msgid "REGION"
-msgstr "منطقة"
+msgstr "المنطقة"
 
 msgid "EUROPE"
 msgstr "أوروبا"
@@ -2491,7 +2560,7 @@ msgid "CREATED BY"
 msgstr "تم إنشاؤه بواسطة"
 
 msgid "ERROR:"
-msgstr "خطأ:"
+msgstr "خطأ"
 
 msgid "COULDN'T DOWNLOAD THEMES LIST"
 msgstr "تعذر تنزيل قائمة الثيمات"
@@ -2611,9 +2680,6 @@ msgstr "غطاء خلفي المربع"
 
 msgid "TITLE SCREEN"
 msgstr "شاشة العنوان"
-
-msgid "FAN ART"
-msgstr "فن المعجبين"
 
 msgid "MIXIMAGE"
 msgstr "الصور المخطلطة"
@@ -2762,6 +2828,14 @@ msgid "SELECT ALTERNATIVE EMULATOR"
 msgstr "حدد المحاكي البديل"
 
 msgctxt "metadata"
+msgid "LAUNCH ON SCREEN"
+msgstr "تشغيل على الشاشة"
+
+msgctxt "metadata"
+msgid "LAUNCH ON WHICH SCREEN"
+msgstr "تشغيل على أي شاشة"
+
+msgctxt "metadata"
 msgid "FOLDER LINK"
 msgstr "رابط المجلد"
 
@@ -2839,7 +2913,7 @@ msgid "Couldn't save resized image, permission problems or is the disk full?"
 msgstr "لا يمكن حفظ الصورة المُقيّنة أو مشاكل الإذن أم أن القرص ممتلئ؟"
 
 msgid "ScreenScraper error:"
-msgstr "خطأ شاشات الشاشة:"
+msgstr "خطأ ScreenScraper:"
 
 msgid "ScreenScraper: Wrong username or password"
 msgstr "شاشات الشاشة: اسم مستخدم أو كلمة مرور خاطئ"
@@ -3421,179 +3495,4 @@ msgid "SETTINGS → COVERS AND INFO CAN GET THEM"
 msgstr ""
 
 msgid "ERROR: COULDN'T RENDER PDF FILE"
-msgstr "خطأ: لا يمكن تقديم ملف pdf"
-
-#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-#~ msgstr "خطأ: ملف التطبيق أو الاسم المستعار غير موجود أو غير قابل للقراءة"
-
-#~ msgid "MEDIA TARGET TYPE"
-#~ msgstr "نوع هدف الوسائط"
-
-#~ msgid "SCREENSHOTS"
-#~ msgstr "لقطات الشاشة"
-
-#~ msgid "TITLE SCREENS"
-#~ msgstr "شاشات العنوان"
-
-#~ msgid "COVERS"
-#~ msgstr "أغطية"
-
-#~ msgid "BACK COVERS"
-#~ msgstr "الأغطية الخلفية"
-
-#~ msgid "MARQUEES (WHEELS)"
-#~ msgstr "(عجلات) ماركي"
-
-#~ msgid "3D BOXES"
-#~ msgstr "3D صناديق"
-
-#~ msgid "PHYSICAL MEDIA"
-#~ msgstr "الوسائط المادية"
-
-#~ msgid "MIXIMAGES"
-#~ msgstr "الصور المخطلطة"
-
-#~ msgid "IMPORT MEDIA"
-#~ msgstr "استيراد وسائط"
-
-#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-#~ msgstr "استيراد لافتات أو شعارات إذا كانت متوفرة"
-
-#~ msgid "OVERWRITE MEDIA FILES"
-#~ msgstr "الكتابة فوق ملفات الوسائط"
-
-#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-#~ msgstr "فقط تضمين التطبيقات المصنفة كألعاب"
-
-#~ msgid "close (apply)"
-#~ msgstr "(تطبيق) إغلاق"
-
-#~ msgid "close (cancel)"
-#~ msgstr "(إلغاء) إغلاق"
-
-#~ msgid "MAIN MENU"
-#~ msgstr "القائمة الرئيسية"
-
-#~ msgid "SCRAPER"
-#~ msgstr "مكشطة"
-
-#~ msgid "UI SETTINGS"
-#~ msgstr "إعدادات واجهة المستخدم"
-
-#~ msgid "SOUND SETTINGS"
-#~ msgstr "إعدادات الصوت"
-
-#~ msgid "INPUT DEVICE SETTINGS"
-#~ msgstr "إعدادات جهاز الإدخال"
-
-#~ msgid "GAME COLLECTION SETTINGS"
-#~ msgstr "إعدادات مجموعة الألعاب"
-
-#~ msgid "UTILITIES"
-#~ msgstr "الفحص"
-
-#~ msgid "MENU COLOR SCHEME"
-#~ msgstr "مخطط ألوان القائمة"
-
-#~ msgid "DARK"
-#~ msgstr "داكن"
-
-#~ msgid "DARK AND RED"
-#~ msgstr "داكن وأحمر"
-
-#~ msgid "LIGHT"
-#~ msgstr "فاتح"
-
-#~ msgid "AUDIO DRIVER"
-#~ msgstr "برنامج تشغيل الصوت"
-
-#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
-#~ msgstr "(إعادة التشغيل) برنامج تشغيل الصوت"
-
-#~ msgid "TOUCH OVERLAY SIZE"
-#~ msgstr "حجم طبقة اللمس"
-
-#~ msgid "EXTRA SMALL"
-#~ msgstr "صغير جدًا"
-
-#~ msgid "TOUCH OVERLAY OPACITY"
-#~ msgstr "شفافية طبقة اللمس"
-
-#~ msgid "VERY LOW"
-#~ msgstr "منخفض جدا"
-
-#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
-#~ msgstr "وقت تلاشي طبقة اللمس"
-
-#~ msgid "ENABLE TOUCH OVERLAY"
-#~ msgstr "تمكين لمسة تراكب"
-
-#~ msgid ""
-#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
-#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
-#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-#~ msgstr ""
-#~ "لا تُعطّل خاصية اللمس إلا إذا كنت تستخدم وحدة تحكم وإلا ستُمنع من الوصول إلى "
-#~ "التطبيق إذا حدث ذالك ستحتاج إلى توصيل وحدة تحكم أو لوحة مفاتيح مؤقتًا "
-#~ "لتفعيل هذا الإعداد مجددًا، أو يمكنك مسح مساحة تخزين Arcadia في إعدادات "
-#~ "تطبيق أندرويد لإجبار المُهيئ على التشغيل عند بدء التشغيل التالي"
-
-#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
-#~ msgstr "(إعادة التشغيل) إخفاء شريط المهام"
-
-#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-#~ msgstr "تشغيل الألعاب على الشاشة الأخرى"
-
-#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-#~ msgstr "زر العودة/الظهر يخرج من التطبيق"
-
-#~ msgid "close menu"
-#~ msgstr "إغلاق القائمة"
-
-#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
-#~ msgstr "عرض مؤشر حالة الشبكة الخلوية"
-
-#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
-#~ msgstr "هذا سوف يحذف الثيمة بالكامل"
-
-#~ msgid "system"
-#~ msgstr "نظام"
-
-#~ msgid "view media"
-#~ msgstr "عرض الوسائط"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
-#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
-#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
-#~ "THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "لم يتم العثور على أي ملفات ألعاب استورد بعض الألعاب أو ضعها يدويًا في مجلد "
-#~ "الروم المُهيأ يمكنك اختياريًا إنشاء بنية مجلد الروم لإنشاء ملف نصي لكل نظام "
-#~ "يُوفر بعض معلومات مثل امتدادات الملفات المدعومة هذا هو مجلد الروم المُهيأ:\n"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
-#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
-#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
-#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "لم يتم العثور على أي ملفات ألعاب استورد بعض الألعاب أو ضعها يدويًا في مجلد "
-#~ "الروم المُهيأ حاليًا يمكنك أيضًا تغيير مسار الروم ويمكنك اختياريًا إنشاء بنية "
-#~ "مجلد الروم والتي ستُنشئ ملفًا نصيًا لكل نظام يُوفر معلومات مثل امتدادات "
-#~ "الملفات المدعومة هذا هو مجلد الروم المُهيأ:\n"
-
-#, c-format
-#~ msgctxt "theme"
-#~ msgid "%i second ago"
-#~ msgid_plural "%i seconds ago"
-#~ msgstr[0] "منذ %i ثانية"
-#~ msgstr[1] "منذ ثانية"
-#~ msgstr[2] "منذ ثانيتين"
-#~ msgstr[3] "منذ %i ثواني"
-#~ msgstr[4] "منذ %i ثانية"
-#~ msgstr[5] "منذ %i ثانية"
+msgstr "خطأ لا يمكن تقديم ملف pdf"

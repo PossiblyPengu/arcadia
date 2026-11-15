@@ -1,14 +1,14 @@
-# Arcadia Frontend translation strings.
+# ES-DE Frontend translation strings.
 # Copyright (c) 2024-2026 Northwestern Software AB
-# This file is distributed under the same license as the Arcadia Frontend package.
+# This file is distributed under the same license as the ES-DE Frontend package.
 # Northwestern Software <info@es-de.org>, 2024-2026.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Arcadia Frontend\n"
+"Project-Id-Version: ES-DE Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-11-15 13:45-0500\n"
-"PO-Revision-Date: 2025-10-22 16:15-0300\n"
+"POT-Creation-Date: 2026-11-15 16:19-0500\n"
+"PO-Revision-Date: 2026-09-04 12:45-0300\n"
 "Last-Translator: Northwestern Software <info@es-de.org>\n"
 "Language-Team: Português (Brasil) <info@es-de.org>\n"
 "Language: pt_BR\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.9\n"
 
 msgid "Network error (status:"
 msgstr "Erro de rede (estado:"
@@ -650,6 +650,48 @@ msgstr "NENHUM SELECIONADO"
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "RETIRAR CARACTERES ESPECIAIS"
 
+msgid "MEDIA TARGET TYPE"
+msgstr "TIPO ALVO DA MÍDIA"
+
+msgid "SCREENSHOTS"
+msgstr "CAPTURAS DE TELA"
+
+msgid "TITLE SCREENS"
+msgstr "TELAS DE TÍTULO"
+
+msgid "COVERS"
+msgstr "CAPAS"
+
+msgid "BACK COVERS"
+msgstr "CAPAS TRASEIRAS"
+
+msgid "MARQUEES (WHEELS)"
+msgstr "LETREIRO (RODA)"
+
+msgid "3D BOXES"
+msgstr "CAIXAS 3D"
+
+msgid "PHYSICAL MEDIA"
+msgstr "MÍDIA FÍSICA"
+
+msgid "FAN ART"
+msgstr "ARTE DE FÃ"
+
+msgid "MIXIMAGES"
+msgstr "IMAGENS MIX"
+
+msgid "IMPORT MEDIA"
+msgstr "IMPORTAR MÍDIA"
+
+msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+msgstr "IMPORTAR BANNERS OU LOGOTIPOS SE DISPONÍVEIS"
+
+msgid "OVERWRITE MEDIA FILES"
+msgstr "SUBSTITUIR ARQUIVOS DE MÍDIA"
+
+msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+msgstr "INCLUIR SÓ APLICATIVOS CLASSIFICADOS COMO JOGOS"
+
 msgid "START"
 msgstr "INICIAR"
 
@@ -661,6 +703,9 @@ msgstr "TRABALHANDO..."
 
 msgid "COULDN'T FIND ANYTHING TO IMPORT"
 msgstr "NÃO FOI ENCONTRADO NADA PARA IMPORTAR"
+
+msgid "import"
+msgstr "importar"
 
 #, c-format
 msgid ""
@@ -680,15 +725,6 @@ msgstr "FAÇA A SUA ESCOLHA"
 msgid "IMPORT"
 msgstr "IMPORTAR"
 
-msgid "import"
-msgstr "importar"
-
-#, c-format
-msgid "IMPORTED %i ENTRY"
-msgid_plural "IMPORTED %i ENTRIES"
-msgstr[0] "IMPORTOU %i ITEM"
-msgstr[1] "IMPORTOU %i ITENS"
-
 msgid "SELECT ALL"
 msgstr "TODOS"
 
@@ -700,6 +736,12 @@ msgstr "NENHUM"
 
 msgid "select none"
 msgstr "nenhum"
+
+#, c-format
+msgid "IMPORTED %i ENTRY"
+msgid_plural "IMPORTED %i ENTRIES"
+msgstr[0] "IMPORTOU %i ITEM"
+msgstr[1] "IMPORTOU %i ITENS"
 
 msgid "FILTER GAMELIST"
 msgstr "FILTRAR A LISTA DE JOGOS"
@@ -1216,6 +1258,12 @@ msgstr "DECODIFICAR VÍDEO POR HARDWARE (EXPERIMENTAL)"
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "APRIMORAR TAXA DE QUADROS DE VÍDEOS PARA 60 FPS"
 
+msgid "QUERY INSTALLED RETROARCH CORES (EXPERIMENTAL)"
+msgstr "LISTAR NÚCLEOS INSTALADOS DO RETROARCH (EXPERIMENTAL)"
+
+msgid "USE RETROARCH IN SAF MODE (NOT RECOMMENDED)"
+msgstr "USAR O RETROARCH EM MODO SAF (NÃO RECOMENDADO)"
+
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "EXIBIR ARQUIVOS E PASTAS OCULTAS"
 
@@ -1224,6 +1272,9 @@ msgstr "ATIVAR SCRIPTS DE EVENTOS ADAPTADOS"
 
 msgid "BROWSING CUSTOM EVENTS"
 msgstr "PESQUISANDO EVENTOS ADAPTADOS"
+
+msgid "RUN BROWSING EVENTS AS NON-BLOCKING"
+msgstr "RODAR EVENTOS DE NAVEGAÇÃO SEM BLOQUEIO"
 
 msgid "ONLY SHOW GAMES FROM GAMELIST.XML FILES"
 msgstr "EXIBIR APENAS OS JOGOS NOS ARQUIVOS GAMELIST.XML"
@@ -1321,8 +1372,26 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "CONFIG. DO PROT. DE TELA"
 
+msgid "LAUNCH ON OTHER SCREEN"
+msgstr "ABRIR EM OUTRA TELA"
+
+msgid "ENABLE LAUNCH ON OTHER SCREEN"
+msgstr "ATIVAR EXECUÇÃO EM OUTRA TELA"
+
 msgid "open"
 msgstr ""
+
+msgid "System default (Other)"
+msgstr "Padrão do sistema (Outro)"
+
+msgid "System default (Primary)"
+msgstr "Padrão do sistema (Primário)"
+
+msgid "Always on other"
+msgstr "Sempre no outro"
+
+msgid "Always on primary"
+msgstr "Sempre no primário"
 
 msgid "EDIT METADATA"
 msgstr "EDITAR OS METADADOS"
@@ -2575,9 +2644,6 @@ msgstr "CAPA TRASEIRA DA CAIXA"
 msgid "TITLE SCREEN"
 msgstr "TELA DE TÍTULO"
 
-msgid "FAN ART"
-msgstr "ARTE DE FÃ"
-
 msgid "MIXIMAGE"
 msgstr "IMAGEM MIX"
 
@@ -2723,6 +2789,14 @@ msgstr "EMULADOR ALTERNATIVO"
 msgctxt "metadata"
 msgid "SELECT ALTERNATIVE EMULATOR"
 msgstr "ESCOLHA O EMULADOR ALTERNATIVO"
+
+msgctxt "metadata"
+msgid "LAUNCH ON SCREEN"
+msgstr "ABRIR NA TELA"
+
+msgctxt "metadata"
+msgid "LAUNCH ON WHICH SCREEN"
+msgstr "ABRIR EM QUAL TELA"
 
 msgctxt "metadata"
 msgid "FOLDER LINK"
@@ -3371,181 +3445,3 @@ msgstr ""
 
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "ERRO: FALHA AO RENDERIZAR O ARQUIVO PDF"
-
-#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-#~ msgstr ""
-#~ "ERRO: O ARQUIVO DE APLICATIVO OU PSEUDÔNIMO NÃO EXISTE OU É ILEGÍVEL"
-
-#~ msgid "MEDIA TARGET TYPE"
-#~ msgstr "TIPO ALVO DA MÍDIA"
-
-#~ msgid "SCREENSHOTS"
-#~ msgstr "CAPTURAS DE TELA"
-
-#~ msgid "TITLE SCREENS"
-#~ msgstr "TELAS DE TÍTULO"
-
-#~ msgid "COVERS"
-#~ msgstr "CAPAS"
-
-#~ msgid "BACK COVERS"
-#~ msgstr "CAPAS TRASEIRAS"
-
-#~ msgid "MARQUEES (WHEELS)"
-#~ msgstr "LETREIRO (RODA)"
-
-#~ msgid "3D BOXES"
-#~ msgstr "CAIXAS 3D"
-
-#~ msgid "PHYSICAL MEDIA"
-#~ msgstr "MÍDIA FÍSICA"
-
-#~ msgid "MIXIMAGES"
-#~ msgstr "IMAGENS MIX"
-
-#~ msgid "IMPORT MEDIA"
-#~ msgstr "IMPORTAR MÍDIA"
-
-#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-#~ msgstr "IMPORTAR BANNERS OU LOGOTIPOS SE DISPONÍVEIS"
-
-#~ msgid "OVERWRITE MEDIA FILES"
-#~ msgstr "SUBSTITUIR ARQUIVOS DE MÍDIA"
-
-#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-#~ msgstr "INCLUIR SÓ APLICATIVOS CLASSIFICADOS COMO JOGOS"
-
-#~ msgid "close (apply)"
-#~ msgstr "fechar (aplicar)"
-
-#~ msgid "close (cancel)"
-#~ msgstr "fechar (cancelar)"
-
-#~ msgid "MAIN MENU"
-#~ msgstr "MENU PRINCIPAL"
-
-#~ msgid "SCRAPER"
-#~ msgstr "PROCURAR MÍDIAS"
-
-#~ msgid "UI SETTINGS"
-#~ msgstr "AJUSTES DA INTERFACE"
-
-#~ msgid "SOUND SETTINGS"
-#~ msgstr "AJUSTES DE SOM"
-
-#~ msgid "INPUT DEVICE SETTINGS"
-#~ msgstr "AJUSTES DOS DISP. DE ENTRADA"
-
-#~ msgid "GAME COLLECTION SETTINGS"
-#~ msgstr "AJUSTES DA COLEÇÃO DE JOGOS"
-
-#~ msgid "UTILITIES"
-#~ msgstr "UTILITÁRIOS"
-
-#~ msgid "MENU COLOR SCHEME"
-#~ msgstr "ESQUEMA DE COR DO MENU"
-
-#~ msgid "DARK"
-#~ msgstr "ESCURO"
-
-#~ msgid "DARK AND RED"
-#~ msgstr "ESCURO E VERMELHO"
-
-#~ msgid "LIGHT"
-#~ msgstr "CLARO"
-
-#~ msgid "AUDIO DRIVER"
-#~ msgstr "DRIVER DE ÁUDIO"
-
-#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
-#~ msgstr "DRIVER DE ÁUDIO (PRECISA REINICIAR)"
-
-#~ msgid "TOUCH OVERLAY SIZE"
-#~ msgstr "TAMANHO DA SOBREPOSIÇÃO DE TOQUE"
-
-#~ msgid "EXTRA SMALL"
-#~ msgstr "MUITO PEQUENA"
-
-#~ msgid "TOUCH OVERLAY OPACITY"
-#~ msgstr "OPACIDADE DA SOBREPOSIÇÃO DE TOQUE"
-
-#~ msgid "VERY LOW"
-#~ msgstr "MUITO BAIXA"
-
-#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
-#~ msgstr "TEMPO DO ESMAECER DA SOBREPOSIÇÃO DE TOQUE"
-
-#~ msgid "ENABLE TOUCH OVERLAY"
-#~ msgstr "ATIVAR A SOBREPOSIÇÃO DE TOQUE"
-
-#~ msgid ""
-#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
-#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
-#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-#~ msgstr ""
-#~ "NÃO DESATIVE A SOBREPOSIÇÃO DE TOQUE, A MENOS QUE ESTEJA USANDO UM "
-#~ "CONTROLE OU VOCÊ VAI FICAR PRESO NO APLICATIVO. SE ISSO ACONTECER, VOCÊ "
-#~ "VAI PRECISAR CONECTAR TEMPORARIAMENTE UM CONTROLE OU TECLADO PARA ATIVAR "
-#~ "ESSA FUNÇÃO DE NOVO, OU VOCÊ PODE TAMBÉM LIMPAR OS DADOS ARMAZENADOS NOS "
-#~ "AJUSTES DO APLICATIVO DO ANDROID PARA FORÇAR A EXECUÇÃO DO CONFIGURADOR "
-#~ "AO ABRIR DE NOVO"
-
-#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
-#~ msgstr "OCULTAR BARRA DE TAREFAS (PRECISA REINICIAR)"
-
-#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-#~ msgstr "INICIAR JOGOS NA OUTRA TELA"
-
-#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-#~ msgstr "BOTÃO VOLTAR/ARRASTE P. TRÁS SAI DO APLICATIVO"
-
-#~ msgid "close menu"
-#~ msgstr "fechar o menu"
-
-#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
-#~ msgstr "EXIBIR INDICADOR DE ESTADO DA REDE MÓVEL"
-
-#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
-#~ msgstr "ISSO VAI EXCLUIR O TEMA POR COMPLETO"
-
-#~ msgid "system"
-#~ msgstr "sistema"
-
-#~ msgid "view media"
-#~ msgstr "ver mídias"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
-#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
-#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
-#~ "THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "NÃO FORAM ENCONTRADOS ARQUIVOS DE JOGOS. IMPORTE ALGUNS JOGOS OU COLOQUE-"
-#~ "OS MANUALMENTE NA PASTA DE ROMS CONFIGURADA. SE PREFERIR, VOCÊ PODE GERAR "
-#~ "A ESTRUTURA DA PASTA DE ROMS, QUE VAI CRIAR UM ARQUIVO DE TEXTO PARA CADA "
-#~ "SISTEMA, FORNECENDO ALGUMAS INFORMAÇÕES, COMO AS EXTENSÕES DE ARQUIVO "
-#~ "SUPORTADAS. ESTA É A PASTA DE ROMS CONFIGURADA:\n"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
-#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
-#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
-#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "NÃO FORAM ENCONTRADOS ARQUIVOS DE JOGOS. IMPORTE ALGUNS JOGOS OU COLOQUE-"
-#~ "OS MANUALMENTE NA PASTA DE ROMS ATUALMENTE CONFIGURADA. VOCÊ TAMBÉM PODE "
-#~ "ALTERAR O CAMINHO DAS ROMS E, SE PREFERIR, GERAR A ESTRUTURA DA PASTA DE "
-#~ "ROMS, QUE VAI CRIAR UM ARQUIVO DE TEXTO PARA CADA SISTEMA, FORNECENDO "
-#~ "ALGUMAS INFORMAÇÕES, COMO AS EXTENSÕES DE ARQUIVO SUPORTADAS.. ESTA É A "
-#~ "PASTA DE ROMS CONFIGURADA:\n"
-
-#, c-format
-#~ msgctxt "theme"
-#~ msgid "%i second ago"
-#~ msgid_plural "%i seconds ago"
-#~ msgstr[0] "há %i segundo"
-#~ msgstr[1] "há %i segundos"

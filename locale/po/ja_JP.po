@@ -1,14 +1,14 @@
-# Arcadia Frontend translation strings.
+# ES-DE Frontend translation strings.
 # Copyright (c) 2024-2026 Northwestern Software AB
-# This file is distributed under the same license as the Arcadia Frontend package.
+# This file is distributed under the same license as the ES-DE Frontend package.
 # Northwestern Software <info@es-de.org>, 2024-2026.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Arcadia Frontend\n"
+"Project-Id-Version: ES-DE Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-11-15 13:45-0500\n"
-"PO-Revision-Date: 2025-06-25 04:03+0800\n"
+"POT-Creation-Date: 2026-11-15 16:19-0500\n"
+"PO-Revision-Date: 2026-09-09 19:23+0800\n"
 "Last-Translator: ice <natsumekyousuke211314@gmail.com>\n"
 "Language-Team: 日本語 <info@es-de.org>\n"
 "Language: ja_JP\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.9\n"
 
 msgid "Network error (status:"
 msgstr "ネットワークエラー（ステータス："
@@ -653,6 +653,48 @@ msgstr "すべての未選択項目"
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "特殊文字を削除"
 
+msgid "MEDIA TARGET TYPE"
+msgstr "メディア対象の種類"
+
+msgid "SCREENSHOTS"
+msgstr "スクリーンショット"
+
+msgid "TITLE SCREENS"
+msgstr "タイトルスクリーン"
+
+msgid "COVERS"
+msgstr "カバー"
+
+msgid "BACK COVERS"
+msgstr "バックカバー"
+
+msgid "MARQUEES (WHEELS)"
+msgstr "マーキー（ホイール）"
+
+msgid "3D BOXES"
+msgstr "3Dボックス"
+
+msgid "PHYSICAL MEDIA"
+msgstr "物理メディア"
+
+msgid "FAN ART"
+msgstr "ファンアート"
+
+msgid "MIXIMAGES"
+msgstr "ミックス画像"
+
+msgid "IMPORT MEDIA"
+msgstr "メディアをインポート"
+
+msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+msgstr "可能であればバナーかロゴをインポート"
+
+msgid "OVERWRITE MEDIA FILES"
+msgstr "メディアファイルを上書き"
+
+msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+msgstr "ゲームに分類されたアプリだけを含め"
+
 msgid "START"
 msgstr "開始"
 
@@ -664,6 +706,9 @@ msgstr "稼働中..."
 
 msgid "COULDN'T FIND ANYTHING TO IMPORT"
 msgstr "インポートできる内容がありません"
+
+msgid "import"
+msgstr "インポート"
 
 #, c-format
 msgid ""
@@ -683,14 +728,6 @@ msgstr "選んでください"
 msgid "IMPORT"
 msgstr "インポート"
 
-msgid "import"
-msgstr "インポート"
-
-#, c-format
-msgid "IMPORTED %i ENTRY"
-msgid_plural "IMPORTED %i ENTRIES"
-msgstr[0] "%i個の項目がインポートされました"
-
 msgid "SELECT ALL"
 msgstr "全部選ぶ"
 
@@ -702,6 +739,11 @@ msgstr "何も選ばない"
 
 msgid "select none"
 msgstr "何も選ばない"
+
+#, c-format
+msgid "IMPORTED %i ENTRY"
+msgid_plural "IMPORTED %i ENTRIES"
+msgstr[0] "%i個の項目がインポートされました"
 
 msgid "FILTER GAMELIST"
 msgstr "ゲームリストを絞り込む"
@@ -1218,6 +1260,12 @@ msgstr "ビデオハードウェアデコーディング（実験的）"
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "ビデオのフレームレートを60 FPSに引き上げる"
 
+msgid "QUERY INSTALLED RETROARCH CORES (EXPERIMENTAL)"
+msgstr "インストール済みのRetroArchコアを照会（試験的）"
+
+msgid "USE RETROARCH IN SAF MODE (NOT RECOMMENDED)"
+msgstr "RetroArchをSAFモードで使用（非推奨）"
+
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "隠しファイルとフォルダを表示"
 
@@ -1226,6 +1274,9 @@ msgstr "カスタムイベントスクリプトを有効に"
 
 msgid "BROWSING CUSTOM EVENTS"
 msgstr "カスタムイベントを閲覧"
+
+msgid "RUN BROWSING EVENTS AS NON-BLOCKING"
+msgstr "ブラウジングイベントをノンブロッキングで実行"
 
 msgid "ONLY SHOW GAMES FROM GAMELIST.XML FILES"
 msgstr "GAMELIST.XML ファイルにあるゲームのみを表示"
@@ -1324,8 +1375,26 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "スクリーンセーバー設定"
 
+msgid "LAUNCH ON OTHER SCREEN"
+msgstr "他の画面で起動"
+
+msgid "ENABLE LAUNCH ON OTHER SCREEN"
+msgstr "他の画面での起動を有効に"
+
 msgid "open"
 msgstr ""
+
+msgid "System default (Other)"
+msgstr "システムデフォルト（その他）"
+
+msgid "System default (Primary)"
+msgstr "システムデフォルト（プライマリ）"
+
+msgid "Always on other"
+msgstr "常に他で表示"
+
+msgid "Always on primary"
+msgstr "常にプライマリで表示"
 
 msgid "EDIT METADATA"
 msgstr "メタデータを編集する"
@@ -2570,9 +2639,6 @@ msgstr "ボックスバックカバー"
 msgid "TITLE SCREEN"
 msgstr "タイトルスクリーン"
 
-msgid "FAN ART"
-msgstr "ファンアート"
-
 msgid "MIXIMAGE"
 msgstr "複合画像"
 
@@ -2718,6 +2784,14 @@ msgstr "代替エミュレーター"
 msgctxt "metadata"
 msgid "SELECT ALTERNATIVE EMULATOR"
 msgstr "代替エミュレーターを選んでください"
+
+msgctxt "metadata"
+msgid "LAUNCH ON SCREEN"
+msgstr "スクリーンで起動"
+
+msgctxt "metadata"
+msgid "LAUNCH ON WHICH SCREEN"
+msgstr "どのスクリーンで起動するか"
 
 msgctxt "metadata"
 msgid "FOLDER LINK"
@@ -3357,178 +3431,3 @@ msgstr ""
 
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "エラー：PDFファイルをレンダリングできませんでした"
-
-#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-#~ msgstr ""
-#~ "エラー：アプリまたは別名ファイルが存在しないか、あるいは読み込めません"
-
-#~ msgid "MEDIA TARGET TYPE"
-#~ msgstr "メディア対象の種類"
-
-#~ msgid "SCREENSHOTS"
-#~ msgstr "スクリーンショット"
-
-#~ msgid "TITLE SCREENS"
-#~ msgstr "タイトルスクリーン"
-
-#~ msgid "COVERS"
-#~ msgstr "カバー"
-
-#~ msgid "BACK COVERS"
-#~ msgstr "バックカバー"
-
-#~ msgid "MARQUEES (WHEELS)"
-#~ msgstr "マーキー（ホイール）"
-
-#~ msgid "3D BOXES"
-#~ msgstr "3Dボックス"
-
-#~ msgid "PHYSICAL MEDIA"
-#~ msgstr "物理メディア"
-
-#~ msgid "MIXIMAGES"
-#~ msgstr "ミックス画像"
-
-#~ msgid "IMPORT MEDIA"
-#~ msgstr "メディアをインポート"
-
-#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-#~ msgstr "可能であればバナーかロゴをインポート"
-
-#~ msgid "OVERWRITE MEDIA FILES"
-#~ msgstr "メディアファイルを上書き"
-
-#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-#~ msgstr "ゲームに分類されたアプリだけを含め"
-
-#~ msgid "close (apply)"
-#~ msgstr "閉じる（同意）"
-
-#~ msgid "close (cancel)"
-#~ msgstr "閉じる（キャンセル）"
-
-#~ msgid "MAIN MENU"
-#~ msgstr "メインメニュー"
-
-#~ msgid "SCRAPER"
-#~ msgstr "スクレーパー"
-
-#~ msgid "UI SETTINGS"
-#~ msgstr "UI設定"
-
-#~ msgid "SOUND SETTINGS"
-#~ msgstr "音声設定"
-
-#~ msgid "INPUT DEVICE SETTINGS"
-#~ msgstr "入力デバイス設定"
-
-#~ msgid "GAME COLLECTION SETTINGS"
-#~ msgstr "ゲームコレクション設定"
-
-#~ msgid "UTILITIES"
-#~ msgstr "ユーティリティ"
-
-#~ msgid "MENU COLOR SCHEME"
-#~ msgstr "メニューの配色"
-
-#~ msgid "DARK"
-#~ msgstr "DARK"
-
-#~ msgid "DARK AND RED"
-#~ msgstr "ダークレッド"
-
-#~ msgid "LIGHT"
-#~ msgstr "LIGHT"
-
-#~ msgid "AUDIO DRIVER"
-#~ msgstr "オーディオドライバー"
-
-#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
-#~ msgstr "オーディオドライバー（再起動が必要）"
-
-#~ msgid "TOUCH OVERLAY SIZE"
-#~ msgstr "タッチオーバーレイのサイズ"
-
-#~ msgid "EXTRA SMALL"
-#~ msgstr "もっと小さい"
-
-#~ msgid "TOUCH OVERLAY OPACITY"
-#~ msgstr "タッチオーバーレイの不透明度"
-
-#~ msgid "VERY LOW"
-#~ msgstr "とても低い"
-
-#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
-#~ msgstr "タッチオーバーレイのフェードアウト時間"
-
-#~ msgid "ENABLE TOUCH OVERLAY"
-#~ msgstr "タッチオーバーレイを有効にする"
-
-#~ msgid ""
-#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
-#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
-#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-#~ msgstr ""
-#~ "コントローラーを使用していない場合は、タッチオーバーレイを無効にしないでく"
-#~ "ださい。そうしないと、アプリからロックアウトされる可能性があります。このよ"
-#~ "うな状況が発生した場合、一時的にコントローラーまたはキーボードを接続してこ"
-#~ "の設定を再度有効にする必要があります。または、Androidアプリの設定でArcadia"
-#~ "ストレージを消去して、次回起動時に設定を実行させることもできます"
-
-#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
-#~ msgstr "タスクバーを非表示にする（再起動が必要）"
-
-#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-#~ msgstr "別のスクリーンでゲームを起動"
-
-#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-#~ msgstr "バックボタン/バックスワイプでアプリを終了"
-
-#~ msgid "close menu"
-#~ msgstr "メニューを閉じる"
-
-#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
-#~ msgstr "CELLULARの状態インジケーターを表示"
-
-#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
-#~ msgstr "この操作により、テーマは完全に削除されます"
-
-#~ msgid "system"
-#~ msgstr "システム"
-
-#~ msgid "view media"
-#~ msgstr "メディアを見る"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
-#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
-#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
-#~ "THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "ゲームファイルが見つかりませんでした。ゲームをインポートするか、設定済みの"
-#~ "ROMディレクトリに手動で配置してください。あるいはROMディレクトリ構造を生成"
-#~ "することも可能です。これにより、各システムごとにテキストファイルが作成さ"
-#~ "れ、対応ファイル拡張子などの情報も記載されます。設定されているROMディレク"
-#~ "トリは以下の通りです：\n"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
-#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
-#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
-#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "ゲームファイルが見つかりませんでした。ゲームをインポートするか、現在設定さ"
-#~ "れているROMディレクトリに手動で配置してください。ROMのパスを変更することも"
-#~ "可能です。あるいはROMディレクトリ構造を生成することも可能です。これによ"
-#~ "り、各システムごとにテキストファイルが作成され、対応ファイル拡張子などの情"
-#~ "報も記載されます。現在設定されているROMディレクトリ：\n"
-
-#, c-format
-#~ msgctxt "theme"
-#~ msgid "%i second ago"
-#~ msgid_plural "%i seconds ago"
-#~ msgstr[0] "%i 秒前"

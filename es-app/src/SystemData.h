@@ -143,6 +143,8 @@ public:
 
     const std::string& getAlternativeEmulator() const { return mAlternativeEmulator; }
     void setAlternativeEmulator(const std::string& command) { mAlternativeEmulator = command; }
+    const bool getLaunchOnOtherScreen() const { return mLaunchOnOtherScreen; }
+    void setLaunchOnOtherScreen(bool state) { mLaunchOnOtherScreen = state; }
     std::string getLaunchCommandFromLabel(const std::string& label);
 
     static void deleteSystems();
@@ -203,6 +205,7 @@ private:
     bool mIsGameSystem;
     bool mScrapeFlag; // Only used by scraper GUI to remember which systems to scrape.
     bool mFlattenFolders;
+    bool mLaunchOnOtherScreen;
 
     bool populateFolder(FileData* folder);
     void indexAllGameFilters(const FileData* folder);

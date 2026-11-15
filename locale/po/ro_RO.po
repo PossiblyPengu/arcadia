@@ -1,14 +1,14 @@
-# Arcadia Frontend translation strings.
+# ES-DE Frontend translation strings.
 # Copyright (c) 2024-2026 Northwestern Software AB
-# This file is distributed under the same license as the Arcadia Frontend package.
+# This file is distributed under the same license as the ES-DE Frontend package.
 # Northwestern Software <info@es-de.org>, 2024-2026.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Arcadia Frontend\n"
+"Project-Id-Version: ES-DE Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-11-15 13:45-0500\n"
-"PO-Revision-Date: 2025-10-12 21:31+0300\n"
+"POT-Creation-Date: 2026-11-15 16:19-0500\n"
+"PO-Revision-Date: 2026-09-04 22:25+0300\n"
 "Last-Translator: Mihai Vasiliu <mihai.vasiliu.93@gmail.com>\n"
 "Language-Team: Română <info@es-de.org>\n"
 "Language: ro_RO\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Poedit 3.7\n"
+"X-Generator: Poedit 3.9\n"
 
 msgid "Network error (status:"
 msgstr "Eroare rețea (stare:"
@@ -659,6 +659,48 @@ msgstr "TOATE DESELECTATE"
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "ELIMINĂ CARACTERELE SPECIALE"
 
+msgid "MEDIA TARGET TYPE"
+msgstr "TIP MEDIA"
+
+msgid "SCREENSHOTS"
+msgstr "CAPTURI DE ECRAN"
+
+msgid "TITLE SCREENS"
+msgstr "ECRANE TITLU"
+
+msgid "COVERS"
+msgstr "COPERȚI"
+
+msgid "BACK COVERS"
+msgstr "SPATE COPERȚI"
+
+msgid "MARQUEES (WHEELS)"
+msgstr "BANNERE"
+
+msgid "3D BOXES"
+msgstr "CUTII 3D"
+
+msgid "PHYSICAL MEDIA"
+msgstr "MEDIU FIZIC"
+
+msgid "FAN ART"
+msgstr "FAN ART"
+
+msgid "MIXIMAGES"
+msgstr "IMAGINI MIX"
+
+msgid "IMPORT MEDIA"
+msgstr "IMPORTĂ MEDIA"
+
+msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+msgstr "IMPORTĂ BANNERE SAU LOGOURI DACĂ EXISTĂ"
+
+msgid "OVERWRITE MEDIA FILES"
+msgstr "SUPRASCRIE FIȘIERELE MEDIA"
+
+msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+msgstr "INCLUDE DOAR APLICAȚIILE CLASIFICATE CA JOCURI"
+
 msgid "START"
 msgstr "START"
 
@@ -670,6 +712,9 @@ msgstr "SE LUCREAZĂ..."
 
 msgid "COULDN'T FIND ANYTHING TO IMPORT"
 msgstr "NU S-A PUTUT GĂSI NIMIC DE IMPORTAT"
+
+msgid "import"
+msgstr "importă"
 
 #, c-format
 msgid ""
@@ -689,16 +734,6 @@ msgstr "SELECTEAZĂ"
 msgid "IMPORT"
 msgstr "IMPORTĂ"
 
-msgid "import"
-msgstr "importă"
-
-#, c-format
-msgid "IMPORTED %i ENTRY"
-msgid_plural "IMPORTED %i ENTRIES"
-msgstr[0] "S-A IMPORTAT %i INTRARE"
-msgstr[1] "S-AU IMPORTAT %i INTRĂRI"
-msgstr[2] "S-AU IMPORTAT %i DE INTRĂRI"
-
 msgid "SELECT ALL"
 msgstr "SELECTEAZĂ TOT"
 
@@ -710,6 +745,13 @@ msgstr "NU SELECTA NIMIC"
 
 msgid "select none"
 msgstr "nu selecta nimic"
+
+#, c-format
+msgid "IMPORTED %i ENTRY"
+msgid_plural "IMPORTED %i ENTRIES"
+msgstr[0] "S-A IMPORTAT %i INTRARE"
+msgstr[1] "S-AU IMPORTAT %i INTRĂRI"
+msgstr[2] "S-AU IMPORTAT %i DE INTRĂRI"
 
 msgid "FILTER GAMELIST"
 msgstr "FILTREAZĂ LISTA DE JOCURI"
@@ -1226,6 +1268,12 @@ msgstr "DECODARE HARDWARE VIDEO (EXPERIMENTAL)"
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "UPSCALE RATĂ DE CADRE LA 60 FPS"
 
+msgid "QUERY INSTALLED RETROARCH CORES (EXPERIMENTAL)"
+msgstr "INTEROGHEAZĂ NUCLEELE RETROARCH INSTALATE (EXPERIMENTAL)"
+
+msgid "USE RETROARCH IN SAF MODE (NOT RECOMMENDED)"
+msgstr "FOLOSEȘTE RETROARCH ÎN MODUL SAF (NERECOMANDAT)"
+
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "AFIȘEAZĂ FIȘIERELE ȘI DOSARELE ASCUNSE"
 
@@ -1234,6 +1282,9 @@ msgstr "ACTIVEAZĂ SCRIPT EVENIMENTE PERSONALIZATE"
 
 msgid "BROWSING CUSTOM EVENTS"
 msgstr "EVENIMENTE PERSONALIZATE LA NAVIGARE"
+
+msgid "RUN BROWSING EVENTS AS NON-BLOCKING"
+msgstr "RULEAZĂ EVENIMENTELE DE NAVIGARE CA NON-BLOCANTE"
 
 msgid "ONLY SHOW GAMES FROM GAMELIST.XML FILES"
 msgstr "AFIȘEAZĂ DOAR JOCURILE DIN FIȘIERELE GAMELIST.XML"
@@ -1331,8 +1382,26 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "SETĂRI ECONOMIZOR ECRAN"
 
+msgid "LAUNCH ON OTHER SCREEN"
+msgstr "LANSEAZĂ PE ECRANUL SECUNDAR"
+
+msgid "ENABLE LAUNCH ON OTHER SCREEN"
+msgstr "ACTIVEAZĂ LANSAREA PE ECRANUL SECUNDAR"
+
 msgid "open"
 msgstr ""
+
+msgid "System default (Other)"
+msgstr "Implicit sistem (secundar)"
+
+msgid "System default (Primary)"
+msgstr "Implicit sistem (primar)"
+
+msgid "Always on other"
+msgstr "Mereu pe secundar"
+
+msgid "Always on primary"
+msgstr "Mereu pe primar"
 
 msgid "EDIT METADATA"
 msgstr "EDITEAZĂ METADATELE"
@@ -2590,9 +2659,6 @@ msgstr "COPERTĂ SPATE CUTIE"
 msgid "TITLE SCREEN"
 msgstr "ECRAN TITLU"
 
-msgid "FAN ART"
-msgstr "FAN ART"
-
 msgid "MIXIMAGE"
 msgstr "IMAGINE MIX"
 
@@ -2738,6 +2804,14 @@ msgstr "EMULATOR ALTERNATIV"
 msgctxt "metadata"
 msgid "SELECT ALTERNATIVE EMULATOR"
 msgstr "SELECTEAZĂ EMULATOR ALTERNATIV"
+
+msgctxt "metadata"
+msgid "LAUNCH ON SCREEN"
+msgstr "LANSEAZĂ PE ECRANUL"
+
+msgctxt "metadata"
+msgid "LAUNCH ON WHICH SCREEN"
+msgstr "LANSEAZĂ PE ECRANUL"
 
 msgctxt "metadata"
 msgid "FOLDER LINK"
@@ -3399,180 +3473,3 @@ msgstr ""
 
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "EROARE: NU SE POATE AFIȘA FIȘIERUL PDF"
-
-#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-#~ msgstr "EROARE: APLICAȚIA SAU FIȘIERUL ALIAS NU EXISTĂ SAU NU SE POATE CITI"
-
-#~ msgid "MEDIA TARGET TYPE"
-#~ msgstr "TIP MEDIA"
-
-#~ msgid "SCREENSHOTS"
-#~ msgstr "CAPTURI DE ECRAN"
-
-#~ msgid "TITLE SCREENS"
-#~ msgstr "ECRANE TITLU"
-
-#~ msgid "COVERS"
-#~ msgstr "COPERȚI"
-
-#~ msgid "BACK COVERS"
-#~ msgstr "SPATE COPERȚI"
-
-#~ msgid "MARQUEES (WHEELS)"
-#~ msgstr "BANNERE"
-
-#~ msgid "3D BOXES"
-#~ msgstr "CUTII 3D"
-
-#~ msgid "PHYSICAL MEDIA"
-#~ msgstr "MEDIU FIZIC"
-
-#~ msgid "MIXIMAGES"
-#~ msgstr "IMAGINI MIX"
-
-#~ msgid "IMPORT MEDIA"
-#~ msgstr "IMPORTĂ MEDIA"
-
-#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-#~ msgstr "IMPORTĂ BANNERE SAU LOGOURI DACĂ EXISTĂ"
-
-#~ msgid "OVERWRITE MEDIA FILES"
-#~ msgstr "SUPRASCRIE FIȘIERELE MEDIA"
-
-#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-#~ msgstr "INCLUDE DOAR APLICAȚIILE CLASIFICATE CA JOCURI"
-
-#~ msgid "close (apply)"
-#~ msgstr "închide (aplică)"
-
-#~ msgid "close (cancel)"
-#~ msgstr "închide (anulează)"
-
-#~ msgid "MAIN MENU"
-#~ msgstr "MENIU PRINCIPAL"
-
-#~ msgid "SCRAPER"
-#~ msgstr "PRELUARE INFORMAȚII"
-
-#~ msgid "UI SETTINGS"
-#~ msgstr "SETĂRI INTERFAȚĂ"
-
-#~ msgid "SOUND SETTINGS"
-#~ msgstr "SETĂRI SUNET"
-
-#~ msgid "INPUT DEVICE SETTINGS"
-#~ msgstr "SETĂRI DISPOZITIVE INTRARE"
-
-#~ msgid "GAME COLLECTION SETTINGS"
-#~ msgstr "SETĂRI COLECȚII DE JOCURI"
-
-#~ msgid "UTILITIES"
-#~ msgstr "UTILITARE"
-
-#~ msgid "MENU COLOR SCHEME"
-#~ msgstr "SCHEMĂ DE CULOARE MENIU"
-
-#~ msgid "DARK"
-#~ msgstr "ÎNTUNECATĂ"
-
-#~ msgid "DARK AND RED"
-#~ msgstr "ÎNTUNECAT ȘI ROȘU"
-
-#~ msgid "LIGHT"
-#~ msgstr "LUMINOASĂ"
-
-#~ msgid "AUDIO DRIVER"
-#~ msgstr "DRIVER AUDIO"
-
-#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
-#~ msgstr "DRIVER AUDIO (NECESITĂ REPORNIRE)"
-
-#~ msgid "TOUCH OVERLAY SIZE"
-#~ msgstr "MĂRIME BUTOANE VIRTUALE"
-
-#~ msgid "EXTRA SMALL"
-#~ msgstr "FOARTE MICĂ"
-
-#~ msgid "TOUCH OVERLAY OPACITY"
-#~ msgstr "OPACITATE BUTOANE VIRTUALE"
-
-#~ msgid "VERY LOW"
-#~ msgstr "FOARTE SCĂZUTĂ"
-
-#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
-#~ msgstr "TIMP DE DISPARIȚIE BUTOANE VIRTUALE"
-
-#~ msgid "ENABLE TOUCH OVERLAY"
-#~ msgstr "ACTIVEAZĂ BUTOANELE VIRTUALE"
-
-#~ msgid ""
-#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
-#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
-#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-#~ msgstr ""
-#~ "NU DEZACTIVA BUTOANELE VIRTUALE DACĂ NU UTILIZEZI UN CONTROLER SAU VEI "
-#~ "PIERDE ACCESUL LA APLICAȚIE. DACĂ ACEST LUCRU SE ÎNTÂMPLĂ VA TREBUI SĂ "
-#~ "CONECTEZI TEMPORAR UN CONTROLER SAU O TASTATURĂ PENTRU A ACTIVA ACEASTĂ "
-#~ "SETARE DIN NOU SAU POȚI ȘTERGE DATELE APLICAȚIEI DIN SETĂRILE APLICAȚIEI "
-#~ "ANDROID PENTRU A FORȚA REINIȚIALIZAREA SETĂRILOR LA URMĂTOAREA PORNIRE"
-
-#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
-#~ msgstr "ASCUNDE BARA DE SARCINI (NECESITĂ REPORNIRE)"
-
-#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-#~ msgstr "LANSEAZĂ JOCURILE PE CELĂLALT ECRAN"
-
-#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-#~ msgstr "BUTONUL/GLISAREA ÎNAPOI ÎNCHIDE APLICAȚIA"
-
-#~ msgid "close menu"
-#~ msgstr "închide meniul"
-
-#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
-#~ msgstr "AFIȘEAZĂ INDICATOR STARE DATE MOBILE"
-
-#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
-#~ msgstr "ACEST LUCRU VA ȘTERGE COMPLET TEMA"
-
-#~ msgid "system"
-#~ msgstr "sistem"
-
-#~ msgid "view media"
-#~ msgstr "media"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
-#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
-#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
-#~ "THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "NU S-AU GĂSIT FIȘIERE DE JOCURI. FIE IMPORTĂ NIȘTE JOCURI, FIE PLASEAZĂ-"
-#~ "LE MANUAL ÎN DOSARUL DE ROM-URI CONFIGURAT. OPȚIONAL POȚI ȘI GENERA "
-#~ "STRUCTURA DE DOSARE DE ROM-URI CARE VA CREA ȘI UN FIȘIER TEXT PENTRU "
-#~ "FIECARE SISTEM CU INFORMAȚII UTILE CUM AR FI EXTENSIILE DE FIȘIERE "
-#~ "SUPORTATE. ACESTA ESTE DOSARUL DE ROM-URI CONFIGURAT:\n"
-
-#~ msgid ""
-#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
-#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
-#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
-#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
-#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-#~ msgstr ""
-#~ "NU S-AU GĂSIT FIȘIERE DE JOCURI. FIE IMPORTĂ NIȘTE JOCURI, FIE PLASEAZĂ-"
-#~ "LE MANUAL ÎN DOSARUL DE ROM-URI CONFIGURAT. POȚI DE ASEMENEA SĂ SCHIMBI "
-#~ "CALEA DOSARULUI DE ROM-URI ȘI OPȚIONAL POȚI GENERA ȘI STRUCTURA DE DOSARE "
-#~ "DE ROM-URI CARE VA CREA ȘI UN FIȘIER TEXT PENTRU FIECARE SISTEM CU "
-#~ "INFORMAȚII UTILE CUM AR FI EXTENSIILE DE FIȘIERE SUPORTATE. ACESTA ESTE "
-#~ "DOSARUL DE ROM-URI CONFIGURAT:\n"
-
-#, c-format
-#~ msgctxt "theme"
-#~ msgid "%i second ago"
-#~ msgid_plural "%i seconds ago"
-#~ msgstr[0] "acum %i secundă"
-#~ msgstr[1] "acum %i secunde"
-#~ msgstr[2] "acum %i de secunde"
