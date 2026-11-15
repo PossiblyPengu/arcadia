@@ -93,14 +93,14 @@ Arcadia syncs saves with Google Drive (or anything else rclone can reach). It fe
 and before a game, and sends them after a game and when it quits. A file is only copied where it is newer, and anything
 it would replace is kept first in `~/Arcadia/backups/sync` (or in `.backups/` on the remote). Nothing is ever deleted.
 
-To set it up once:
+To set it up once, in Desktop Mode (signing in needs a browser): open Arcadia, then **Setup → Cloud saves → Connect**.
+Arcadia gets rclone, which does the syncing (from rclone.org, checked against its published checksum), and opens
+Google's sign-in in your browser; choose your account and allow access, and it finishes by itself. Arcadia can only see
+the files it makes, in a Google Drive folder called `Arcadia` (`SYNC_REMOTE` in `~/Arcadia/deck.conf`). In Game Mode,
+Connect says to do this from Desktop Mode.
 
-1. Install rclone, and in a terminal run `rclone config`. Create a Google Drive remote named `gdrive`.
-2. Check `SYNC_REMOTE` in `~/Arcadia/deck.conf` (default `gdrive:Arcadia`).
-3. Saves are taken from the usual EmuDeck and RetroArch save folders. List your own in `SAVE_DIRS` if yours are
-   elsewhere.
-
-The *Cloud saves* step shows whether rclone and the remote are ready.
+Saves are taken from the usual EmuDeck and RetroArch save folders; list your own in `SAVE_DIRS` if yours are elsewhere.
+Anything rclone can reach works too: make the remote yourself with `rclone config` and name it in `SYNC_REMOTE`.
 
 ## Emulators and BIOS files
 

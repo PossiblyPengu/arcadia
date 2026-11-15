@@ -35,7 +35,7 @@ namespace
         {"emulators", "install-emulators.sh", N_("Install")},
         {"controls", "setup-controls.sh", N_("Set up")},
         {"access", "grant-access.sh", N_("Allow")},
-        {"saves", "get-started.sh", N_("Connect")},
+        {"saves", "connect-saves.sh", N_("Connect")},
         {"bios", "check-bios.sh", N_("Check")},
         {"deckhand", "get-deckhand.sh", N_("Get it")}};
 

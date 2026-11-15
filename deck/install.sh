@@ -73,7 +73,7 @@ done
 if [ ! -f "$ESDE/deck.conf" ]; then
   cat > "$ESDE/deck.conf" <<CONF
 # Settings for the Steam Deck extras. Lines starting with # are ignored.
-# Cloud save sync uses rclone. Make a Google Drive remote once with:  rclone config   (name it "gdrive")
+# Cloud save sync uses rclone, to Google Drive: Setup → Cloud saves → Connect gets it and signs in (in Desktop Mode).
 SYNC_ENABLED=1
 SYNC_REMOTE="gdrive:Arcadia"      # leave empty to turn save sync off
 # Folders whose files are synced. Empty = the usual EmuDeck / RetroArch Flatpak save folders that exist.

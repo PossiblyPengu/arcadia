@@ -39,7 +39,7 @@ check "install copies Arcadia's console list for the emulator installer" '[ -f "
 check "the old Setup system is removed, other systems are kept" '! grep -q arcadia-setup "$SYS" && grep -q "<name>nes</name>" "$SYS" && [ ! -d "$HOME/ROMs/arcadia-setup" ]'
 check "es_systems.xml is still valid XML" 'python3 -c "import xml.dom.minidom,sys; xml.dom.minidom.parse(sys.argv[1])" "$SYS"'
 for ev in startup game-start game-end quit; do check "event script in $ev" '[ -x "$ARCADIA_HOME/scripts/'$ev'/arcadia-save-sync.sh" ]'; done
-for t in get-started get-deckhand sort-roms install-emulators update-emulators check-bios setup-controls grant-access save-sync-now backup update-arcadia; do check "tool $t is installed" '[ -x "$ARCADIA_HOME/deck/tools/'$t'.sh" ]'; done
+for t in get-started get-deckhand sort-roms install-emulators update-emulators check-bios setup-controls grant-access save-sync-now connect-saves backup update-arcadia; do check "tool $t is installed" '[ -x "$ARCADIA_HOME/deck/tools/'$t'.sh" ]'; done
 check "config written once and kept" '[ -f "$ARCADIA_HOME/deck.conf" ] && echo "# mine" >> "$ARCADIA_HOME/deck.conf" && bash "$HERE/install.sh" >/dev/null && grep -q "# mine" "$ARCADIA_HOME/deck.conf"'
 out="$(ARCADIA_OUTPUT=stdout bash "$HERE/tools/get-started.sh")"
 check "run from Arcadia's Setup menu a tool prints its message instead of opening a dialog" '[[ "$out" == *"Games"* && "$out" == *"Emulators"* ]]'
@@ -374,6 +374,43 @@ check "picking it again reinstalls it and opens it" '[[ "$out" == *"Deckhand is 
 rm -rf "$HOME/.local/bin/deckhand"
 DECKHAND_GET_URL="file://$TMP/nothing-here" ARCADIA_OUTPUT=stdout bash "$HERE/tools/get-deckhand.sh" >/dev/null; rc=$?
 check "an installer that can't be fetched is reported" '[ "$rc" = 1 ] && grep -q "Deckhand couldn.t be installed" "$ARCADIA_HOME/logs/deck.log"'
+
+echo "cloud saves: Connect"
+RS="$TMP/rclone-org"; V=v9.9.9; mkdir -p "$RS/$V/rclone-$V-linux-amd64"
+echo "rclone $V" > "$RS/version.txt"
+cat > "$RS/$V/rclone-$V-linux-amd64/rclone" <<'R'
+#!/bin/bash
+# a fake rclone: remotes live in a file; "config create" stands for the browser sign-in finishing
+db="$HOME/rclone-remotes"; echo "$*" >> "$HOME/rclone2.calls"
+case "$1 $2" in
+  "listremotes ") cat "$db" 2>/dev/null;;
+  "config create") echo "$3:" >> "$db";;
+  "config delete") grep -vx "$3:" "$db" > "$db.t" 2>/dev/null; mv "$db.t" "$db";;
+esac
+R
+chmod +x "$RS/$V/rclone-$V-linux-amd64/rclone"
+(cd "$RS/$V" && python3 -c "import zipfile,sys; z=zipfile.ZipFile('rclone-$V-linux-amd64.zip','w'); z.write('rclone-$V-linux-amd64/rclone'); z.close()")
+(cd "$RS/$V" && sha256sum "rclone-$V-linux-amd64.zip" > SHA256SUMS)
+RPORT=$((20000 + RANDOM % 20000))
+(cd "$RS" && python3 -m http.server $RPORT --bind 127.0.0.1 >/dev/null 2>&1) & RSPID=$!
+for _ in $(seq 50); do curl -s "http://127.0.0.1:$RPORT/version.txt" >/dev/null 2>&1 && break; sleep 0.1; done
+export ARCADIA_RCLONE_URL="http://127.0.0.1:$RPORT"
+bash "$HERE/install.sh" >/dev/null
+mv "$TMP/bin/rclone" "$TMP/bin/rclone.off"; sed -i 's/^SYNC_REMOTE=.*/SYNC_REMOTE="gdrive:Arcadia"/' "$ARCADIA_HOME/deck.conf"
+rm -f "$ARCADIA_HOME/state/saves"
+out="$(XDG_CURRENT_DESKTOP=gamescope ARCADIA_OUTPUT=stdout bash "$ARCADIA_HOME/deck/tools/connect-saves.sh")"
+check "Connect gets rclone (checked) into Arcadia's own folder" '[ -x "$ARCADIA_HOME/deck/bin/rclone" ] && grep -q "rclone 9.9.9 is ready" <<<"$out"'
+check "in Game Mode it says to sign in from Desktop Mode, and starts no sign-in" 'grep -q "Desktop Mode" "$ARCADIA_HOME/logs/deck.log" && ! grep -q "config create" "$HOME/rclone2.calls"'
+XDG_CURRENT_DESKTOP=KDE ARCADIA_OUTPUT=stdout bash "$ARCADIA_HOME/deck/tools/connect-saves.sh" >/dev/null
+check "on the desktop it signs in to Google Drive (only files Arcadia makes)" 'grep -q "^config create gdrive drive scope=drive.file$" "$HOME/rclone2.calls" && [ -f "$ARCADIA_HOME/state/saves" ]'
+check "and the checklist then says cloud saves are connected" 'ARCADIA_OUTPUT=stdout bash "$ARCADIA_HOME/deck/tools/get-started.sh" --status | grep -q "^saves|1|Cloud saves|syncing to Google Drive"'
+: > "$HOME/rclone2.calls"
+out="$(XDG_CURRENT_DESKTOP=KDE ARCADIA_OUTPUT=stdout bash "$ARCADIA_HOME/deck/tools/connect-saves.sh")"
+check "connected already, Connect just says so" '! grep -q "config create" "$HOME/rclone2.calls" && grep -q "Connected" "$ARCADIA_HOME/logs/deck.log"'
+rm -rf "$ARCADIA_HOME/deck/bin"; echo "0000000000000000000000000000000000000000000000000000000000000000  rclone-$V-linux-amd64.zip" > "$RS/$V/SHA256SUMS"
+XDG_CURRENT_DESKTOP=KDE ARCADIA_OUTPUT=stdout bash "$ARCADIA_HOME/deck/tools/connect-saves.sh" >/dev/null; rc=$?
+check "a download that doesn't match its checksum isn't used" '[ "$rc" = 1 ] && [ ! -e "$ARCADIA_HOME/deck/bin/rclone" ]'
+kill $RSPID 2>/dev/null; mv "$TMP/bin/rclone.off" "$TMP/bin/rclone"
 
 echo "uninstall"
 bash "$HERE/install.sh" --uninstall >/dev/null

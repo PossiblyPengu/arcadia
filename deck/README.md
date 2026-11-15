@@ -21,6 +21,7 @@ can be tested and changed without rebuilding the program. To use them, see [`USE
 | Path | What |
 |---|---|
 | `install.sh` | Installs the tools and event scripts into the data folder, writes `deck.conf` the first time, and removes the "Setup" game system that older versions added. `--uninstall` removes them again (never ROMs, saves or settings). It also leaves a copy as `~/Arcadia/deck/uninstall.sh`, which does the same once Arcadia itself is gone (Deckhand's Add-ons → Arcadia → Uninstall does this for you). |
+| `tools/connect-saves.sh` | Cloud saves → Connect: gets rclone (`lib/get_rclone.py`, from rclone.org, checked against its SHA-256) into `~/Arcadia/deck/bin`, then signs in to Google Drive in the browser (Google's `drive.file` access: only files Arcadia makes). In Game Mode it says to do this from Desktop Mode. |
 | `lib/deck-lib.sh` | Shared settings, logging, messages, save sync (rclone), the emulator list and the BIOS list |
 | `lib/romsort/` | The ROM sorter, ported from the earlier Arcadia app: headers, extensions, disc images, cue sheets, multi-disc playlists, Switch updates and DLC. Run with `python3 -m romsort --help`. |
 | `lib/controls.py` | Starter controller settings for DuckStation, PCSX2 and RetroArch (Flatpak) |

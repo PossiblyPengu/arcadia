@@ -5,6 +5,12 @@
 DECK_HOME="${ARCADIA_HOME:-$HOME/Arcadia}"
 DECK_CONF="${DECK_CONF:-$DECK_HOME/deck.conf}"
 DECK_LOG="${DECK_LOG:-$DECK_HOME/logs/deck.log}"
+# Programs Arcadia fetches for you (rclone, for cloud saves: SteamOS doesn't ship it) live here.
+DECK_BIN="$DECK_HOME/deck/bin"
+case ":$PATH:" in *":$DECK_BIN:"*) ;; *) PATH="$DECK_BIN:$PATH" ;; esac
+
+# deck_game_mode: true in Game Mode (gamescope), where there's no desktop browser to sign in with.
+deck_game_mode() { [ "${SteamGamepadUI:-}" = 1 ] || [ "${XDG_CURRENT_DESKTOP,,}" = gamescope ] || [ -n "${GAMESCOPE_WAYLAND_DISPLAY:-}" ]; }
 
 # --- defaults, overridden by deck.conf -------------------------------------------------------------------------------
 SYNC_REMOTE="gdrive:Arcadia"        # an rclone remote and folder; empty turns save sync off
