@@ -191,7 +191,9 @@
                 <zIndex>2</zIndex>
             </image>
 
-            <!-- under the selected game: its name, a row of facts, and Play -->
+            <!-- under the selected game: its name, a row of facts, and Play. A fact the game doesn't have yet shows
+                 nothing (":space:", no chip); last played comes first, as the one a game without info is likeliest to
+                 have, so the row starts at the left; with no description, a line says where to get info. -->
             <text name="gameName">
                 <pos>0.034 0.735</pos>
                 <size>0.74 0.075</size>
@@ -204,12 +206,12 @@
                 <zIndex>30</zIndex>
             </text>
             <datetime name="releasedate">
-                <pos>0.034 0.81</pos>
+                <pos>0.222 0.81</pos>
                 <size>0.1 0.042</size>
                 <origin>0 0.5</origin>
                 <metadata>releasedate</metadata>
                 <format>%Y</format>
-                <defaultValue>Year unknown</defaultValue>
+                <defaultValue>:space:</defaultValue>
                 <fontPath>${labelFont}</fontPath>
                 <fontSize>0.021</fontSize>
                 <horizontalAlignment>center</horizontalAlignment>
@@ -219,11 +221,11 @@
                 <zIndex>30</zIndex>
             </datetime>
             <text name="genre">
-                <pos>0.142 0.81</pos>
+                <pos>0.33 0.81</pos>
                 <size>0.2 0.042</size>
                 <origin>0 0.5</origin>
                 <metadata>genre</metadata>
-                <defaultValue>No genre yet</defaultValue>
+                <defaultValue>:space:</defaultValue>
                 <fontPath>${labelFont}</fontPath>
                 <fontSize>0.021</fontSize>
                 <horizontalAlignment>center</horizontalAlignment>
@@ -233,11 +235,11 @@
                 <zIndex>30</zIndex>
             </text>
             <text name="players">
-                <pos>0.35 0.81</pos>
+                <pos>0.538 0.81</pos>
                 <size>0.13 0.042</size>
                 <origin>0 0.5</origin>
                 <metadata>players</metadata>
-                <defaultValue>Players unknown</defaultValue>
+                <defaultValue>:space:</defaultValue>
                 <fontPath>${labelFont}</fontPath>
                 <fontSize>0.021</fontSize>
                 <horizontalAlignment>center</horizontalAlignment>
@@ -247,12 +249,12 @@
                 <zIndex>30</zIndex>
             </text>
             <datetime name="lastplayed">
-                <pos>0.488 0.81</pos>
+                <pos>0.034 0.81</pos>
                 <size>0.18 0.042</size>
                 <origin>0 0.5</origin>
                 <metadata>lastplayed</metadata>
                 <displayRelative>true</displayRelative>
-                <defaultValue>Not played yet</defaultValue>
+                <defaultValue>:space:</defaultValue>
                 <fontPath>${labelFont}</fontPath>
                 <fontSize>0.021</fontSize>
                 <horizontalAlignment>center</horizontalAlignment>
@@ -266,6 +268,7 @@
                 <size>0.62 0.06</size>
                 <origin>0 0.5</origin>
                 <metadata>description</metadata>
+                <defaultValue>No info for this game yet. Settings → Covers and info finds covers, descriptions and more.</defaultValue>
                 <container>true</container>
                 <containerScrollSpeed>1</containerScrollSpeed>
                 <containerStartDelay>4.5</containerStartDelay>

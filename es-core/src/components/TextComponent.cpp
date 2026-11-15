@@ -258,21 +258,26 @@ void TextComponent::render(const glm::mat4& parentTrans)
         trans = glm::translate(trans, glm::vec3 {offsetX - mScrollOffset1, 0.0f, 0.0f});
     }
 
-    auto renderFunc = [this](glm::mat4 trans, bool secondPass) {
-        if (mRenderBackground && !secondPass)
+    // Arcadia: a blank text (an empty value with the theme's defaultValue ":space:") draws no background either, so
+    // an info chip with nothing to say disappears instead of showing an empty pill.
+    const bool blank {mText.find_first_not_of(" \t\r\n") == std::string::npos};
+    auto renderFunc = [this, blank](glm::mat4 trans, bool secondPass) {
+        if (!blank) {
+            if (mRenderBackground && !secondPass)
+                if (mBackgroundMargins.x > 0.0f) {
+                    trans = glm::translate(trans, glm::vec3 {-mBackgroundMargins.x, 0.0f, 0.0f});
+                    mRenderer->setMatrix(trans);
+                }
+
+            mRenderer->drawRect(0.0f, 0.0f, mSize.x + mBackgroundMargins.x + mBackgroundMargins.y,
+                                mSize.y, mBgColor, mBgColor, false, mOpacity * mThemeOpacity, mDimming,
+                                Renderer::BlendFactor::SRC_ALPHA,
+                                Renderer::BlendFactor::ONE_MINUS_SRC_ALPHA, mBackgroundCornerRadius);
+
             if (mBackgroundMargins.x > 0.0f) {
-                trans = glm::translate(trans, glm::vec3 {-mBackgroundMargins.x, 0.0f, 0.0f});
+                trans = glm::translate(trans, glm::vec3 {mBackgroundMargins.x, 0.0f, 0.0f});
                 mRenderer->setMatrix(trans);
             }
-
-        mRenderer->drawRect(0.0f, 0.0f, mSize.x + mBackgroundMargins.x + mBackgroundMargins.y,
-                            mSize.y, mBgColor, mBgColor, false, mOpacity * mThemeOpacity, mDimming,
-                            Renderer::BlendFactor::SRC_ALPHA,
-                            Renderer::BlendFactor::ONE_MINUS_SRC_ALPHA, mBackgroundCornerRadius);
-
-        if (mBackgroundMargins.x > 0.0f) {
-            trans = glm::translate(trans, glm::vec3 {mBackgroundMargins.x, 0.0f, 0.0f});
-            mRenderer->setMatrix(trans);
         }
 
         if (mTextCache) {
@@ -391,6 +396,11 @@ void TextComponent::setValue(const std::string& value)
         (mThemeMetadata == "developer" || mThemeMetadata == "publisher" ||
          mThemeMetadata == "genre" || mThemeMetadata == "players" ||
          mThemeMetadata == "playtime")) {
+        setText(mDefaultValue);
+    }
+    else if (mDefaultValue != "" && mThemeMetadata == "description" &&
+             value.find_first_not_of(" \t\r\n") == std::string::npos) {
+        // Arcadia: a game with no description yet shows the theme's text for that (e.g. where to get info).
         setText(mDefaultValue);
     }
     else {
@@ -583,7 +593,8 @@ void TextComponent::applyTheme(const std::shared_ptr<ThemeData>& theme,
                 if (elem->has("defaultValue")) {
                     if (mThemeMetadata == "developer" || mThemeMetadata == "publisher" ||
                         mThemeMetadata == "genre" || mThemeMetadata == "players" ||
-                        mThemeMetadata == "playtime" || mThemeMetadata == "systemName" ||
+                        mThemeMetadata == "playtime" || mThemeMetadata == "description" ||
+                        mThemeMetadata == "systemName" ||
                         mThemeMetadata == "systemFullname" ||
                         mThemeMetadata == "sourceSystemName" ||
                         mThemeMetadata == "sourceSystemFullname") {
