@@ -7,8 +7,7 @@
 #   install-emulators.sh --remove ID     uninstall one
 . "$(dirname "$(readlink -f "$0")")/../lib/deck-lib.sh"
 deck_load_conf
-grant=("$(deck_rom_root)"); [ -d "$BIOS_DIR" ] && grant+=("$BIOS_DIR"); for d in "${SAVE_DIRS[@]}"; do [ -d "$d" ] && grant+=("$d"); done
-export ARCADIA_GRANT_DIRS="$(IFS=:; echo "${grant[*]}")" ARCADIA_ROMS="$(deck_rom_root)" ARCADIA_HOME="$DECK_HOME"
+deck_emulator_env
 EMU="$(dirname "$(readlink -f "$0")")/../lib/emulators.py"
 case "${1:-}" in
   --plan) exec python3 "$EMU" plan ;;

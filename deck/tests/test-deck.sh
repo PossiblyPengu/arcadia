@@ -121,6 +121,14 @@ check "the user-level Flathub source is added first (SteamOS only has the system
 check "the new emulator can see the ROM folder straight away" 'grep -q "^override --user --filesystem=$G.* org.libretro.RetroArch$" "$HOME/flatpak.calls"'
 check "the cores the games need are put where RetroArch and Arcadia look" '[ "$(cat "$TMP/ra-cores/mednafen_psx_libretro.so")" = "$(printf "\x7fELF psx core")" ] && [ -f "$TMP/ra-cores/snes9x_libretro.so" ]'
 check "it reports its progress for Arcadia's bar (start, then each step)" 'grep -q "^@progress 0/3$" <<<"$out" && grep -q "^@progress 3/3$" <<<"$out"'
+check "the new emulator finds BIOS files in your BIOS folder (its own folder links there)" '[ "$(readlink "$HOME/.var/app/org.libretro.RetroArch/config/retroarch/system")" = "$HOME/Emulation/bios" ]'
+check "and gets its starter controls as it installs" 'grep -q "input_exit_emulator_btn" "$HOME/.var/app/org.libretro.RetroArch/config/retroarch/retroarch.cfg"'
+rm -rf "$HOME/.var/app/net.pcsx2.PCSX2/config/PCSX2/bios"; mkdir -p "$HOME/.var/app/net.pcsx2.PCSX2/config/PCSX2/bios"; touch "$HOME/.var/app/net.pcsx2.PCSX2/config/PCSX2/bios/mine.bin"
+FAKE_INSTALLED=net.pcsx2.PCSX2 ARCADIA_ROMS="$G" ROM_ROOT="$G" ARCADIA_OUTPUT=stdout bash "$HERE/tools/update-emulators.sh" >/dev/null
+check "an emulator with BIOS files in its own folder keeps them (no link over them)" '[ ! -L "$HOME/.var/app/net.pcsx2.PCSX2/config/PCSX2/bios" ] && [ -f "$HOME/.var/app/net.pcsx2.PCSX2/config/PCSX2/bios/mine.bin" ]'
+rm -rf "$HOME/.var/app/net.pcsx2.PCSX2"
+FAKE_INSTALLED=net.pcsx2.PCSX2 ARCADIA_ROMS="$G" ROM_ROOT="$G" ARCADIA_OUTPUT=stdout bash "$HERE/tools/update-emulators.sh" >/dev/null
+check "and one installed before this Arcadia is set up at its next update" '[ "$(readlink "$HOME/.var/app/net.pcsx2.PCSX2/config/PCSX2/bios")" = "$HOME/Emulation/bios" ] && grep -q "SDL-0/Start" "$HOME/.var/app/net.pcsx2.PCSX2/config/PCSX2/inis/PCSX2.ini"'
 : > "$ARCADIA_HOME/logs/deck.log"; rm -f "$TMP/ra-cores/snes9x_libretro.so"
 FAKE_INSTALLED=org.libretro.RetroArch ARCADIA_ROMS="$G" ROM_ROOT="$G" bash "$HERE/tools/install-emulators.sh" >/dev/null
 check "outside Arcadia (a desktop dialog) the progress lines aren't shown" 'grep -q "Emulators:" "$ARCADIA_HOME/logs/deck.log" && ! grep -q "@progress" "$ARCADIA_HOME/logs/deck.log"'

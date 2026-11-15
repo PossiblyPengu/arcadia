@@ -154,6 +154,18 @@ def seed_retroarch(reset: bool = False) -> str:
     return f"RetroArch: set {len(changed)} hotkey(s) (old file kept in {note})"
 
 
+def seed_for(app_id: str) -> str | None:
+    """Starter controls for one emulator just installed (or already there), only where none are set; None if this
+    emulator has none to give or already has its own."""
+    if app_id in INI_EMULATORS:
+        msg = seed_ini(app_id)
+    elif app_id == RETROARCH:
+        msg = seed_retroarch()
+    else:
+        return None
+    return None if "already" in msg else msg
+
+
 def main(argv: list[str]) -> int:
     reset = "--reset" in argv
     results = []

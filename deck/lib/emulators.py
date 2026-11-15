@@ -358,6 +358,56 @@ def scopes_with(exe: str, app_id: str) -> list[str]:
                               timeout=60).returncode == 0]
 
 
+# Where each emulator looks for BIOS files by default (in its Flatpak data). Pointed at your BIOS folder
+# (ARCADIA_BIOS_DIR, ~/Emulation/bios) with a link, the way EmuDeck does it, so it finds the files there whatever its
+# settings say. Only an emulator's empty or missing folder is linked, never one with files in it.
+BIOS_LINKS = {
+    "org.duckstation.DuckStation": ("data", "duckstation", "bios"),
+    "net.pcsx2.PCSX2": ("config", "PCSX2", "bios"),
+    "org.libretro.RetroArch": ("config", "retroarch", "system"),
+}
+
+
+def link_bios(app_id: str) -> str | None:
+    """Point the emulator's BIOS folder at yours. Returns what was done, or None when nothing needed doing."""
+    rel = BIOS_LINKS.get(app_id)
+    bios = os.environ.get("ARCADIA_BIOS_DIR", "")
+    if rel is None or not bios or not Path(bios).is_dir():
+        return None
+    name = next((k[1] for k in KNOWN if k[0] == app_id), app_id)
+    target = HOME / ".var" / "app" / app_id / Path(*rel)
+    if target.is_symlink():
+        if Path(os.readlink(target)) == Path(bios):
+            return None
+        return f"{name} uses its own BIOS folder ({target}), left as it is"
+    if target.is_dir():
+        if any(target.iterdir()):
+            return f"{name} has BIOS files in its own folder ({target}), left as they are"
+        target.rmdir()
+    try:
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.symlink_to(bios, target_is_directory=True)
+    except OSError as e:
+        return f"{name}: couldn't point it at your BIOS folder ({e})"
+    return f"{name} finds BIOS files in {bios}"
+
+
+def set_up_installed(exe: str, plan: "Plan") -> list[str]:
+    """What every installed emulator needs from Arcadia, for ones installed now and ones there before: access to your
+    folders, its BIOS folder pointed at yours, and starter controls. Only fills in what's missing."""
+    import controls  # (beside this file)
+
+    done = []
+    for e in plan.emulators:
+        if not e.installed:
+            continue
+        grant_folders(exe, e.id)
+        for msg in (link_bios(e.id), controls.seed_for(e.id)):
+            if msg:
+                done.append(msg)
+    return done
+
+
 def grant_folders(exe: str, app_id: str) -> None:
     """Let the app see your ROM, BIOS and save folders (a Flatpak can't, unless told)."""
     dirs = [d for d in os.environ.get("ARCADIA_GRANT_DIRS", "").split(":") if d and Path(d).is_dir()]
@@ -476,6 +526,8 @@ def install(plan: Plan, ids: list[str]) -> int:
                     say(f"  ✗ {e.cores[core]}: {exc}")
                     failed.append(core)
                 progress()
+    for msg in set_up_installed(exe, plan):  # (its BIOS folder and controls, for these and ones already here)
+        say(f"  ✓ {msg}")
     say("")
     if failed:
         say(f"Not everything installed ({', '.join(failed)}). Try again; details are in {ESDE / 'logs/deck.log'}.")
@@ -528,6 +580,8 @@ def update(plan: Plan) -> int:
         except (InstallError, OSError) as exc:
             say(f"  ✗ couldn't check the RetroArch cores: {exc}")
             rc = rc or 1
+    for msg in set_up_installed(exe, plan):
+        say(f"  ✓ {msg}")
     return 0 if rc == 0 else 1
 
 

@@ -173,3 +173,14 @@ deck_bios_report() {
   done
   return $rc
 }
+
+# What the emulator tool needs: your folders to share with the emulators (ROMs, BIOS, saves) and the BIOS folder to
+# point them at. The BIOS folder is made if it isn't there, so emulators get access to it and files can go in later.
+deck_emulator_env() {
+  mkdir -p "$BIOS_DIR" 2>/dev/null
+  local grant=("$(deck_rom_root)") d
+  [ -d "$BIOS_DIR" ] && grant+=("$BIOS_DIR")
+  for d in "${SAVE_DIRS[@]}"; do [ -d "$d" ] && grant+=("$d"); done
+  ARCADIA_GRANT_DIRS="$(IFS=:; echo "${grant[*]}")"
+  export ARCADIA_GRANT_DIRS ARCADIA_ROMS="$(deck_rom_root)" ARCADIA_HOME="$DECK_HOME" ARCADIA_BIOS_DIR="$BIOS_DIR"
+}
