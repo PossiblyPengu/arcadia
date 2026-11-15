@@ -192,6 +192,7 @@ private:
     std::string mRomDirectory;
     GuiMsgBox* mNoGamesMessageBox;
     bool mRescanRequested {false};
+    bool mRedrawWelcome {false}; // the colours changed under the welcome screen: rebuild it once it's on top again
     // What the update check found ("" while it runs or if nothing is newer). Shared with its thread.
     struct UpdateCheck {
         std::mutex mutex;

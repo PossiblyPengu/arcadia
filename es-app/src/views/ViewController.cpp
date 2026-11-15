@@ -80,6 +80,10 @@ void ViewController::setMenuColors()
     // The screen's ground too (seen with no games, behind the welcome screen), once there is a window to draw in.
     if (mRenderer->getSDLWindow() != nullptr)
         mRenderer->setGroundColor(dusk);
+    // The welcome screen (no games) was drawn in the old colours, its help bar too: it's rebuilt once the menu that
+    // changed them has closed (see rescanIfRequested).
+    if (mNoGamesMessageBox != nullptr)
+        mRedrawWelcome = true;
 
     if (!dusk) {
         mMenuColorFrame = 0xFFFFFFFF;
@@ -1646,15 +1650,30 @@ void ViewController::checkWindowSizeChanged()
 
 void ViewController::rescanIfRequested()
 {
-    if (!mRescanRequested)
+    if (!mRescanRequested && !mRedrawWelcome)
         return;
     GuiComponent* top {mWindow->peekGui()};
     const bool welcome {mNoGamesMessageBox != nullptr && top == mNoGamesMessageBox};
+    if (mRedrawWelcome && !mRescanRequested) {
+        if (mNoGamesMessageBox == nullptr || !mWindow->hasGui(mNoGamesMessageBox)) {
+            mRedrawWelcome = false; // (gone already: games were found)
+            return;
+        }
+        if (!welcome)
+            return; // (the menu that changed the colours is still open)
+        mRedrawWelcome = false;
+        delete mNoGamesMessageBox;
+        mNoGamesMessageBox = nullptr;
+        mWindow->invalidateCachedBackground();
+        noGamesDialog();
+        return;
+    }
     if (top != this && !welcome)
         return; // (Settings or a dialog is still open)
     if (mWindow->isScreensaverActive() || mWindow->getGameLaunchedState())
         return;
     mRescanRequested = false;
+    mRedrawWelcome = false; // (the scan builds a fresh welcome screen, if there are still no games)
     LOG(LogInfo) << "ViewController::rescanIfRequested(): The games changed, looking through the ROM folders again";
     rescanROMDirectory();
 }
