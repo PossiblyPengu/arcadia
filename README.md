@@ -36,6 +36,7 @@ Taken from the program itself at 1280x800 (the Deck's screen), with test games t
 | ![Settings](docs/screenshots/main-menu.png) | ![Setup](docs/screenshots/setup.png) |
 | ![Sound settings](docs/screenshots/sound-settings.png) | ![BIOS check](docs/screenshots/setup-checklist.png) |
 | ![Sorting ROMs](docs/screenshots/setup-sort.png) | ![First start](docs/screenshots/first-start.png) |
+| ![Emulators](docs/screenshots/setup-emulators.png) | |
 
 ## Build
 
