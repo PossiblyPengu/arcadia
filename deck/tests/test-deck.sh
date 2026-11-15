@@ -127,6 +127,39 @@ ARCADIA_BIOS_DIR="$B" python3 "$EMU" link-bios >/dev/null
 check "PS2 and Dreamcast BIOS files are linked where RetroArch's cores look (PS1 ones aren't)" '[ "$(readlink "$B/pcsx2/bios/scph39001.bin")" = "../../scph39001.bin" ] && [ -f "$B/dc/dc_boot.bin" ] && [ ! -e "$B/pcsx2/bios/scph5501.bin" ] && [ ! -e "$B/dc/notes.txt" ]'
 ARCADIA_BIOS_DIR="$B" python3 "$EMU" link-bios >/dev/null
 check "linking again changes nothing" '[ "$(ls "$B/pcsx2/bios")" = "scph39001.bin" ]'
+
+echo "folders: every emulator uses the same BIOS and ROM folders"
+FO="$HERE/lib/folders.py"; FB="$TMP/fbios"; FR="$TMP/froms"; A="$HOME/.var/app"
+mkdir -p "$FB" "$FR"; touch "$FB"/{gba_bios.bin,bios7.bin,bios9.bin,firmware.bin,prod.keys,keys.txt,mcpx_1.0.bin,Complex_4627.bin}
+fo() { ARCADIA_BIOS_DIR="$FB" ARCADIA_ROMS="$FR" python3 "$FO" set-up "$@"; }
+: "$(fo org.libretro.RetroArch org.duckstation.DuckStation net.pcsx2.PCSX2 org.ppsspp.PPSSPP org.DolphinEmu.dolphin-emu \
+  org.flycast.Flycast io.mgba.mGBA net.kuribo64.melonDS org.azahar_emu.Azahar dev.eden_emu.eden info.cemu.Cemu app.xemu.xemu)"
+# (RetroArch, DuckStation and PCSX2 were installed above, which set them up for Arcadia's ROM folder then.)
+check "installing RetroArch pointed it at Arcadia's ROM folder" 'grep -qx "rgui_browser_directory = \"$HOME/ROMs\"" "$A/org.libretro.RetroArch/config/retroarch/retroarch.cfg"'
+check "and DuckStation and PCSX2 list games from their console folders" 'grep -A1 "^\[GameList\]" "$A/org.duckstation.DuckStation/data/duckstation/settings.ini" | grep -qx "RecursivePaths = $HOME/ROMs/psx" && grep -A1 "^\[GameList\]" "$A/net.pcsx2.PCSX2/config/PCSX2/inis/PCSX2.ini" | grep -qx "RecursivePaths = $HOME/ROMs/ps2"'
+check "PPSSPP and Dolphin too (Dolphin: GameCube and Wii)" 'grep -qx "CurrentDirectory = $FR/psp" "$A/org.ppsspp.PPSSPP/config/ppsspp/PSP/SYSTEM/ppsspp.ini" && grep -qx "ISOPaths = 2" "$A/org.DolphinEmu.dolphin-emu/config/dolphin-emu/Dolphin.ini" && grep -qx "ISOPath1 = $FR/wii" "$A/org.DolphinEmu.dolphin-emu/config/dolphin-emu/Dolphin.ini"'
+check "Flycast finds BIOS files in the BIOS folder and games in the ROM folder" 'grep -qx "Dreamcast.BiosPath = $FB" "$A/org.flycast.Flycast/config/flycast/emu.cfg" && grep -qx "Dreamcast.ContentPath = $FR/dreamcast" "$A/org.flycast.Flycast/config/flycast/emu.cfg"'
+check "mGBA uses the GBA BIOS from the BIOS folder" 'grep -qx "gba.bios=$FB/gba_bios.bin" "$A/io.mgba.mGBA/config/mgba/config.ini" && grep -qx "useBios=1" "$A/io.mgba.mGBA/config/mgba/config.ini"'
+M="$A/net.kuribo64.melonDS/config/melonDS/melonDS.toml"
+check "melonDS: the ROM folder, and the DS BIOS files turned on (a TOML file)" '[ "$(head -1 "$M")" = "LastROMFolder = \"$FR/nds\"" ] && python3 -c "import tomllib,sys; d=tomllib.load(open(sys.argv[1],\"rb\")); assert d[\"Emu\"][\"ExternalBIOSEnable\"] is True and d[\"DS\"][\"BIOS7Path\"].endswith(\"bios7.bin\")" "$M"'
+check "Azahar and Eden list games from their folders (beside their own entries)" 'grep -qx "Paths\\\\gameListRootDir=$FR/n3ds" "$A/org.azahar_emu.Azahar/config/azahar-emu/qt-config.ini" && grep -qx "Paths\\\\gameListRootDir=$FR/switch" "$A/dev.eden_emu.eden/config/eden/qt-config.ini"'
+check "Eden and Cemu use keys from the BIOS folder" '[ "$(readlink "$A/dev.eden_emu.eden/data/eden/keys/prod.keys")" = "$FB/prod.keys" ] && [ "$(readlink "$A/info.cemu.Cemu/data/Cemu/keys.txt")" = "$FB/keys.txt" ]'
+check "Cemu lists games from the Wii U folder" 'grep -q "<Entry>$FR/wiiu</Entry>" "$A/info.cemu.Cemu/config/Cemu/settings.xml"'
+check "xemu uses the Xbox BIOS files" 'python3 -c "import tomllib,sys; f=tomllib.load(open(sys.argv[1],\"rb\"))[\"sys\"][\"files\"]; assert f[\"bootrom_path\"].endswith(\"mcpx_1.0.bin\") and f[\"flashrom_path\"].endswith(\"Complex_4627.bin\")" "$A/app.xemu.xemu/data/xemu/xemu/xemu.toml"'
+check "the console folders are made where missing" '[ -d "$FR/psx" ] && [ -d "$FR/switch" ]'
+check "a second run changes nothing" '[ -z "$(fo org.libretro.RetroArch net.pcsx2.PCSX2 org.DolphinEmu.dolphin-emu net.kuribo64.melonDS org.azahar_emu.Azahar info.cemu.Cemu app.xemu.xemu)" ]'
+# A folder you chose yourself stays; a new setting goes into the file you have, which is backed up.
+D="$A/org.DolphinEmu.dolphin-emu/config/dolphin-emu/Dolphin.ini"; printf '[General]\nISOPaths = 1\nISOPath0 = /mine\n\n[Interface]\nTheme = Clean\n' > "$D"
+P="$A/org.ppsspp.PPSSPP/config/ppsspp/PSP/SYSTEM/ppsspp.ini"; printf '[General]\nLanguage = en_US\n\n[Graphics]\nFrameSkip = 0\n' > "$P"
+fo org.DolphinEmu.dolphin-emu org.ppsspp.PPSSPP >/dev/null
+check "a folder you set yourself is left as it is" 'grep -qx "ISOPath0 = /mine" "$D" && ! grep -q "$FR" "$D"'
+check "otherwise the setting joins your file in its section, kept as it was, and backed up" '[ "$(sed -n 2,3p "$P")" = "$(printf "Language = en_US\nCurrentDirectory = $FR/psp")" ] && grep -qx "FrameSkip = 0" "$P" && ls "$ARCADIA_HOME/backups" | grep -q "^SYSTEM-ppsspp.ini-"'
+Z="$A/org.azahar_emu.Azahar/config/azahar-emu/qt-config.ini"; printf '[UI]\nPaths\\gamedirs\\1\\path=INSTALLED\nPaths\\gamedirs\\2\\path=SYSTEM\nPaths\\gamedirs\\size=2\n' > "$Z"
+fo org.azahar_emu.Azahar >/dev/null
+check "a game folder list that's there gets one more entry" 'grep -qx "Paths\\\\gamedirs\\\\3\\\\path=$FR/n3ds" "$Z" && grep -qx "Paths\\\\gamedirs\\\\size=3" "$Z" && grep -qx "Paths\\\\gamedirs\\\\1\\\\path=INSTALLED" "$Z"'
+K="$A/info.cemu.Cemu/data/Cemu/keys.txt"; rm "$K"; printf '# put keys here\n0123456789abcdef\n' > "$K"
+fo info.cemu.Cemu >/dev/null
+check "keys you have already are kept" '[ ! -L "$K" ] && grep -q 0123456789abcdef "$K"'
 check "and gets its starter controls as it installs" 'grep -q "input_exit_emulator_btn" "$HOME/.var/app/org.libretro.RetroArch/config/retroarch/retroarch.cfg"'
 rm -rf "$HOME/.var/app/net.pcsx2.PCSX2/config/PCSX2/bios"; mkdir -p "$HOME/.var/app/net.pcsx2.PCSX2/config/PCSX2/bios"; touch "$HOME/.var/app/net.pcsx2.PCSX2/config/PCSX2/bios/mine.bin"
 FAKE_INSTALLED=net.pcsx2.PCSX2 ARCADIA_ROMS="$G" ROM_ROOT="$G" ARCADIA_OUTPUT=stdout bash "$HERE/tools/update-emulators.sh" >/dev/null

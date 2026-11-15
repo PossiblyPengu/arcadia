@@ -109,11 +109,17 @@ the games in your ROM folders and Arcadia's own choice of emulator for each cons
 **X** to install it all, with progress shown as it goes. Most classic consoles play through RetroArch, which needs a *core*
 for each console: the screen installs those too (from libretro's build server, the place RetroArch's own Core Downloader
 uses, each checked against the checksum the server publishes). New emulators are allowed to see your ROM, BIOS and save
-folders straight away. Windows games are pointed to Deckhand, and a console whose emulator isn't on Flathub (Switch) says
-which one Arcadia uses. To change which emulator a system uses, go to *Settings > Advanced > Alternative emulators*. For a
-single game, use the View button > *EDIT THIS GAME'S METADATA* (after turning on *ENABLE ALTERNATIVE EMULATORS PER
-GAME* in the same settings menu). BIOS files have to come from your own consoles. Put them in `~/Emulation/bios` (or the folder set as
-`BIOS_DIR`), and use *Check BIOS files* to see what's missing.
+folders straight away. Windows games are pointed to Deckhand, and a console whose emulator isn't on Flathub says which one
+Arcadia uses. To change which emulator a system uses, go to *Settings > Advanced > Alternative emulators*; for a single
+game, open its options (Select in a game list) > *Emulator for this game*. BIOS files have to come from your own consoles.
+Put them in `~/Emulation/bios` (or the folder set as `BIOS_DIR`), and use *Check BIOS files* to see what's missing.
+
+Every emulator Arcadia installs uses that one BIOS folder and Arcadia's ROM folder, so opened on its own an emulator lists
+your games (from `~/ROMs/<console>`) and finds its BIOS files and keys. RetroArch, DuckStation and PCSX2 have their BIOS
+folder linked to yours; Flycast, mGBA, melonDS and xemu are given the paths; Eden's and Cemu's keys are linked in. Only
+what's missing is filled in: a folder you set in an emulator yourself stays, and a changed settings file is backed up to
+`~/Arcadia/backups` first. BIOS files added later are picked up the next time you run *Check BIOS files*. The PS3
+firmware is the exception: install it from RPCS3's own menu (*File > Install Firmware*).
 
 ## Covers and game information
 

@@ -12,7 +12,8 @@ folders, exactly what is needed (the Flatpak apps and the RetroArch cores) and i
     emulators.py install ID [ID…]         those apps (Flatpak ids or names), plus the cores your games need from them
     emulators.py remove ID                uninstall one app
     emulators.py update                   update the installed apps, and refresh RetroArch cores that changed
-    emulators.py link-bios                link BIOS files into the folders RetroArch's PS2 and Dreamcast cores look in
+    emulators.py link-bios                BIOS files added since: linked where RetroArch's PS2 and Dreamcast cores look,
+                                          and given to the installed emulators that need a path (folders.py)
 
 Apps come from Flathub (a user-level install, like Discover's). Cores come from libretro's own build server, the place
 RetroArch's Core Downloader uses; each is checked against the server's published checksum before it is put in place.
@@ -434,7 +435,10 @@ def set_up_installed(exe: str, plan: "Plan") -> list[str]:
     """What every installed emulator needs from Arcadia, for ones installed now and ones there before: access to your
     folders, its BIOS folder pointed at yours, and starter controls. Only fills in what's missing."""
     import controls  # (beside this file)
+    import folders
 
+    bios = Path(os.environ.get("ARCADIA_BIOS_DIR") or HOME / "Emulation" / "bios")
+    roms = Path(os.environ.get("ARCADIA_ROMS") or HOME / "ROMs")
     done = []
     for e in plan.emulators:
         if not e.installed:
@@ -445,6 +449,7 @@ def set_up_installed(exe: str, plan: "Plan") -> list[str]:
                 done.append(msg)
         if e.id == "org.libretro.RetroArch":
             done += link_core_bios()
+        done += folders.set_up(e.id, bios, roms)  # (the same BIOS and ROM folders, in its own settings)
     return done
 
 
@@ -638,9 +643,16 @@ def resolve(plan: Plan, names: list[str]) -> list[str]:
 def main(argv: list[str]) -> int:
     roms = Path(os.environ.get("ARCADIA_ROMS") or HOME / "ROMs")
     cmd, args = (argv[0] if argv else "plan"), argv[1:]
-    if cmd == "link-bios":  # (Check BIOS files: new files at the top of the BIOS folder, for RetroArch's cores)
+    if cmd == "link-bios":  # (Check BIOS files: BIOS files and keys added since, for the installed emulators)
+        import folders
+
         for msg in link_core_bios():
             print(msg)
+        bios = Path(os.environ.get("ARCADIA_BIOS_DIR") or HOME / "Emulation" / "bios")
+        for app_id in folders.SUPPORTED:
+            if (HOME / ".var" / "app" / app_id).is_dir():  # (installed and set up before)
+                for msg in folders.set_up(app_id, bios, roms):
+                    print(msg)
         return 0
     plan = plan_from_disk(roms)
     if cmd == "plan":
