@@ -297,6 +297,7 @@ check "the running Arcadia's own version counts (installed by Deckhand: no versi
 DECK_APPIMAGE="$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" bash "$HERE/tools/update-arcadia.sh"
 check "update replaces the AppImage and keeps the old one" 'grep -q NEW-APPIMAGE "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" && grep -q OLD-APPIMAGE "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage.previous" && [ -x "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" ]'
 check "it reinstalls the extras and records the version" '[ "$(cat "$ARCADIA_HOME/deck/version")" = v9.9.9 ] && [ -x "$ARCADIA_HOME/deck/tools/sort-roms.sh" ]'
+check "and shares the version with Deckhand" '[ "$(cat "$ARCADIA_HOME/state/arcadia-version")" = 9.9.9 ]'
 DECK_APPIMAGE="$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" bash "$HERE/tools/update-arcadia.sh"
 check "a second run says it's up to date" 'tail -n 1 "$ARCADIA_HOME/logs/deck.log" | grep -q "Arcadia is up to date (9.9.9)"'
 

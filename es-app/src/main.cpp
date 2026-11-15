@@ -47,6 +47,10 @@
 #include <FreeImage.h>
 #include <cstdlib>
 #include <fstream>
+
+#ifndef ARCADIA_VERSION
+#define ARCADIA_VERSION "dev"
+#endif
 #include <iostream>
 #include <time.h>
 
@@ -340,8 +344,8 @@ bool parseArguments(const std::vector<std::string>& arguments)
             Log::setReportingLevel(LogDebug);
         }
         else if (arguments[i] == "--version" || arguments[i] == "-v") {
-            std::cout << "Arcadia " << PROGRAM_VERSION_STRING << " (r" << PROGRAM_RELEASE_NUMBER
-                      << ")\n";
+            std::cout << "Arcadia " << ARCADIA_VERSION << " (ES-DE " << PROGRAM_VERSION_STRING << ", r"
+                      << PROGRAM_RELEASE_NUMBER << ")\n";
             return false;
         }
         else if (arguments[i] == "--help" || arguments[i] == "-h") {
@@ -525,8 +529,14 @@ int main(int argc, char* argv[])
     Log::open();
     {
         const std::string applicationName {"Arcadia"};
-        LOG(LogInfo) << applicationName << " " << PROGRAM_VERSION_STRING << " (r"
+        LOG(LogInfo) << applicationName << " " << ARCADIA_VERSION << " (ES-DE " << PROGRAM_VERSION_STRING << ", r"
                      << PROGRAM_RELEASE_NUMBER << "), built " << PROGRAM_BUILT_STRING;
+        // Which Arcadia this is, for Deckhand's Add-ons page (it shows the version you have without starting the
+        // AppImage just to ask).
+        const std::string stateDir {Utils::FileSystem::getAppDataDirectory() + "/state"};
+        Utils::FileSystem::createDirectory(stateDir);
+        std::ofstream versionFile {stateDir + "/arcadia-version", std::ios::trunc};
+        versionFile << ARCADIA_VERSION << "\n";
         if (portableMode) {
             LOG(LogInfo) << "Running in portable mode";
             Settings::getInstance()->setBool("PortableMode", true);

@@ -27,6 +27,8 @@ API = os.environ.get("DECK_RELEASE_API", "https://api.github.com/repos/PossiblyP
 HOSTS = {"api.github.com", "github.com", "objects.githubusercontent.com", "release-assets.githubusercontent.com"}
 ESDE = Path(os.environ.get("ARCADIA_HOME", Path.home() / "Arcadia"))
 VERSION_FILE = ESDE / "deck" / "version"
+# The version on the Deck, shared with Deckhand's Add-ons page (Arcadia writes it too, when it starts).
+SHARED_VERSION_FILE = ESDE / "state" / "arcadia-version"
 APPIMAGE_NAME = "Arcadia_x64_SteamDeck.AppImage"
 EXTRAS_NAME = "arcadia-deck-extras.tar.gz"
 TEST_MODE = "DECK_RELEASE_API" in os.environ  # a local test server may use http://127.0.0.1
@@ -161,6 +163,9 @@ def update(check_only: bool = False) -> str:
             messages.append("Deck extras reinstalled." if done.returncode == 0 else f"The deck extras couldn't be reinstalled: {done.stderr.strip()[:200]}")
     VERSION_FILE.parent.mkdir(parents=True, exist_ok=True)
     VERSION_FILE.write_text(tag + "\n")
+    if new_image is not None:
+        SHARED_VERSION_FILE.parent.mkdir(parents=True, exist_ok=True)
+        SHARED_VERSION_FILE.write_text(tag.lstrip("v") + "\n")
     if not messages:
         messages.append("The release has nothing to install.")
     return f"Updated to {tag}. " + " ".join(messages) + " Restart Arcadia to use it."
