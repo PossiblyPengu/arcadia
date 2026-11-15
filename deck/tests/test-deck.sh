@@ -18,7 +18,13 @@ R
 cat > "$TMP/bin/flatpak" <<'F'
 #!/usr/bin/env bash
 echo "$*" >> "$HOME/flatpak.calls"
-case "$1" in info) grep -qw -- "$2" <<<"${FAKE_INSTALLED:-org.libretro.RetroArch}" && exit 0 || exit 1;; esac
+case "$1" in
+  info) shift; scope=""; while [[ "${1:-}" == --* ]]; do scope="$1"; shift; done
+        # (FAKE_SCOPE: the one installation the apps are in; any, when unset)
+        [ -n "${FAKE_SCOPE:-}" ] && [ -n "$scope" ] && [ "$scope" != "--$FAKE_SCOPE" ] && exit 1
+        grep -qw -- "$1" <<<"${FAKE_INSTALLED:-org.libretro.RetroArch}" && exit 0 || exit 1;;
+  remotes) [ -n "${FAKE_SYSTEM_FLATHUB:-}" ] && [[ "$*" == *--system* ]] && echo flathub; exit 0;;
+esac
 exit 0
 F
 chmod +x "$TMP/bin/rclone" "$TMP/bin/flatpak"
@@ -73,7 +79,7 @@ check "installs only what was asked, user-level, from flathub" 'grep -q "install
 bash "$HERE/tools/install-emulators.sh" retroarch >/dev/null
 check "something already installed is skipped" '! grep -q "^install" "$HOME/flatpak.calls"'
 bash "$HERE/tools/update-emulators.sh" >/dev/null
-check "update only touches installed emulators" 'grep -q "^update --user -y --noninteractive org.libretro.RetroArch$" "$HOME/flatpak.calls"'
+check "update only touches installed emulators" 'grep -q "^update -y --noninteractive org.libretro.RetroArch$" "$HOME/flatpak.calls"'
 
 echo "emulators: what your games need"
 EMU="$HERE/lib/emulators.py"
@@ -141,8 +147,15 @@ printf '\x7fELF old psx' > "$TMP/ra-cores/mednafen_psx_libretro.so"; printf '\x7
 out="$(FAKE_INSTALLED=org.libretro.RetroArch ARCADIA_ROMS="$G" ARCADIA_OUTPUT=stdout bash "$HERE/tools/update-emulators.sh")"
 check "updating refreshes a core with a newer build" 'grep -q "1 RetroArch core updated" <<<"$out" && [ "$(cat "$TMP/ra-cores/mednafen_psx_libretro.so")" = "$(printf "\x7fELF psx core")" ]'
 : > "$HOME/flatpak.calls"
-out="$(FAKE_INSTALLED=org.libretro.RetroArch ARCADIA_ROMS="$G" ARCADIA_OUTPUT=stdout bash "$HERE/tools/install-emulators.sh" --remove org.libretro.RetroArch)"
+out="$(FAKE_SCOPE=user FAKE_INSTALLED=org.libretro.RetroArch ARCADIA_ROMS="$G" ARCADIA_OUTPUT=stdout bash "$HERE/tools/install-emulators.sh" --remove org.libretro.RetroArch)"
 check "remove uninstalls just that one, for this user, and keeps games and saves" 'grep -q "^uninstall --user -y --noninteractive org.libretro.RetroArch$" "$HOME/flatpak.calls" && grep -q "games, saves and settings stay" <<<"$out" && [ -f "$G/psx/A.chd" ]'
+: > "$HOME/flatpak.calls"
+FAKE_SCOPE=system FAKE_INSTALLED=org.libretro.RetroArch ARCADIA_ROMS="$G" ARCADIA_OUTPUT=stdout bash "$HERE/tools/install-emulators.sh" --remove org.libretro.RetroArch >/dev/null
+check "one installed for the whole Deck (by Discover, Deckhand or Arcadia) is removed from there" 'grep -q "^uninstall --system -y --noninteractive org.libretro.RetroArch$" "$HOME/flatpak.calls" && ! grep -q "^uninstall --user" "$HOME/flatpak.calls"'
+: > "$HOME/flatpak.calls"; rm -rf "$TMP/ra-cores"
+FAKE_SYSTEM_FLATHUB=1 FAKE_INSTALLED=none ARCADIA_ROMS="$G" ROM_ROOT="$G" ARCADIA_OUTPUT=stdout bash "$HERE/tools/install-emulators.sh" >/dev/null
+check "with Flathub set up for the whole Deck (SteamOS), emulators are installed there, sharing its runtimes" 'grep -q "^install --system -y --noninteractive flathub org.libretro.RetroArch$" "$HOME/flatpak.calls" && ! grep -q "^install --user" "$HOME/flatpak.calls" && ! grep -q "^remote-add --user" "$HOME/flatpak.calls"'
+check "updates cover both installations" 'FAKE_INSTALLED=org.libretro.RetroArch ARCADIA_ROMS="$G" bash "$HERE/tools/update-emulators.sh" >/dev/null; grep -q "^update -y --noninteractive org.libretro.RetroArch" "$HOME/flatpak.calls"'
 out="$(FAKE_INSTALLED=none ARCADIA_ROMS="$G" python3 "$EMU" install duckstation)"
 check "installing one your games don't use says what they still need" 'grep -q "Your games still need RetroArch" <<<"$out"'
 out="$(FAKE_INSTALLED=none ARCADIA_ROMS="$TMP/empty" python3 "$EMU" install --needed)"

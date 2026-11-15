@@ -48,7 +48,9 @@ SKIP = {".txt", ".xml", ".md", ".nfo", ".jpg", ".png", ".db"}
 # The emulators Arcadia offers, in the order shown: Flatpak id, name, what it is for (when no games say it).
 KNOWN = (
     (RETROARCH, "RetroArch", "NES, SNES, Mega Drive, N64, PlayStation and most classic consoles"),
-    ("org.duckstation.DuckStation", "DuckStation", "PlayStation"),
+    # (Flathub marked DuckStation end-of-life in August 2025: it installs, but gets no more updates there.)
+    ("org.duckstation.DuckStation", "DuckStation", "PlayStation · no longer updated on Flathub (RetroArch plays "
+     "PlayStation games too)"),
     ("net.pcsx2.PCSX2", "PCSX2", "PlayStation 2"),
     ("org.ppsspp.PPSSPP", "PPSSPP", "PSP"),
     ("org.DolphinEmu.dolphin-emu", "Dolphin", "GameCube and Wii"),
@@ -321,8 +323,39 @@ def _run(args: list[str]) -> tuple[int, str]:
 
 
 def ensure_flathub(exe: str) -> None:
-    """The user-level Flathub source the installs use (SteamOS only sets up the system-wide one)."""
+    """The user-level Flathub source, for when installing for the whole Deck isn't allowed."""
     _run([exe, "remote-add", "--user", "--if-not-exists", "flathub", FLATHUB])
+
+
+def system_flathub(exe: str) -> bool:
+    """Is Flathub set up for the whole Deck (as on SteamOS, where Discover installs from it)?"""
+    try:
+        out = subprocess.run([exe, "remotes", "--system", "--columns=name"], capture_output=True, text=True,
+                             timeout=30).stdout
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+    return "flathub" in out.split()
+
+
+def install_app(exe: str, app_id: str) -> tuple[int, str]:
+    """Install an app the way Discover (and Deckhand) do: for the whole Deck, from its Flathub, so it shares the
+    runtimes already there and Discover keeps it updated. SteamOS allows that without a password; where it isn't
+    allowed, it's installed for this user instead. (Installing for the user alone downloaded a second copy of
+    runtimes the Deck already had: 2.4 GB for RetroArch.)"""
+    if system_flathub(exe):
+        rc, out = _run([exe, "install", "--system", "-y", "--noninteractive", "flathub", app_id])
+        if rc == 0:
+            return rc, out
+        log(f"{app_id}: installing for the whole Deck wasn't allowed, installing for this user")
+    ensure_flathub(exe)
+    return _run([exe, "install", "--user", "-y", "--noninteractive", "flathub", app_id])
+
+
+def scopes_with(exe: str, app_id: str) -> list[str]:
+    """Where the app is installed: "--system", "--user", or both."""
+    return [scope for scope in ("--system", "--user")
+            if subprocess.run([exe, "info", scope, app_id], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                              timeout=60).returncode == 0]
 
 
 def grant_folders(exe: str, app_id: str) -> None:
@@ -412,12 +445,10 @@ def install(plan: Plan, ids: list[str]) -> int:
         step[0] += 1
 
     progress()
-    if apps:
-        ensure_flathub(exe)
     for k, e in enumerate(apps, 1):
         say(f"Installing {e.name} ({k} of {len(apps)}) from Flathub… this can take a few minutes.")
         start = time.time()
-        rc, out = _run([exe, "install", "--user", "-y", "--noninteractive", "flathub", e.id])
+        rc, out = install_app(exe, e.id)
         if rc == 0:
             e.installed = True
             grant_folders(exe, e.id)
@@ -462,10 +493,12 @@ def remove(plan: Plan, app_id: str) -> int:
         say("That emulator isn't installed.")
         return 1
     say(f"Removing {e.name}… (your games, saves and settings stay)")
-    rc, _ = _run([exe, "uninstall", "--user", "-y", "--noninteractive", app_id])
+    # (From wherever it is: Arcadia, Deckhand and Discover install for the whole Deck, older Arcadias for the user.)
+    rc = 0
+    for scope in scopes_with(exe, app_id) or ["--user"]:
+        rc = rc or _run([exe, "uninstall", scope, "-y", "--noninteractive", app_id])[0]
     if rc != 0:
-        say(f"{e.name} couldn't be removed here. If it came with SteamOS or Discover installed it for everyone, "
-            "remove it in Discover.")
+        say(f"{e.name} couldn't be removed here: remove it in Discover (Desktop Mode).")
         return 1
     say(f"✓ {e.name} removed.")
     return 0
@@ -481,7 +514,7 @@ def update(plan: Plan) -> int:
         say("No emulators are installed yet.")
         return 0
     say(f"Checking {len(ids)} emulator{'s' * (len(ids) != 1)} for updates…")
-    rc, _ = _run([exe, "update", "--user", "-y", "--noninteractive", *ids])
+    rc, _ = _run([exe, "update", "-y", "--noninteractive", *ids])  # (in whichever installation each is)
     say("  ✓ emulators are up to date" if rc == 0 else "  ✗ an update didn't finish (details in the log)")
     have = sorted(p.name[:-len("_libretro.so")] for p in CORES_DIR.glob("*_libretro.so")) if CORES_DIR.is_dir() else []
     if have:
