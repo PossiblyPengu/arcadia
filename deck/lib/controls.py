@@ -121,8 +121,18 @@ def seed_retroarch(reset: bool = False) -> str:
     path = HOME / ".var" / "app" / RETROARCH / "config" / "retroarch" / "retroarch.cfg"
     try:
         lines = path.read_text(encoding="utf-8").splitlines()
-    except OSError:
-        return "RetroArch: no retroarch.cfg yet (start RetroArch once, then run this again)"
+    except FileNotFoundError:
+        # Not started yet (a fresh install): a settings file with just the hotkeys. RetroArch fills in its defaults
+        # for everything else the first time it starts, and keeps these.
+        lines = [f'{key} = "{value}"' for key, value in RETROARCH_KEYS.items()]
+        try:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            _write(path, lines)
+        except OSError as e:
+            return f"RetroArch: couldn't write its settings ({e})"
+        return f"RetroArch: set {len(lines)} hotkey(s) (a new settings file; RetroArch adds the rest when it starts)"
+    except OSError as e:
+        return f"RetroArch: couldn't read its settings ({e})"
     changed = []
     for key, value in RETROARCH_KEYS.items():
         idx = next((i for i, l in enumerate(lines) if re.match(rf"\s*{key}\s*=", l)), None)

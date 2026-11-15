@@ -66,6 +66,10 @@ public:
 
     // Rescan the ROM directory for any changes to games and systems.
     void rescanROMDirectory();
+    // Arcadia: look through the ROM folders again once nothing is open above the consoles (Settings closed): asked
+    // for when a Setup tool changed which games there are. Called every frame from the main loop.
+    void requestRescan() { mRescanRequested = true; }
+    void rescanIfRequested();
 
     // Navigation.
     void goToNextGamelist();
@@ -187,6 +191,7 @@ private:
     std::string mNoGamesErrorMessage;
     std::string mRomDirectory;
     GuiMsgBox* mNoGamesMessageBox;
+    bool mRescanRequested {false};
     // What the update check found ("" while it runs or if nothing is newer). Shared with its thread.
     struct UpdateCheck {
         std::mutex mutex;

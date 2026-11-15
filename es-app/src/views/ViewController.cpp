@@ -1644,6 +1644,21 @@ void ViewController::checkWindowSizeChanged()
 
 }
 
+void ViewController::rescanIfRequested()
+{
+    if (!mRescanRequested)
+        return;
+    GuiComponent* top {mWindow->peekGui()};
+    const bool welcome {mNoGamesMessageBox != nullptr && top == mNoGamesMessageBox};
+    if (top != this && !welcome)
+        return; // (Settings or a dialog is still open)
+    if (mWindow->isScreensaverActive() || mWindow->getGameLaunchedState())
+        return;
+    mRescanRequested = false;
+    LOG(LogInfo) << "ViewController::rescanIfRequested(): The games changed, looking through the ROM folders again";
+    rescanROMDirectory();
+}
+
 void ViewController::rescanROMDirectory()
 {
     // Arcadia: the welcome screen (no games) is decided again by this scan: games found means it goes, none means a

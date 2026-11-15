@@ -168,6 +168,9 @@ check "your own bindings are kept on a normal run" 'grep -q "^Cross = Keyboard/Z
 bash "$HERE/tools/setup-controls.sh" --reset
 check "reset replaces just the controller section" 'grep -q "^Cross = SDL-0/A" "$DS" && ! grep -q "Keyboard/Z" "$DS" && grep -q "Renderer = Vulkan" "$DS" && [ "$(grep -c "^\[Pad1\]" "$DS")" = 1 ]'
 check "reset also sets RetroArch's keys" 'grep -q "input_menu_toggle_btn = \"2\"" "$RA"'
+rm -f "$RA"; rm -rf "$(dirname "$RA")"
+bash "$HERE/tools/setup-controls.sh"
+check "a RetroArch that hasn't started yet gets a settings file with the hotkeys" '[ "$(grep -c "_btn = " "$RA")" = 5 ] && grep -q "input_exit_emulator_btn = \"7\"" "$RA"'
 export FAKE_INSTALLED="none"
 bash "$HERE/tools/setup-controls.sh"
 check "nothing installed means nothing to do" 'grep -q "nothing to set up" "$ARCADIA_HOME/logs/deck.log"'
@@ -180,13 +183,17 @@ printf 'NES\x1a\x02\x01' > "$HOME/Downloads/Contra.nes"
 printf 'NES\x1a\x02\x01' > "$HOME/Downloads/sub/Deep.nes"
 head -c 300 /dev/zero > "$HOME/Downloads/Mystery.gba"
 echo hi > "$HOME/Downloads/readme.txt"
-touch -d '1 hour ago' "$HOME"/Downloads/*.* "$HOME"/Downloads/sub/*
+mkdir -p "$HOME/Downloads/project"; printf '# A project\n\nSome notes, in Markdown.\n' > "$HOME/Downloads/project/README.md"
+printf '%*s' 256 '' | tr ' ' '\377' > "$HOME/Downloads/sub/Sonic Test.md"  # (binary, as a Mega Drive dump is)
+touch -d '1 hour ago' "$HOME"/Downloads/*.* "$HOME"/Downloads/sub/* "$HOME"/Downloads/project/*
 bash "$HERE/tools/sort-roms.sh"
 check "the inbox is sorted into Arcadia folders by system" '[ -f "$HOME/ROMs/nes/Contra.nes" ] && [ -f "$HOME/ROMs/gba/Mystery.gba" ] && [ ! -e "$HOME/Downloads/Contra.nes" ]'
 check "a ROM in a subfolder waits unless told to look deeper" '[ -f "$HOME/Downloads/sub/Deep.nes" ] && [ ! -e "$HOME/ROMs/nes/Deep.nes" ]'
 check "other files are left alone" '[ -f "$HOME/Downloads/readme.txt" ]'
 bash "$HERE/tools/sort-roms.sh" --deep
 check "--deep also sorts the subfolders" '[ -f "$HOME/ROMs/nes/Deep.nes" ]'
+check "a text file isn't a game, whatever its extension (README.md is not a Mega Drive ROM)" '[ -f "$HOME/Downloads/project/README.md" ] && ! ls "$HOME"/ROMs/*/README.md >/dev/null 2>&1'
+check "a binary .md still goes to the Mega Drive folder" 'ls "$HOME"/ROMs/*/"Sonic Test.md" >/dev/null 2>&1'
 bash "$HERE/tools/sort-roms.sh" --undo
 check "undo puts the last sort back" '[ -f "$HOME/Downloads/sub/Deep.nes" ] && [ ! -e "$HOME/ROMs/nes/Deep.nes" ] && [ -f "$HOME/ROMs/nes/Contra.nes" ]'
 printf 'NES\x1a\x02\x01' > "$HOME/Downloads/Auto.nes"; touch -d '1 hour ago' "$HOME/Downloads/Auto.nes"
@@ -271,12 +278,14 @@ printf 'OLD-APPIMAGE' > "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage"
 export DECK_RELEASE_API="http://127.0.0.1:$PORT/latest"
 DECK_APPIMAGE="$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" bash "$HERE/tools/update-arcadia.sh" --check
 check "--latest prints just the newest version, for Arcadia's own daily check" '[ "$(python3 "$HERE/lib/selfupdate.py" --latest)" = 9.9.9 ]'
-check "check says a newer release exists without changing anything" 'grep -q "newer release is available: v9.9.9" "$ARCADIA_HOME/logs/deck.log" && grep -q OLD-APPIMAGE "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage"'
+check "check says a newer release exists without changing anything" 'grep -q "Arcadia 9.9.9 is available" "$ARCADIA_HOME/logs/deck.log" && grep -q OLD-APPIMAGE "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage"'
+ARCADIA_VERSION=9.9.9 DECK_APPIMAGE="$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" bash "$HERE/tools/update-arcadia.sh" --check
+check "the running Arcadia's own version counts (installed by Deckhand: no version file yet)" 'tail -n 1 "$ARCADIA_HOME/logs/deck.log" | grep -q "up to date (9.9.9)" && [ ! -e "$ARCADIA_HOME/deck/version" ]'
 DECK_APPIMAGE="$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" bash "$HERE/tools/update-arcadia.sh"
 check "update replaces the AppImage and keeps the old one" 'grep -q NEW-APPIMAGE "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" && grep -q OLD-APPIMAGE "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage.previous" && [ -x "$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" ]'
 check "it reinstalls the extras and records the version" '[ "$(cat "$ARCADIA_HOME/deck/version")" = v9.9.9 ] && [ -x "$ARCADIA_HOME/deck/tools/sort-roms.sh" ]'
 DECK_APPIMAGE="$HOME/Applications/Arcadia_x64_SteamDeck.AppImage" bash "$HERE/tools/update-arcadia.sh"
-check "a second run says it's up to date" 'tail -n 1 "$ARCADIA_HOME/logs/deck.log" | grep -q "Already up to date"'
+check "a second run says it's up to date" 'tail -n 1 "$ARCADIA_HOME/logs/deck.log" | grep -q "Arcadia is up to date (9.9.9)"'
 
 echo "update Arcadia: only what the release says it is"
 UPD="DECK_APPIMAGE=$HOME/Applications/Arcadia_x64_SteamDeck.AppImage"

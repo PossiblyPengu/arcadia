@@ -59,10 +59,18 @@ def latest() -> dict:
 
 
 def installed_version() -> str:
+    """The running Arcadia's version (it passes it to its tools), else the one the last update installed."""
+    running = os.environ.get("ARCADIA_VERSION", "").strip()
+    if running and running != "dev":
+        return running if running.startswith("v") else f"v{running}"
     try:
         return VERSION_FILE.read_text().strip()
     except OSError:
         return ""
+
+
+def _version_key(tag: str) -> tuple[int, ...]:
+    return tuple(int(n) for n in re.findall(r"\d+", tag)[:4]) or (0,)
 
 
 def appimage_path() -> Path:
@@ -114,11 +122,12 @@ def checked_asset(assets: dict, name: str) -> tuple[dict, str]:
 def update(check_only: bool = False) -> str:
     release = latest()
     tag = release["tag_name"]
-    if tag == installed_version():
-        return f"Already up to date ({tag})."
+    have = installed_version()
+    if have and _version_key(have) >= _version_key(tag):
+        return f"Arcadia is up to date ({have.lstrip('v')})."
     assets = {a.get("name"): a for a in release.get("assets", []) if isinstance(a, dict)}
     if check_only:
-        return f"A newer release is available: {tag} (installed: {installed_version() or 'unknown'})."
+        return f"Arcadia {tag.lstrip('v')} is available" + (f" (you have {have.lstrip('v')})." if have else ".")
     messages = []
     with tempfile.TemporaryDirectory(prefix="deck-update-") as tmp:
         tmp_dir = Path(tmp)

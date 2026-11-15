@@ -50,6 +50,7 @@ private:
 
     Renderer* mRenderer;
     std::string mToolsDirectory;
+    int mGameCount {-1}; // games the checklist found last time (-1: not read yet)
     BackgroundComponent mStepsCard;
     BackgroundComponent mToolsCard;
     ImageComponent mRing;

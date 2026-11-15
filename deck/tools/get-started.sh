@@ -26,7 +26,12 @@ if [ "${1:-}" = "--status" ]; then
   st="$(ARCADIA_ROMS="$roms" python3 "$(dirname "$(readlink -f "$0")")/../lib/emulators.py" status 2>/dev/null)"
   if [ -z "$st" ]; then st="$([ "$emus" -gt 0 ] && echo 1 || echo 0)|$([ "$emus" -gt 0 ] && echo "$emus installed" || echo "none installed yet")"; fi
   printf 'emulators|%s|Emulators|%s\n' "${st%%|*}" "${st#*|}"
-  if deck_is_done controls; then d="set up for DuckStation, PCSX2 and RetroArch"; else d="not set up yet"; fi
+  if deck_is_done controls; then
+    set_up=(); for e in org.duckstation.DuckStation:DuckStation net.pcsx2.PCSX2:PCSX2 org.libretro.RetroArch:RetroArch; do
+      deck_flatpak_installed "${e%%:*}" && set_up+=("${e#*:}"); done
+    if [ "${#set_up[@]}" -eq 0 ]; then d="set up"; elif [ "${#set_up[@]}" -eq 1 ]; then d="set up for ${set_up[0]}"
+    else d="set up for $(IFS=,; echo "${set_up[*]:0:${#set_up[@]}-1}" | sed 's/,/, /g') and ${set_up[-1]}"; fi
+  else d="not set up yet"; fi
   printf 'controls|%s|Controls|%s\n' "$(deck_is_done controls && echo 1 || echo 0)" "$d"
   if deck_is_done folder-access; then d="emulators can see your games"; else d="emulators can't see your games yet"; fi
   printf 'access|%s|Folder access|%s\n' "$(deck_is_done folder-access && echo 1 || echo 0)" "$d"

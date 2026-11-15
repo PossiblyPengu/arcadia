@@ -13,6 +13,7 @@
 #include "guis/GuiEmulators.h"
 #include "guis/GuiMenu.h"
 #include "guis/GuiToolRunner.h"
+#include "views/ViewController.h"
 #include "utils/FileSystemUtil.h"
 #include "utils/LocalizationUtil.h"
 
@@ -211,6 +212,14 @@ void GuiSetup::showStatus()
     int newGames {0};
 
     for (const Step& step : steps) {
+        if (step.key == "games") {
+            // A tool changed what's in the ROM folders (a sort, an undo): the consoles are looked through again once
+            // Settings closes, so the games are there (and the welcome screen goes) without starting Arcadia again.
+            const int count {step.done ? std::atoi(step.detail.c_str()) : 0};
+            if (mGameCount >= 0 && count != mGameCount)
+                ViewController::getInstance()->requestRescan();
+            mGameCount = count;
+        }
         if (step.key == "inbox") {
             newGames = std::atoi(step.done ? step.label.c_str() : "0");
             continue;

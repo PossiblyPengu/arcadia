@@ -117,9 +117,8 @@ std::string DateTimeComponent::getDisplayString() const
                 dur.getMinutes());
         }
         else {
-            buf = Utils::String::format(
-                _np("theme", "%i second ago", "%i seconds ago", dur.getSeconds()),
-                dur.getSeconds());
+            // Arcadia: under a minute is "just now" ("0 seconds ago" right after playing reads oddly).
+            buf = _p("theme", "just now");
         }
 
         return std::string(buf);

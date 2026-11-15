@@ -458,6 +458,7 @@ void applicationLoop()
             deltaTime = 1000;
 
         window->update(deltaTime);
+        ViewController::getInstance()->rescanIfRequested();
         window->render();
 
         renderer->swapBuffers();

@@ -366,6 +366,26 @@ def sniff_switch(data: bytes) -> tuple[str | None, str]:
 # Identification
 # ----------------------------------------------------------------------------
 
+# Game formats that are text files, so looking like text doesn't rule them out.
+TEXT_FORMATS = {".cue", ".gdi", ".m3u", ".sh", ".p8", ".lua", ".bat", ".cmd", ".txt", ".desktop", ".url", ".ccd"}
+
+
+def _looks_like_text(data: bytes) -> bool:
+    """Readable text (UTF-8, no control bytes but tabs and line breaks), as a document is and a ROM never is."""
+    if not data:
+        return True  # (an empty file isn't a game either)
+    if b"\x00" in data:
+        return False
+    try:
+        text = data.decode("utf-8")
+    except UnicodeDecodeError:
+        try:  # (cut in the middle of a character at the end of what was read)
+            text = data[:-3].decode("utf-8")
+        except UnicodeDecodeError:
+            return False
+    return all(ch.isprintable() or ch in "\t\r\n\f" for ch in text)
+
+
 def _label(system_id: str) -> str:
     return SYSTEM_LABELS.get(system_id, system_id)
 
@@ -421,7 +441,11 @@ def _identify_rom(
             return Identification(ordered[0], Confidence.LIKELY, f"{detail}; the header doesn't confirm it")
         return Identification(ordered[0], Confidence.UNSURE, f"{detail} ({_join(ordered)})", ordered[1:])
 
-    # Nothing verified: fall back to the extension and the name.
+    # Nothing verified: fall back to the extension and the name. But a file whose contents are plain text isn't a
+    # cartridge or disc image, whatever it's called (README.md is Markdown, not a Mega Drive game), unless its format
+    # is a text one (playlists, scripts, PICO-8 carts).
+    if ext not in TEXT_FORMATS and _looks_like_text(read(4096)):
+        return None
     if ext in WEAK_EXTS:
         if not hints:
             return None  # a stray .bin or .rom is not necessarily a game

@@ -6,6 +6,10 @@
 
 #include "guis/GuiToolRunner.h"
 
+#ifndef ARCADIA_VERSION
+#define ARCADIA_VERSION "dev"
+#endif
+
 #include "FileData.h"
 #include "Log.h"
 #include "components/MenuComponent.h"
@@ -181,8 +185,8 @@ bool GuiToolRunner::runWithoutPreload(const std::string& cmd,
 
 std::string GuiToolRunner::toolEnvironment()
 {
-    return "ARCADIA_OUTPUT=stdout ARCADIA_HOME=\"" + Utils::FileSystem::getAppDataDirectory() +
-           "\" ARCADIA_ROMS=\"" + FileData::getROMDirectory() + "\" ";
+    return "ARCADIA_OUTPUT=stdout ARCADIA_VERSION=\"" ARCADIA_VERSION "\" ARCADIA_HOME=\"" +
+           Utils::FileSystem::getAppDataDirectory() + "\" ARCADIA_ROMS=\"" + FileData::getROMDirectory() + "\" ";
 }
 
 void GuiToolRunner::run(std::shared_ptr<Shared> shared, std::string command)

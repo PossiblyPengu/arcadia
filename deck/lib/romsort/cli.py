@@ -62,7 +62,8 @@ def main(argv: list[str] | None = None) -> int:
             print("Nothing to undo.")
             return 0
         restored, problems = journal.undo_last()
-        print(f"Moved {restored} file(s) back.")
+        print(f"Moved {restored} {'file' if restored == 1 else 'files'} back where {'it' if restored == 1 else 'they'} "
+              "came from." if restored else "There was nothing to put back.")
         for p in problems:
             print(f"  • {p}")
         return 0
@@ -78,18 +79,28 @@ def main(argv: list[str] | None = None) -> int:
             print(f"would move  {item.label}  ->  {item.dest_label()}   ({item.reason})")
     else:
         result = apply_plan(chosen, journal, keep_both=False)
+        # (Lines in the shape Arcadia's tool window shows: ✓ done, • an item, ○ something still to do.)
         for item in result.moved:
-            print(f"moved  {item.label if hasattr(item, 'label') else item}")
+            label = item.label if hasattr(item, "label") else item
+            where = f" → {item.dest_label()}" if hasattr(item, "dest_label") else ""
+            print(f"✓ {label}{where}")
         for item, why in result.skipped:
-            print(f"skipped  {item.label}: {why}")
-        print(f"Moved {len(result.moved)} ROM(s) into {args.rom_root}.")
+            print(f"• Skipped {item.label}: {why}")
     for item in held:
         why = "something with that name is already there" if item.exists and item.confidence is not Confidence.UNSURE else item.reason
-        print(f"left alone  {item.label}: {why}")
+        print(f"• Left alone {item.label}: {why}")
     if plan.waiting:
-        print(f"{len(plan.waiting)} file(s) still downloading; run it again later.")
-    if not plan.items:
-        print("No ROMs found.")
+        n = len(plan.waiting)
+        print(f"○ {n} {'file is' if n == 1 else 'files are'} still downloading: sort again when "
+              f"{'it has' if n == 1 else 'they have'} finished.")
+    if not args.dry_run:
+        n = len(result.moved)
+        if n:
+            print(f"\nMoved {n} {'game' if n == 1 else 'games'} into {args.rom_root}.")
+        elif not plan.waiting:
+            print("\nNo games found to sort." if not plan.items else "\nNothing was moved.")
+    elif not plan.items:
+        print("No games found to sort.")
     return 0
 
 

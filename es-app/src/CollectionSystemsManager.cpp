@@ -776,7 +776,14 @@ const bool CollectionSystemsManager::toggleGameInCollection(FileData* file)
         std::string sysTemp {sysName};
         if (sysTemp == "Favorites")
             sysTemp = _("Favorites");
-        if (adding) {
+        // Arcadia: in English the message is written in sentence case with the game's own name (the capitals of
+        // the translated text would be turned into "Added 'Super mario bros' …" for the notification).
+        const std::string& locale {Utils::Localization::sCurrentLocale};
+        if (locale.empty() || locale.substr(0, 2) == "en") {
+            mWindow->queueInfoPopup((adding ? "Added " : "Removed ") + name + (adding ? " to " : " from ") + sysTemp,
+                                    4000);
+        }
+        else if (adding) {
             mWindow->queueInfoPopup(Utils::String::format(_("ADDED '%s' TO '%s'"),
                                                           Utils::String::toUpper(name).c_str(),
                                                           Utils::String::toUpper(sysTemp).c_str()),
