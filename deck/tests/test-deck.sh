@@ -370,6 +370,10 @@ echo "uninstall"
 bash "$HERE/install.sh" --uninstall >/dev/null
 check "uninstall removes the scripts and tools" '[ ! -e "$ARCADIA_HOME/scripts/game-end/arcadia-save-sync.sh" ] && [ ! -d "$ARCADIA_HOME/deck" ]'
 check "uninstall leaves the other systems and your saves" 'grep -q "<name>nes</name>" "$SYS" && [ -f "$HOME/Emulation/saves/a.sav" ]'
+bash "$HERE/install.sh" >/dev/null
+check "install leaves an uninstaller in Arcadia's folder" '[ -x "$ARCADIA_HOME/deck/uninstall.sh" ]'
+bash "$ARCADIA_HOME/deck/uninstall.sh" >/dev/null
+check "that uninstaller only uninstalls, even with Arcadia gone" '[ ! -e "$ARCADIA_HOME/scripts/game-end/arcadia-save-sync.sh" ] && [ ! -d "$ARCADIA_HOME/deck" ] && [ -f "$ARCADIA_HOME/deck.conf" ]'
 
 echo
 if [ "$fails" = 0 ]; then echo "all passed"; else echo "$fails failed"; exit 1; fi

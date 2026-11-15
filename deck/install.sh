@@ -3,6 +3,7 @@
 #
 #   ./deck/install.sh             install (safe to run again)
 #   ./deck/install.sh --uninstall remove what it added (your ROMs, saves and Arcadia settings are never touched)
+#   ~/Arcadia/deck/uninstall.sh   the same, from the copy it leaves there (for when Arcadia itself is gone)
 #
 # What it does, all inside your Arcadia folder (~/Arcadia) and ROM folder:
 #   - copies the helper scripts to ~/Arcadia/deck
@@ -12,6 +13,7 @@
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+[ "$(basename "${BASH_SOURCE[0]}")" = uninstall.sh ] && set -- --uninstall
 ESDE="${ARCADIA_HOME:-$HOME/Arcadia}"
 TARGET="$ESDE/deck"
 SYSTEMS="$ESDE/custom_systems/es_systems.xml"
@@ -50,6 +52,8 @@ fi
 mkdir -p "$TARGET" "$ESDE/logs"
 rm -rf "$TARGET/lib" "$TARGET/tools"
 cp -r "$HERE/lib" "$HERE/tools" "$TARGET/"
+cp "$HERE/install.sh" "$TARGET/uninstall.sh"  # (run as uninstall.sh, it only uninstalls)
+chmod +x "$TARGET/uninstall.sh"
 chmod +x "$TARGET"/lib/controls.py "$TARGET"/lib/emulators.py
 # Arcadia's console list and where it looks for emulators: the emulator installer reads them to know what your games need.
 if [ -d "$HERE/../resources/systems/linux" ]; then
