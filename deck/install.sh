@@ -44,13 +44,13 @@ PY
 if [ "${1:-}" = "--uninstall" ]; then
   for ev in "${EVENTS[@]}"; do rm -f "$ESDE/scripts/$ev"/arcadia-*.sh; done
   remove_block
-  rm -rf "$TARGET" "$ROMS"
+  rm -rf "${TARGET:?}" "${ROMS:?}"
   echo "Removed the Steam Deck extras (your ROMs, saves and Arcadia settings were not touched)."
   exit 0
 fi
 
 mkdir -p "$TARGET" "$ESDE/logs"
-rm -rf "$TARGET/lib" "$TARGET/tools"
+rm -rf "${TARGET:?}/lib" "${TARGET:?}/tools"
 cp -r "$HERE/lib" "$HERE/tools" "$TARGET/"
 cp "$HERE/install.sh" "$TARGET/uninstall.sh"  # (run as uninstall.sh, it only uninstalls)
 chmod +x "$TARGET/uninstall.sh"
@@ -90,7 +90,7 @@ fi
 
 # Older versions added a "Setup" system made of small scripts; the Setup menu inside Arcadia replaces it.
 remove_block
-rm -rf "$ROMS"
+rm -rf "${ROMS:?}"
 
 echo "Done."
 echo "  • Event scripts: $ESDE/scripts/*/arcadia-*.sh   (custom event scripts are on by default in Arcadia)"

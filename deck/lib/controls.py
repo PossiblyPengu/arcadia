@@ -38,7 +38,7 @@ _PS1_STICKS = {"LLeft": "-LeftX", "LRight": "+LeftX", "LDown": "+LeftY", "LUp": 
 
 
 def _pad(kind: str, fixed: list[tuple[str, str]], buttons: dict[str, str]) -> list[str]:
-    return [f"[Pad1]", f"Type = {kind}", *[f"{k} = {v}" for k, v in fixed], *[f"{k} = SDL-0/{v}" for k, v in buttons.items()]]
+    return ["[Pad1]", f"Type = {kind}", *[f"{k} = {v}" for k, v in fixed], *[f"{k} = SDL-0/{v}" for k, v in buttons.items()]]
 
 
 PCSX2_FIXED = [("InvertL", "0"), ("InvertR", "0"), ("Deadzone", "0"), ("AxisScale", "1.33"), ("LargeMotorScale", "1"),
@@ -89,7 +89,7 @@ def _span(lines: list[str], name: str):
 
 
 def _bound(lines: list[str], span) -> bool:
-    return span is not None and any(re.search(r"SDL-\d|Keyboard/|XInput-|Pointer-", l) for l in lines[span[0] + 1:span[1]])
+    return span is not None and any(re.search(r"SDL-\d|Keyboard/|XInput-|Pointer-", line) for line in lines[span[0] + 1:span[1]])
 
 
 def seed_ini(app_id: str, reset: bool = False) -> str:
