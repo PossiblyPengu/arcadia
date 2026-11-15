@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Arcadia Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-11-15 13:10-0500\n"
+"POT-Creation-Date: 2026-11-15 13:45-0500\n"
 "PO-Revision-Date: 2025-10-15 09:29+0200\n"
 "Last-Translator: SecularSteve <info@es-de.org>\n"
 "Language-Team: Bosnian (Bosnia & Herzegovina) <info@es-de.org>\n"
@@ -751,6 +751,9 @@ msgstr "UREDI METAPODATE OVE MAPE"
 msgid "EDIT THIS GAME'S METADATA"
 msgstr "UREDI METAPODATKE OVE IGRE"
 
+msgid "EMULATOR FOR THIS GAME"
+msgstr ""
+
 msgid "ENTER FOLDER (OVERRIDE FOLDER LINK)"
 msgstr "UNOS MAPE (KLIDNITE NA LINK MAPE)"
 
@@ -765,6 +768,10 @@ msgstr "PRIJAVA"
 
 msgid "apply"
 msgstr "primijeniti"
+
+#, c-format
+msgid "Same as the console (%s)"
+msgstr ""
 
 msgid "done"
 msgstr ""

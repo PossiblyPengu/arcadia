@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Arcadia Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-11-15 13:10-0500\n"
+"POT-Creation-Date: 2026-11-15 13:45-0500\n"
 "PO-Revision-Date: 2025-10-14 19:26+0200\n"
 "Last-Translator: Northwestern Software <info@es-de.org>\n"
 "Language-Team: Español (España) <info@es-de.org>\n"
@@ -747,6 +747,9 @@ msgstr "EDITAR METADATOS DE ESTA CARPETA"
 msgid "EDIT THIS GAME'S METADATA"
 msgstr "EDITAR METADATOS DE ESTE JUEGO"
 
+msgid "EMULATOR FOR THIS GAME"
+msgstr ""
+
 msgid "ENTER FOLDER (OVERRIDE FOLDER LINK)"
 msgstr "INTRODUCIR CARPETA (ANULAR ENLACE DE CARPETA)"
 
@@ -761,6 +764,10 @@ msgstr "APLICAR"
 
 msgid "apply"
 msgstr "aplicar"
+
+#, c-format
+msgid "Same as the console (%s)"
+msgstr ""
 
 msgid "done"
 msgstr ""

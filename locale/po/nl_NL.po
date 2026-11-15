@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Arcadia Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-11-15 13:10-0500\n"
+"POT-Creation-Date: 2026-11-15 13:45-0500\n"
 "PO-Revision-Date: 2025-10-15 09:33+0200\n"
 "Last-Translator: Stefan <s.vandenbroekprive@gmail.com>\n"
 "Language-Team: Nederlands <info@es-de.org>\n"
@@ -737,6 +737,9 @@ msgstr "DE METADATA VAN DEZE MAP BEWERKEN"
 msgid "EDIT THIS GAME'S METADATA"
 msgstr "DE METADATA VAN DEZE GAME BEWERKEN"
 
+msgid "EMULATOR FOR THIS GAME"
+msgstr ""
+
 msgid "ENTER FOLDER (OVERRIDE FOLDER LINK)"
 msgstr "VOER MAP IN (OVERSCHRIJD MAP LINK)"
 
@@ -751,6 +754,10 @@ msgstr "TOEPASSEN"
 
 msgid "apply"
 msgstr "toepassen"
+
+#, c-format
+msgid "Same as the console (%s)"
+msgstr ""
 
 msgid "done"
 msgstr ""

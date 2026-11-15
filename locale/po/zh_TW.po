@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Arcadia Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-11-15 13:10-0500\n"
+"POT-Creation-Date: 2026-11-15 13:45-0500\n"
 "PO-Revision-Date: 2025-10-13 22:04+0200\n"
 "Last-Translator: Northwestern Software <info@es-de.org>\n"
 "Language-Team: 繁體中文 <info@es-de.org>\n"
@@ -715,6 +715,9 @@ msgstr "編輯此資料夾的後設資料"
 msgid "EDIT THIS GAME'S METADATA"
 msgstr "編輯此遊戲的後設資料"
 
+msgid "EMULATOR FOR THIS GAME"
+msgstr ""
+
 msgid "ENTER FOLDER (OVERRIDE FOLDER LINK)"
 msgstr "輸入資料夾（覆蓋資料夾連結）"
 
@@ -729,6 +732,10 @@ msgstr "應用"
 
 msgid "apply"
 msgstr "應用"
+
+#, c-format
+msgid "Same as the console (%s)"
+msgstr ""
 
 msgid "done"
 msgstr ""

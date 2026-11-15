@@ -34,6 +34,7 @@ public:
 private:
     void openGamelistFilter();
     void openMetaDataEd();
+    void openEmulatorChoice();
     void startEditMode();
     void exitEditMode();
 

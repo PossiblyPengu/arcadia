@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Arcadia Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-11-15 13:10-0500\n"
+"POT-Creation-Date: 2026-11-15 13:45-0500\n"
 "PO-Revision-Date: 2025-10-12 21:31+0300\n"
 "Last-Translator: Mihai Vasiliu <mihai.vasiliu.93@gmail.com>\n"
 "Language-Team: Română <info@es-de.org>\n"
@@ -747,6 +747,9 @@ msgstr "EDITEAZĂ METADATELE ACESTUI DOSAR"
 msgid "EDIT THIS GAME'S METADATA"
 msgstr "EDITEAZĂ METADATELE ACESTUI JOC"
 
+msgid "EMULATOR FOR THIS GAME"
+msgstr ""
+
 msgid "ENTER FOLDER (OVERRIDE FOLDER LINK)"
 msgstr "INTRODU DOSAR (SUPRASCRIE LEGĂTURA DE DOSAR)"
 
@@ -761,6 +764,10 @@ msgstr "APLICĂ"
 
 msgid "apply"
 msgstr "aplică"
+
+#, c-format
+msgid "Same as the console (%s)"
+msgstr ""
 
 msgid "done"
 msgstr ""

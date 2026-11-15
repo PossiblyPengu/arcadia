@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Arcadia Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-11-15 13:10-0500\n"
+"POT-Creation-Date: 2026-11-15 13:45-0500\n"
 "PO-Revision-Date: 2025-11-19 15:51+0700\n"
 "Last-Translator: Northwestern Software <info@es-de.org>\n"
 "Language-Team: Tiếng Việt <info@es-de.org>\n"
@@ -726,6 +726,9 @@ msgstr "SỬA DỮ LIỆU CỦA THƯ MỤC NÀY"
 msgid "EDIT THIS GAME'S METADATA"
 msgstr "SỬA DỮ LIỆU CỦA TRÒ CHƠI NÀY"
 
+msgid "EMULATOR FOR THIS GAME"
+msgstr ""
+
 msgid "ENTER FOLDER (OVERRIDE FOLDER LINK)"
 msgstr "NHẬP THƯ MỤC (GHI ĐÈ LIÊN KẾT THƯ MỤC)"
 
@@ -740,6 +743,10 @@ msgstr "ÁP DỤNG"
 
 msgid "apply"
 msgstr "áp dụng"
+
+#, c-format
+msgid "Same as the console (%s)"
+msgstr ""
 
 msgid "done"
 msgstr ""

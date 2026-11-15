@@ -22,6 +22,9 @@
 #include "SystemData.h"
 #include "UIModeController.h"
 #include "guis/GuiGamelistFilter.h"
+#include "utils/StringUtil.h"
+#include "Settings.h"
+#include "guis/GuiSettings.h"
 #include "scrapers/Scraper.h"
 #include "utils/LocalizationUtil.h"
 #include "views/ViewController.h"
@@ -230,6 +233,20 @@ GuiGamelistOptions::GuiGamelistOptions(SystemData* system)
             row.makeAcceptInputHandler(std::bind(&GuiGamelistOptions::openMetaDataEd, this));
             mMenu.addRow(row);
         }
+        // Arcadia: which emulator plays this game, from here (otherwise it's deep in the metadata editor). Only for a
+        // console with a choice of emulators.
+        FileData* source {file->getSourceFileData()};
+        if (UIModeController::getInstance()->isUIModeFull() && !mFromPlaceholder &&
+            Settings::getInstance()->getBool("AlternativeEmulatorPerGame") &&
+            source->getSystem()->getSystemEnvData()->mLaunchCommands.size() > 1) {
+            row.elements.clear();
+            row.addElement(std::make_shared<TextComponent>(_("EMULATOR FOR THIS GAME"),
+                                                           Font::get(FONT_SIZE_MEDIUM), mMenuColorPrimary),
+                           true);
+            row.addElement(mMenu.makeArrow(), false);
+            row.makeAcceptInputHandler(std::bind(&GuiGamelistOptions::openEmulatorChoice, this));
+            mMenu.addRow(row);
+        }
     }
 
     if (file->getType() == FOLDER && file->metadata.get("folderlink") != "") {
@@ -399,6 +416,40 @@ void GuiGamelistOptions::exitEditMode()
     if (mSystem->getRootFolder()->getChildren().size() == 0)
         NavigationSounds::getInstance().playThemeNavigationSound(SCROLLSOUND);
     delete this;
+}
+
+void GuiGamelistOptions::openEmulatorChoice()
+{
+    FileData* file {getGamelist()->getCursor()->getSourceFileData()};
+    SystemData* system {file->getSystem()};
+    const auto& commands {system->getSystemEnvData()->mLaunchCommands};
+    const std::string current {file->metadata.get("altemulator")};
+    const std::string consoleDefault {system->getAlternativeEmulator() != "" ? system->getAlternativeEmulator() :
+                                                                                commands.front().second};
+    auto s = new GuiSettings(_("EMULATOR FOR THIS GAME"));
+    // "" = whatever the console uses; otherwise the launch command's label, as the metadata editor stores it.
+    std::vector<std::pair<std::string, std::string>> choices {
+        {"", Utils::String::format(_("Same as the console (%s)"), consoleDefault.c_str())}};
+    for (const auto& command : commands) {
+        if (command.second != "")
+            choices.emplace_back(command.second, command.second);
+    }
+    for (const auto& [value, label] : choices) {
+        ComponentListRow row;
+        auto text = std::make_shared<TextComponent>(label, Font::get(FONT_SIZE_MEDIUM), mMenuColorPrimary);
+        text->setSelectable(true);
+        row.addElement(text, true);
+        row.makeAcceptInputHandler([this, s, file, system, value = value] {
+            if (file->metadata.get("altemulator") != value) {
+                file->metadata.set("altemulator", value);
+                system->onMetaDataSavePoint();
+                ViewController::getInstance()->getGamelistView(system)->onFileChanged(file, true);
+            }
+            delete s;
+        });
+        s->addRow(row, value == current);
+    }
+    mWindow->pushGui(s);
 }
 
 void GuiGamelistOptions::openMetaDataEd()

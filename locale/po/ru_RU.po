@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Arcadia Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-11-15 13:10-0500\n"
+"POT-Creation-Date: 2026-11-15 13:45-0500\n"
 "PO-Revision-Date: 2025-10-19 17:38+0400\n"
 "Last-Translator: Northwestern Software <info@es-de.org>\n"
 "Language-Team: Русский <info@es-de.org>\n"
@@ -742,6 +742,9 @@ msgstr "РЕД. МЕТАДАННЫЕ ЭТОЙ ПАПКИ"
 msgid "EDIT THIS GAME'S METADATA"
 msgstr "РЕД. МЕТАДАННЫЕ ЭТОЙ ИГРЫ"
 
+msgid "EMULATOR FOR THIS GAME"
+msgstr ""
+
 msgid "ENTER FOLDER (OVERRIDE FOLDER LINK)"
 msgstr "ВВЕДИТЕ ПАПКУ (ПЕРЕЗАПИСАТЬ ССЫЛКУ НА ПАПКУ)"
 
@@ -756,6 +759,10 @@ msgstr "ПРИМЕНИТЬ"
 
 msgid "apply"
 msgstr "прим"
+
+#, c-format
+msgid "Same as the console (%s)"
+msgstr ""
 
 msgid "done"
 msgstr ""
