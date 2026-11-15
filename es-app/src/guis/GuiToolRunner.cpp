@@ -129,6 +129,7 @@ void GuiToolRunner::start()
     mButtonGrid->onFocusGained(); // (the first button is the one A presses)
     addChild(mButtonGrid.get());
     rebuild();
+    LOG(LogInfo) << "GuiToolRunner: running \"" << mCommand << "\"";
     mThread = std::make_unique<std::thread>(&GuiToolRunner::run, mShared, mCommand);
 }
 
