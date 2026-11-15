@@ -59,12 +59,15 @@ private:
     TextComponent mSubline;
     std::shared_ptr<ComponentList> mList;
 
-    std::unique_ptr<std::thread> mThread;
-    std::mutex mMutex;
-    std::vector<Row> mPending;
     std::vector<Row> mRows;
-    std::atomic<bool> mReading;
-    std::atomic<bool> mPlanReady;
+    // What the background plan read shares with this screen (see GuiSetup::Shared): leaving never waits for it.
+    struct Shared {
+        std::mutex mutex;
+        std::vector<Row> pending;
+        std::atomic<bool> reading {false};
+        std::atomic<bool> ready {false};
+    };
+    std::shared_ptr<Shared> mShared;
 };
 
 #endif // ES_APP_GUIS_GUI_EMULATORS_H

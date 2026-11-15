@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Arcadia Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-03-22 21:12+0100\n"
+"POT-Creation-Date: 2026-11-15 10:18-0500\n"
 "PO-Revision-Date: 2025-10-15 09:29+0200\n"
 "Last-Translator: SecularSteve <info@es-de.org>\n"
 "Language-Team: Bosnian (Bosnia & Herzegovina) <info@es-de.org>\n"
@@ -135,6 +135,9 @@ msgstr "Igra '%s' je filtrirana tako da bi moglo biti dostupno više igara"
 msgid "DELETED COLLECTION '%s'"
 msgstr "KOLEKCIJA '%s' JE IZBRISANA"
 
+msgid "OPEN SETUP → EMULATORS TO INSTALL IT"
+msgstr ""
+
 msgctxt "theme"
 msgid "unknown"
 msgstr "nepoznato"
@@ -211,9 +214,6 @@ msgid ""
 msgstr ""
 "GREŠKA: DIREKTORIJ DEFINIRAN OD %s NIJE MOGAO BITI KREIRAN, PROBLEMI S "
 "DOZVOLAMA?"
-
-msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-msgstr "GREŠKA: APLIKACIJA ILI ALIAS DATOTEKA NE POSTOJI ILI JE NEČITLJIVA"
 
 msgid "ERROR: DESKTOP FILE IS INVALID OR UNREADABLE"
 msgstr "GREŠKA: DATOTEKA U RADNOJ DATOTECI JE NEVAŽEĆA ILI NIJE ČITLJIVA"
@@ -556,6 +556,98 @@ msgstr "SORTIRAJTE FAVORITE NA VRH ZA PRILAGOĐENE KOLEKCIJE"
 msgid "DISPLAY STAR MARKINGS FOR CUSTOM COLLECTIONS"
 msgstr "PRIKAŽI ZVJEZDIČKE OZNAKE ZA PRILAGOĐENE KOLEKCIJE"
 
+msgid "Emulators"
+msgstr ""
+
+msgid "Looking at your games…"
+msgstr ""
+
+#, c-format
+msgid "%i game"
+msgid_plural "%i games"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "Windows games"
+msgstr ""
+
+msgid "Deckhand, Arcadia's sister app, plays these"
+msgstr ""
+
+msgid "Get Deckhand"
+msgstr ""
+
+#, c-format
+msgid "Arcadia uses %s, which isn't on Flathub"
+msgstr ""
+
+msgid "Installed"
+msgstr ""
+
+msgid "Add cores"
+msgstr ""
+
+msgid "Install"
+msgstr ""
+
+msgid "The emulator list couldn't be read. Try again from Setup."
+msgstr ""
+
+msgid ""
+"No games yet. Add some and Arcadia picks what they need, or install one "
+"yourself."
+msgstr ""
+
+msgid "Everything your games need is installed. Have fun."
+msgstr ""
+
+#, c-format
+msgid "Your games need %s, and it isn't ready yet. Press X to set it up."
+msgstr ""
+
+#, c-format
+msgid ""
+"Your games need %i emulators; %i isn't ready yet. Press X to set them all up."
+msgid_plural ""
+"Your games need %i emulators; %i aren't ready yet. Press X to set them all "
+"up."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, c-format
+msgid "Adding cores for %s"
+msgstr ""
+
+#, c-format
+msgid "Installing %s"
+msgstr ""
+
+msgid "UPDATE"
+msgstr "AŽURIRANJE"
+
+msgid "REMOVE"
+msgstr ""
+
+msgid "Installing what your games need"
+msgstr ""
+
+msgid "Updating emulators"
+msgstr ""
+
+msgid "choose"
+msgstr "odabrati"
+
+msgid "install or manage"
+msgstr ""
+
+msgid "install what's needed"
+msgstr ""
+
+msgid "update all"
+msgstr ""
+
 msgid "IMPORT TO SYSTEM"
 msgstr "UVEZI U SISTEM"
 
@@ -570,48 +662,6 @@ msgstr "SVE NEODABRANO"
 
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "SKIDANJE SPECIJALNIH LIKOVA"
-
-msgid "MEDIA TARGET TYPE"
-msgstr "VRSTA CILJNE MEDIJSKE GRUPE"
-
-msgid "SCREENSHOTS"
-msgstr "SNIMCI EKRANA"
-
-msgid "TITLE SCREENS"
-msgstr "NASLOVNI EKRANI"
-
-msgid "COVERS"
-msgstr "NASLOVNICE"
-
-msgid "BACK COVERS"
-msgstr "IZA-NASLOVNICE"
-
-msgid "MARQUEES (WHEELS)"
-msgstr "ŠATORI (TOČKOVI)"
-
-msgid "3D BOXES"
-msgstr "3D KUTIJE"
-
-msgid "PHYSICAL MEDIA"
-msgstr "FIZIČKI MEDIJ"
-
-msgid "FAN ART"
-msgstr "UMJETNOST FANOVA"
-
-msgid "MIXIMAGES"
-msgstr "MIXIMAGES"
-
-msgid "IMPORT MEDIA"
-msgstr "UVEZITE MEDIJ"
-
-msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-msgstr "UVEZITE BARJAK ILI LOGO AKO SU DOSTUPNI"
-
-msgid "OVERWRITE MEDIA FILES"
-msgstr "PREPIŠITE MEDIJSKE DATOTEKE"
-
-msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-msgstr "UKLJUČITE SAMO APLIKACIJE KATEGORIZOVANE KAO IGRE"
 
 msgid "START"
 msgstr "POČETAK"
@@ -716,11 +766,8 @@ msgstr "PRIJAVA"
 msgid "apply"
 msgstr "primijeniti"
 
-msgid "close (apply)"
-msgstr "zatvori (primijeni)"
-
-msgid "close (cancel)"
-msgstr "zatvori (otkazati)"
+msgid "done"
+msgstr ""
 
 msgid "LAUNCHING GAME"
 msgstr "POČETAK IGRE"
@@ -755,35 +802,56 @@ msgstr "Zamućenje pri renderovanju za video zapise"
 msgid "RENDER SCANLINES FOR SCREENSHOTS AND TITLES"
 msgstr "PRIKAŽI LINIJE SKENIRANJA ZA SNIMKE EKRANA I NASLOV"
 
-msgid "MAIN MENU"
-msgstr "GLAVNI MENI"
+msgid "SETTINGS"
+msgstr ""
 
-msgid "SCRAPER"
-msgstr "STRUGAČ"
+msgid "SETUP"
+msgstr ""
 
-msgid "UI SETTINGS"
-msgstr "POSTAVKE UI-ja"
+msgid "LOOK AND FEEL"
+msgstr ""
 
-msgid "SOUND SETTINGS"
-msgstr "POSTAVKE ZVUKA"
+msgid "SOUND"
+msgstr ""
 
-msgid "INPUT DEVICE SETTINGS"
-msgstr "POSTAVKE ULAZNOG UREĐAJA"
+msgid "CONTROLLERS"
+msgstr ""
 
-msgid "GAME COLLECTION SETTINGS"
-msgstr "POSTAVKE KOLEKCIJE IGARA"
+msgid "COVERS AND INFO"
+msgstr ""
 
-msgid "OTHER SETTINGS"
-msgstr "OSTALE POSTAVKE"
-
-msgid "UTILITIES"
-msgstr "KOMUNALNE USLUGE"
+msgid "ADVANCED"
+msgstr ""
 
 msgid "QUIT ARCADIA"
 msgstr "IZLAZ IZ ARCADIA"
 
+msgid "COLOURS"
+msgstr ""
+
 msgid "THEME"
 msgstr "TEMA"
+
+msgid "COLLECTIONS"
+msgstr "KOLEKCIJE"
+
+msgid "GAMES DEFAULT SORT ORDER"
+msgstr "ZADANI REDOSLIJED SORTIRANJA IGARA"
+
+msgid "SORT FAVORITE GAMES ABOVE NON-FAVORITES"
+msgstr "SORTIRAJ OMILJENE IGRE IZNAD NEOMILJENIH IGARA"
+
+msgid "DISPLAY CLOCK"
+msgstr "PRIKAZ SATA"
+
+msgid "LAUNCH SCREEN DURATION"
+msgstr "TRAJANJE POKRETNOG EKRANA"
+
+msgid "SCREENSAVER SETTINGS"
+msgstr "POSTAVKE ČUVARA EKRANA"
+
+msgid "APPLICATION LANGUAGE"
+msgstr "JEZIK APLIKACIJE"
 
 msgid "THEME DOWNLOADER"
 msgstr "PREUZMI TEMU"
@@ -823,9 +891,6 @@ msgstr "ZATIMANJE (UGRAĐENO)"
 
 msgid "THEME LANGUAGE"
 msgstr "JEZIK TEME"
-
-msgid "APPLICATION LANGUAGE"
-msgstr "JEZIK APLIKACIJE"
 
 msgid "QUICK SYSTEM SELECT"
 msgstr "BRZI IZBOR SISTEMA"
@@ -879,32 +944,23 @@ msgctxt "short"
 msgid "GAMES DEFAULT SORT ORDER"
 msgstr "ZADANI REDOSLIJED SORTIRANJA IGARA"
 
-msgid "GAMES DEFAULT SORT ORDER"
-msgstr "ZADANI REDOSLIJED SORTIRANJA IGARA"
+msgid "CLOUD (LIGHT PASTELS)"
+msgstr ""
 
-msgid "MENU COLOR SCHEME"
-msgstr "ŠEMA BOJA MENIJA"
-
-msgid "DARK"
-msgstr "TAMNA"
-
-msgid "DARK AND RED"
-msgstr "TAMNA I CRVENA"
-
-msgid "LIGHT"
-msgstr "SVJETLA"
+msgid "DUSK (PASTELS IN THE DARK)"
+msgstr ""
 
 msgid "MENU OPENING ANIMATION"
 msgstr "ANIMACIJA OTVARANJA MENIJA"
+
+msgid "SLIDE"
+msgstr ""
 
 msgid "SCALE-UP"
 msgstr "ŠIRENJE"
 
 msgid "NONE"
 msgstr "NIJEDNA"
-
-msgid "LAUNCH SCREEN DURATION"
-msgstr "TRAJANJE POKRETNOG EKRANA"
 
 msgid "NORMAL"
 msgstr "NORMALNO"
@@ -983,23 +1039,14 @@ msgstr "POSTAVKE STATUSA SISTEMA"
 msgid "MEDIA VIEWER SETTINGS"
 msgstr "POSTAVKE PREGLEDNIKA MEDIJA"
 
-msgid "SCREENSAVER SETTINGS"
-msgstr "POSTAVKE ČUVARA EKRANA"
-
 msgid "ENABLE THEME VARIANT TRIGGERS"
 msgstr "OMOGUĆI VARIJANTE TEME ZA OTKAZIVANJE"
-
-msgid "DISPLAY CLOCK"
-msgstr "PRIKAZ SATA"
 
 msgid "BLUR BACKGROUND WHEN MENU IS OPEN"
 msgstr "ZAMUTLJENJE POZADINE KADA JE MENI OTVOREN"
 
 msgid "SORT FOLDERS ON TOP OF GAMELISTS"
 msgstr "SORTIRAJ FOLDERE NA VRH LISTE IGARA"
-
-msgid "SORT FAVORITE GAMES ABOVE NON-FAVORITES"
-msgstr "SORTIRAJ OMILJENE IGRE IZNAD NEOMILJENIH IGARA"
 
 msgid "ADD STAR MARKINGS TO FAVORITE GAMES"
 msgstr "DODAJTE ZVJEZDICE U OMILJENE IGRAČKE"
@@ -1019,14 +1066,8 @@ msgstr "OMOGUĆI FILTER LISTE IGARA"
 msgid "DISPLAY ON-SCREEN HELP"
 msgstr "PRIKAZ POMOĆI NA EKRANU"
 
-msgid "AUDIO DRIVER"
-msgstr "AUDIO DRAJVER"
-
-msgid "AUDIO DRIVER (REQUIRES RESTART)"
-msgstr "AUDIO DRAJVER (POTREBNO RESTARTOVANJE)"
-
-msgid "SYSTEM VOLUME"
-msgstr "JAČINA SISTEMA"
+msgid "ENABLE NAVIGATION SOUNDS"
+msgstr "OMOGUĆI ZVUKOVNU NAVIGACIJU"
 
 msgid "NAVIGATION SOUNDS VOLUME"
 msgstr "JAČINA ZVUKA NAVIGACIJE"
@@ -1037,76 +1078,32 @@ msgstr "JAČINA ZVUKA VIDEO PLEJERA"
 msgid "PLAY AUDIO FOR GAMELIST AND SYSTEM VIEW VIDEOS"
 msgstr "REPRODUKCIJA ZVUKA ZA LISTE IGRAČA I SISTEMSKE VIDEO ZAPISE"
 
+msgid "SYSTEM VOLUME"
+msgstr "JAČINA SISTEMA"
+
 msgid "PLAY AUDIO FOR MEDIA VIEWER VIDEOS"
 msgstr "REPRODUKCIJA ZVUKA ZA VIDEO ZAPISE U MEDIJIMA"
 
 msgid "PLAY AUDIO FOR SCREENSAVER VIDEOS"
 msgstr "REPRODUKCIJA ZVUKA ZA ZAPISE SLIKARA EKRANA"
 
-msgid "ENABLE NAVIGATION SOUNDS"
-msgstr "OMOGUĆI ZVUKOVNU NAVIGACIJU"
-
 msgid "CONTROLLER TYPE"
 msgstr "VRSTA KONTROLERA"
 
-msgid "TOUCH OVERLAY SIZE"
-msgstr "VELIČINA DODIRNOG PREKRIVAČA"
+msgid "SWAP THE A/B AND X/Y BUTTONS"
+msgstr "ZAMIJENI TIPKE A/B I X/Y"
 
-msgid "MEDIUM"
-msgstr "SEKUNDARNO"
-
-msgid "LARGE"
-msgstr "VELIKO"
-
-msgid "SMALL"
-msgstr "MALO"
-
-msgid "EXTRA SMALL"
-msgstr "IZUZETNO MALO"
-
-msgid "TOUCH OVERLAY OPACITY"
-msgstr "NEPROZIRNOST PREKRIVAJUĆEG DODIRA"
-
-msgid "LOW"
-msgstr "NIZAK"
-
-msgid "VERY LOW"
-msgstr "VEOMA NISKO"
-
-msgid "TOUCH OVERLAY FADE-OUT TIME"
-msgstr "VRIJEME ZATAMNJIVANJA DODIRNOG PREKRIVAČA"
-
-msgid "ENABLE TOUCH OVERLAY"
-msgstr "OMOGUĆI DODIRNI PREKRIVAČ"
-
-msgid ""
-"DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-"WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-"TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING AGAIN, "
-"OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS TO FORCE "
-"THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-msgstr ""
-"NE ISKLJUČUJTE DODIRNI PREKRIVAČ OSIM AKO NE KORISTITE KONTROLER, U INAČE "
-"ĆETE BITI ZAKLJUČANI IZ APLIKACIJE. UKOLIKO SE OVO DESI, MORAT ĆETE "
-"PRIVREMENO POVEZATI KONTROLER ILI TASTATURU DA BISTE PONOVNO OMOGUĆILI OVU "
-"POSTAVKU, ILI MOŽETE IZBRIŠATI ARCADIA MEMORIJU U POSTAVKAMA ANDROID "
-"APLIKACIJE KAKO BISTE PRISILILI KONFIGURATOR DA SE POKRENE PRI SLJEDEĆEM "
-"POKRETANJU RAČUNALA"
+msgid "CONFIGURE KEYBOARD AND CONTROLLERS"
+msgstr "KONFIGURIŠITE TASTATURU I KONTROLERE"
 
 msgid "ONLY ACCEPT INPUT FROM FIRST CONTROLLER"
 msgstr "PRIHVATI UNOSE SAMO SA PRVOG KONTROLERA"
-
-msgid "SWAP THE A/B AND X/Y BUTTONS"
-msgstr "ZAMIJENI TIPKE A/B I X/Y"
 
 msgid "IGNORE KEYBOARD INPUT"
 msgstr "IGNORIŠI UNOS SA TASTATURE"
 
 msgid "INPUT DEVICE NOTIFICATIONS"
 msgstr "OBAVJEŠTENJA ULAZNIH UREĐAJA"
-
-msgid "CONFIGURE KEYBOARD AND CONTROLLERS"
-msgstr "KONFIGURIŠITE TASTATURU I KONTROLERE"
 
 msgid ""
 "THE KEYBOARD AND CONTROLLERS ARE AUTOMATICALLY CONFIGURED, BUT USING THIS "
@@ -1118,6 +1115,21 @@ msgstr ""
 
 msgid "PROCEED"
 msgstr "NASTAVI"
+
+msgid "TOOLS"
+msgstr ""
+
+msgid "ENABLE ALTERNATIVE EMULATORS PER GAME"
+msgstr "OMOGUĆITE ALTERNATIVNE EMULATORE PO IGRI"
+
+msgid "SHOW HIDDEN GAMES"
+msgstr "PRIKAŽI SKRIVENE IGRE"
+
+msgid "CHECK FOR APPLICATION UPDATES"
+msgstr "PROVJERITE AŽURIRANJA APLIKACIJE"
+
+msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
+msgstr "TRČANJE U POZADINI (DOK JE IGRA U TOKU)"
 
 msgid "GAME MEDIA DIRECTORY"
 msgstr "IMENIK MEDIJA ZA IGRE"
@@ -1201,17 +1213,8 @@ msgstr "SEDMIČNO"
 msgid "MONTHLY"
 msgstr "MJESEČNO"
 
-msgid "CHECK FOR APPLICATION UPDATES"
-msgstr "PROVJERITE AŽURIRANJA APLIKACIJE"
-
 msgid "INCLUDE PRERELEASES IN UPDATE CHECKS"
 msgstr "UKLJUČITE PRETHODNE VERZIJE U PROVJERE AŽURIRANJA"
-
-msgid "HIDE TASKBAR (REQUIRES RESTART)"
-msgstr "SAKRIJ TRAKU ZADATAKA (POTREBNO PONOVNO POKRETANJE)"
-
-msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
-msgstr "TRČANJE U POZADINI (DOK JE IGRA U TOKU)"
 
 msgid "VIDEO HARDWARE DECODING (EXPERIMENTAL)"
 msgstr "DEKODIRANJE VIDEO HARDVERA (EKSPERIMENTALNO)"
@@ -1219,17 +1222,8 @@ msgstr "DEKODIRANJE VIDEO HARDVERA (EKSPERIMENTALNO)"
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "POVEĆAJTE BRZINU SLIČNOG VIDEO KADROVA NA 60 FPS"
 
-msgid "ENABLE ALTERNATIVE EMULATORS PER GAME"
-msgstr "OMOGUĆITE ALTERNATIVNE EMULATORE PO IGRI"
-
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "PRIKAŽI SKRIVENE DATOTEKE I MAPE"
-
-msgid "SHOW HIDDEN GAMES"
-msgstr "PRIKAŽI SKRIVENE IGRE"
-
-msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-msgstr "POKRENITE IGRE NA DRUGOM EKRANU"
 
 msgid "ENABLE CUSTOM EVENT SCRIPTS"
 msgstr "OMOGUĆI PRILAGOĐENI SKRIPTU ZA DOGAĐAJ"
@@ -1245,9 +1239,6 @@ msgstr "UKLONITE DODATNE INFORMACIJE O IMENU (POTREBNO PONOVNO UGRAĐIVANJE)"
 
 msgid "DISABLE DESKTOP COMPOSITION (REQUIRES RESTART)"
 msgstr "ONEMOGUĆENA KOMPOZICIJA RADNE POVRŠINE (POTREBNO PONOVNO POKRETANJE)"
-
-msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-msgstr "DUGME ZA NAZAD/POVUCITE IZLAZ IZ APLIKACIJE"
 
 msgid "DEBUG MODE"
 msgstr "METODA RJEŠAVANJA PROBLEMA"
@@ -1336,11 +1327,8 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "POSTAVKE ČUVARA EKRANA"
 
-msgid "choose"
-msgstr "odabrati"
-
-msgid "close menu"
-msgstr "zatvori meni"
+msgid "open"
+msgstr ""
 
 msgid "EDIT METADATA"
 msgstr "UREDI METAPODATEKE"
@@ -1400,8 +1388,8 @@ msgid ""
 "THIS WILL DELETE THE GAME FILE, ANY MEDIA FILES AND THE GAMELIST.XML ENTRY\n"
 "ARE YOU SURE?"
 msgstr ""
-"OVIM ĆE BITI IZBRISANA DATOTEKA IGRE, SVE MEDIJALNE DATOTEKE I UNOS GAMELIST."
-"XML\n"
+"OVIM ĆE BITI IZBRISANA DATOTEKA IGRE, SVE MEDIJALNE DATOTEKE I UNOS "
+"GAMELIST.XML\n"
 "JESTE LI SIGURNI?"
 
 msgid "DELETE"
@@ -1534,9 +1522,6 @@ msgstr "LISTE IGARA"
 
 msgid "RUNNING GAMELISTS CLEANUP"
 msgstr "ČIŠĆENJE IGRALNOG LISTIĆA"
-
-msgid "COLLECTIONS"
-msgstr "KOLEKCIJE"
 
 msgid "COLLECTIONS CLEANUP FAILED"
 msgstr "ČIŠĆENJE KOLEKCIJE NIJE USPJELO"
@@ -1674,6 +1659,9 @@ msgstr "POSTAVKE SADRŽAJA"
 msgid "MIXIMAGE SETTINGS"
 msgstr "POSTAVKE MIX IMAGE-a"
 
+msgid "OTHER SETTINGS"
+msgstr "OSTALE POSTAVKE"
+
 msgid "start scraper"
 msgstr "pokrenite strugalicu"
 
@@ -1761,6 +1749,9 @@ msgstr "PRAG OMJERA STRANICA SNIMANJA EKRANA"
 msgid "HIGH"
 msgstr "VISOKO"
 
+msgid "LOW"
+msgstr "NIZAK"
+
 msgid "SCREENSHOT ASPECT RATIO THRESHOLD"
 msgstr "PRAG OMJERA STRANICA SNIMANJA EKRANA"
 
@@ -1788,6 +1779,15 @@ msgstr "METODA SKALIRANJA EKRANA"
 
 msgid "BOX SIZE"
 msgstr "VELIČINA KUTIJE"
+
+msgid "SMALL"
+msgstr "MALO"
+
+msgid "MEDIUM"
+msgstr "SEKUNDARNO"
+
+msgid "LARGE"
+msgstr "VELIKO"
 
 msgid "PHYSICAL MEDIA SIZE"
 msgstr "VELIČINA FIZIČKOG MEDIJA"
@@ -2115,14 +2115,90 @@ msgstr "ZAMIJENI VIDEO ZAPISE NAKON (SEKUNDI)"
 msgid "RENDER BLUR"
 msgstr "RENDER ZAMUĆENJE"
 
+msgid "MORE OPTIONS"
+msgstr ""
+
+msgid "Show me"
+msgstr ""
+
+msgid "Set up"
+msgstr ""
+
+msgid "Allow"
+msgstr ""
+
+msgid "Connect"
+msgstr ""
+
+msgid "Check"
+msgstr ""
+
+msgid "Get it"
+msgstr ""
+
+msgid "Sort downloads"
+msgstr ""
+
+msgid "Sort inside folders"
+msgstr ""
+
+msgid "Undo the last sort"
+msgstr ""
+
+msgid "Sync saves now"
+msgstr ""
+
+msgid "Back up settings"
+msgstr ""
+
+msgid "Restore a backup"
+msgstr ""
+
+msgid "Update Arcadia"
+msgstr ""
+
+msgid "Setup"
+msgstr ""
+
+msgid "Checking what's ready…"
+msgstr ""
+
+msgid "Tools"
+msgstr ""
+
+msgid "The checklist couldn't be read. The tools on the right still work."
+msgstr ""
+
+msgid "All set"
+msgstr ""
+
+msgid "Everything is ready. Have fun."
+msgstr ""
+
+msgid "Let's get you set up"
+msgstr ""
+
+msgid "Almost ready"
+msgstr ""
+
+#, c-format
+msgid "One thing left to do."
+msgid_plural "%i things left to do."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "switch side"
+msgstr ""
+
+msgid "do it"
+msgstr ""
+
 msgid "DISPLAY BLUETOOTH STATUS INDICATOR"
 msgstr "INDIKATOR STATUSA BLUETOOTH-A NA EKRANU"
 
 msgid "DISPLAY WI-FI STATUS INDICATOR"
 msgstr "INDIKATOR STATUSA WI-FI MREŽE NA EKRANU"
-
-msgid "DISPLAY CELLULAR STATUS INDICATOR"
-msgstr "INDIKATOR STATUSA MREŽE NA EKRANU"
 
 msgid "DISPLAY BATTERY STATUS INDICATOR"
 msgstr "INDIKATOR STANJA BATERIJE NA EKRANU"
@@ -2187,8 +2263,8 @@ msgstr "PREUZMI TEMU"
 msgid ""
 "IT SEEMS AS IF THIS THEME REPOSITORY IS CORRUPT, WHICH COULD HAVE BEEN "
 "CAUSED BY AN INTERRUPTION OF A PREVIOUS DOWNLOAD OR UPDATE, FOR EXAMPLE IF "
-"THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD THEME "
-"DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""
+"THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD "
+"THEME DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""
 msgstr ""
 "IZGLEDA DA JE OVAJ REPOZITORIJ TEMA OŠTEĆEN, ŠTO JE MOGLO BITI UZROKOVANO "
 "PRETHODNIM PREUZIMANJEM ILI AŽURIRANJEM, NA PRIMJER, AKO JE ARCADIA PROCES "
@@ -2294,9 +2370,6 @@ msgstr "NIJE MOGUĆE PREUZIMANJE LISTKE TEMA"
 msgid "DOWNLOADING THEMES LIST"
 msgstr "PREUZMITE POPIS TEMA"
 
-msgid "THIS WILL COMPLETELY DELETE THE THEME"
-msgstr "OVIM ĆE TEMA BITI POTPUNO IZBRISANA"
-
 msgid ""
 "THIS WILL COMPLETELY DELETE THE THEME INCLUDING ANY LOCAL CUSTOMIZATIONS"
 msgstr "OVIM ĆE BITI POTPUNO IZBRISANA TEMA, UKLJUČUJUĆI I LOKALNE OBIČAJE"
@@ -2348,6 +2421,45 @@ msgstr ""
 "NAPOMENA: NE MOŽETE PREKIDATI PREUZIMANJE U TOKU JER TO MOŽE REZULTIRATI "
 "OŠTEĆENJEM PODATAKA."
 
+msgid "WORKING…"
+msgstr ""
+
+msgid "Working on it…"
+msgstr ""
+
+msgid "The tool couldn't be started."
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
+#, c-format
+msgid "Done in %i s"
+msgstr ""
+
+#, c-format
+msgid "Done in %i min"
+msgstr ""
+
+msgid "Finished with a problem: see below"
+msgstr ""
+
+msgid "TRY AGAIN"
+msgstr ""
+
+msgid "try again"
+msgstr ""
+
+#, c-format
+msgid "Step %i of %i… this can take a few minutes"
+msgstr ""
+
+msgid "scroll"
+msgstr ""
+
+msgid "close or try again"
+msgstr ""
+
 msgid "browse"
 msgstr "pregledati"
 
@@ -2371,6 +2483,9 @@ msgstr "POKLOPAC ZADNJE KUTIJE"
 
 msgid "TITLE SCREEN"
 msgstr "POČETNI EKRAN"
+
+msgid "FAN ART"
+msgstr "UMJETNOST FANOVA"
 
 msgid "MIXIMAGE"
 msgstr "MIXIMAGE"
@@ -2655,17 +2770,11 @@ msgstr ""
 "PREDMETI KOJI SE NE RAČUNAJU KAO IGRE NE MOGU SE DODATI U PRILAGOĐENE "
 "KOLEKCIJE"
 
-msgid "system"
-msgstr "šuštanje"
-
-msgid "view media"
-msgstr "medijski prikaz"
+msgid "media"
+msgstr ""
 
 msgid "options"
 msgstr "postavke"
-
-msgid "random"
-msgstr "slučajan"
 
 msgid "jump to game"
 msgstr "uskoči u igru"
@@ -2677,6 +2786,9 @@ msgstr "to"
 msgctxt "theme"
 msgid "no"
 msgstr "ne"
+
+msgid "random"
+msgstr "slučajan"
 
 msgid "screensaver"
 msgstr "čuvar ekrana"
@@ -2720,8 +2832,8 @@ msgstr ""
 msgid ""
 "COULDN'T PARSE THE SYSTEMS CONFIGURATION FILE. IF YOU HAVE A CUSTOMIZED "
 "es_systems.xml FILE, THEN SOMETHING IS LIKELY WRONG WITH YOUR XML SYNTAX. IF "
-"YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE ARCADIA INSTALLATION IS BROKEN. "
-"SEE THE APPLICATION LOG FILE es_log.txt FOR ADDITIONAL INFO"
+"YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE ARCADIA INSTALLATION IS "
+"BROKEN. SEE THE APPLICATION LOG FILE es_log.txt FOR ADDITIONAL INFO"
 msgstr ""
 "Nije moguće analizirati datoteku konfiguracije sistema. AKO IMATE "
 "PRILAGOĐENU DATOTEKU es_systems.xml, ONDA VJEROVATNO NEŠTO NIJE U REDU SA "
@@ -2730,30 +2842,14 @@ msgstr ""
 "APLIKACIJE es_log.txt"
 
 msgid ""
-"NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY IN "
-"THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM DIRECTORY "
-"STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME "
-"INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED "
-"ROM DIRECTORY:\n"
+"Welcome to Arcadia. No games were found yet.\n"
+"\n"
+"Put your games in the ROM folder below, one folder per console (Create makes "
+"the folders), or choose Setup and then Sort downloads to move them there for "
+"you.\n"
+"\n"
+"The ROM folder is "
 msgstr ""
-"NISU PRONAĐENE DATOTEKE IGARA. ILI UVEZITE NEKE IGRE ILI IH RUČNO POSTAVITE "
-"U KONFIGURIRANI ROM DIREKTORIJ. OPCIONALNO MOŽETE GENERIRATI STRUKTURU ROM "
-"DIREKTORIJA KOJA ĆE SAGRADITI TEKSTUALNU DATOTEKU ZA SVAKI SISTEM KOJA ĆE "
-"PRUŽATI NEKE INFORMACIJE KAO ŠTO SU PODRŽANI PRODUŽECI DATOTEKA. OVO JE "
-"KONFIGURIRANI ROM DIREKTORIJ:\n"
-
-msgid ""
-"NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY IN "
-"THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM PATH AND "
-"OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT "
-"FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE "
-"EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-msgstr ""
-"NISU PRONAĐENE DATOTEKE IGARA. ILI UVEZITE NEKE IGRE ILI IH RUČNO POSTAVITE "
-"U TRENUTNO KONFIGURISANI ROM DIREKTORIJ. MOŽETE I PROMIJENITI PUTANJU ROM-A "
-"I OPCIONALNO GENERIRATI STRUKTURU ROM DIREKTORIJA KOJA ĆE SAGRADITI "
-"TEKSTUALNU DATOTEKU ZA SVAKI SISTEM KOJA ĆE PRUŽATI NEKE INFORMACIJE KAO ŠTO "
-"SU PODRŽANI PRODUŽECI DATOTEKA. OVO JE KONFIGURIRANI ROM DIREKTORIJ:\n"
 
 msgid "CHANGE"
 msgstr "PROMJENI"
@@ -2777,14 +2873,14 @@ msgid "CLEAR (LEAVE BLANK TO RESET TO DEFAULT PATH)"
 msgstr "IZBRIŠI (OSTAVI PRAZNO ZA VRAT NA ZADANU PUTANJU)"
 
 msgid ""
-"THIS WILL CREATE DIRECTORIES FOR ALL THE GAME SYSTEMS DEFINED IN es_systems."
-"xml\n"
+"THIS WILL CREATE DIRECTORIES FOR ALL THE GAME SYSTEMS DEFINED IN "
+"es_systems.xml\n"
 "\n"
 "THIS MAY CREATE A LOT OF FOLDERS SO IT'S ADVISED TO REMOVE THE ONES YOU "
 "DON'T NEED"
 msgstr ""
-"OVO ĆE KREIRATI DIREKTORIJUME ZA SVE IGRAČKE SISTEME DEFINISANE U es_systems."
-"xml\n"
+"OVO ĆE KREIRATI DIREKTORIJUME ZA SVE IGRAČKE SISTEME DEFINISANE U "
+"es_systems.xml\n"
 "\n"
 "OVO MOŽE STVORITI PUNO FASCIKLA, PA SE PREPORUČUJE DA UKLONITE ONE KOJE VAM "
 "NE TREBAJU"
@@ -2817,14 +2913,11 @@ msgstr ""
 "MOLIMO VAS DA PREGLEDATE SVOJE POSTAVKE KORISTEĆI INTERFEJS 'ALTERNATIVNI "
 "EMULATORI' U IZBORU 'OSTALE POSTAVKE'"
 
-msgid "UPDATE"
-msgstr "AŽURIRANJE"
-
 msgid ""
 "THE APPLICATION UPDATER WILL DOWNLOAD THE LATEST PORTABLE WINDOWS RELEASE "
-"FOR YOU, BUT YOU WILL NEED TO MANUALLY PERFORM THE UPGRADE. SEE THE README."
-"TXT FILE INSIDE THE DOWNLOADED ZIP FILE FOR INSTRUCTIONS ON HOW THIS IS "
-"ACCOMPLISHED. AS IS ALSO DESCRIBED IN THAT DOCUMENT, NEVER UNPACK A NEW "
+"FOR YOU, BUT YOU WILL NEED TO MANUALLY PERFORM THE UPGRADE. SEE THE "
+"README.TXT FILE INSIDE THE DOWNLOADED ZIP FILE FOR INSTRUCTIONS ON HOW THIS "
+"IS ACCOMPLISHED. AS IS ALSO DESCRIBED IN THAT DOCUMENT, NEVER UNPACK A NEW "
 "RELEASE ON TOP OF AN OLD INSTALLATION AS THAT MAY BREAK THE APPLICATION."
 msgstr ""
 "AŽURIRANJE APLIKACIJE ĆE PREUZETI NAJNOVIJE PRENOSNO IZDANJE WINDOWS-A ZA "
@@ -2854,6 +2947,13 @@ msgstr ""
 #, c-format
 msgid "LAUNCHING GAME '%s'"
 msgstr "POČETNA IGRA '%s'"
+
+#, c-format
+msgid "ARCADIA %s IS AVAILABLE"
+msgstr ""
+
+msgid "SETUP → UPDATE ARCADIA INSTALLS IT"
+msgstr ""
 
 msgid "menu"
 msgstr "meni"
@@ -2886,13 +2986,9 @@ msgstr[0] "prije %i minut"
 msgstr[1] "prije %i minute"
 msgstr[2] "prije %i minuta"
 
-#, c-format
 msgctxt "theme"
-msgid "%i second ago"
-msgid_plural "%i seconds ago"
-msgstr[0] "prije %i sekund"
-msgstr[1] "prije %i sekunde"
-msgstr[2] "prije %i sekundih"
+msgid "just now"
+msgstr ""
 
 msgid "edit date"
 msgstr "uredi datum"
@@ -3182,5 +3278,189 @@ msgstr "Kopiranje resursa..."
 msgid "Creating system directories..."
 msgstr "Kreiranje sistemskih direktorijuma..."
 
+msgid "NO PICTURES OR VIDEO FOR THIS GAME YET"
+msgstr ""
+
+msgid "SETTINGS → COVERS AND INFO CAN GET THEM"
+msgstr ""
+
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "GREŠKA: NIJE MOGUĆE PRIKAZATI PDF DATOTEKU"
+
+#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
+#~ msgstr "GREŠKA: APLIKACIJA ILI ALIAS DATOTEKA NE POSTOJI ILI JE NEČITLJIVA"
+
+#~ msgid "MEDIA TARGET TYPE"
+#~ msgstr "VRSTA CILJNE MEDIJSKE GRUPE"
+
+#~ msgid "SCREENSHOTS"
+#~ msgstr "SNIMCI EKRANA"
+
+#~ msgid "TITLE SCREENS"
+#~ msgstr "NASLOVNI EKRANI"
+
+#~ msgid "COVERS"
+#~ msgstr "NASLOVNICE"
+
+#~ msgid "BACK COVERS"
+#~ msgstr "IZA-NASLOVNICE"
+
+#~ msgid "MARQUEES (WHEELS)"
+#~ msgstr "ŠATORI (TOČKOVI)"
+
+#~ msgid "3D BOXES"
+#~ msgstr "3D KUTIJE"
+
+#~ msgid "PHYSICAL MEDIA"
+#~ msgstr "FIZIČKI MEDIJ"
+
+#~ msgid "MIXIMAGES"
+#~ msgstr "MIXIMAGES"
+
+#~ msgid "IMPORT MEDIA"
+#~ msgstr "UVEZITE MEDIJ"
+
+#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+#~ msgstr "UVEZITE BARJAK ILI LOGO AKO SU DOSTUPNI"
+
+#~ msgid "OVERWRITE MEDIA FILES"
+#~ msgstr "PREPIŠITE MEDIJSKE DATOTEKE"
+
+#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+#~ msgstr "UKLJUČITE SAMO APLIKACIJE KATEGORIZOVANE KAO IGRE"
+
+#~ msgid "close (apply)"
+#~ msgstr "zatvori (primijeni)"
+
+#~ msgid "close (cancel)"
+#~ msgstr "zatvori (otkazati)"
+
+#~ msgid "MAIN MENU"
+#~ msgstr "GLAVNI MENI"
+
+#~ msgid "SCRAPER"
+#~ msgstr "STRUGAČ"
+
+#~ msgid "UI SETTINGS"
+#~ msgstr "POSTAVKE UI-ja"
+
+#~ msgid "SOUND SETTINGS"
+#~ msgstr "POSTAVKE ZVUKA"
+
+#~ msgid "INPUT DEVICE SETTINGS"
+#~ msgstr "POSTAVKE ULAZNOG UREĐAJA"
+
+#~ msgid "GAME COLLECTION SETTINGS"
+#~ msgstr "POSTAVKE KOLEKCIJE IGARA"
+
+#~ msgid "UTILITIES"
+#~ msgstr "KOMUNALNE USLUGE"
+
+#~ msgid "MENU COLOR SCHEME"
+#~ msgstr "ŠEMA BOJA MENIJA"
+
+#~ msgid "DARK"
+#~ msgstr "TAMNA"
+
+#~ msgid "DARK AND RED"
+#~ msgstr "TAMNA I CRVENA"
+
+#~ msgid "LIGHT"
+#~ msgstr "SVJETLA"
+
+#~ msgid "AUDIO DRIVER"
+#~ msgstr "AUDIO DRAJVER"
+
+#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
+#~ msgstr "AUDIO DRAJVER (POTREBNO RESTARTOVANJE)"
+
+#~ msgid "TOUCH OVERLAY SIZE"
+#~ msgstr "VELIČINA DODIRNOG PREKRIVAČA"
+
+#~ msgid "EXTRA SMALL"
+#~ msgstr "IZUZETNO MALO"
+
+#~ msgid "TOUCH OVERLAY OPACITY"
+#~ msgstr "NEPROZIRNOST PREKRIVAJUĆEG DODIRA"
+
+#~ msgid "VERY LOW"
+#~ msgstr "VEOMA NISKO"
+
+#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
+#~ msgstr "VRIJEME ZATAMNJIVANJA DODIRNOG PREKRIVAČA"
+
+#~ msgid "ENABLE TOUCH OVERLAY"
+#~ msgstr "OMOGUĆI DODIRNI PREKRIVAČ"
+
+#~ msgid ""
+#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
+#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
+#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
+#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
+#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
+#~ msgstr ""
+#~ "NE ISKLJUČUJTE DODIRNI PREKRIVAČ OSIM AKO NE KORISTITE KONTROLER, U INAČE "
+#~ "ĆETE BITI ZAKLJUČANI IZ APLIKACIJE. UKOLIKO SE OVO DESI, MORAT ĆETE "
+#~ "PRIVREMENO POVEZATI KONTROLER ILI TASTATURU DA BISTE PONOVNO OMOGUĆILI "
+#~ "OVU POSTAVKU, ILI MOŽETE IZBRIŠATI ARCADIA MEMORIJU U POSTAVKAMA ANDROID "
+#~ "APLIKACIJE KAKO BISTE PRISILILI KONFIGURATOR DA SE POKRENE PRI SLJEDEĆEM "
+#~ "POKRETANJU RAČUNALA"
+
+#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
+#~ msgstr "SAKRIJ TRAKU ZADATAKA (POTREBNO PONOVNO POKRETANJE)"
+
+#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
+#~ msgstr "POKRENITE IGRE NA DRUGOM EKRANU"
+
+#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
+#~ msgstr "DUGME ZA NAZAD/POVUCITE IZLAZ IZ APLIKACIJE"
+
+#~ msgid "close menu"
+#~ msgstr "zatvori meni"
+
+#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
+#~ msgstr "INDIKATOR STATUSA MREŽE NA EKRANU"
+
+#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
+#~ msgstr "OVIM ĆE TEMA BITI POTPUNO IZBRISANA"
+
+#~ msgid "system"
+#~ msgstr "šuštanje"
+
+#~ msgid "view media"
+#~ msgstr "medijski prikaz"
+
+#~ msgid ""
+#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
+#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
+#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
+#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
+#~ "THE CONFIGURED ROM DIRECTORY:\n"
+#~ msgstr ""
+#~ "NISU PRONAĐENE DATOTEKE IGARA. ILI UVEZITE NEKE IGRE ILI IH RUČNO "
+#~ "POSTAVITE U KONFIGURIRANI ROM DIREKTORIJ. OPCIONALNO MOŽETE GENERIRATI "
+#~ "STRUKTURU ROM DIREKTORIJA KOJA ĆE SAGRADITI TEKSTUALNU DATOTEKU ZA SVAKI "
+#~ "SISTEM KOJA ĆE PRUŽATI NEKE INFORMACIJE KAO ŠTO SU PODRŽANI PRODUŽECI "
+#~ "DATOTEKA. OVO JE KONFIGURIRANI ROM DIREKTORIJ:\n"
+
+#~ msgid ""
+#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
+#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
+#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
+#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
+#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
+#~ msgstr ""
+#~ "NISU PRONAĐENE DATOTEKE IGARA. ILI UVEZITE NEKE IGRE ILI IH RUČNO "
+#~ "POSTAVITE U TRENUTNO KONFIGURISANI ROM DIREKTORIJ. MOŽETE I PROMIJENITI "
+#~ "PUTANJU ROM-A I OPCIONALNO GENERIRATI STRUKTURU ROM DIREKTORIJA KOJA ĆE "
+#~ "SAGRADITI TEKSTUALNU DATOTEKU ZA SVAKI SISTEM KOJA ĆE PRUŽATI NEKE "
+#~ "INFORMACIJE KAO ŠTO SU PODRŽANI PRODUŽECI DATOTEKA. OVO JE KONFIGURIRANI "
+#~ "ROM DIREKTORIJ:\n"
+
+#, c-format
+#~ msgctxt "theme"
+#~ msgid "%i second ago"
+#~ msgid_plural "%i seconds ago"
+#~ msgstr[0] "prije %i sekund"
+#~ msgstr[1] "prije %i sekunde"
+#~ msgstr[2] "prije %i sekundih"

@@ -62,11 +62,15 @@ private:
     std::shared_ptr<ComponentList> mTools;
     int mColumn;
 
-    std::unique_ptr<std::thread> mThread;
-    std::mutex mMutex;
-    std::vector<Step> mStatus;
-    std::atomic<bool> mReading;
-    std::atomic<bool> mStatusReady;
+    // What the background status read shares with this screen. The thread holds its own reference, so leaving the
+    // screen never waits for it (the read shells out and can take a second or two): a late result is simply dropped.
+    struct Shared {
+        std::mutex mutex;
+        std::vector<Step> status;
+        std::atomic<bool> reading {false};
+        std::atomic<bool> ready {false};
+    };
+    std::shared_ptr<Shared> mShared;
 };
 
 #endif // ES_APP_GUIS_GUI_SETUP_H

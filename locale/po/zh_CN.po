@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Arcadia Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-03-22 21:12+0100\n"
+"POT-Creation-Date: 2026-11-15 10:18-0500\n"
 "PO-Revision-Date: 2025-10-13 02:17+0800\n"
 "Last-Translator: Northwestern Software <info@es-de.org>\n"
 "Language-Team: 简体中文 <info@es-de.org>\n"
@@ -124,6 +124,9 @@ msgstr "'%s' 个游戏被筛选，现新增了更多可游玩的游戏"
 msgid "DELETED COLLECTION '%s'"
 msgstr "已删除收藏'%s'"
 
+msgid "OPEN SETUP → EMULATORS TO INSTALL IT"
+msgstr ""
+
 msgctxt "theme"
 msgid "unknown"
 msgstr "未知"
@@ -188,9 +191,6 @@ msgstr "错误：%s 变量条目无效"
 msgid ""
 "ERROR: DIRECTORY DEFINED BY %s COULD NOT BE CREATED, PERMISSION PROBLEMS?"
 msgstr "错误：无法创建由 %s 定义的目录，可能是权限问题？"
-
-msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-msgstr "错误：应用程序或别名文件不存在或无法读取"
 
 msgid "ERROR: DESKTOP FILE IS INVALID OR UNREADABLE"
 msgstr "错误：桌面文件无效或无法读取"
@@ -527,6 +527,94 @@ msgstr "将喜爱的游戏排序在顶部以进行自定义收藏"
 msgid "DISPLAY STAR MARKINGS FOR CUSTOM COLLECTIONS"
 msgstr "显示自定义收藏的星形标记"
 
+msgid "Emulators"
+msgstr ""
+
+msgid "Looking at your games…"
+msgstr ""
+
+#, c-format
+msgid "%i game"
+msgid_plural "%i games"
+msgstr[0] ""
+
+msgid "Windows games"
+msgstr ""
+
+msgid "Deckhand, Arcadia's sister app, plays these"
+msgstr ""
+
+msgid "Get Deckhand"
+msgstr ""
+
+#, c-format
+msgid "Arcadia uses %s, which isn't on Flathub"
+msgstr ""
+
+msgid "Installed"
+msgstr ""
+
+msgid "Add cores"
+msgstr ""
+
+msgid "Install"
+msgstr ""
+
+msgid "The emulator list couldn't be read. Try again from Setup."
+msgstr ""
+
+msgid ""
+"No games yet. Add some and Arcadia picks what they need, or install one "
+"yourself."
+msgstr ""
+
+msgid "Everything your games need is installed. Have fun."
+msgstr ""
+
+#, c-format
+msgid "Your games need %s, and it isn't ready yet. Press X to set it up."
+msgstr ""
+
+#, c-format
+msgid ""
+"Your games need %i emulators; %i isn't ready yet. Press X to set them all up."
+msgid_plural ""
+"Your games need %i emulators; %i aren't ready yet. Press X to set them all "
+"up."
+msgstr[0] ""
+
+#, c-format
+msgid "Adding cores for %s"
+msgstr ""
+
+#, c-format
+msgid "Installing %s"
+msgstr ""
+
+msgid "UPDATE"
+msgstr "更新"
+
+msgid "REMOVE"
+msgstr ""
+
+msgid "Installing what your games need"
+msgstr ""
+
+msgid "Updating emulators"
+msgstr ""
+
+msgid "choose"
+msgstr "选择"
+
+msgid "install or manage"
+msgstr ""
+
+msgid "install what's needed"
+msgstr ""
+
+msgid "update all"
+msgstr ""
+
 msgid "IMPORT TO SYSTEM"
 msgstr "导入系统"
 
@@ -541,48 +629,6 @@ msgstr "所有未选择的"
 
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "删除特殊字符"
-
-msgid "MEDIA TARGET TYPE"
-msgstr "媒体目标类型"
-
-msgid "SCREENSHOTS"
-msgstr "截图"
-
-msgid "TITLE SCREENS"
-msgstr "标题画面"
-
-msgid "COVERS"
-msgstr "封面"
-
-msgid "BACK COVERS"
-msgstr "背封"
-
-msgid "MARQUEES (WHEELS)"
-msgstr "游戏标志"
-
-msgid "3D BOXES"
-msgstr "3D盒子"
-
-msgid "PHYSICAL MEDIA"
-msgstr "实体卡带"
-
-msgid "FAN ART"
-msgstr "粉丝自制"
-
-msgid "MIXIMAGES"
-msgstr "混合图像"
-
-msgid "IMPORT MEDIA"
-msgstr "导入媒体"
-
-msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-msgstr "如有可能导入横幅或LOGO"
-
-msgid "OVERWRITE MEDIA FILES"
-msgstr "覆写媒体文件"
-
-msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-msgstr "仅包含归类为游戏的应用"
 
 msgid "START"
 msgstr "开始"
@@ -684,11 +730,8 @@ msgstr "应用"
 msgid "apply"
 msgstr "应用"
 
-msgid "close (apply)"
-msgstr "关闭（应用）"
-
-msgid "close (cancel)"
-msgstr "关闭（取消）"
+msgid "done"
+msgstr ""
 
 msgid "LAUNCHING GAME"
 msgstr "启动游戏"
@@ -723,35 +766,56 @@ msgstr "渲染视频模糊"
 msgid "RENDER SCANLINES FOR SCREENSHOTS AND TITLES"
 msgstr "渲染屏幕截图和标题的扫描线"
 
-msgid "MAIN MENU"
-msgstr "主菜单"
+msgid "SETTINGS"
+msgstr ""
 
-msgid "SCRAPER"
-msgstr "刮削/抓取"
+msgid "SETUP"
+msgstr ""
 
-msgid "UI SETTINGS"
-msgstr "界面设置"
+msgid "LOOK AND FEEL"
+msgstr ""
 
-msgid "SOUND SETTINGS"
-msgstr "声音设置"
+msgid "SOUND"
+msgstr ""
 
-msgid "INPUT DEVICE SETTINGS"
-msgstr "输入设备设置"
+msgid "CONTROLLERS"
+msgstr ""
 
-msgid "GAME COLLECTION SETTINGS"
-msgstr "游戏收藏设置"
+msgid "COVERS AND INFO"
+msgstr ""
 
-msgid "OTHER SETTINGS"
-msgstr "其他设置"
-
-msgid "UTILITIES"
-msgstr "工具"
+msgid "ADVANCED"
+msgstr ""
 
 msgid "QUIT ARCADIA"
 msgstr "退出Arcadia"
 
+msgid "COLOURS"
+msgstr ""
+
 msgid "THEME"
 msgstr "主题"
+
+msgid "COLLECTIONS"
+msgstr "收藏"
+
+msgid "GAMES DEFAULT SORT ORDER"
+msgstr "游戏默认排序方式"
+
+msgid "SORT FAVORITE GAMES ABOVE NON-FAVORITES"
+msgstr "将喜爱的游戏排在非喜爱的游戏之上"
+
+msgid "DISPLAY CLOCK"
+msgstr "显示时钟"
+
+msgid "LAUNCH SCREEN DURATION"
+msgstr "启动画面时长"
+
+msgid "SCREENSAVER SETTINGS"
+msgstr "屏保设置"
+
+msgid "APPLICATION LANGUAGE"
+msgstr "应用程序语言"
 
 msgid "THEME DOWNLOADER"
 msgstr "主题下载器"
@@ -791,9 +855,6 @@ msgstr "淡入淡出（内置）"
 
 msgid "THEME LANGUAGE"
 msgstr "主题语言"
-
-msgid "APPLICATION LANGUAGE"
-msgstr "应用程序语言"
 
 msgid "QUICK SYSTEM SELECT"
 msgstr "快速切换平台快捷键"
@@ -847,32 +908,23 @@ msgctxt "short"
 msgid "GAMES DEFAULT SORT ORDER"
 msgstr "游戏默认排序方式"
 
-msgid "GAMES DEFAULT SORT ORDER"
-msgstr "游戏默认排序方式"
+msgid "CLOUD (LIGHT PASTELS)"
+msgstr ""
 
-msgid "MENU COLOR SCHEME"
-msgstr "菜单配色方案"
-
-msgid "DARK"
-msgstr "暗黑"
-
-msgid "DARK AND RED"
-msgstr "暗红"
-
-msgid "LIGHT"
-msgstr "明亮"
+msgid "DUSK (PASTELS IN THE DARK)"
+msgstr ""
 
 msgid "MENU OPENING ANIMATION"
 msgstr "菜单展开动画"
+
+msgid "SLIDE"
+msgstr ""
 
 msgid "SCALE-UP"
 msgstr "放大"
 
 msgid "NONE"
 msgstr "无"
-
-msgid "LAUNCH SCREEN DURATION"
-msgstr "启动画面时长"
 
 msgid "NORMAL"
 msgstr "正常"
@@ -950,23 +1002,14 @@ msgstr "系统状态设定"
 msgid "MEDIA VIEWER SETTINGS"
 msgstr "媒体播放器设置"
 
-msgid "SCREENSAVER SETTINGS"
-msgstr "屏保设置"
-
 msgid "ENABLE THEME VARIANT TRIGGERS"
 msgstr "启用主题变体触发器"
-
-msgid "DISPLAY CLOCK"
-msgstr "显示时钟"
 
 msgid "BLUR BACKGROUND WHEN MENU IS OPEN"
 msgstr "当菜单打开时模糊背景"
 
 msgid "SORT FOLDERS ON TOP OF GAMELISTS"
 msgstr "在游戏列表顶部对文件夹进行排序"
-
-msgid "SORT FAVORITE GAMES ABOVE NON-FAVORITES"
-msgstr "将喜爱的游戏排在非喜爱的游戏之上"
 
 msgid "ADD STAR MARKINGS TO FAVORITE GAMES"
 msgstr "为喜爱的游戏添加星号标记"
@@ -986,14 +1029,8 @@ msgstr "启用游戏列表过滤器"
 msgid "DISPLAY ON-SCREEN HELP"
 msgstr "显示屏幕帮助"
 
-msgid "AUDIO DRIVER"
-msgstr "音频驱动程序"
-
-msgid "AUDIO DRIVER (REQUIRES RESTART)"
-msgstr "音频驱动程序（需要重启）"
-
-msgid "SYSTEM VOLUME"
-msgstr "系统音量"
+msgid "ENABLE NAVIGATION SOUNDS"
+msgstr "启用导航声音"
 
 msgid "NAVIGATION SOUNDS VOLUME"
 msgstr "导航声音音量"
@@ -1004,73 +1041,32 @@ msgstr "视频播放器音量"
 msgid "PLAY AUDIO FOR GAMELIST AND SYSTEM VIEW VIDEOS"
 msgstr "播放游戏列表和系统视图视频的音频"
 
+msgid "SYSTEM VOLUME"
+msgstr "系统音量"
+
 msgid "PLAY AUDIO FOR MEDIA VIEWER VIDEOS"
 msgstr "播放媒体查看器视频的音频"
 
 msgid "PLAY AUDIO FOR SCREENSAVER VIDEOS"
 msgstr "播放屏保视频的音频"
 
-msgid "ENABLE NAVIGATION SOUNDS"
-msgstr "启用导航声音"
-
 msgid "CONTROLLER TYPE"
 msgstr "控制器类型"
 
-msgid "TOUCH OVERLAY SIZE"
-msgstr "虚拟按键大小"
+msgid "SWAP THE A/B AND X/Y BUTTONS"
+msgstr "交换 A/B 和 X/Y 按键"
 
-msgid "MEDIUM"
-msgstr "中"
-
-msgid "LARGE"
-msgstr "大"
-
-msgid "SMALL"
-msgstr "小"
-
-msgid "EXTRA SMALL"
-msgstr "极小"
-
-msgid "TOUCH OVERLAY OPACITY"
-msgstr "虚拟按键不透明度"
-
-msgid "LOW"
-msgstr "低"
-
-msgid "VERY LOW"
-msgstr "很低"
-
-msgid "TOUCH OVERLAY FADE-OUT TIME"
-msgstr "虚拟按键淡出时间"
-
-msgid "ENABLE TOUCH OVERLAY"
-msgstr "启用虚拟按键"
-
-msgid ""
-"DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-"WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-"TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING AGAIN, "
-"OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS TO FORCE "
-"THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-msgstr ""
-"除非您正在使用控制器，否则请不要禁用虚拟按键，否则您将无法再访问该应用。如果"
-"发生这种情况，您需要暂时插入一个控制器或键盘来重新启用此设置，或者您可以在"
-"Android应用设置中清除Arcadia存储，以强制配置器在下次启动时运行"
+msgid "CONFIGURE KEYBOARD AND CONTROLLERS"
+msgstr "配置键盘和控制器"
 
 msgid "ONLY ACCEPT INPUT FROM FIRST CONTROLLER"
 msgstr "仅接受来自第一个控制器的输入"
-
-msgid "SWAP THE A/B AND X/Y BUTTONS"
-msgstr "交换 A/B 和 X/Y 按键"
 
 msgid "IGNORE KEYBOARD INPUT"
 msgstr "忽略键盘输入"
 
 msgid "INPUT DEVICE NOTIFICATIONS"
 msgstr "输入设备通知"
-
-msgid "CONFIGURE KEYBOARD AND CONTROLLERS"
-msgstr "配置键盘和控制器"
 
 msgid ""
 "THE KEYBOARD AND CONTROLLERS ARE AUTOMATICALLY CONFIGURED, BUT USING THIS "
@@ -1082,6 +1078,21 @@ msgstr ""
 
 msgid "PROCEED"
 msgstr "继续"
+
+msgid "TOOLS"
+msgstr ""
+
+msgid "ENABLE ALTERNATIVE EMULATORS PER GAME"
+msgstr "为每个游戏启用备用模拟器"
+
+msgid "SHOW HIDDEN GAMES"
+msgstr "显示隐藏的游戏"
+
+msgid "CHECK FOR APPLICATION UPDATES"
+msgstr "检查应用程序更新"
+
+msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
+msgstr "在后台运行（游戏启动时）"
 
 msgid "GAME MEDIA DIRECTORY"
 msgstr "游戏媒体目录"
@@ -1165,17 +1176,8 @@ msgstr "每周"
 msgid "MONTHLY"
 msgstr "每月"
 
-msgid "CHECK FOR APPLICATION UPDATES"
-msgstr "检查应用程序更新"
-
 msgid "INCLUDE PRERELEASES IN UPDATE CHECKS"
 msgstr "在更新检查中包含预发布版本"
-
-msgid "HIDE TASKBAR (REQUIRES RESTART)"
-msgstr "隐藏任务栏（需要重启）"
-
-msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
-msgstr "在后台运行（游戏启动时）"
 
 msgid "VIDEO HARDWARE DECODING (EXPERIMENTAL)"
 msgstr "视频硬件解码（实验性）"
@@ -1183,17 +1185,8 @@ msgstr "视频硬件解码（实验性）"
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "将视频帧率提升至 60 FPS"
 
-msgid "ENABLE ALTERNATIVE EMULATORS PER GAME"
-msgstr "为每个游戏启用备用模拟器"
-
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "显示隐藏文件和文件夹"
-
-msgid "SHOW HIDDEN GAMES"
-msgstr "显示隐藏的游戏"
-
-msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-msgstr "在另一个屏幕上启动游戏"
 
 msgid "ENABLE CUSTOM EVENT SCRIPTS"
 msgstr "启用自定义事件脚本"
@@ -1209,9 +1202,6 @@ msgstr "删除多余的 MAME 名称信息（需要重新启动）"
 
 msgid "DISABLE DESKTOP COMPOSITION (REQUIRES RESTART)"
 msgstr "禁用桌面组合（需要重启）"
-
-msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-msgstr "返回键/向后滑动退出应用程序"
 
 msgid "DEBUG MODE"
 msgstr "调试模式"
@@ -1296,11 +1286,8 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "屏保设置"
 
-msgid "choose"
-msgstr "选择"
-
-msgid "close menu"
-msgstr "关闭菜单"
+msgid "open"
+msgstr ""
 
 msgid "EDIT METADATA"
 msgstr "编辑元数据"
@@ -1486,9 +1473,6 @@ msgstr "游戏列表"
 msgid "RUNNING GAMELISTS CLEANUP"
 msgstr "运行游戏列表清理"
 
-msgid "COLLECTIONS"
-msgstr "收藏"
-
 msgid "COLLECTIONS CLEANUP FAILED"
 msgstr "收藏清理失败"
 
@@ -1615,6 +1599,9 @@ msgstr "显示内容设置"
 msgid "MIXIMAGE SETTINGS"
 msgstr "混合图像设置"
 
+msgid "OTHER SETTINGS"
+msgstr "其他设置"
+
 msgid "start scraper"
 msgstr "开始刮削/抓取"
 
@@ -1702,6 +1689,9 @@ msgstr "截图宽高比阈值"
 msgid "HIGH"
 msgstr "高"
 
+msgid "LOW"
+msgstr "低"
+
 msgid "SCREENSHOT ASPECT RATIO THRESHOLD"
 msgstr "屏幕截图宽高比阈值"
 
@@ -1729,6 +1719,15 @@ msgstr "截图缩放方式"
 
 msgid "BOX SIZE"
 msgstr "盒子尺寸"
+
+msgid "SMALL"
+msgstr "小"
+
+msgid "MEDIUM"
+msgstr "中"
+
+msgid "LARGE"
+msgstr "大"
 
 msgid "PHYSICAL MEDIA SIZE"
 msgstr "实体卡带大小"
@@ -2044,14 +2043,88 @@ msgstr "几秒后更换视频"
 msgid "RENDER BLUR"
 msgstr "渲染模糊"
 
+msgid "MORE OPTIONS"
+msgstr ""
+
+msgid "Show me"
+msgstr ""
+
+msgid "Set up"
+msgstr ""
+
+msgid "Allow"
+msgstr ""
+
+msgid "Connect"
+msgstr ""
+
+msgid "Check"
+msgstr ""
+
+msgid "Get it"
+msgstr ""
+
+msgid "Sort downloads"
+msgstr ""
+
+msgid "Sort inside folders"
+msgstr ""
+
+msgid "Undo the last sort"
+msgstr ""
+
+msgid "Sync saves now"
+msgstr ""
+
+msgid "Back up settings"
+msgstr ""
+
+msgid "Restore a backup"
+msgstr ""
+
+msgid "Update Arcadia"
+msgstr ""
+
+msgid "Setup"
+msgstr ""
+
+msgid "Checking what's ready…"
+msgstr ""
+
+msgid "Tools"
+msgstr ""
+
+msgid "The checklist couldn't be read. The tools on the right still work."
+msgstr ""
+
+msgid "All set"
+msgstr ""
+
+msgid "Everything is ready. Have fun."
+msgstr ""
+
+msgid "Let's get you set up"
+msgstr ""
+
+msgid "Almost ready"
+msgstr ""
+
+#, c-format
+msgid "One thing left to do."
+msgid_plural "%i things left to do."
+msgstr[0] ""
+
+msgid "switch side"
+msgstr ""
+
+msgid "do it"
+msgstr ""
+
 msgid "DISPLAY BLUETOOTH STATUS INDICATOR"
 msgstr "显示蓝牙状态图标"
 
 msgid "DISPLAY WI-FI STATUS INDICATOR"
 msgstr "显示WI-FI状态图标"
-
-msgid "DISPLAY CELLULAR STATUS INDICATOR"
-msgstr "显示移动网络状态图标"
 
 msgid "DISPLAY BATTERY STATUS INDICATOR"
 msgstr "显示电池状态图标"
@@ -2091,8 +2164,8 @@ msgid ""
 "IT SEEMS AS IF YOU'RE NOT RUNNING THE LATEST ARCADIA RELEASE, PLEASE UPGRADE "
 "BEFORE PROCEEDING AS THESE THEMES MAY NOT BE COMPATIBLE WITH YOUR VERSION"
 msgstr ""
-"似乎您没有运行最新的 Arcadia 版本，请先升级再继续，因为这些主题可能与您的版本不"
-"兼容"
+"似乎您没有运行最新的 Arcadia 版本，请先升级再继续，因为这些主题可能与您的版本"
+"不兼容"
 
 msgid "and"
 msgstr "和"
@@ -2113,11 +2186,11 @@ msgstr "正在下载主题"
 msgid ""
 "IT SEEMS AS IF THIS THEME REPOSITORY IS CORRUPT, WHICH COULD HAVE BEEN "
 "CAUSED BY AN INTERRUPTION OF A PREVIOUS DOWNLOAD OR UPDATE, FOR EXAMPLE IF "
-"THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD THEME "
-"DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""
+"THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD "
+"THEME DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""
 msgstr ""
-"似乎该主题存储库已损坏，这可能是由于上次下载或更新中断造成的，例如 Arcadia 进程"
-"被终止。需要重新下载，旧主题目录\"%s\"将重命名为\"%s_CORRUPT_DISABLED\""
+"似乎该主题存储库已损坏，这可能是由于上次下载或更新中断造成的，例如 Arcadia 进"
+"程被终止。需要重新下载，旧主题目录\"%s\"将重命名为\"%s_CORRUPT_DISABLED\""
 
 #, c-format
 msgid ""
@@ -2213,9 +2286,6 @@ msgstr "无法下载主题列表"
 msgid "DOWNLOADING THEMES LIST"
 msgstr "正在下载主题列表"
 
-msgid "THIS WILL COMPLETELY DELETE THE THEME"
-msgstr "这将彻底删除主题"
-
 msgid ""
 "THIS WILL COMPLETELY DELETE THE THEME INCLUDING ANY LOCAL CUSTOMIZATIONS"
 msgstr "这将彻底删除主题，包括任何本地自定义内容"
@@ -2244,8 +2314,8 @@ msgid ""
 "THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD "
 "DIRECTORY \"themes-list\" WILL BE RENAMED TO \"themes-list_CORRUPT_DISABLED\""
 msgstr ""
-"主题列表存储库似乎已损坏，这可能是由于上次下载或更新中断造成的，例如 Arcadia 进"
-"程被终止。需要重新下载，旧目录\"themes-list\"将重命名为\"themes-"
+"主题列表存储库似乎已损坏，这可能是由于上次下载或更新中断造成的，例如 Arcadia "
+"进程被终止。需要重新下载，旧目录\"themes-list\"将重命名为\"themes-"
 "list_CORRUPT_DISABLED\""
 
 msgid "UPDATING THEMES LIST"
@@ -2262,6 +2332,45 @@ msgstr ""
 "看起来您是第一次使用主题下载器。因此将下载主题列表存储库，这将需要一些时间。"
 "但是，后续运行将快得多，因为只会获取新文件或修改过的文件。对于您下载的任何主"
 "题也是如此。请注意，您无法中止正在进行的下载，因为这可能会导致数据损坏。"
+
+msgid "WORKING…"
+msgstr ""
+
+msgid "Working on it…"
+msgstr ""
+
+msgid "The tool couldn't be started."
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
+#, c-format
+msgid "Done in %i s"
+msgstr ""
+
+#, c-format
+msgid "Done in %i min"
+msgstr ""
+
+msgid "Finished with a problem: see below"
+msgstr ""
+
+msgid "TRY AGAIN"
+msgstr ""
+
+msgid "try again"
+msgstr ""
+
+#, c-format
+msgid "Step %i of %i… this can take a few minutes"
+msgstr ""
+
+msgid "scroll"
+msgstr ""
+
+msgid "close or try again"
+msgstr ""
 
 msgid "browse"
 msgstr "浏览"
@@ -2286,6 +2395,9 @@ msgstr "盒装后盖"
 
 msgid "TITLE SCREEN"
 msgstr "标题"
+
+msgid "FAN ART"
+msgstr "粉丝自制"
 
 msgid "MIXIMAGE"
 msgstr "混合图像"
@@ -2563,17 +2675,11 @@ msgstr "删除文件夹'%s'的喜爱标记"
 msgid "CAN'T ADD ENTRIES THAT ARE NOT COUNTED AS GAMES TO CUSTOM COLLECTIONS"
 msgstr "无法将不属于游戏的条目添加到自定义收藏中"
 
-msgid "system"
-msgstr "切换平台"
-
-msgid "view media"
-msgstr "查看媒体"
+msgid "media"
+msgstr ""
 
 msgid "options"
 msgstr "选项"
-
-msgid "random"
-msgstr "随机"
 
 msgid "jump to game"
 msgstr "跳转到游戏"
@@ -2585,6 +2691,9 @@ msgstr "是"
 msgctxt "theme"
 msgid "no"
 msgstr "否"
+
+msgid "random"
+msgstr "随机"
 
 msgid "screensaver"
 msgstr "屏保"
@@ -2615,40 +2724,28 @@ msgid ""
 "DIRECTORY."
 msgstr ""
 "似乎进行了不安全的升级，可能是通过将新版本解压到旧版本之上？这可能会导致各种"
-"问题，其中一些问题可能不会立即显现。请务必始终遵循 Arcadia 目录中的 readme.txt "
-"文件中的升级说明。"
+"问题，其中一些问题可能不会立即显现。请务必始终遵循 Arcadia 目录中的 "
+"readme.txt 文件中的升级说明。"
 
 msgid ""
 "COULDN'T PARSE THE SYSTEMS CONFIGURATION FILE. IF YOU HAVE A CUSTOMIZED "
 "es_systems.xml FILE, THEN SOMETHING IS LIKELY WRONG WITH YOUR XML SYNTAX. IF "
-"YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE ARCADIA INSTALLATION IS BROKEN. "
-"SEE THE APPLICATION LOG FILE es_log.txt FOR ADDITIONAL INFO"
+"YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE ARCADIA INSTALLATION IS "
+"BROKEN. SEE THE APPLICATION LOG FILE es_log.txt FOR ADDITIONAL INFO"
 msgstr ""
 "无法解析系统配置文件。如果您有自定义的 es_systems.xml 文件，则您的 XML 语法可"
-"能有问题。如果您没有自定义系统文件，则 Arcadia 安装已损坏。请参阅应用程序日志文"
-"件 es_log.txt 以获取更多信息"
+"能有问题。如果您没有自定义系统文件，则 Arcadia 安装已损坏。请参阅应用程序日志"
+"文件 es_log.txt 以获取更多信息"
 
 msgid ""
-"NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY IN "
-"THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM DIRECTORY "
-"STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME "
-"INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED "
-"ROM DIRECTORY:\n"
+"Welcome to Arcadia. No games were found yet.\n"
+"\n"
+"Put your games in the ROM folder below, one folder per console (Create makes "
+"the folders), or choose Setup and then Sort downloads to move them there for "
+"you.\n"
+"\n"
+"The ROM folder is "
 msgstr ""
-"未找到任何游戏文件。请导入游戏文件或将其手动放置到配置的游戏目录中。你也可以"
-"选择生成游戏目录结构，该操作会为每个游戏系统创建一个文本说明文件，其中包含支"
-"持的文件扩展名等关键信息。当前配置的游戏目录为：\n"
-
-msgid ""
-"NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY IN "
-"THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM PATH AND "
-"OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT "
-"FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE "
-"EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-msgstr ""
-"未找到任何游戏文件。请导入游戏文件或将其手动放置到当前配置的ROM目录中。你也可"
-"以更改ROM路径，并可选生成ROM目录结构，该操作将为每个系统创建说明文本文件，其"
-"中包含支持的文件扩展名等信息。当前配置的ROM目录为：\n"
 
 msgid "CHANGE"
 msgstr "更改"
@@ -2670,8 +2767,8 @@ msgid "CLEAR (LEAVE BLANK TO RESET TO DEFAULT PATH)"
 msgstr "清除（留空则重置为默认路径）"
 
 msgid ""
-"THIS WILL CREATE DIRECTORIES FOR ALL THE GAME SYSTEMS DEFINED IN es_systems."
-"xml\n"
+"THIS WILL CREATE DIRECTORIES FOR ALL THE GAME SYSTEMS DEFINED IN "
+"es_systems.xml\n"
 "\n"
 "THIS MAY CREATE A LOT OF FOLDERS SO IT'S ADVISED TO REMOVE THE ONES YOU "
 "DON'T NEED"
@@ -2703,14 +2800,11 @@ msgstr ""
 "您的系统中至少有一个配置了无效的备用模拟器，且系统配置文件中没有匹配的条目，"
 "请使用\"其他设置\"菜单中的\"备用模拟器\"界面检查您的设置"
 
-msgid "UPDATE"
-msgstr "更新"
-
 msgid ""
 "THE APPLICATION UPDATER WILL DOWNLOAD THE LATEST PORTABLE WINDOWS RELEASE "
-"FOR YOU, BUT YOU WILL NEED TO MANUALLY PERFORM THE UPGRADE. SEE THE README."
-"TXT FILE INSIDE THE DOWNLOADED ZIP FILE FOR INSTRUCTIONS ON HOW THIS IS "
-"ACCOMPLISHED. AS IS ALSO DESCRIBED IN THAT DOCUMENT, NEVER UNPACK A NEW "
+"FOR YOU, BUT YOU WILL NEED TO MANUALLY PERFORM THE UPGRADE. SEE THE "
+"README.TXT FILE INSIDE THE DOWNLOADED ZIP FILE FOR INSTRUCTIONS ON HOW THIS "
+"IS ACCOMPLISHED. AS IS ALSO DESCRIBED IN THAT DOCUMENT, NEVER UNPACK A NEW "
 "RELEASE ON TOP OF AN OLD INSTALLATION AS THAT MAY BREAK THE APPLICATION."
 msgstr ""
 "应用程序更新程序将为您下载最新的便携式 Windows 版本，但您需要手动执行升级。请"
@@ -2737,6 +2831,13 @@ msgstr ""
 msgid "LAUNCHING GAME '%s'"
 msgstr "正在启动游戏 '%s'"
 
+#, c-format
+msgid "ARCADIA %s IS AVAILABLE"
+msgstr ""
+
+msgid "SETUP → UPDATE ARCADIA INSTALLS IT"
+msgstr ""
+
 msgid "menu"
 msgstr "菜单"
 
@@ -2762,11 +2863,9 @@ msgid "%i minute ago"
 msgid_plural "%i minutes ago"
 msgstr[0] "%i 分钟前"
 
-#, c-format
 msgctxt "theme"
-msgid "%i second ago"
-msgid_plural "%i seconds ago"
-msgstr[0] "%i 秒前"
+msgid "just now"
+msgstr ""
 
 msgid "edit date"
 msgstr "编辑日期"
@@ -3048,5 +3147,179 @@ msgstr "正在复制资源……"
 msgid "Creating system directories..."
 msgstr "正在创建平台目录……"
 
+msgid "NO PICTURES OR VIDEO FOR THIS GAME YET"
+msgstr ""
+
+msgid "SETTINGS → COVERS AND INFO CAN GET THEM"
+msgstr ""
+
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "错误：无法渲染PDF文件"
+
+#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
+#~ msgstr "错误：应用程序或别名文件不存在或无法读取"
+
+#~ msgid "MEDIA TARGET TYPE"
+#~ msgstr "媒体目标类型"
+
+#~ msgid "SCREENSHOTS"
+#~ msgstr "截图"
+
+#~ msgid "TITLE SCREENS"
+#~ msgstr "标题画面"
+
+#~ msgid "COVERS"
+#~ msgstr "封面"
+
+#~ msgid "BACK COVERS"
+#~ msgstr "背封"
+
+#~ msgid "MARQUEES (WHEELS)"
+#~ msgstr "游戏标志"
+
+#~ msgid "3D BOXES"
+#~ msgstr "3D盒子"
+
+#~ msgid "PHYSICAL MEDIA"
+#~ msgstr "实体卡带"
+
+#~ msgid "MIXIMAGES"
+#~ msgstr "混合图像"
+
+#~ msgid "IMPORT MEDIA"
+#~ msgstr "导入媒体"
+
+#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+#~ msgstr "如有可能导入横幅或LOGO"
+
+#~ msgid "OVERWRITE MEDIA FILES"
+#~ msgstr "覆写媒体文件"
+
+#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+#~ msgstr "仅包含归类为游戏的应用"
+
+#~ msgid "close (apply)"
+#~ msgstr "关闭（应用）"
+
+#~ msgid "close (cancel)"
+#~ msgstr "关闭（取消）"
+
+#~ msgid "MAIN MENU"
+#~ msgstr "主菜单"
+
+#~ msgid "SCRAPER"
+#~ msgstr "刮削/抓取"
+
+#~ msgid "UI SETTINGS"
+#~ msgstr "界面设置"
+
+#~ msgid "SOUND SETTINGS"
+#~ msgstr "声音设置"
+
+#~ msgid "INPUT DEVICE SETTINGS"
+#~ msgstr "输入设备设置"
+
+#~ msgid "GAME COLLECTION SETTINGS"
+#~ msgstr "游戏收藏设置"
+
+#~ msgid "UTILITIES"
+#~ msgstr "工具"
+
+#~ msgid "MENU COLOR SCHEME"
+#~ msgstr "菜单配色方案"
+
+#~ msgid "DARK"
+#~ msgstr "暗黑"
+
+#~ msgid "DARK AND RED"
+#~ msgstr "暗红"
+
+#~ msgid "LIGHT"
+#~ msgstr "明亮"
+
+#~ msgid "AUDIO DRIVER"
+#~ msgstr "音频驱动程序"
+
+#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
+#~ msgstr "音频驱动程序（需要重启）"
+
+#~ msgid "TOUCH OVERLAY SIZE"
+#~ msgstr "虚拟按键大小"
+
+#~ msgid "EXTRA SMALL"
+#~ msgstr "极小"
+
+#~ msgid "TOUCH OVERLAY OPACITY"
+#~ msgstr "虚拟按键不透明度"
+
+#~ msgid "VERY LOW"
+#~ msgstr "很低"
+
+#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
+#~ msgstr "虚拟按键淡出时间"
+
+#~ msgid "ENABLE TOUCH OVERLAY"
+#~ msgstr "启用虚拟按键"
+
+#~ msgid ""
+#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
+#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
+#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
+#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
+#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
+#~ msgstr ""
+#~ "除非您正在使用控制器，否则请不要禁用虚拟按键，否则您将无法再访问该应用。如"
+#~ "果发生这种情况，您需要暂时插入一个控制器或键盘来重新启用此设置，或者您可以"
+#~ "在Android应用设置中清除Arcadia存储，以强制配置器在下次启动时运行"
+
+#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
+#~ msgstr "隐藏任务栏（需要重启）"
+
+#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
+#~ msgstr "在另一个屏幕上启动游戏"
+
+#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
+#~ msgstr "返回键/向后滑动退出应用程序"
+
+#~ msgid "close menu"
+#~ msgstr "关闭菜单"
+
+#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
+#~ msgstr "显示移动网络状态图标"
+
+#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
+#~ msgstr "这将彻底删除主题"
+
+#~ msgid "system"
+#~ msgstr "切换平台"
+
+#~ msgid "view media"
+#~ msgstr "查看媒体"
+
+#~ msgid ""
+#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
+#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
+#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
+#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
+#~ "THE CONFIGURED ROM DIRECTORY:\n"
+#~ msgstr ""
+#~ "未找到任何游戏文件。请导入游戏文件或将其手动放置到配置的游戏目录中。你也可"
+#~ "以选择生成游戏目录结构，该操作会为每个游戏系统创建一个文本说明文件，其中包"
+#~ "含支持的文件扩展名等关键信息。当前配置的游戏目录为：\n"
+
+#~ msgid ""
+#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
+#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
+#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
+#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
+#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
+#~ msgstr ""
+#~ "未找到任何游戏文件。请导入游戏文件或将其手动放置到当前配置的ROM目录中。你"
+#~ "也可以更改ROM路径，并可选生成ROM目录结构，该操作将为每个系统创建说明文本文"
+#~ "件，其中包含支持的文件扩展名等信息。当前配置的ROM目录为：\n"
+
+#, c-format
+#~ msgctxt "theme"
+#~ msgid "%i second ago"
+#~ msgid_plural "%i seconds ago"
+#~ msgstr[0] "%i 秒前"

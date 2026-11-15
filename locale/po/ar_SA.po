@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Arcadia Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-03-22 21:12+0100\n"
+"POT-Creation-Date: 2026-11-15 10:18-0500\n"
 "PO-Revision-Date: 2025-09-17 14:34+0300\n"
 "Last-Translator: Northwestern Software <info@es-de.org>\n"
 "Language-Team: Arabic (Classical Arabic) <info@es-de.org>\n"
@@ -141,6 +141,9 @@ msgstr "'%s' تم تصفيتها حتى يكون هناك المزيد من ال
 msgid "DELETED COLLECTION '%s'"
 msgstr "'%s' مجموعة المحذوفة"
 
+msgid "OPEN SETUP → EMULATORS TO INSTALL IT"
+msgstr ""
+
 msgctxt "theme"
 msgid "unknown"
 msgstr "مجهول"
@@ -215,9 +218,6 @@ msgstr "خطأ: إدخال متغير %s غير صالح"
 msgid ""
 "ERROR: DIRECTORY DEFINED BY %s COULD NOT BE CREATED, PERMISSION PROBLEMS?"
 msgstr "خطأ: لا يمكن إنشاء الدليل المحدد بواسطة %s، مشاكل الأذونات؟"
-
-msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-msgstr "خطأ: ملف التطبيق أو الاسم المستعار غير موجود أو غير قابل للقراءة"
 
 msgid "ERROR: DESKTOP FILE IS INVALID OR UNREADABLE"
 msgstr "خطأ: ملف سطح المكتب غير صالح أو غير قابل للقراءة"
@@ -554,6 +554,104 @@ msgstr "فرز المفضلة في الأعلى للمجموعات المخصص�
 msgid "DISPLAY STAR MARKINGS FOR CUSTOM COLLECTIONS"
 msgstr "عرض علامات النجوم للمجموعات المخصصة"
 
+msgid "Emulators"
+msgstr ""
+
+msgid "Looking at your games…"
+msgstr ""
+
+#, c-format
+msgid "%i game"
+msgid_plural "%i games"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+msgid "Windows games"
+msgstr ""
+
+msgid "Deckhand, Arcadia's sister app, plays these"
+msgstr ""
+
+msgid "Get Deckhand"
+msgstr ""
+
+#, c-format
+msgid "Arcadia uses %s, which isn't on Flathub"
+msgstr ""
+
+msgid "Installed"
+msgstr ""
+
+msgid "Add cores"
+msgstr ""
+
+msgid "Install"
+msgstr ""
+
+msgid "The emulator list couldn't be read. Try again from Setup."
+msgstr ""
+
+msgid ""
+"No games yet. Add some and Arcadia picks what they need, or install one "
+"yourself."
+msgstr ""
+
+msgid "Everything your games need is installed. Have fun."
+msgstr ""
+
+#, c-format
+msgid "Your games need %s, and it isn't ready yet. Press X to set it up."
+msgstr ""
+
+#, c-format
+msgid ""
+"Your games need %i emulators; %i isn't ready yet. Press X to set them all up."
+msgid_plural ""
+"Your games need %i emulators; %i aren't ready yet. Press X to set them all "
+"up."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+#, c-format
+msgid "Adding cores for %s"
+msgstr ""
+
+#, c-format
+msgid "Installing %s"
+msgstr ""
+
+msgid "UPDATE"
+msgstr "تحديث"
+
+msgid "REMOVE"
+msgstr ""
+
+msgid "Installing what your games need"
+msgstr ""
+
+msgid "Updating emulators"
+msgstr ""
+
+msgid "choose"
+msgstr "اختيار"
+
+msgid "install or manage"
+msgstr ""
+
+msgid "install what's needed"
+msgstr ""
+
+msgid "update all"
+msgstr ""
+
 msgid "IMPORT TO SYSTEM"
 msgstr "الاستيراد إلى النظام"
 
@@ -568,48 +666,6 @@ msgstr "جميعها غير محددة"
 
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "تجريد الشخصيات الخاصة"
-
-msgid "MEDIA TARGET TYPE"
-msgstr "نوع هدف الوسائط"
-
-msgid "SCREENSHOTS"
-msgstr "لقطات الشاشة"
-
-msgid "TITLE SCREENS"
-msgstr "شاشات العنوان"
-
-msgid "COVERS"
-msgstr "أغطية"
-
-msgid "BACK COVERS"
-msgstr "الأغطية الخلفية"
-
-msgid "MARQUEES (WHEELS)"
-msgstr "(عجلات) ماركي"
-
-msgid "3D BOXES"
-msgstr "3D صناديق"
-
-msgid "PHYSICAL MEDIA"
-msgstr "الوسائط المادية"
-
-msgid "FAN ART"
-msgstr "فن المعجبين"
-
-msgid "MIXIMAGES"
-msgstr "الصور المخطلطة"
-
-msgid "IMPORT MEDIA"
-msgstr "استيراد وسائط"
-
-msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-msgstr "استيراد لافتات أو شعارات إذا كانت متوفرة"
-
-msgid "OVERWRITE MEDIA FILES"
-msgstr "الكتابة فوق ملفات الوسائط"
-
-msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-msgstr "فقط تضمين التطبيقات المصنفة كألعاب"
 
 msgid "START"
 msgstr "أبدا"
@@ -717,11 +773,8 @@ msgstr "تطبيق"
 msgid "apply"
 msgstr "تطبيق"
 
-msgid "close (apply)"
-msgstr "(تطبيق) إغلاق"
-
-msgid "close (cancel)"
-msgstr "(إلغاء) إغلاق"
+msgid "done"
+msgstr ""
 
 msgid "LAUNCHING GAME"
 msgstr "تشغيل لعبة"
@@ -756,35 +809,56 @@ msgstr "عرض ضبابية لمقاطع الفيديو"
 msgid "RENDER SCANLINES FOR SCREENSHOTS AND TITLES"
 msgstr "عرض خطوط في للقطات الشاشة والعناوين"
 
-msgid "MAIN MENU"
-msgstr "القائمة الرئيسية"
+msgid "SETTINGS"
+msgstr ""
 
-msgid "SCRAPER"
-msgstr "مكشطة"
+msgid "SETUP"
+msgstr ""
 
-msgid "UI SETTINGS"
-msgstr "إعدادات واجهة المستخدم"
+msgid "LOOK AND FEEL"
+msgstr ""
 
-msgid "SOUND SETTINGS"
-msgstr "إعدادات الصوت"
+msgid "SOUND"
+msgstr ""
 
-msgid "INPUT DEVICE SETTINGS"
-msgstr "إعدادات جهاز الإدخال"
+msgid "CONTROLLERS"
+msgstr ""
 
-msgid "GAME COLLECTION SETTINGS"
-msgstr "إعدادات مجموعة الألعاب"
+msgid "COVERS AND INFO"
+msgstr ""
 
-msgid "OTHER SETTINGS"
-msgstr "إعدادات أخرى"
-
-msgid "UTILITIES"
-msgstr "الفحص"
+msgid "ADVANCED"
+msgstr ""
 
 msgid "QUIT ARCADIA"
 msgstr "إغلاق Arcadia"
 
+msgid "COLOURS"
+msgstr ""
+
 msgid "THEME"
 msgstr "الثيمة"
+
+msgid "COLLECTIONS"
+msgstr "مجموعات"
+
+msgid "GAMES DEFAULT SORT ORDER"
+msgstr "ترتيب الفرز الافتراضي للألعاب"
+
+msgid "SORT FAVORITE GAMES ABOVE NON-FAVORITES"
+msgstr "فرز الألعاب المفضلة فوق الألعاب غير المفضلة"
+
+msgid "DISPLAY CLOCK"
+msgstr "عرض الساعة"
+
+msgid "LAUNCH SCREEN DURATION"
+msgstr "مدة إطلاق الشاشة"
+
+msgid "SCREENSAVER SETTINGS"
+msgstr "إعدادات شاشة التوقف"
+
+msgid "APPLICATION LANGUAGE"
+msgstr "لغة التطبيق"
 
 msgid "THEME DOWNLOADER"
 msgstr "تنزيل الثيمة"
@@ -824,9 +898,6 @@ msgstr "(مدمج) تلاشي"
 
 msgid "THEME LANGUAGE"
 msgstr "لغة الثيمة"
-
-msgid "APPLICATION LANGUAGE"
-msgstr "لغة التطبيق"
 
 msgid "QUICK SYSTEM SELECT"
 msgstr "اختيار النظام السريع"
@@ -880,32 +951,23 @@ msgctxt "short"
 msgid "GAMES DEFAULT SORT ORDER"
 msgstr "ترتيب الألعاب الافتراضي"
 
-msgid "GAMES DEFAULT SORT ORDER"
-msgstr "ترتيب الفرز الافتراضي للألعاب"
+msgid "CLOUD (LIGHT PASTELS)"
+msgstr ""
 
-msgid "MENU COLOR SCHEME"
-msgstr "مخطط ألوان القائمة"
-
-msgid "DARK"
-msgstr "داكن"
-
-msgid "DARK AND RED"
-msgstr "داكن وأحمر"
-
-msgid "LIGHT"
-msgstr "فاتح"
+msgid "DUSK (PASTELS IN THE DARK)"
+msgstr ""
 
 msgid "MENU OPENING ANIMATION"
 msgstr "رسوم متحركة لفتح القائمة"
+
+msgid "SLIDE"
+msgstr ""
 
 msgid "SCALE-UP"
 msgstr "توسع"
 
 msgid "NONE"
 msgstr "بدون"
-
-msgid "LAUNCH SCREEN DURATION"
-msgstr "مدة إطلاق الشاشة"
 
 msgid "NORMAL"
 msgstr "عادي"
@@ -984,23 +1046,14 @@ msgstr "إعدادات حالة النظام"
 msgid "MEDIA VIEWER SETTINGS"
 msgstr "إعدادات عارض الوسائط"
 
-msgid "SCREENSAVER SETTINGS"
-msgstr "إعدادات شاشة التوقف"
-
 msgid "ENABLE THEME VARIANT TRIGGERS"
 msgstr "تمكين مشغلات متغيرات الثيمة"
-
-msgid "DISPLAY CLOCK"
-msgstr "عرض الساعة"
 
 msgid "BLUR BACKGROUND WHEN MENU IS OPEN"
 msgstr "خلفية ضبابية عندما تكون القائمة مفتوحة"
 
 msgid "SORT FOLDERS ON TOP OF GAMELISTS"
 msgstr "فرز المجلدات الموجودة أعلى قوائم الألعاب"
-
-msgid "SORT FAVORITE GAMES ABOVE NON-FAVORITES"
-msgstr "فرز الألعاب المفضلة فوق الألعاب غير المفضلة"
 
 msgid "ADD STAR MARKINGS TO FAVORITE GAMES"
 msgstr "أضف علامات النجوم إلى الألعاب المفضلة"
@@ -1020,14 +1073,8 @@ msgstr "تمكين مرشحات قائمة الألعاب"
 msgid "DISPLAY ON-SCREEN HELP"
 msgstr "عرض المساعدة على الشاشة"
 
-msgid "AUDIO DRIVER"
-msgstr "برنامج تشغيل الصوت"
-
-msgid "AUDIO DRIVER (REQUIRES RESTART)"
-msgstr "(إعادة التشغيل) برنامج تشغيل الصوت"
-
-msgid "SYSTEM VOLUME"
-msgstr "صوت النظام"
+msgid "ENABLE NAVIGATION SOUNDS"
+msgstr "تمكين أصوات الملاحة"
 
 msgid "NAVIGATION SOUNDS VOLUME"
 msgstr "صوات ملاحة"
@@ -1038,74 +1085,32 @@ msgstr "صوت مشغل الفيديو"
 msgid "PLAY AUDIO FOR GAMELIST AND SYSTEM VIEW VIDEOS"
 msgstr "تشغيل الصوت لقائمة الألعاب وعرض الفيديو للنظام"
 
+msgid "SYSTEM VOLUME"
+msgstr "صوت النظام"
+
 msgid "PLAY AUDIO FOR MEDIA VIEWER VIDEOS"
 msgstr "تشغيل الصوت لمقاطع فيديو عارض الوسائط"
 
 msgid "PLAY AUDIO FOR SCREENSAVER VIDEOS"
 msgstr "تشغيل صوت فيديوهات شاشة التوقف"
 
-msgid "ENABLE NAVIGATION SOUNDS"
-msgstr "تمكين أصوات الملاحة"
-
 msgid "CONTROLLER TYPE"
 msgstr "نوع وحدة التحكم"
 
-msgid "TOUCH OVERLAY SIZE"
-msgstr "حجم طبقة اللمس"
+msgid "SWAP THE A/B AND X/Y BUTTONS"
+msgstr "X/Y و A/B تبديل أزرار"
 
-msgid "MEDIUM"
-msgstr "وسط"
-
-msgid "LARGE"
-msgstr "كبير"
-
-msgid "SMALL"
-msgstr "صغير"
-
-msgid "EXTRA SMALL"
-msgstr "صغير جدًا"
-
-msgid "TOUCH OVERLAY OPACITY"
-msgstr "شفافية طبقة اللمس"
-
-msgid "LOW"
-msgstr "منخفض"
-
-msgid "VERY LOW"
-msgstr "منخفض جدا"
-
-msgid "TOUCH OVERLAY FADE-OUT TIME"
-msgstr "وقت تلاشي طبقة اللمس"
-
-msgid "ENABLE TOUCH OVERLAY"
-msgstr "تمكين لمسة تراكب"
-
-msgid ""
-"DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-"WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-"TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING AGAIN, "
-"OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS TO FORCE "
-"THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-msgstr ""
-"لا تُعطّل خاصية اللمس إلا إذا كنت تستخدم وحدة تحكم وإلا ستُمنع من الوصول إلى "
-"التطبيق إذا حدث ذالك ستحتاج إلى توصيل وحدة تحكم أو لوحة مفاتيح مؤقتًا لتفعيل "
-"هذا الإعداد مجددًا، أو يمكنك مسح مساحة تخزين Arcadia في إعدادات تطبيق أندرويد "
-"لإجبار المُهيئ على التشغيل عند بدء التشغيل التالي"
+msgid "CONFIGURE KEYBOARD AND CONTROLLERS"
+msgstr "تكوين لوحة المفاتيح ووحدات التحكم"
 
 msgid "ONLY ACCEPT INPUT FROM FIRST CONTROLLER"
 msgstr "قبول الإدخال من وحدة التحكم الأولى فقط"
-
-msgid "SWAP THE A/B AND X/Y BUTTONS"
-msgstr "X/Y و A/B تبديل أزرار"
 
 msgid "IGNORE KEYBOARD INPUT"
 msgstr "تجاهل مدخلات لوحة المفاتيح"
 
 msgid "INPUT DEVICE NOTIFICATIONS"
 msgstr "إشعارات جهاز الإدخال"
-
-msgid "CONFIGURE KEYBOARD AND CONTROLLERS"
-msgstr "تكوين لوحة المفاتيح ووحدات التحكم"
 
 msgid ""
 "THE KEYBOARD AND CONTROLLERS ARE AUTOMATICALLY CONFIGURED, BUT USING THIS "
@@ -1117,6 +1122,21 @@ msgstr ""
 
 msgid "PROCEED"
 msgstr "متابعة"
+
+msgid "TOOLS"
+msgstr ""
+
+msgid "ENABLE ALTERNATIVE EMULATORS PER GAME"
+msgstr "تمكين المحاكيات البديلة لكل لعبة"
+
+msgid "SHOW HIDDEN GAMES"
+msgstr "إظهار الألعاب المخفية"
+
+msgid "CHECK FOR APPLICATION UPDATES"
+msgstr "تحقق من وجود تحديثات التطبيق"
+
+msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
+msgstr "(أثناء إطلاق اللعبة) تشغيل في الخلفية"
 
 msgid "GAME MEDIA DIRECTORY"
 msgstr "مسار وسائط الألعاب"
@@ -1200,17 +1220,8 @@ msgstr "أسبوعي"
 msgid "MONTHLY"
 msgstr "شهريا"
 
-msgid "CHECK FOR APPLICATION UPDATES"
-msgstr "تحقق من وجود تحديثات التطبيق"
-
 msgid "INCLUDE PRERELEASES IN UPDATE CHECKS"
 msgstr "تضمين الإصدارات المسبقة عند التحقق من التحديث"
-
-msgid "HIDE TASKBAR (REQUIRES RESTART)"
-msgstr "(إعادة التشغيل) إخفاء شريط المهام"
-
-msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
-msgstr "(أثناء إطلاق اللعبة) تشغيل في الخلفية"
 
 msgid "VIDEO HARDWARE DECODING (EXPERIMENTAL)"
 msgstr "(تجريبي) فك تشفير أجهزة الفيديو"
@@ -1218,17 +1229,8 @@ msgstr "(تجريبي) فك تشفير أجهزة الفيديو"
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "إطارًا في الثانية 60 رفع معدل إطارات الفيديو إلى"
 
-msgid "ENABLE ALTERNATIVE EMULATORS PER GAME"
-msgstr "تمكين المحاكيات البديلة لكل لعبة"
-
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "إظهار الملفات والمجلدات المخفية"
-
-msgid "SHOW HIDDEN GAMES"
-msgstr "إظهار الألعاب المخفية"
-
-msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-msgstr "تشغيل الألعاب على الشاشة الأخرى"
 
 msgid "ENABLE CUSTOM EVENT SCRIPTS"
 msgstr "تمكين نصوص الأحداث المخصصة"
@@ -1244,9 +1246,6 @@ msgstr "(إعادة التشغيل) الإضافية MAME إزالة معلوم�
 
 msgid "DISABLE DESKTOP COMPOSITION (REQUIRES RESTART)"
 msgstr "(إعادة التشغيل) تعطيل تكوين سطح المكتب"
-
-msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-msgstr "زر العودة/الظهر يخرج من التطبيق"
 
 msgid "DEBUG MODE"
 msgstr "وضع التصحيح"
@@ -1334,11 +1333,8 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "إعدادات شاشة التوقف"
 
-msgid "choose"
-msgstr "اختيار"
-
-msgid "close menu"
-msgstr "إغلاق القائمة"
+msgid "open"
+msgstr ""
 
 msgid "EDIT METADATA"
 msgstr "تحرير البيانات الوصفية"
@@ -1533,9 +1529,6 @@ msgstr "قائمة الألعاب"
 msgid "RUNNING GAMELISTS CLEANUP"
 msgstr "تشغيل منظيف قائمة الألعاب"
 
-msgid "COLLECTIONS"
-msgstr "مجموعات"
-
 msgid "COLLECTIONS CLEANUP FAILED"
 msgstr "فشل تنظيف المجموعات"
 
@@ -1662,6 +1655,9 @@ msgstr "إعدادات المحتوى"
 msgid "MIXIMAGE SETTINGS"
 msgstr "إعدادات الصور"
 
+msgid "OTHER SETTINGS"
+msgstr "إعدادات أخرى"
+
 msgid "start scraper"
 msgstr "بدء مكشطة"
 
@@ -1749,6 +1745,9 @@ msgstr "عتبة نسبة العرض إلى الارتفاع في لقطة ال�
 msgid "HIGH"
 msgstr "عالي"
 
+msgid "LOW"
+msgstr "منخفض"
+
 msgid "SCREENSHOT ASPECT RATIO THRESHOLD"
 msgstr "عتبة نسبة العرض إلى ارتفاع لقطة الشاشة"
 
@@ -1776,6 +1775,15 @@ msgstr "طريقة قياس لقطة الشاشة"
 
 msgid "BOX SIZE"
 msgstr "حجم الصندوق"
+
+msgid "SMALL"
+msgstr "صغير"
+
+msgid "MEDIUM"
+msgstr "وسط"
+
+msgid "LARGE"
+msgstr "كبير"
 
 msgid "PHYSICAL MEDIA SIZE"
 msgstr "حجم الوسائط المادية"
@@ -2114,14 +2122,93 @@ msgstr "(ثواني) تبادل الفيديو بعد"
 msgid "RENDER BLUR"
 msgstr "عرض ضبابي"
 
+msgid "MORE OPTIONS"
+msgstr ""
+
+msgid "Show me"
+msgstr ""
+
+msgid "Set up"
+msgstr ""
+
+msgid "Allow"
+msgstr ""
+
+msgid "Connect"
+msgstr ""
+
+msgid "Check"
+msgstr ""
+
+msgid "Get it"
+msgstr ""
+
+msgid "Sort downloads"
+msgstr ""
+
+msgid "Sort inside folders"
+msgstr ""
+
+msgid "Undo the last sort"
+msgstr ""
+
+msgid "Sync saves now"
+msgstr ""
+
+msgid "Back up settings"
+msgstr ""
+
+msgid "Restore a backup"
+msgstr ""
+
+msgid "Update Arcadia"
+msgstr ""
+
+msgid "Setup"
+msgstr ""
+
+msgid "Checking what's ready…"
+msgstr ""
+
+msgid "Tools"
+msgstr ""
+
+msgid "The checklist couldn't be read. The tools on the right still work."
+msgstr ""
+
+msgid "All set"
+msgstr ""
+
+msgid "Everything is ready. Have fun."
+msgstr ""
+
+msgid "Let's get you set up"
+msgstr ""
+
+msgid "Almost ready"
+msgstr ""
+
+#, c-format
+msgid "One thing left to do."
+msgid_plural "%i things left to do."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
+
+msgid "switch side"
+msgstr ""
+
+msgid "do it"
+msgstr ""
+
 msgid "DISPLAY BLUETOOTH STATUS INDICATOR"
 msgstr "عرض مؤشر حالة البلوتوث"
 
 msgid "DISPLAY WI-FI STATUS INDICATOR"
 msgstr "عرض مؤشر حالة واي فاي"
-
-msgid "DISPLAY CELLULAR STATUS INDICATOR"
-msgstr "عرض مؤشر حالة الشبكة الخلوية"
 
 msgid "DISPLAY BATTERY STATUS INDICATOR"
 msgstr "عرض مؤشر حالة البطارية"
@@ -2184,8 +2271,8 @@ msgstr "تنزيل الثيمة"
 msgid ""
 "IT SEEMS AS IF THIS THEME REPOSITORY IS CORRUPT, WHICH COULD HAVE BEEN "
 "CAUSED BY AN INTERRUPTION OF A PREVIOUS DOWNLOAD OR UPDATE, FOR EXAMPLE IF "
-"THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD THEME "
-"DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""
+"THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD "
+"THEME DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""
 msgstr ""
 "يبدو أن مستودع الثيمات هذا تالف، وقد يكون السبب انقطاع عملية تنزيل أو تحديث "
 "سابقة، على سبيل المثال إذا توقفت عملية Arcadia يلزم تنزيل جديد، وسيتم تغيير "
@@ -2288,9 +2375,6 @@ msgstr "تعذر تنزيل قائمة الثيمات"
 msgid "DOWNLOADING THEMES LIST"
 msgstr "تنزيل قائمة الثيمات"
 
-msgid "THIS WILL COMPLETELY DELETE THE THEME"
-msgstr "هذا سوف يحذف الثيمة بالكامل"
-
 msgid ""
 "THIS WILL COMPLETELY DELETE THE THEME INCLUDING ANY LOCAL CUSTOMIZATIONS"
 msgstr "سيؤدي هذا إلى حذف الثيمة بالكامل بما في ذلك أي تخصيصات محلية"
@@ -2341,6 +2425,45 @@ msgstr ""
 "ثبمات تقوم بتنزيلها يُرجى العلم أنه لا يمكنك إيقاف عملية التنزيل الجارية، فقد "
 "يؤدي ذلك إلى تلف البيانات"
 
+msgid "WORKING…"
+msgstr ""
+
+msgid "Working on it…"
+msgstr ""
+
+msgid "The tool couldn't be started."
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
+#, c-format
+msgid "Done in %i s"
+msgstr ""
+
+#, c-format
+msgid "Done in %i min"
+msgstr ""
+
+msgid "Finished with a problem: see below"
+msgstr ""
+
+msgid "TRY AGAIN"
+msgstr ""
+
+msgid "try again"
+msgstr ""
+
+#, c-format
+msgid "Step %i of %i… this can take a few minutes"
+msgstr ""
+
+msgid "scroll"
+msgstr ""
+
+msgid "close or try again"
+msgstr ""
+
 msgid "browse"
 msgstr "تصفح"
 
@@ -2364,6 +2487,9 @@ msgstr "غطاء خلفي المربع"
 
 msgid "TITLE SCREEN"
 msgstr "شاشة العنوان"
+
+msgid "FAN ART"
+msgstr "فن المعجبين"
 
 msgid "MIXIMAGE"
 msgstr "الصور المخطلطة"
@@ -2641,17 +2767,11 @@ msgstr "تمت إزالة هذا اللمجلد '%s' كمفضل"
 msgid "CAN'T ADD ENTRIES THAT ARE NOT COUNTED AS GAMES TO CUSTOM COLLECTIONS"
 msgstr "لا يمكن إضافة إدخالات لا يتم احتسابها كألعاب إلى مجموعات مخصصة"
 
-msgid "system"
-msgstr "نظام"
-
-msgid "view media"
-msgstr "عرض الوسائط"
+msgid "media"
+msgstr ""
 
 msgid "options"
 msgstr "خيارات"
-
-msgid "random"
-msgstr "عشوائي"
 
 msgid "jump to game"
 msgstr "القفز إلى اللعبة"
@@ -2663,6 +2783,9 @@ msgstr "نعم"
 msgctxt "theme"
 msgid "no"
 msgstr "لا"
+
+msgid "random"
+msgstr "عشوائي"
 
 msgid "screensaver"
 msgstr "شاشة التوقف"
@@ -2714,35 +2837,23 @@ msgstr ""
 msgid ""
 "COULDN'T PARSE THE SYSTEMS CONFIGURATION FILE. IF YOU HAVE A CUSTOMIZED "
 "es_systems.xml FILE, THEN SOMETHING IS LIKELY WRONG WITH YOUR XML SYNTAX. IF "
-"YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE ARCADIA INSTALLATION IS BROKEN. "
-"SEE THE APPLICATION LOG FILE es_log.txt FOR ADDITIONAL INFO"
+"YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE ARCADIA INSTALLATION IS "
+"BROKEN. SEE THE APPLICATION LOG FILE es_log.txt FOR ADDITIONAL INFO"
 msgstr ""
 "تعذر تحليل ملف تهيئة النظام. إذا كان لديك ملف es_systems.xml  مُخصَّص, فمن "
 "المُرجَّح وجود خطأ في بناء جملة XML. إذا  لم يكن لديك ملف أنظمة مُخصَّص، فهذا يعني "
-"أن تثبيت Arcadia معطل يُرجى مراجعة ملف سجل التطبيق es_log.txt لمزيد من المعلومات"
+"أن تثبيت Arcadia معطل يُرجى مراجعة ملف سجل التطبيق es_log.txt لمزيد من "
+"المعلومات"
 
 msgid ""
-"NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY IN "
-"THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM DIRECTORY "
-"STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME "
-"INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED "
-"ROM DIRECTORY:\n"
+"Welcome to Arcadia. No games were found yet.\n"
+"\n"
+"Put your games in the ROM folder below, one folder per console (Create makes "
+"the folders), or choose Setup and then Sort downloads to move them there for "
+"you.\n"
+"\n"
+"The ROM folder is "
 msgstr ""
-"لم يتم العثور على أي ملفات ألعاب استورد بعض الألعاب أو ضعها يدويًا في مجلد "
-"الروم المُهيأ يمكنك اختياريًا إنشاء بنية مجلد الروم لإنشاء ملف نصي لكل نظام "
-"يُوفر بعض معلومات مثل امتدادات الملفات المدعومة هذا هو مجلد الروم المُهيأ:\n"
-
-msgid ""
-"NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY IN "
-"THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM PATH AND "
-"OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT "
-"FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE "
-"EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-msgstr ""
-"لم يتم العثور على أي ملفات ألعاب استورد بعض الألعاب أو ضعها يدويًا في مجلد "
-"الروم المُهيأ حاليًا يمكنك أيضًا تغيير مسار الروم ويمكنك اختياريًا إنشاء بنية "
-"مجلد الروم والتي ستُنشئ ملفًا نصيًا لكل نظام يُوفر معلومات مثل امتدادات الملفات "
-"المدعومة هذا هو مجلد الروم المُهيأ:\n"
 
 msgid "CHANGE"
 msgstr "تغير"
@@ -2764,8 +2875,8 @@ msgid "CLEAR (LEAVE BLANK TO RESET TO DEFAULT PATH)"
 msgstr "(اترك فارغًا لإعادة التعيين إلى المسار الافتراضي) فارغ"
 
 msgid ""
-"THIS WILL CREATE DIRECTORIES FOR ALL THE GAME SYSTEMS DEFINED IN es_systems."
-"xml\n"
+"THIS WILL CREATE DIRECTORIES FOR ALL THE GAME SYSTEMS DEFINED IN "
+"es_systems.xml\n"
 "\n"
 "THIS MAY CREATE A LOT OF FOLDERS SO IT'S ADVISED TO REMOVE THE ONES YOU "
 "DON'T NEED"
@@ -2800,14 +2911,11 @@ msgstr ""
 "مطابق في ملف تكوين النظام، يرجى مراجعة إعداداتك باستخدام واجهة 'المحاكيات "
 "البديلة' في قائمة 'الإعدادات الأخرى'"
 
-msgid "UPDATE"
-msgstr "تحديث"
-
 msgid ""
 "THE APPLICATION UPDATER WILL DOWNLOAD THE LATEST PORTABLE WINDOWS RELEASE "
-"FOR YOU, BUT YOU WILL NEED TO MANUALLY PERFORM THE UPGRADE. SEE THE README."
-"TXT FILE INSIDE THE DOWNLOADED ZIP FILE FOR INSTRUCTIONS ON HOW THIS IS "
-"ACCOMPLISHED. AS IS ALSO DESCRIBED IN THAT DOCUMENT, NEVER UNPACK A NEW "
+"FOR YOU, BUT YOU WILL NEED TO MANUALLY PERFORM THE UPGRADE. SEE THE "
+"README.TXT FILE INSIDE THE DOWNLOADED ZIP FILE FOR INSTRUCTIONS ON HOW THIS "
+"IS ACCOMPLISHED. AS IS ALSO DESCRIBED IN THAT DOCUMENT, NEVER UNPACK A NEW "
 "RELEASE ON TOP OF AN OLD INSTALLATION AS THAT MAY BREAK THE APPLICATION."
 msgstr ""
 "سيقوم مُحدِّث التطبيق بتنزيل أحدث إصدار محمول للويندوز لأجلك، ولكن ستحتاج إلى "
@@ -2835,6 +2943,13 @@ msgstr ""
 #, c-format
 msgid "LAUNCHING GAME '%s'"
 msgstr "تشغيل لعبة '%s'"
+
+#, c-format
+msgid "ARCADIA %s IS AVAILABLE"
+msgstr ""
+
+msgid "SETUP → UPDATE ARCADIA INSTALLS IT"
+msgstr ""
 
 msgid "menu"
 msgstr "قائمة"
@@ -2876,16 +2991,9 @@ msgstr[3] "منذ %i دقائق"
 msgstr[4] "منذ %i دقيقة"
 msgstr[5] "منذ %i دقيقة"
 
-#, c-format
 msgctxt "theme"
-msgid "%i second ago"
-msgid_plural "%i seconds ago"
-msgstr[0] "منذ %i ثانية"
-msgstr[1] "منذ ثانية"
-msgstr[2] "منذ ثانيتين"
-msgstr[3] "منذ %i ثواني"
-msgstr[4] "منذ %i ثانية"
-msgstr[5] "منذ %i ثانية"
+msgid "just now"
+msgstr ""
 
 msgid "edit date"
 msgstr "تحرير التاريخ"
@@ -3182,5 +3290,186 @@ msgstr "...نسخ الموارد"
 msgid "Creating system directories..."
 msgstr "...إنشاء أدلة النظام"
 
+msgid "NO PICTURES OR VIDEO FOR THIS GAME YET"
+msgstr ""
+
+msgid "SETTINGS → COVERS AND INFO CAN GET THEM"
+msgstr ""
+
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "خطأ: لا يمكن تقديم ملف pdf"
+
+#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
+#~ msgstr "خطأ: ملف التطبيق أو الاسم المستعار غير موجود أو غير قابل للقراءة"
+
+#~ msgid "MEDIA TARGET TYPE"
+#~ msgstr "نوع هدف الوسائط"
+
+#~ msgid "SCREENSHOTS"
+#~ msgstr "لقطات الشاشة"
+
+#~ msgid "TITLE SCREENS"
+#~ msgstr "شاشات العنوان"
+
+#~ msgid "COVERS"
+#~ msgstr "أغطية"
+
+#~ msgid "BACK COVERS"
+#~ msgstr "الأغطية الخلفية"
+
+#~ msgid "MARQUEES (WHEELS)"
+#~ msgstr "(عجلات) ماركي"
+
+#~ msgid "3D BOXES"
+#~ msgstr "3D صناديق"
+
+#~ msgid "PHYSICAL MEDIA"
+#~ msgstr "الوسائط المادية"
+
+#~ msgid "MIXIMAGES"
+#~ msgstr "الصور المخطلطة"
+
+#~ msgid "IMPORT MEDIA"
+#~ msgstr "استيراد وسائط"
+
+#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+#~ msgstr "استيراد لافتات أو شعارات إذا كانت متوفرة"
+
+#~ msgid "OVERWRITE MEDIA FILES"
+#~ msgstr "الكتابة فوق ملفات الوسائط"
+
+#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+#~ msgstr "فقط تضمين التطبيقات المصنفة كألعاب"
+
+#~ msgid "close (apply)"
+#~ msgstr "(تطبيق) إغلاق"
+
+#~ msgid "close (cancel)"
+#~ msgstr "(إلغاء) إغلاق"
+
+#~ msgid "MAIN MENU"
+#~ msgstr "القائمة الرئيسية"
+
+#~ msgid "SCRAPER"
+#~ msgstr "مكشطة"
+
+#~ msgid "UI SETTINGS"
+#~ msgstr "إعدادات واجهة المستخدم"
+
+#~ msgid "SOUND SETTINGS"
+#~ msgstr "إعدادات الصوت"
+
+#~ msgid "INPUT DEVICE SETTINGS"
+#~ msgstr "إعدادات جهاز الإدخال"
+
+#~ msgid "GAME COLLECTION SETTINGS"
+#~ msgstr "إعدادات مجموعة الألعاب"
+
+#~ msgid "UTILITIES"
+#~ msgstr "الفحص"
+
+#~ msgid "MENU COLOR SCHEME"
+#~ msgstr "مخطط ألوان القائمة"
+
+#~ msgid "DARK"
+#~ msgstr "داكن"
+
+#~ msgid "DARK AND RED"
+#~ msgstr "داكن وأحمر"
+
+#~ msgid "LIGHT"
+#~ msgstr "فاتح"
+
+#~ msgid "AUDIO DRIVER"
+#~ msgstr "برنامج تشغيل الصوت"
+
+#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
+#~ msgstr "(إعادة التشغيل) برنامج تشغيل الصوت"
+
+#~ msgid "TOUCH OVERLAY SIZE"
+#~ msgstr "حجم طبقة اللمس"
+
+#~ msgid "EXTRA SMALL"
+#~ msgstr "صغير جدًا"
+
+#~ msgid "TOUCH OVERLAY OPACITY"
+#~ msgstr "شفافية طبقة اللمس"
+
+#~ msgid "VERY LOW"
+#~ msgstr "منخفض جدا"
+
+#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
+#~ msgstr "وقت تلاشي طبقة اللمس"
+
+#~ msgid "ENABLE TOUCH OVERLAY"
+#~ msgstr "تمكين لمسة تراكب"
+
+#~ msgid ""
+#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
+#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
+#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
+#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
+#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
+#~ msgstr ""
+#~ "لا تُعطّل خاصية اللمس إلا إذا كنت تستخدم وحدة تحكم وإلا ستُمنع من الوصول إلى "
+#~ "التطبيق إذا حدث ذالك ستحتاج إلى توصيل وحدة تحكم أو لوحة مفاتيح مؤقتًا "
+#~ "لتفعيل هذا الإعداد مجددًا، أو يمكنك مسح مساحة تخزين Arcadia في إعدادات "
+#~ "تطبيق أندرويد لإجبار المُهيئ على التشغيل عند بدء التشغيل التالي"
+
+#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
+#~ msgstr "(إعادة التشغيل) إخفاء شريط المهام"
+
+#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
+#~ msgstr "تشغيل الألعاب على الشاشة الأخرى"
+
+#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
+#~ msgstr "زر العودة/الظهر يخرج من التطبيق"
+
+#~ msgid "close menu"
+#~ msgstr "إغلاق القائمة"
+
+#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
+#~ msgstr "عرض مؤشر حالة الشبكة الخلوية"
+
+#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
+#~ msgstr "هذا سوف يحذف الثيمة بالكامل"
+
+#~ msgid "system"
+#~ msgstr "نظام"
+
+#~ msgid "view media"
+#~ msgstr "عرض الوسائط"
+
+#~ msgid ""
+#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
+#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
+#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
+#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
+#~ "THE CONFIGURED ROM DIRECTORY:\n"
+#~ msgstr ""
+#~ "لم يتم العثور على أي ملفات ألعاب استورد بعض الألعاب أو ضعها يدويًا في مجلد "
+#~ "الروم المُهيأ يمكنك اختياريًا إنشاء بنية مجلد الروم لإنشاء ملف نصي لكل نظام "
+#~ "يُوفر بعض معلومات مثل امتدادات الملفات المدعومة هذا هو مجلد الروم المُهيأ:\n"
+
+#~ msgid ""
+#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
+#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
+#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
+#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
+#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
+#~ msgstr ""
+#~ "لم يتم العثور على أي ملفات ألعاب استورد بعض الألعاب أو ضعها يدويًا في مجلد "
+#~ "الروم المُهيأ حاليًا يمكنك أيضًا تغيير مسار الروم ويمكنك اختياريًا إنشاء بنية "
+#~ "مجلد الروم والتي ستُنشئ ملفًا نصيًا لكل نظام يُوفر معلومات مثل امتدادات "
+#~ "الملفات المدعومة هذا هو مجلد الروم المُهيأ:\n"
+
+#, c-format
+#~ msgctxt "theme"
+#~ msgid "%i second ago"
+#~ msgid_plural "%i seconds ago"
+#~ msgstr[0] "منذ %i ثانية"
+#~ msgstr[1] "منذ ثانية"
+#~ msgstr[2] "منذ ثانيتين"
+#~ msgstr[3] "منذ %i ثواني"
+#~ msgstr[4] "منذ %i ثانية"
+#~ msgstr[5] "منذ %i ثانية"

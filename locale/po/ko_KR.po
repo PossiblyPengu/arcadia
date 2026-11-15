@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Arcadia Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-03-22 21:12+0100\n"
+"POT-Creation-Date: 2026-11-15 10:18-0500\n"
 "PO-Revision-Date: 2025-10-13 20:58+0200\n"
 "Last-Translator: wakeboxer <ljhmd0825@gmail.com>\n"
 "Language-Team: 한국어 <info@es-de.org>\n"
@@ -125,6 +125,9 @@ msgstr "'%s'이(가) 필터되었으므로 이용 가능한 게임이 더 있을
 msgid "DELETED COLLECTION '%s'"
 msgstr "컬렉션 '%s' 이 삭제됨"
 
+msgid "OPEN SETUP → EMULATORS TO INSTALL IT"
+msgstr ""
+
 msgctxt "theme"
 msgid "unknown"
 msgstr "알수없음"
@@ -190,9 +193,6 @@ msgid ""
 "ERROR: DIRECTORY DEFINED BY %s COULD NOT BE CREATED, PERMISSION PROBLEMS?"
 msgstr ""
 "오류: %s이(가) 정의한 디렉터리를 생성할 수 없습니다. 권한 문제가 있습니까?"
-
-msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-msgstr "오류: 앱 또는 별칭 파일이 존재하지 않거나 읽을 수 없습니다"
 
 msgid "ERROR: DESKTOP FILE IS INVALID OR UNREADABLE"
 msgstr "오류: 데스크톱 파일이 잘못되었거나 읽을 수 없습니다"
@@ -532,6 +532,94 @@ msgstr "커스텀 컬렉션에서 즐겨찾기를 최상단에 표시"
 msgid "DISPLAY STAR MARKINGS FOR CUSTOM COLLECTIONS"
 msgstr "커스텀 컬렉션에서 별 표시하기"
 
+msgid "Emulators"
+msgstr ""
+
+msgid "Looking at your games…"
+msgstr ""
+
+#, c-format
+msgid "%i game"
+msgid_plural "%i games"
+msgstr[0] ""
+
+msgid "Windows games"
+msgstr ""
+
+msgid "Deckhand, Arcadia's sister app, plays these"
+msgstr ""
+
+msgid "Get Deckhand"
+msgstr ""
+
+#, c-format
+msgid "Arcadia uses %s, which isn't on Flathub"
+msgstr ""
+
+msgid "Installed"
+msgstr ""
+
+msgid "Add cores"
+msgstr ""
+
+msgid "Install"
+msgstr ""
+
+msgid "The emulator list couldn't be read. Try again from Setup."
+msgstr ""
+
+msgid ""
+"No games yet. Add some and Arcadia picks what they need, or install one "
+"yourself."
+msgstr ""
+
+msgid "Everything your games need is installed. Have fun."
+msgstr ""
+
+#, c-format
+msgid "Your games need %s, and it isn't ready yet. Press X to set it up."
+msgstr ""
+
+#, c-format
+msgid ""
+"Your games need %i emulators; %i isn't ready yet. Press X to set them all up."
+msgid_plural ""
+"Your games need %i emulators; %i aren't ready yet. Press X to set them all "
+"up."
+msgstr[0] ""
+
+#, c-format
+msgid "Adding cores for %s"
+msgstr ""
+
+#, c-format
+msgid "Installing %s"
+msgstr ""
+
+msgid "UPDATE"
+msgstr "업데이트"
+
+msgid "REMOVE"
+msgstr ""
+
+msgid "Installing what your games need"
+msgstr ""
+
+msgid "Updating emulators"
+msgstr ""
+
+msgid "choose"
+msgstr "이동"
+
+msgid "install or manage"
+msgstr ""
+
+msgid "install what's needed"
+msgstr ""
+
+msgid "update all"
+msgstr ""
+
 msgid "IMPORT TO SYSTEM"
 msgstr "시스템으로 가져오기"
 
@@ -546,48 +634,6 @@ msgstr "선택되지 않은 모두"
 
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "스트립 스페셜 캐릭터"
-
-msgid "MEDIA TARGET TYPE"
-msgstr "미디어 타겟 유형"
-
-msgid "SCREENSHOTS"
-msgstr "스크린샷"
-
-msgid "TITLE SCREENS"
-msgstr "타이틀 스크린"
-
-msgid "COVERS"
-msgstr "커버"
-
-msgid "BACK COVERS"
-msgstr "백 커버"
-
-msgid "MARQUEES (WHEELS)"
-msgstr "마퀴 (휠)"
-
-msgid "3D BOXES"
-msgstr "3D 박스"
-
-msgid "PHYSICAL MEDIA"
-msgstr "피지컬 미디어"
-
-msgid "FAN ART"
-msgstr "팬아트"
-
-msgid "MIXIMAGES"
-msgstr "믹스이미지"
-
-msgid "IMPORT MEDIA"
-msgstr "미디어 가져오기"
-
-msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-msgstr "배너 또는 로고 이용 가능하면 가져오기"
-
-msgid "OVERWRITE MEDIA FILES"
-msgstr "미디어 파일 덮어쓰기"
-
-msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-msgstr "게임으로 분류된 앱만 포함"
 
 msgid "START"
 msgstr "시작"
@@ -690,11 +736,8 @@ msgstr "적용"
 msgid "apply"
 msgstr "적용"
 
-msgid "close (apply)"
-msgstr "닫기 (적용)"
-
-msgid "close (cancel)"
-msgstr "닫기 (취소)"
+msgid "done"
+msgstr ""
 
 msgid "LAUNCHING GAME"
 msgstr "게임 시작"
@@ -729,35 +772,56 @@ msgstr "비디오에 블러 렌더링 적용"
 msgid "RENDER SCANLINES FOR SCREENSHOTS AND TITLES"
 msgstr "스크린샷과 타이틀에 스캔라인 렌더링 적용"
 
-msgid "MAIN MENU"
-msgstr "메인 메뉴"
+msgid "SETTINGS"
+msgstr ""
 
-msgid "SCRAPER"
-msgstr "스크래퍼"
+msgid "SETUP"
+msgstr ""
 
-msgid "UI SETTINGS"
-msgstr "UI 설정"
+msgid "LOOK AND FEEL"
+msgstr ""
 
-msgid "SOUND SETTINGS"
-msgstr "사운드 설정"
+msgid "SOUND"
+msgstr ""
 
-msgid "INPUT DEVICE SETTINGS"
-msgstr "입력 기기 설정"
+msgid "CONTROLLERS"
+msgstr ""
 
-msgid "GAME COLLECTION SETTINGS"
-msgstr "게임 컬렉션 설정"
+msgid "COVERS AND INFO"
+msgstr ""
 
-msgid "OTHER SETTINGS"
-msgstr "기타 설정"
-
-msgid "UTILITIES"
-msgstr "유틸리티"
+msgid "ADVANCED"
+msgstr ""
 
 msgid "QUIT ARCADIA"
 msgstr "Arcadia 종료"
 
+msgid "COLOURS"
+msgstr ""
+
 msgid "THEME"
 msgstr "테마"
+
+msgid "COLLECTIONS"
+msgstr "컬렉션"
+
+msgid "GAMES DEFAULT SORT ORDER"
+msgstr "게임 기본 정렬 순서"
+
+msgid "SORT FAVORITE GAMES ABOVE NON-FAVORITES"
+msgstr "즐겨찾기를 다른 게임보다 상단에 표시"
+
+msgid "DISPLAY CLOCK"
+msgstr "시계 표시"
+
+msgid "LAUNCH SCREEN DURATION"
+msgstr "시작 화면 지속시간"
+
+msgid "SCREENSAVER SETTINGS"
+msgstr "화면보호기 설정"
+
+msgid "APPLICATION LANGUAGE"
+msgstr "어플리케이션 언어"
 
 msgid "THEME DOWNLOADER"
 msgstr "테마 다운로더"
@@ -797,9 +861,6 @@ msgstr "페이드 (빌트인)"
 
 msgid "THEME LANGUAGE"
 msgstr "테마 언어"
-
-msgid "APPLICATION LANGUAGE"
-msgstr "어플리케이션 언어"
 
 msgid "QUICK SYSTEM SELECT"
 msgstr "빠른 시스템 선택"
@@ -853,32 +914,23 @@ msgctxt "short"
 msgid "GAMES DEFAULT SORT ORDER"
 msgstr "기본 정렬 순서"
 
-msgid "GAMES DEFAULT SORT ORDER"
-msgstr "게임 기본 정렬 순서"
+msgid "CLOUD (LIGHT PASTELS)"
+msgstr ""
 
-msgid "MENU COLOR SCHEME"
-msgstr "메뉴 색상 구성"
-
-msgid "DARK"
-msgstr "다크"
-
-msgid "DARK AND RED"
-msgstr "다크 앤 레드"
-
-msgid "LIGHT"
-msgstr "라이트"
+msgid "DUSK (PASTELS IN THE DARK)"
+msgstr ""
 
 msgid "MENU OPENING ANIMATION"
 msgstr "메뉴 열기 애니메이션"
+
+msgid "SLIDE"
+msgstr ""
 
 msgid "SCALE-UP"
 msgstr "스케일-업"
 
 msgid "NONE"
 msgstr "없음"
-
-msgid "LAUNCH SCREEN DURATION"
-msgstr "시작 화면 지속시간"
 
 msgid "NORMAL"
 msgstr "보통"
@@ -957,23 +1009,14 @@ msgstr "시스템 상태 설정"
 msgid "MEDIA VIEWER SETTINGS"
 msgstr "미디어 뷰어 설정"
 
-msgid "SCREENSAVER SETTINGS"
-msgstr "화면보호기 설정"
-
 msgid "ENABLE THEME VARIANT TRIGGERS"
 msgstr "테마 변형 트리거 활성화"
-
-msgid "DISPLAY CLOCK"
-msgstr "시계 표시"
 
 msgid "BLUR BACKGROUND WHEN MENU IS OPEN"
 msgstr "메뉴 오픈시 배경 흐려짐 효과"
 
 msgid "SORT FOLDERS ON TOP OF GAMELISTS"
 msgstr "폴더를 게임리스트 최상단에 표시"
-
-msgid "SORT FAVORITE GAMES ABOVE NON-FAVORITES"
-msgstr "즐겨찾기를 다른 게임보다 상단에 표시"
 
 msgid "ADD STAR MARKINGS TO FAVORITE GAMES"
 msgstr "즐겨찾기에 별 표시 추가"
@@ -993,14 +1036,8 @@ msgstr "게임리스트 필터 활성화"
 msgid "DISPLAY ON-SCREEN HELP"
 msgstr "온스크린 도움말 보이기"
 
-msgid "AUDIO DRIVER"
-msgstr "오디오 드라이버"
-
-msgid "AUDIO DRIVER (REQUIRES RESTART)"
-msgstr "오디오 드라이버 (재시작 필요)"
-
-msgid "SYSTEM VOLUME"
-msgstr "시스템 음량"
+msgid "ENABLE NAVIGATION SOUNDS"
+msgstr "이동 효과음 사용"
 
 msgid "NAVIGATION SOUNDS VOLUME"
 msgstr "이동 효과음 음량"
@@ -1011,74 +1048,32 @@ msgstr "비디오 플레이어 음량"
 msgid "PLAY AUDIO FOR GAMELIST AND SYSTEM VIEW VIDEOS"
 msgstr "게임리스트와 시스템 뷰의 비디오에서 오디오 재생"
 
+msgid "SYSTEM VOLUME"
+msgstr "시스템 음량"
+
 msgid "PLAY AUDIO FOR MEDIA VIEWER VIDEOS"
 msgstr "미디어 뷰어 비디오에서 오디오 재생"
 
 msgid "PLAY AUDIO FOR SCREENSAVER VIDEOS"
 msgstr "화면보호기 비디오에서 오디오 재생"
 
-msgid "ENABLE NAVIGATION SOUNDS"
-msgstr "이동 효과음 사용"
-
 msgid "CONTROLLER TYPE"
 msgstr "컨트롤러 타입"
 
-msgid "TOUCH OVERLAY SIZE"
-msgstr "터치 오버레이 크기"
+msgid "SWAP THE A/B AND X/Y BUTTONS"
+msgstr "A/B 및 X/Y 버튼 전환"
 
-msgid "MEDIUM"
-msgstr "미디엄"
-
-msgid "LARGE"
-msgstr "라지"
-
-msgid "SMALL"
-msgstr "스몰"
-
-msgid "EXTRA SMALL"
-msgstr "엑스트라 스몰"
-
-msgid "TOUCH OVERLAY OPACITY"
-msgstr "터치 오버레이 불투명도"
-
-msgid "LOW"
-msgstr "낮음"
-
-msgid "VERY LOW"
-msgstr "매우 낮음"
-
-msgid "TOUCH OVERLAY FADE-OUT TIME"
-msgstr "터치 오버레이 페이드-아웃 타임"
-
-msgid "ENABLE TOUCH OVERLAY"
-msgstr "터치 오버레이 활성화"
-
-msgid ""
-"DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-"WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-"TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING AGAIN, "
-"OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS TO FORCE "
-"THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-msgstr ""
-"컨트롤러를 사용하지 않는 한 터치 오버레이를 비활성화하지 마십시오. 그렇지 않"
-"으면 앱이 잠기게 됩니다. 이런 일이 발생하는 경우 컨트롤러나 키보드를 일시적으"
-"로 연결하여 이 설정을 다시 활성화해야 하거나 Android 앱 설정에서 Arcadia 저장소"
-"를 비워 다음 시작 시 구성자가 강제로 실행되도록 할 수 있습니다"
+msgid "CONFIGURE KEYBOARD AND CONTROLLERS"
+msgstr "키보드와 컨트롤러 구성"
 
 msgid "ONLY ACCEPT INPUT FROM FIRST CONTROLLER"
 msgstr "첫 번째 컨트롤러의 입력만 허용"
-
-msgid "SWAP THE A/B AND X/Y BUTTONS"
-msgstr "A/B 및 X/Y 버튼 전환"
 
 msgid "IGNORE KEYBOARD INPUT"
 msgstr "키보드 입력 무시"
 
 msgid "INPUT DEVICE NOTIFICATIONS"
 msgstr "입력 장치 알림"
-
-msgid "CONFIGURE KEYBOARD AND CONTROLLERS"
-msgstr "키보드와 컨트롤러 구성"
 
 msgid ""
 "THE KEYBOARD AND CONTROLLERS ARE AUTOMATICALLY CONFIGURED, BUT USING THIS "
@@ -1090,6 +1085,21 @@ msgstr ""
 
 msgid "PROCEED"
 msgstr "진행하기"
+
+msgid "TOOLS"
+msgstr ""
+
+msgid "ENABLE ALTERNATIVE EMULATORS PER GAME"
+msgstr "게임별 대체 에뮬레이터 사용 가능"
+
+msgid "SHOW HIDDEN GAMES"
+msgstr "숨긴 게임 보이기"
+
+msgid "CHECK FOR APPLICATION UPDATES"
+msgstr "어플리케이션 업데이트 체크"
+
+msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
+msgstr "백그라운드에서 실행 (게임이 시작되는 동안)"
 
 msgid "GAME MEDIA DIRECTORY"
 msgstr "게임 미디어 디렉터리"
@@ -1173,17 +1183,8 @@ msgstr "매주"
 msgid "MONTHLY"
 msgstr "매월"
 
-msgid "CHECK FOR APPLICATION UPDATES"
-msgstr "어플리케이션 업데이트 체크"
-
 msgid "INCLUDE PRERELEASES IN UPDATE CHECKS"
 msgstr "프리릴리스도 업데이트 체크에 포함"
-
-msgid "HIDE TASKBAR (REQUIRES RESTART)"
-msgstr "테스크바 숨김 (재시작 필요)"
-
-msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
-msgstr "백그라운드에서 실행 (게임이 시작되는 동안)"
 
 msgid "VIDEO HARDWARE DECODING (EXPERIMENTAL)"
 msgstr "비디오 하드웨어 디코딩 (실험적)"
@@ -1191,17 +1192,8 @@ msgstr "비디오 하드웨어 디코딩 (실험적)"
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "60FPS까지 비디오 프레임 레이트 업스케일링"
 
-msgid "ENABLE ALTERNATIVE EMULATORS PER GAME"
-msgstr "게임별 대체 에뮬레이터 사용 가능"
-
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "숨긴 파일 및 폴더 보이기"
-
-msgid "SHOW HIDDEN GAMES"
-msgstr "숨긴 게임 보이기"
-
-msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-msgstr "다른 화면에서 게임 실행"
 
 msgid "ENABLE CUSTOM EVENT SCRIPTS"
 msgstr "커스텀 이벤트 스크립트 사용 가능"
@@ -1217,9 +1209,6 @@ msgstr "MAME NAME 에서 추가정보 제거 (재시작 필요)"
 
 msgid "DISABLE DESKTOP COMPOSITION (REQUIRES RESTART)"
 msgstr "데스크탑 구성 비활성화 (재시작 필요)"
-
-msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-msgstr "백 버튼/백 스와이프 로 앱 나가기"
 
 msgid "DEBUG MODE"
 msgstr "디버그 모드"
@@ -1307,11 +1296,8 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "화면보호기 설정"
 
-msgid "choose"
-msgstr "이동"
-
-msgid "close menu"
-msgstr "메뉴 닫기"
+msgid "open"
+msgstr ""
 
 msgid "EDIT METADATA"
 msgstr "메타데이터 편집"
@@ -1499,9 +1485,6 @@ msgstr "게임리스트"
 msgid "RUNNING GAMELISTS CLEANUP"
 msgstr "실행 중인 게임리스트 정리"
 
-msgid "COLLECTIONS"
-msgstr "컬렉션"
-
 msgid "COLLECTIONS CLEANUP FAILED"
 msgstr "컬렉션 정리 실패"
 
@@ -1628,6 +1611,9 @@ msgstr "콘텐츠 설정"
 msgid "MIXIMAGE SETTINGS"
 msgstr "믹스이미지 설정"
 
+msgid "OTHER SETTINGS"
+msgstr "기타 설정"
+
 msgid "start scraper"
 msgstr "스크래퍼 시작"
 
@@ -1715,6 +1701,9 @@ msgstr "화면비 임계값"
 msgid "HIGH"
 msgstr "높음"
 
+msgid "LOW"
+msgstr "낮음"
+
 msgid "SCREENSHOT ASPECT RATIO THRESHOLD"
 msgstr "스크린샷 화면비 임계값"
 
@@ -1742,6 +1731,15 @@ msgstr "스크린샷 크기 조정 방법"
 
 msgid "BOX SIZE"
 msgstr "박스 크기"
+
+msgid "SMALL"
+msgstr "스몰"
+
+msgid "MEDIUM"
+msgstr "미디엄"
+
+msgid "LARGE"
+msgstr "라지"
 
 msgid "PHYSICAL MEDIA SIZE"
 msgstr "피지컬 미디어 크기"
@@ -2061,14 +2059,88 @@ msgstr "비디오 교체 시간 (초)"
 msgid "RENDER BLUR"
 msgstr "블러 랜더링 적용"
 
+msgid "MORE OPTIONS"
+msgstr ""
+
+msgid "Show me"
+msgstr ""
+
+msgid "Set up"
+msgstr ""
+
+msgid "Allow"
+msgstr ""
+
+msgid "Connect"
+msgstr ""
+
+msgid "Check"
+msgstr ""
+
+msgid "Get it"
+msgstr ""
+
+msgid "Sort downloads"
+msgstr ""
+
+msgid "Sort inside folders"
+msgstr ""
+
+msgid "Undo the last sort"
+msgstr ""
+
+msgid "Sync saves now"
+msgstr ""
+
+msgid "Back up settings"
+msgstr ""
+
+msgid "Restore a backup"
+msgstr ""
+
+msgid "Update Arcadia"
+msgstr ""
+
+msgid "Setup"
+msgstr ""
+
+msgid "Checking what's ready…"
+msgstr ""
+
+msgid "Tools"
+msgstr ""
+
+msgid "The checklist couldn't be read. The tools on the right still work."
+msgstr ""
+
+msgid "All set"
+msgstr ""
+
+msgid "Everything is ready. Have fun."
+msgstr ""
+
+msgid "Let's get you set up"
+msgstr ""
+
+msgid "Almost ready"
+msgstr ""
+
+#, c-format
+msgid "One thing left to do."
+msgid_plural "%i things left to do."
+msgstr[0] ""
+
+msgid "switch side"
+msgstr ""
+
+msgid "do it"
+msgstr ""
+
 msgid "DISPLAY BLUETOOTH STATUS INDICATOR"
 msgstr "블루투스 상태 표시"
 
 msgid "DISPLAY WI-FI STATUS INDICATOR"
 msgstr "와이파이 상태 표시"
-
-msgid "DISPLAY CELLULAR STATUS INDICATOR"
-msgstr "셀룰러 상태 표시"
 
 msgid "DISPLAY BATTERY STATUS INDICATOR"
 msgstr "배터리 상태 표시"
@@ -2110,8 +2182,8 @@ msgid ""
 "IT SEEMS AS IF YOU'RE NOT RUNNING THE LATEST ARCADIA RELEASE, PLEASE UPGRADE "
 "BEFORE PROCEEDING AS THESE THEMES MAY NOT BE COMPATIBLE WITH YOUR VERSION"
 msgstr ""
-"최신 Arcadia 릴리스를 실행하지 않는 것 같습니다. 해당 테마가 귀하의 버전과 호환"
-"되지 않을 수 있으므로 진행하기 전에 업그레이드하시기 바랍니다"
+"최신 Arcadia 릴리스를 실행하지 않는 것 같습니다. 해당 테마가 귀하의 버전과 호"
+"환되지 않을 수 있으므로 진행하기 전에 업그레이드하시기 바랍니다"
 
 msgid "and"
 msgstr "그리고"
@@ -2133,12 +2205,13 @@ msgstr "테마 다운로드중"
 msgid ""
 "IT SEEMS AS IF THIS THEME REPOSITORY IS CORRUPT, WHICH COULD HAVE BEEN "
 "CAUSED BY AN INTERRUPTION OF A PREVIOUS DOWNLOAD OR UPDATE, FOR EXAMPLE IF "
-"THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD THEME "
-"DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""
+"THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD "
+"THEME DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""
 msgstr ""
-"이 테마 저장소가 손상된 것 같습니다. 예를 들어 Arcadia 프로세스 종료로 인해 이"
-"전 다운로드 또는 업데이트가 중단되어 발생했을 수 있습니다. 새로 다운로드해야 "
-"하며 이전 테마 디렉터리 \"%s\"의 이름이 \"%s_CORRUPT_DISABLED\"로 변경됩니다"
+"이 테마 저장소가 손상된 것 같습니다. 예를 들어 Arcadia 프로세스 종료로 인해 "
+"이전 다운로드 또는 업데이트가 중단되어 발생했을 수 있습니다. 새로 다운로드해"
+"야 하며 이전 테마 디렉터리 \"%s\"의 이름이 \"%s_CORRUPT_DISABLED\"로 변경됩니"
+"다"
 
 #, c-format
 msgid ""
@@ -2237,9 +2310,6 @@ msgstr "테마 목록을 다운로드할 수 없습니다"
 msgid "DOWNLOADING THEMES LIST"
 msgstr "테마 목록 다운로드중"
 
-msgid "THIS WILL COMPLETELY DELETE THE THEME"
-msgstr "테마가 완전히 삭제됩니다"
-
 msgid ""
 "THIS WILL COMPLETELY DELETE THE THEME INCLUDING ANY LOCAL CUSTOMIZATIONS"
 msgstr "로컬 커스텀을 포함해 테마가 완전히 삭제됩니다"
@@ -2268,10 +2338,10 @@ msgid ""
 "THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD "
 "DIRECTORY \"themes-list\" WILL BE RENAMED TO \"themes-list_CORRUPT_DISABLED\""
 msgstr ""
-"테마 목록 저장소가 손상된 것 같습니다. 예를 들어 Arcadia 프로세스 종료로 인해 "
-"이전 다운로드 또는 업데이트가 중단되어 발생했을 수 있습니다. 새로 다운로드해"
-"야 하며 이전 디렉터리 \"themes-list\"는 \"themes-list_CORRUPT_DISABLED\"로 이"
-"름이 변경됩니다"
+"테마 목록 저장소가 손상된 것 같습니다. 예를 들어 Arcadia 프로세스 종료로 인"
+"해 이전 다운로드 또는 업데이트가 중단되어 발생했을 수 있습니다. 새로 다운로드"
+"해야 하며 이전 디렉터리 \"themes-list\"는 \"themes-list_CORRUPT_DISABLED\"로 "
+"이름이 변경됩니다"
 
 msgid "UPDATING THEMES LIST"
 msgstr "테마 목록 업데이트중"
@@ -2289,6 +2359,45 @@ msgstr ""
 "만 가져오기 때문에 훨씬 더 빨라집니다. 귀하가 다운로드하는 모든 테마에도 마찬"
 "가지입니다. 진행 중인 다운로드는 데이터 손상으로 이어질 수 있으므로 중단할 "
 "수 없습니다."
+
+msgid "WORKING…"
+msgstr ""
+
+msgid "Working on it…"
+msgstr ""
+
+msgid "The tool couldn't be started."
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
+#, c-format
+msgid "Done in %i s"
+msgstr ""
+
+#, c-format
+msgid "Done in %i min"
+msgstr ""
+
+msgid "Finished with a problem: see below"
+msgstr ""
+
+msgid "TRY AGAIN"
+msgstr ""
+
+msgid "try again"
+msgstr ""
+
+#, c-format
+msgid "Step %i of %i… this can take a few minutes"
+msgstr ""
+
+msgid "scroll"
+msgstr ""
+
+msgid "close or try again"
+msgstr ""
 
 msgid "browse"
 msgstr "보기"
@@ -2313,6 +2422,9 @@ msgstr "박스 후면 커버"
 
 msgid "TITLE SCREEN"
 msgstr "타이틀 스크린"
+
+msgid "FAN ART"
+msgstr "팬아트"
 
 msgid "MIXIMAGE"
 msgstr "믹스이미지"
@@ -2592,17 +2704,11 @@ msgstr "폴더 '%s'에 대한 즐겨찾기 표시가 제거함"
 msgid "CAN'T ADD ENTRIES THAT ARE NOT COUNTED AS GAMES TO CUSTOM COLLECTIONS"
 msgstr "게임으로 간주되지 않는 항목은 커스텀 컬렉션에 추가할 수 없습니다"
 
-msgid "system"
-msgstr "시스템"
-
-msgid "view media"
-msgstr "미디어 보기"
+msgid "media"
+msgstr ""
 
 msgid "options"
 msgstr "옵션"
-
-msgid "random"
-msgstr "무작위"
 
 msgid "jump to game"
 msgstr "게임으로 이동"
@@ -2614,6 +2720,9 @@ msgstr "예"
 msgctxt "theme"
 msgid "no"
 msgstr "아니오"
+
+msgid "random"
+msgstr "무작위"
 
 msgid "screensaver"
 msgstr "화면보호기"
@@ -2645,43 +2754,29 @@ msgid ""
 msgstr ""
 "안전하지 않은 업그레이드가 이루어진 것 같습니다, 이전 릴리스 위에 새 릴리스"
 "를 언팩킹 했나요? 이로 인해 다양한 문제가 발생할 수 있으며 그 중 일부는 즉시 "
-"나타나지 않을 수도 있습니다. ARCADIA 디렉터리에 있는 README.TXT 파일의 업그레이"
-"드 지침을 항상 따르십시오."
+"나타나지 않을 수도 있습니다. ARCADIA 디렉터리에 있는 README.TXT 파일의 업그레"
+"이드 지침을 항상 따르십시오."
 
 msgid ""
 "COULDN'T PARSE THE SYSTEMS CONFIGURATION FILE. IF YOU HAVE A CUSTOMIZED "
 "es_systems.xml FILE, THEN SOMETHING IS LIKELY WRONG WITH YOUR XML SYNTAX. IF "
-"YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE ARCADIA INSTALLATION IS BROKEN. "
-"SEE THE APPLICATION LOG FILE es_log.txt FOR ADDITIONAL INFO"
+"YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE ARCADIA INSTALLATION IS "
+"BROKEN. SEE THE APPLICATION LOG FILE es_log.txt FOR ADDITIONAL INFO"
 msgstr ""
 "시스템 구성 파일을 구문 분석할 수 없습니다. 사용자 정의된 es_systems.xml 파일"
 "이 있는 경우 XML 구문에 문제가 있을 수 있습니다. 사용자 정의 시스템 파일이 없"
-"으면 Arcadia 설치가 손상된 것입니다. 추가 정보는 애플리케이션 로그 파일 es_log."
-"txt를 참조하세요"
+"으면 Arcadia 설치가 손상된 것입니다. 추가 정보는 애플리케이션 로그 파일 "
+"es_log.txt를 참조하세요"
 
 msgid ""
-"NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY IN "
-"THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM DIRECTORY "
-"STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME "
-"INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED "
-"ROM DIRECTORY:\n"
+"Welcome to Arcadia. No games were found yet.\n"
+"\n"
+"Put your games in the ROM folder below, one folder per console (Create makes "
+"the folders), or choose Setup and then Sort downloads to move them there for "
+"you.\n"
+"\n"
+"The ROM folder is "
 msgstr ""
-"게임 파일을 찾을 수 없습니다. 일부 게임을 가져오거나 구성된 롬 디렉터리에 수"
-"동으로 넣으세요. 롬 디렉터리 구조를 직접 생성하여 각 시스템별로 지원되는 파"
-"일 확장자 등의 정보를 제공하는 텍스트 파일을 생성할 수도 있습니다. 구성된 롬 "
-"디렉터리는 다음과 같습니다.\n"
-
-msgid ""
-"NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY IN "
-"THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM PATH AND "
-"OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT "
-"FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE "
-"EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-msgstr ""
-"게임 파일을 찾을 수 없습니다. 일부 게임을 가져오거나 현재 구성된 롬 디렉터리"
-"에 수동으로 넣으세요. 롬 경로를 변경하고, 원하는 경우 롬 디렉터리 구조를 생성"
-"할 수도 있습니다. 이 구조는 각 시스템별로 지원되는 파일 확장자 등의 정보를 제"
-"공하는 텍스트 파일을 생성합니다. 구성된 롬 디렉터리는 다음과 같습니다.\n"
 
 msgid "CHANGE"
 msgstr "변경"
@@ -2705,8 +2800,8 @@ msgid "CLEAR (LEAVE BLANK TO RESET TO DEFAULT PATH)"
 msgstr "비우기 (기본 경로로 재설정 위해 공란으로 비우기)"
 
 msgid ""
-"THIS WILL CREATE DIRECTORIES FOR ALL THE GAME SYSTEMS DEFINED IN es_systems."
-"xml\n"
+"THIS WILL CREATE DIRECTORIES FOR ALL THE GAME SYSTEMS DEFINED IN "
+"es_systems.xml\n"
 "\n"
 "THIS MAY CREATE A LOT OF FOLDERS SO IT'S ADVISED TO REMOVE THE ONES YOU "
 "DON'T NEED"
@@ -2743,14 +2838,11 @@ msgstr ""
 "대체 에뮬레이터가 있습니다. '기타 설정' 메뉴의 '대체 에뮬레이터' 인터페이스"
 "를 사용하여 설정을 검토하세요"
 
-msgid "UPDATE"
-msgstr "업데이트"
-
 msgid ""
 "THE APPLICATION UPDATER WILL DOWNLOAD THE LATEST PORTABLE WINDOWS RELEASE "
-"FOR YOU, BUT YOU WILL NEED TO MANUALLY PERFORM THE UPGRADE. SEE THE README."
-"TXT FILE INSIDE THE DOWNLOADED ZIP FILE FOR INSTRUCTIONS ON HOW THIS IS "
-"ACCOMPLISHED. AS IS ALSO DESCRIBED IN THAT DOCUMENT, NEVER UNPACK A NEW "
+"FOR YOU, BUT YOU WILL NEED TO MANUALLY PERFORM THE UPGRADE. SEE THE "
+"README.TXT FILE INSIDE THE DOWNLOADED ZIP FILE FOR INSTRUCTIONS ON HOW THIS "
+"IS ACCOMPLISHED. AS IS ALSO DESCRIBED IN THAT DOCUMENT, NEVER UNPACK A NEW "
 "RELEASE ON TOP OF AN OLD INSTALLATION AS THAT MAY BREAK THE APPLICATION."
 msgstr ""
 "어플리케이션 업데이트 프로그램이 최신 휴대용 WINDOWS 릴리스를 다운로드하지만 "
@@ -2781,6 +2873,13 @@ msgstr ""
 msgid "LAUNCHING GAME '%s'"
 msgstr "게임 '%s' 시작 중"
 
+#, c-format
+msgid "ARCADIA %s IS AVAILABLE"
+msgstr ""
+
+msgid "SETUP → UPDATE ARCADIA INSTALLS IT"
+msgstr ""
+
 msgid "menu"
 msgstr "메뉴"
 
@@ -2806,11 +2905,9 @@ msgid "%i minute ago"
 msgid_plural "%i minutes ago"
 msgstr[0] "%i 분전"
 
-#, c-format
 msgctxt "theme"
-msgid "%i second ago"
-msgid_plural "%i seconds ago"
-msgstr[0] "%i 초전"
+msgid "just now"
+msgstr ""
 
 msgid "edit date"
 msgstr "날짜 수정"
@@ -3093,5 +3190,184 @@ msgstr "리소스 복사 중..."
 msgid "Creating system directories..."
 msgstr "시스템 디렉터리 생성 중..."
 
+msgid "NO PICTURES OR VIDEO FOR THIS GAME YET"
+msgstr ""
+
+msgid "SETTINGS → COVERS AND INFO CAN GET THEM"
+msgstr ""
+
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "오류: PDF 파일을 렌더링할 수 없습니다"
+
+#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
+#~ msgstr "오류: 앱 또는 별칭 파일이 존재하지 않거나 읽을 수 없습니다"
+
+#~ msgid "MEDIA TARGET TYPE"
+#~ msgstr "미디어 타겟 유형"
+
+#~ msgid "SCREENSHOTS"
+#~ msgstr "스크린샷"
+
+#~ msgid "TITLE SCREENS"
+#~ msgstr "타이틀 스크린"
+
+#~ msgid "COVERS"
+#~ msgstr "커버"
+
+#~ msgid "BACK COVERS"
+#~ msgstr "백 커버"
+
+#~ msgid "MARQUEES (WHEELS)"
+#~ msgstr "마퀴 (휠)"
+
+#~ msgid "3D BOXES"
+#~ msgstr "3D 박스"
+
+#~ msgid "PHYSICAL MEDIA"
+#~ msgstr "피지컬 미디어"
+
+#~ msgid "MIXIMAGES"
+#~ msgstr "믹스이미지"
+
+#~ msgid "IMPORT MEDIA"
+#~ msgstr "미디어 가져오기"
+
+#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+#~ msgstr "배너 또는 로고 이용 가능하면 가져오기"
+
+#~ msgid "OVERWRITE MEDIA FILES"
+#~ msgstr "미디어 파일 덮어쓰기"
+
+#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+#~ msgstr "게임으로 분류된 앱만 포함"
+
+#~ msgid "close (apply)"
+#~ msgstr "닫기 (적용)"
+
+#~ msgid "close (cancel)"
+#~ msgstr "닫기 (취소)"
+
+#~ msgid "MAIN MENU"
+#~ msgstr "메인 메뉴"
+
+#~ msgid "SCRAPER"
+#~ msgstr "스크래퍼"
+
+#~ msgid "UI SETTINGS"
+#~ msgstr "UI 설정"
+
+#~ msgid "SOUND SETTINGS"
+#~ msgstr "사운드 설정"
+
+#~ msgid "INPUT DEVICE SETTINGS"
+#~ msgstr "입력 기기 설정"
+
+#~ msgid "GAME COLLECTION SETTINGS"
+#~ msgstr "게임 컬렉션 설정"
+
+#~ msgid "UTILITIES"
+#~ msgstr "유틸리티"
+
+#~ msgid "MENU COLOR SCHEME"
+#~ msgstr "메뉴 색상 구성"
+
+#~ msgid "DARK"
+#~ msgstr "다크"
+
+#~ msgid "DARK AND RED"
+#~ msgstr "다크 앤 레드"
+
+#~ msgid "LIGHT"
+#~ msgstr "라이트"
+
+#~ msgid "AUDIO DRIVER"
+#~ msgstr "오디오 드라이버"
+
+#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
+#~ msgstr "오디오 드라이버 (재시작 필요)"
+
+#~ msgid "TOUCH OVERLAY SIZE"
+#~ msgstr "터치 오버레이 크기"
+
+#~ msgid "EXTRA SMALL"
+#~ msgstr "엑스트라 스몰"
+
+#~ msgid "TOUCH OVERLAY OPACITY"
+#~ msgstr "터치 오버레이 불투명도"
+
+#~ msgid "VERY LOW"
+#~ msgstr "매우 낮음"
+
+#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
+#~ msgstr "터치 오버레이 페이드-아웃 타임"
+
+#~ msgid "ENABLE TOUCH OVERLAY"
+#~ msgstr "터치 오버레이 활성화"
+
+#~ msgid ""
+#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
+#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
+#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
+#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
+#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
+#~ msgstr ""
+#~ "컨트롤러를 사용하지 않는 한 터치 오버레이를 비활성화하지 마십시오. 그렇지 "
+#~ "않으면 앱이 잠기게 됩니다. 이런 일이 발생하는 경우 컨트롤러나 키보드를 일"
+#~ "시적으로 연결하여 이 설정을 다시 활성화해야 하거나 Android 앱 설정에서 "
+#~ "Arcadia 저장소를 비워 다음 시작 시 구성자가 강제로 실행되도록 할 수 있습니"
+#~ "다"
+
+#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
+#~ msgstr "테스크바 숨김 (재시작 필요)"
+
+#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
+#~ msgstr "다른 화면에서 게임 실행"
+
+#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
+#~ msgstr "백 버튼/백 스와이프 로 앱 나가기"
+
+#~ msgid "close menu"
+#~ msgstr "메뉴 닫기"
+
+#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
+#~ msgstr "셀룰러 상태 표시"
+
+#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
+#~ msgstr "테마가 완전히 삭제됩니다"
+
+#~ msgid "system"
+#~ msgstr "시스템"
+
+#~ msgid "view media"
+#~ msgstr "미디어 보기"
+
+#~ msgid ""
+#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
+#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
+#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
+#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
+#~ "THE CONFIGURED ROM DIRECTORY:\n"
+#~ msgstr ""
+#~ "게임 파일을 찾을 수 없습니다. 일부 게임을 가져오거나 구성된 롬 디렉터리에 "
+#~ "수동으로 넣으세요. 롬 디렉터리 구조를 직접 생성하여 각 시스템별로 지원되"
+#~ "는 파일 확장자 등의 정보를 제공하는 텍스트 파일을 생성할 수도 있습니다. 구"
+#~ "성된 롬 디렉터리는 다음과 같습니다.\n"
+
+#~ msgid ""
+#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
+#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
+#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
+#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
+#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
+#~ msgstr ""
+#~ "게임 파일을 찾을 수 없습니다. 일부 게임을 가져오거나 현재 구성된 롬 디렉터"
+#~ "리에 수동으로 넣으세요. 롬 경로를 변경하고, 원하는 경우 롬 디렉터리 구조"
+#~ "를 생성할 수도 있습니다. 이 구조는 각 시스템별로 지원되는 파일 확장자 등"
+#~ "의 정보를 제공하는 텍스트 파일을 생성합니다. 구성된 롬 디렉터리는 다음과 "
+#~ "같습니다.\n"
+
+#, c-format
+#~ msgctxt "theme"
+#~ msgid "%i second ago"
+#~ msgid_plural "%i seconds ago"
+#~ msgstr[0] "%i 초전"

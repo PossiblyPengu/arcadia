@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Arcadia Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-03-22 21:12+0100\n"
+"POT-Creation-Date: 2026-11-15 10:18-0500\n"
 "PO-Revision-Date: 2025-10-15 09:33+0200\n"
 "Last-Translator: Stefan <s.vandenbroekprive@gmail.com>\n"
 "Language-Team: Nederlands <info@es-de.org>\n"
@@ -131,6 +131,9 @@ msgstr "'%s' is gefilterd, dus er kunnen meer spellen beschikbaar zijn"
 msgid "DELETED COLLECTION '%s'"
 msgstr "VERWIJDERDE COLLECTIE '%s'"
 
+msgid "OPEN SETUP → EMULATORS TO INSTALL IT"
+msgstr ""
+
 msgctxt "theme"
 msgid "unknown"
 msgstr "onbekend"
@@ -199,9 +202,6 @@ msgid ""
 msgstr ""
 "FOUT: MAP GEDEFINIEERD DOOR %s KON NIET WORDEN AANGEMAAKT, PROBLEMEN MET DE "
 "TOESTEMMING?"
-
-msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-msgstr "FOUT: APP OF ALIAS-BESTAND BESTAAT NIET OF IS ONLEESBAAR"
 
 msgid "ERROR: DESKTOP FILE IS INVALID OR UNREADABLE"
 msgstr "FOUT: DESKTOPBESTAND IS ONGELDIG OF ONLEESBAAR"
@@ -544,6 +544,96 @@ msgstr "SORTEER FAVORIETEN BOVEN VOOR AANGEPASTE COLLECTIES"
 msgid "DISPLAY STAR MARKINGS FOR CUSTOM COLLECTIONS"
 msgstr "WEERGAVE VAN STERRENMARKERINGEN VOOR AANGEPASTE COLLECTIES"
 
+msgid "Emulators"
+msgstr ""
+
+msgid "Looking at your games…"
+msgstr ""
+
+#, c-format
+msgid "%i game"
+msgid_plural "%i games"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Windows games"
+msgstr ""
+
+msgid "Deckhand, Arcadia's sister app, plays these"
+msgstr ""
+
+msgid "Get Deckhand"
+msgstr ""
+
+#, c-format
+msgid "Arcadia uses %s, which isn't on Flathub"
+msgstr ""
+
+msgid "Installed"
+msgstr ""
+
+msgid "Add cores"
+msgstr ""
+
+msgid "Install"
+msgstr ""
+
+msgid "The emulator list couldn't be read. Try again from Setup."
+msgstr ""
+
+msgid ""
+"No games yet. Add some and Arcadia picks what they need, or install one "
+"yourself."
+msgstr ""
+
+msgid "Everything your games need is installed. Have fun."
+msgstr ""
+
+#, c-format
+msgid "Your games need %s, and it isn't ready yet. Press X to set it up."
+msgstr ""
+
+#, c-format
+msgid ""
+"Your games need %i emulators; %i isn't ready yet. Press X to set them all up."
+msgid_plural ""
+"Your games need %i emulators; %i aren't ready yet. Press X to set them all "
+"up."
+msgstr[0] ""
+msgstr[1] ""
+
+#, c-format
+msgid "Adding cores for %s"
+msgstr ""
+
+#, c-format
+msgid "Installing %s"
+msgstr ""
+
+msgid "UPDATE"
+msgstr "UPDATE"
+
+msgid "REMOVE"
+msgstr ""
+
+msgid "Installing what your games need"
+msgstr ""
+
+msgid "Updating emulators"
+msgstr ""
+
+msgid "choose"
+msgstr "kiezen"
+
+msgid "install or manage"
+msgstr ""
+
+msgid "install what's needed"
+msgstr ""
+
+msgid "update all"
+msgstr ""
+
 msgid "IMPORT TO SYSTEM"
 msgstr "IMPORTEER NAAR SYSTEEM"
 
@@ -558,48 +648,6 @@ msgstr "ALLE ONGESELECTEERDE"
 
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "SPECIALE TEKENS STRIPPEN"
-
-msgid "MEDIA TARGET TYPE"
-msgstr "MEDIA TARGET TYPE"
-
-msgid "SCREENSHOTS"
-msgstr "SCHERMAFBEELDINGEN"
-
-msgid "TITLE SCREENS"
-msgstr "TITEL SCHERMEN"
-
-msgid "COVERS"
-msgstr "COVERS"
-
-msgid "BACK COVERS"
-msgstr "ACHTERKANT COVERS"
-
-msgid "MARQUEES (WHEELS)"
-msgstr "MARQUEES (WHEELS)"
-
-msgid "3D BOXES"
-msgstr "3D BOXES"
-
-msgid "PHYSICAL MEDIA"
-msgstr "FYSIEKE MEDIA"
-
-msgid "FAN ART"
-msgstr "FAN ART"
-
-msgid "MIXIMAGES"
-msgstr "MIXIMAGES"
-
-msgid "IMPORT MEDIA"
-msgstr "IMPORTEER MEDIA"
-
-msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-msgstr "BANNERS OF LOGO'S IMPORTEREN, INDIEN BESCHIKBAAR"
-
-msgid "OVERWRITE MEDIA FILES"
-msgstr "MEDIABESTANDEN OVERSCHRIJVEN"
-
-msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-msgstr "ALLEEN APPS BEVATTEN DIE ZIJN GECATEGORISEERD ALS GAMES"
 
 msgid "START"
 msgstr "BEGIN"
@@ -704,11 +752,8 @@ msgstr "TOEPASSEN"
 msgid "apply"
 msgstr "toepassen"
 
-msgid "close (apply)"
-msgstr "sluiten (toepassen)"
-
-msgid "close (cancel)"
-msgstr "sluiten (annuleren)"
+msgid "done"
+msgstr ""
 
 msgid "LAUNCHING GAME"
 msgstr "STARTSPEL"
@@ -743,35 +788,56 @@ msgstr "RENDER BLUR VOOR VIDEO'S"
 msgid "RENDER SCANLINES FOR SCREENSHOTS AND TITLES"
 msgstr "SCANLINES RENDEN VOOR SCREENSHOTS EN TITELS"
 
-msgid "MAIN MENU"
-msgstr "HOOFDMENU"
+msgid "SETTINGS"
+msgstr ""
 
-msgid "SCRAPER"
-msgstr "SCRAPER"
+msgid "SETUP"
+msgstr ""
 
-msgid "UI SETTINGS"
-msgstr "UI-INSTELLINGEN"
+msgid "LOOK AND FEEL"
+msgstr ""
 
-msgid "SOUND SETTINGS"
-msgstr "GELUIDSINSTELLINGEN"
+msgid "SOUND"
+msgstr ""
 
-msgid "INPUT DEVICE SETTINGS"
-msgstr "INSTELLINGEN INPUT-APPARAAT"
+msgid "CONTROLLERS"
+msgstr ""
 
-msgid "GAME COLLECTION SETTINGS"
-msgstr "INSTELLINGEN VOOR SPELVERZAMELING"
+msgid "COVERS AND INFO"
+msgstr ""
 
-msgid "OTHER SETTINGS"
-msgstr "ANDERE INSTELLINGEN"
-
-msgid "UTILITIES"
-msgstr "HULPPROGRAMMA'S"
+msgid "ADVANCED"
+msgstr ""
 
 msgid "QUIT ARCADIA"
 msgstr "STOP ARCADIA"
 
+msgid "COLOURS"
+msgstr ""
+
 msgid "THEME"
 msgstr "THEMA"
+
+msgid "COLLECTIONS"
+msgstr "COLLECTIES"
+
+msgid "GAMES DEFAULT SORT ORDER"
+msgstr "SPELLEN STANDAARD SORTEERVOLGORDE"
+
+msgid "SORT FAVORITE GAMES ABOVE NON-FAVORITES"
+msgstr "SORTEER FAVORIETE SPELLEN BOVEN NIET-FAVORIETEN"
+
+msgid "DISPLAY CLOCK"
+msgstr "KLOK WEERGEVEN"
+
+msgid "LAUNCH SCREEN DURATION"
+msgstr "DUUR VAN HET STARTSCHERM"
+
+msgid "SCREENSAVER SETTINGS"
+msgstr "SCREENSAVER-INSTELLINGEN"
+
+msgid "APPLICATION LANGUAGE"
+msgstr "APPLICATIE TAAL"
 
 msgid "THEME DOWNLOADER"
 msgstr "THEMA DOWNLOADER"
@@ -811,9 +877,6 @@ msgstr "FADE (INGEBOUWD)"
 
 msgid "THEME LANGUAGE"
 msgstr "THEMA TAAL"
-
-msgid "APPLICATION LANGUAGE"
-msgstr "APPLICATIE TAAL"
 
 msgid "QUICK SYSTEM SELECT"
 msgstr "SNEL SYSTEEM SELECTIE"
@@ -867,32 +930,23 @@ msgctxt "short"
 msgid "GAMES DEFAULT SORT ORDER"
 msgstr "SPELLEN STANDAARD SORTEERVOLGORDE"
 
-msgid "GAMES DEFAULT SORT ORDER"
-msgstr "SPELLEN STANDAARD SORTEERVOLGORDE"
+msgid "CLOUD (LIGHT PASTELS)"
+msgstr ""
 
-msgid "MENU COLOR SCHEME"
-msgstr "MENU KLEURENSCHEMA"
-
-msgid "DARK"
-msgstr "DONKER"
-
-msgid "DARK AND RED"
-msgstr "DONKER EN ROOD"
-
-msgid "LIGHT"
-msgstr "LICHT"
+msgid "DUSK (PASTELS IN THE DARK)"
+msgstr ""
 
 msgid "MENU OPENING ANIMATION"
 msgstr "MENU OPENING ANIMATIE"
+
+msgid "SLIDE"
+msgstr ""
 
 msgid "SCALE-UP"
 msgstr "OPSCHALING"
 
 msgid "NONE"
 msgstr "GEEN"
-
-msgid "LAUNCH SCREEN DURATION"
-msgstr "DUUR VAN HET STARTSCHERM"
 
 msgid "NORMAL"
 msgstr "NORMAAL"
@@ -973,23 +1027,14 @@ msgstr "INSTELLINGEN SYSTEEMSTATUS"
 msgid "MEDIA VIEWER SETTINGS"
 msgstr "MEDIA VIEWER-INSTELLINGEN"
 
-msgid "SCREENSAVER SETTINGS"
-msgstr "SCREENSAVER-INSTELLINGEN"
-
 msgid "ENABLE THEME VARIANT TRIGGERS"
 msgstr "THEMA VARIANT TRIGGERS INSCHAKELEN"
-
-msgid "DISPLAY CLOCK"
-msgstr "KLOK WEERGEVEN"
 
 msgid "BLUR BACKGROUND WHEN MENU IS OPEN"
 msgstr "ACHTERGROND VERVAGEN ALS HET MENU GEOPEND IS"
 
 msgid "SORT FOLDERS ON TOP OF GAMELISTS"
 msgstr "SORTEER MAPPEN BOVEN OP GAMELISTEN"
-
-msgid "SORT FAVORITE GAMES ABOVE NON-FAVORITES"
-msgstr "SORTEER FAVORIETE SPELLEN BOVEN NIET-FAVORIETEN"
 
 msgid "ADD STAR MARKINGS TO FAVORITE GAMES"
 msgstr "VOEG STERRENMARKERINGEN TOE AAN FAVORIETE SPELLETJES"
@@ -1009,14 +1054,8 @@ msgstr "GAMELIST-FILTERS INSCHAKELEN"
 msgid "DISPLAY ON-SCREEN HELP"
 msgstr "WEERGAVE VAN ON-SCREEN HELP"
 
-msgid "AUDIO DRIVER"
-msgstr "AUDIOSTUURPROGRAMMA"
-
-msgid "AUDIO DRIVER (REQUIRES RESTART)"
-msgstr "AUDIOSTUURPROGRAMMA (VEREIST HERSTART)"
-
-msgid "SYSTEM VOLUME"
-msgstr "SYSTEEMVOLUME"
+msgid "ENABLE NAVIGATION SOUNDS"
+msgstr "NAVIGATIEGELUIDEN INSCHAKELEN"
 
 msgid "NAVIGATION SOUNDS VOLUME"
 msgstr "NAVIGATIE GELUIDEN VOLUME"
@@ -1027,76 +1066,32 @@ msgstr "VIDEOSPELERVOLUME"
 msgid "PLAY AUDIO FOR GAMELIST AND SYSTEM VIEW VIDEOS"
 msgstr "SPEEL AUDIO VOOR GAMELIST EN SYSTEEM VIDEO'S BEKIJKEN"
 
+msgid "SYSTEM VOLUME"
+msgstr "SYSTEEMVOLUME"
+
 msgid "PLAY AUDIO FOR MEDIA VIEWER VIDEOS"
 msgstr "AUDIO AFSPELEN VOOR MEDIA VIEWER VIDEO'S"
 
 msgid "PLAY AUDIO FOR SCREENSAVER VIDEOS"
 msgstr "SPEEL AUDIO VOOR SCREENSAVER VIDEO'S"
 
-msgid "ENABLE NAVIGATION SOUNDS"
-msgstr "NAVIGATIEGELUIDEN INSCHAKELEN"
-
 msgid "CONTROLLER TYPE"
 msgstr "CONTROLLERTYPE"
 
-msgid "TOUCH OVERLAY SIZE"
-msgstr "GROOTTE VAN DE TOUCH OVERLAY"
+msgid "SWAP THE A/B AND X/Y BUTTONS"
+msgstr "VERWISSEL DE A/B EN X/Y KNOPPEN"
 
-msgid "MEDIUM"
-msgstr "GEMIDDELD"
-
-msgid "LARGE"
-msgstr "GROOT"
-
-msgid "SMALL"
-msgstr "KLEIN"
-
-msgid "EXTRA SMALL"
-msgstr "EXTRA KLEIN"
-
-msgid "TOUCH OVERLAY OPACITY"
-msgstr "TOUCH OVERLAY OPACITEIT"
-
-msgid "LOW"
-msgstr "LAAG"
-
-msgid "VERY LOW"
-msgstr "ZEER LAAG"
-
-msgid "TOUCH OVERLAY FADE-OUT TIME"
-msgstr "TOUCH OVERLAY FADE-OUT TIJD"
-
-msgid "ENABLE TOUCH OVERLAY"
-msgstr "TOUCH OVERLAY INSCHAKELEN"
-
-msgid ""
-"DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-"WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-"TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING AGAIN, "
-"OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS TO FORCE "
-"THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-msgstr ""
-"SCHAKEL DE TOUCH OVERLAY NIET UIT, TENZIJ U EEN CONTROLLER GEBRUIKT, ANDERS "
-"WORDT U UITGESLOTEN VAN DE APP. ALS DIT GEBEURT, MOET U TIJDELIJK EEN "
-"CONTROLLER OF TOETSENBORD AANSLUITEN OM DEZE INSTELLING WEER IN TE "
-"SCHAKELEN, OF U KUNT DE ARCADIA OPSLAG IN DE INSTELLINGEN VAN DE ANDROID-APP "
-"WISSEN OM DE CONFIGURATOR TE DWINGEN OM BIJ DE VOLGENDE OPSTART TE WORDEN "
-"UITGEVOERD"
+msgid "CONFIGURE KEYBOARD AND CONTROLLERS"
+msgstr "TOETSENBORD EN CONTROLLERS CONFIGUREREN"
 
 msgid "ONLY ACCEPT INPUT FROM FIRST CONTROLLER"
 msgstr "ACCEPTEER ALLEEN INPUT VAN DE EERSTE CONTROLLER"
-
-msgid "SWAP THE A/B AND X/Y BUTTONS"
-msgstr "VERWISSEL DE A/B EN X/Y KNOPPEN"
 
 msgid "IGNORE KEYBOARD INPUT"
 msgstr "NEGEER TOETSENBORDINVOER"
 
 msgid "INPUT DEVICE NOTIFICATIONS"
 msgstr "INVOERAPPARAAT NOTIFICATIES"
-
-msgid "CONFIGURE KEYBOARD AND CONTROLLERS"
-msgstr "TOETSENBORD EN CONTROLLERS CONFIGUREREN"
 
 msgid ""
 "THE KEYBOARD AND CONTROLLERS ARE AUTOMATICALLY CONFIGURED, BUT USING THIS "
@@ -1109,6 +1104,21 @@ msgstr ""
 
 msgid "PROCEED"
 msgstr "DOORGAAN"
+
+msgid "TOOLS"
+msgstr ""
+
+msgid "ENABLE ALTERNATIVE EMULATORS PER GAME"
+msgstr "ALTERNATIEVE EMULATORS PER SPEL INSCHAKELEN"
+
+msgid "SHOW HIDDEN GAMES"
+msgstr "VERBORGEN SPELLETJES TONEN"
+
+msgid "CHECK FOR APPLICATION UPDATES"
+msgstr "CONTROLEER OP AANVRAAGUPDATES"
+
+msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
+msgstr "OP DE ACHTERGROND RENNEN (TERWIJL HET SPEL START)"
 
 msgid "GAME MEDIA DIRECTORY"
 msgstr "GAME MEDIA GIDS"
@@ -1192,17 +1202,8 @@ msgstr "WEKELIJKS"
 msgid "MONTHLY"
 msgstr "MAANDELIJKS"
 
-msgid "CHECK FOR APPLICATION UPDATES"
-msgstr "CONTROLEER OP AANVRAAGUPDATES"
-
 msgid "INCLUDE PRERELEASES IN UPDATE CHECKS"
 msgstr "NEEM PRERELEASES OP IN UPDATE CONTROLES"
-
-msgid "HIDE TASKBAR (REQUIRES RESTART)"
-msgstr "TAAKBALK VERBERGEN (VEREIST HERSTART)"
-
-msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
-msgstr "OP DE ACHTERGROND RENNEN (TERWIJL HET SPEL START)"
 
 msgid "VIDEO HARDWARE DECODING (EXPERIMENTAL)"
 msgstr "VIDEO HARDWARE DECODERING (EXPERIMENTEEL)"
@@ -1210,17 +1211,8 @@ msgstr "VIDEO HARDWARE DECODERING (EXPERIMENTEEL)"
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "UPSCALE VIDEOFRAME-SNELHEID NAAR 60 FPS"
 
-msgid "ENABLE ALTERNATIVE EMULATORS PER GAME"
-msgstr "ALTERNATIEVE EMULATORS PER SPEL INSCHAKELEN"
-
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "VERBORGEN BESTANDEN EN MAPPEN WEERGEVEN"
-
-msgid "SHOW HIDDEN GAMES"
-msgstr "VERBORGEN SPELLETJES TONEN"
-
-msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-msgstr "SPELLEN OP HET ANDERE SCHERM STARTEN"
 
 msgid "ENABLE CUSTOM EVENT SCRIPTS"
 msgstr "AANGEPASTE EVENEMENTEN-SCRIPTS INSCHAKELEN"
@@ -1236,9 +1228,6 @@ msgstr "STRIP EXTRA MAME NAAM INFO (VEREIST HERSTART)"
 
 msgid "DISABLE DESKTOP COMPOSITION (REQUIRES RESTART)"
 msgstr "DESKTOPCOMPOSITIE UITSCHAKELEN (VEREIST HERSTART)"
-
-msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-msgstr "TERUGKNOP/TERUGVEGEN APP AFSLUITEN"
 
 msgid "DEBUG MODE"
 msgstr "DEBUG-MODUS"
@@ -1327,11 +1316,8 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "SCREENSAVER-INSTELLINGEN"
 
-msgid "choose"
-msgstr "kiezen"
-
-msgid "close menu"
-msgstr "menu sluiten"
+msgid "open"
+msgstr ""
 
 msgid "EDIT METADATA"
 msgstr "METADATA BEWERKEN"
@@ -1526,9 +1512,6 @@ msgstr "SPELLIJSTEN"
 msgid "RUNNING GAMELISTS CLEANUP"
 msgstr "OPRUIMING VAN LOPENDE SPELLIJSTEN"
 
-msgid "COLLECTIONS"
-msgstr "COLLECTIES"
-
 msgid "COLLECTIONS CLEANUP FAILED"
 msgstr "COLLECTIES OPRUIMEN MISLUKT"
 
@@ -1663,6 +1646,9 @@ msgstr "INHOUDSINSTELLINGEN"
 msgid "MIXIMAGE SETTINGS"
 msgstr "MIXIMAGE-INSTELLINGEN"
 
+msgid "OTHER SETTINGS"
+msgstr "ANDERE INSTELLINGEN"
+
 msgid "start scraper"
 msgstr "start schraper"
 
@@ -1750,6 +1736,9 @@ msgstr "SCREENSHOT ASPECTVERHOUDING DREMPEL"
 msgid "HIGH"
 msgstr "HOOG"
 
+msgid "LOW"
+msgstr "LAAG"
+
 msgid "SCREENSHOT ASPECT RATIO THRESHOLD"
 msgstr "SCREENSHOT ASPECTVERHOUDING DREMPEL"
 
@@ -1777,6 +1766,15 @@ msgstr "SCREENSHOT SCHAALMETHODE"
 
 msgid "BOX SIZE"
 msgstr "BOX GROOTTE"
+
+msgid "SMALL"
+msgstr "KLEIN"
+
+msgid "MEDIUM"
+msgstr "GEMIDDELD"
+
+msgid "LARGE"
+msgstr "GROOT"
 
 msgid "PHYSICAL MEDIA SIZE"
 msgstr "FYSIEKE MEDIAGROOTTE"
@@ -2101,14 +2099,89 @@ msgstr "VIDEO'S WISSELEN NA (SECONDEN)"
 msgid "RENDER BLUR"
 msgstr "WISSEN WISSEN"
 
+msgid "MORE OPTIONS"
+msgstr ""
+
+msgid "Show me"
+msgstr ""
+
+msgid "Set up"
+msgstr ""
+
+msgid "Allow"
+msgstr ""
+
+msgid "Connect"
+msgstr ""
+
+msgid "Check"
+msgstr ""
+
+msgid "Get it"
+msgstr ""
+
+msgid "Sort downloads"
+msgstr ""
+
+msgid "Sort inside folders"
+msgstr ""
+
+msgid "Undo the last sort"
+msgstr ""
+
+msgid "Sync saves now"
+msgstr ""
+
+msgid "Back up settings"
+msgstr ""
+
+msgid "Restore a backup"
+msgstr ""
+
+msgid "Update Arcadia"
+msgstr ""
+
+msgid "Setup"
+msgstr ""
+
+msgid "Checking what's ready…"
+msgstr ""
+
+msgid "Tools"
+msgstr ""
+
+msgid "The checklist couldn't be read. The tools on the right still work."
+msgstr ""
+
+msgid "All set"
+msgstr ""
+
+msgid "Everything is ready. Have fun."
+msgstr ""
+
+msgid "Let's get you set up"
+msgstr ""
+
+msgid "Almost ready"
+msgstr ""
+
+#, c-format
+msgid "One thing left to do."
+msgid_plural "%i things left to do."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "switch side"
+msgstr ""
+
+msgid "do it"
+msgstr ""
+
 msgid "DISPLAY BLUETOOTH STATUS INDICATOR"
 msgstr "BLUETOOTH-STATUSINDICATOR WEERGEVEN"
 
 msgid "DISPLAY WI-FI STATUS INDICATOR"
 msgstr "WI-FI STATUSINDICATOR WEERGEVEN"
-
-msgid "DISPLAY CELLULAR STATUS INDICATOR"
-msgstr "CELLULAIRE STATUSINDICATOR WEERGEVEN"
 
 msgid "DISPLAY BATTERY STATUS INDICATOR"
 msgstr "WEERGAVE BATTERIJSTATUSINDICATOR"
@@ -2174,8 +2247,8 @@ msgstr "THEMA DOWNLOADEN"
 msgid ""
 "IT SEEMS AS IF THIS THEME REPOSITORY IS CORRUPT, WHICH COULD HAVE BEEN "
 "CAUSED BY AN INTERRUPTION OF A PREVIOUS DOWNLOAD OR UPDATE, FOR EXAMPLE IF "
-"THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD THEME "
-"DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""
+"THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD "
+"THEME DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""
 msgstr ""
 "HET LIJKT EROP DAT DEZE THEMA-REPOSITORY CORRUPT IS, WAT VEROORZAAKT KAN "
 "ZIJN DOOR EEN ONDERBREKING VAN EEN EERDERE DOWNLOAD OF UPDATE, BIJVOORBEELD "
@@ -2283,9 +2356,6 @@ msgstr "KON DE THEMA'SLIJST NIET DOWNLOADEN"
 msgid "DOWNLOADING THEMES LIST"
 msgstr "DOWNLOADEN VAN THEMA'SLIJST"
 
-msgid "THIS WILL COMPLETELY DELETE THE THEME"
-msgstr "DIT ZAL HET THEMA VOLLEDIG VERWIJDEREN"
-
 msgid ""
 "THIS WILL COMPLETELY DELETE THE THEME INCLUDING ANY LOCAL CUSTOMIZATIONS"
 msgstr "DIT VERWIJDERT HET THEMA VOLLEDIG, INCLUSIEF ALLE LOKALE AANPASSINGEN"
@@ -2316,8 +2386,8 @@ msgid ""
 msgstr ""
 "HET LIJKT EROP DAT DE THEMALIJST-REPOSITORY CORRUPT IS, WAT VEROORZAAKT KAN "
 "ZIJN DOOR EEN ONDERBREKING VAN EEN EERDERE DOWNLOAD OF UPDATE, BIJVOORBEELD "
-"ALS HET ARCADIA-PROCES IS GEKILLED. EEN NIEUWE DOWNLOAD IS VEREIST EN DE OUDE "
-"DIRECTORY \"themes-list\" WORDT HERNOEMD NAAR \"themes-"
+"ALS HET ARCADIA-PROCES IS GEKILLED. EEN NIEUWE DOWNLOAD IS VEREIST EN DE "
+"OUDE DIRECTORY \"themes-list\" WORDT HERNOEMD NAAR \"themes-"
 "list_CORRUPT_DISABLED\""
 
 msgid "UPDATING THEMES LIST"
@@ -2337,6 +2407,45 @@ msgstr ""
 "GEWIJZIGDE BESTANDEN WORDEN OPGEHAALD. HETZELFDE GELDT VOOR ALLE THEMA'S DIE "
 "JE DOWNLOADT. LET OP: JE KUNT EEN LOPENDE DOWNLOAD NIET AFBREKEN, WANT DAT "
 "KAN LEIDEN TOT GEGEVENSVERBORGENHEID."
+
+msgid "WORKING…"
+msgstr ""
+
+msgid "Working on it…"
+msgstr ""
+
+msgid "The tool couldn't be started."
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
+#, c-format
+msgid "Done in %i s"
+msgstr ""
+
+#, c-format
+msgid "Done in %i min"
+msgstr ""
+
+msgid "Finished with a problem: see below"
+msgstr ""
+
+msgid "TRY AGAIN"
+msgstr ""
+
+msgid "try again"
+msgstr ""
+
+#, c-format
+msgid "Step %i of %i… this can take a few minutes"
+msgstr ""
+
+msgid "scroll"
+msgstr ""
+
+msgid "close or try again"
+msgstr ""
 
 msgid "browse"
 msgstr "bladeren"
@@ -2361,6 +2470,9 @@ msgstr "DOOS ACHTERKANT"
 
 msgid "TITLE SCREEN"
 msgstr "TITELSCHERM"
+
+msgid "FAN ART"
+msgstr "FAN ART"
 
 msgid "MIXIMAGE"
 msgstr "MIXAFBEELDING"
@@ -2646,17 +2758,11 @@ msgstr ""
 "KUNNEN GEEN INZENDINGEN TOEVOEGEN DIE NIET ALS SPELLEN WORDEN GETELD AAN "
 "AANGEPASTE COLLECTIES"
 
-msgid "system"
-msgstr "systeem"
-
-msgid "view media"
-msgstr "media bekijken"
+msgid "media"
+msgstr ""
 
 msgid "options"
 msgstr "opties"
-
-msgid "random"
-msgstr "willekeurig"
 
 msgid "jump to game"
 msgstr "ga naar spel"
@@ -2668,6 +2774,9 @@ msgstr "ja"
 msgctxt "theme"
 msgid "no"
 msgstr "nee"
+
+msgid "random"
+msgstr "willekeurig"
 
 msgid "screensaver"
 msgstr "schermbeveiliging"
@@ -2709,8 +2818,8 @@ msgstr ""
 msgid ""
 "COULDN'T PARSE THE SYSTEMS CONFIGURATION FILE. IF YOU HAVE A CUSTOMIZED "
 "es_systems.xml FILE, THEN SOMETHING IS LIKELY WRONG WITH YOUR XML SYNTAX. IF "
-"YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE ARCADIA INSTALLATION IS BROKEN. "
-"SEE THE APPLICATION LOG FILE es_log.txt FOR ADDITIONAL INFO"
+"YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE ARCADIA INSTALLATION IS "
+"BROKEN. SEE THE APPLICATION LOG FILE es_log.txt FOR ADDITIONAL INFO"
 msgstr ""
 "KON HET SYSTEMS CONFIGURATIEBESTAND NIET ONTLEDEN. ALS U EEN AANGEPAST "
 "es_systems.xml-BESTAND HEBT, IS ER WAARSCHIJNLIJK IETS MIS MET UW XML-"
@@ -2718,30 +2827,14 @@ msgstr ""
 "GEBROKEN. ZIE HET TOEPASSINGSLOGBESTAND es_log.txt VOOR EXTRA INFO"
 
 msgid ""
-"NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY IN "
-"THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM DIRECTORY "
-"STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME "
-"INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED "
-"ROM DIRECTORY:\n"
+"Welcome to Arcadia. No games were found yet.\n"
+"\n"
+"Put your games in the ROM folder below, one folder per console (Create makes "
+"the folders), or choose Setup and then Sort downloads to move them there for "
+"you.\n"
+"\n"
+"The ROM folder is "
 msgstr ""
-"ER ZIJN GEEN GAMEBESTANDEN GEVONDEN. IMPORTEER ENKELE GAMES OF PLAATS ZE "
-"HANDMATIG IN DE GECONFIGUREERDE ROM-MAP. Optioneel kunt u de structuur van "
-"de ROM-map genereren, waardoor er voor elk systeem een ​​tekstbestand wordt "
-"aangemaakt met informatie zoals de ondersteunde bestandsextensies. Dit is de "
-"GECONFIGUREERDE ROM-map:\n"
-
-msgid ""
-"NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY IN "
-"THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM PATH AND "
-"OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT "
-"FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE "
-"EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-msgstr ""
-"ER ZIJN GEEN GAMEBESTANDEN GEVONDEN. IMPORTEER ENKELE SPELLEN OF PLAATS ZE "
-"HANDMATIG IN DE HUIDIG GECONFIGUREERDE ROM-MAP. U KUNT OOK HET ROM-PAD "
-"WIJZIGEN EN DESGEWENST DE ROM-MAPSTRUCTUUR GENEREREN, WAARDOOR VOOR ELK "
-"SYSTEEM EEN TEKSTBESTAND WORDT AANGEMAAKT MET INFORMATIE, ZOALS DE "
-"ONDERSTEUNDE BESTANDSEXTENSIES. DIT IS DE GECONFIGUREERDE ROM-MAP:\n"
 
 msgid "CHANGE"
 msgstr "VERANDER"
@@ -2765,8 +2858,8 @@ msgid "CLEAR (LEAVE BLANK TO RESET TO DEFAULT PATH)"
 msgstr "WISSEN (LEEG LATEN OM STANDAARDPAD TE HERSTELLEN)"
 
 msgid ""
-"THIS WILL CREATE DIRECTORIES FOR ALL THE GAME SYSTEMS DEFINED IN es_systems."
-"xml\n"
+"THIS WILL CREATE DIRECTORIES FOR ALL THE GAME SYSTEMS DEFINED IN "
+"es_systems.xml\n"
 "\n"
 "THIS MAY CREATE A LOT OF FOLDERS SO IT'S ADVISED TO REMOVE THE ONES YOU "
 "DON'T NEED"
@@ -2805,14 +2898,11 @@ msgstr ""
 "SYSTEEMCONFIGURATIEBESTAND. CONTROLEER UW INSTELLING MET DE INTERFACE "
 "'ALTERNATIEVE EMULATORS' IN HET MENU 'OVERIGE INSTELLINGEN'"
 
-msgid "UPDATE"
-msgstr "UPDATE"
-
 msgid ""
 "THE APPLICATION UPDATER WILL DOWNLOAD THE LATEST PORTABLE WINDOWS RELEASE "
-"FOR YOU, BUT YOU WILL NEED TO MANUALLY PERFORM THE UPGRADE. SEE THE README."
-"TXT FILE INSIDE THE DOWNLOADED ZIP FILE FOR INSTRUCTIONS ON HOW THIS IS "
-"ACCOMPLISHED. AS IS ALSO DESCRIBED IN THAT DOCUMENT, NEVER UNPACK A NEW "
+"FOR YOU, BUT YOU WILL NEED TO MANUALLY PERFORM THE UPGRADE. SEE THE "
+"README.TXT FILE INSIDE THE DOWNLOADED ZIP FILE FOR INSTRUCTIONS ON HOW THIS "
+"IS ACCOMPLISHED. AS IS ALSO DESCRIBED IN THAT DOCUMENT, NEVER UNPACK A NEW "
 "RELEASE ON TOP OF AN OLD INSTALLATION AS THAT MAY BREAK THE APPLICATION."
 msgstr ""
 "DE APPLICATIE-UPDATER DOWNLOADT DE NIEUWSTE PORTABLE WINDOWS-RELEASE VOOR U, "
@@ -2843,6 +2933,13 @@ msgstr ""
 msgid "LAUNCHING GAME '%s'"
 msgstr "SPEL '%s' OPSTARTEN"
 
+#, c-format
+msgid "ARCADIA %s IS AVAILABLE"
+msgstr ""
+
+msgid "SETUP → UPDATE ARCADIA INSTALLS IT"
+msgstr ""
+
 msgid "menu"
 msgstr "menu"
 
@@ -2871,12 +2968,9 @@ msgid_plural "%i minutes ago"
 msgstr[0] "%i minuut geleden"
 msgstr[1] "%i minuten geleden"
 
-#, c-format
 msgctxt "theme"
-msgid "%i second ago"
-msgid_plural "%i seconds ago"
-msgstr[0] "%i seconde geleden"
-msgstr[1] "%i seconden geleden"
+msgid "just now"
+msgstr ""
 
 msgid "edit date"
 msgstr "datum bewerken"
@@ -3163,5 +3257,187 @@ msgstr "Bronnen kopiëren..."
 msgid "Creating system directories..."
 msgstr "Systeemmappen maken..."
 
+msgid "NO PICTURES OR VIDEO FOR THIS GAME YET"
+msgstr ""
+
+msgid "SETTINGS → COVERS AND INFO CAN GET THEM"
+msgstr ""
+
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "FOUT: PDF-BESTAND KAN NIET WEERGEVEN"
+
+#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
+#~ msgstr "FOUT: APP OF ALIAS-BESTAND BESTAAT NIET OF IS ONLEESBAAR"
+
+#~ msgid "MEDIA TARGET TYPE"
+#~ msgstr "MEDIA TARGET TYPE"
+
+#~ msgid "SCREENSHOTS"
+#~ msgstr "SCHERMAFBEELDINGEN"
+
+#~ msgid "TITLE SCREENS"
+#~ msgstr "TITEL SCHERMEN"
+
+#~ msgid "COVERS"
+#~ msgstr "COVERS"
+
+#~ msgid "BACK COVERS"
+#~ msgstr "ACHTERKANT COVERS"
+
+#~ msgid "MARQUEES (WHEELS)"
+#~ msgstr "MARQUEES (WHEELS)"
+
+#~ msgid "3D BOXES"
+#~ msgstr "3D BOXES"
+
+#~ msgid "PHYSICAL MEDIA"
+#~ msgstr "FYSIEKE MEDIA"
+
+#~ msgid "MIXIMAGES"
+#~ msgstr "MIXIMAGES"
+
+#~ msgid "IMPORT MEDIA"
+#~ msgstr "IMPORTEER MEDIA"
+
+#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+#~ msgstr "BANNERS OF LOGO'S IMPORTEREN, INDIEN BESCHIKBAAR"
+
+#~ msgid "OVERWRITE MEDIA FILES"
+#~ msgstr "MEDIABESTANDEN OVERSCHRIJVEN"
+
+#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+#~ msgstr "ALLEEN APPS BEVATTEN DIE ZIJN GECATEGORISEERD ALS GAMES"
+
+#~ msgid "close (apply)"
+#~ msgstr "sluiten (toepassen)"
+
+#~ msgid "close (cancel)"
+#~ msgstr "sluiten (annuleren)"
+
+#~ msgid "MAIN MENU"
+#~ msgstr "HOOFDMENU"
+
+#~ msgid "SCRAPER"
+#~ msgstr "SCRAPER"
+
+#~ msgid "UI SETTINGS"
+#~ msgstr "UI-INSTELLINGEN"
+
+#~ msgid "SOUND SETTINGS"
+#~ msgstr "GELUIDSINSTELLINGEN"
+
+#~ msgid "INPUT DEVICE SETTINGS"
+#~ msgstr "INSTELLINGEN INPUT-APPARAAT"
+
+#~ msgid "GAME COLLECTION SETTINGS"
+#~ msgstr "INSTELLINGEN VOOR SPELVERZAMELING"
+
+#~ msgid "UTILITIES"
+#~ msgstr "HULPPROGRAMMA'S"
+
+#~ msgid "MENU COLOR SCHEME"
+#~ msgstr "MENU KLEURENSCHEMA"
+
+#~ msgid "DARK"
+#~ msgstr "DONKER"
+
+#~ msgid "DARK AND RED"
+#~ msgstr "DONKER EN ROOD"
+
+#~ msgid "LIGHT"
+#~ msgstr "LICHT"
+
+#~ msgid "AUDIO DRIVER"
+#~ msgstr "AUDIOSTUURPROGRAMMA"
+
+#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
+#~ msgstr "AUDIOSTUURPROGRAMMA (VEREIST HERSTART)"
+
+#~ msgid "TOUCH OVERLAY SIZE"
+#~ msgstr "GROOTTE VAN DE TOUCH OVERLAY"
+
+#~ msgid "EXTRA SMALL"
+#~ msgstr "EXTRA KLEIN"
+
+#~ msgid "TOUCH OVERLAY OPACITY"
+#~ msgstr "TOUCH OVERLAY OPACITEIT"
+
+#~ msgid "VERY LOW"
+#~ msgstr "ZEER LAAG"
+
+#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
+#~ msgstr "TOUCH OVERLAY FADE-OUT TIJD"
+
+#~ msgid "ENABLE TOUCH OVERLAY"
+#~ msgstr "TOUCH OVERLAY INSCHAKELEN"
+
+#~ msgid ""
+#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
+#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
+#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
+#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
+#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
+#~ msgstr ""
+#~ "SCHAKEL DE TOUCH OVERLAY NIET UIT, TENZIJ U EEN CONTROLLER GEBRUIKT, "
+#~ "ANDERS WORDT U UITGESLOTEN VAN DE APP. ALS DIT GEBEURT, MOET U TIJDELIJK "
+#~ "EEN CONTROLLER OF TOETSENBORD AANSLUITEN OM DEZE INSTELLING WEER IN TE "
+#~ "SCHAKELEN, OF U KUNT DE ARCADIA OPSLAG IN DE INSTELLINGEN VAN DE ANDROID-"
+#~ "APP WISSEN OM DE CONFIGURATOR TE DWINGEN OM BIJ DE VOLGENDE OPSTART TE "
+#~ "WORDEN UITGEVOERD"
+
+#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
+#~ msgstr "TAAKBALK VERBERGEN (VEREIST HERSTART)"
+
+#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
+#~ msgstr "SPELLEN OP HET ANDERE SCHERM STARTEN"
+
+#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
+#~ msgstr "TERUGKNOP/TERUGVEGEN APP AFSLUITEN"
+
+#~ msgid "close menu"
+#~ msgstr "menu sluiten"
+
+#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
+#~ msgstr "CELLULAIRE STATUSINDICATOR WEERGEVEN"
+
+#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
+#~ msgstr "DIT ZAL HET THEMA VOLLEDIG VERWIJDEREN"
+
+#~ msgid "system"
+#~ msgstr "systeem"
+
+#~ msgid "view media"
+#~ msgstr "media bekijken"
+
+#~ msgid ""
+#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
+#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
+#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
+#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
+#~ "THE CONFIGURED ROM DIRECTORY:\n"
+#~ msgstr ""
+#~ "ER ZIJN GEEN GAMEBESTANDEN GEVONDEN. IMPORTEER ENKELE GAMES OF PLAATS ZE "
+#~ "HANDMATIG IN DE GECONFIGUREERDE ROM-MAP. Optioneel kunt u de structuur "
+#~ "van de ROM-map genereren, waardoor er voor elk systeem een ​​tekstbestand "
+#~ "wordt aangemaakt met informatie zoals de ondersteunde bestandsextensies. "
+#~ "Dit is de GECONFIGUREERDE ROM-map:\n"
+
+#~ msgid ""
+#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
+#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
+#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
+#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
+#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
+#~ msgstr ""
+#~ "ER ZIJN GEEN GAMEBESTANDEN GEVONDEN. IMPORTEER ENKELE SPELLEN OF PLAATS "
+#~ "ZE HANDMATIG IN DE HUIDIG GECONFIGUREERDE ROM-MAP. U KUNT OOK HET ROM-PAD "
+#~ "WIJZIGEN EN DESGEWENST DE ROM-MAPSTRUCTUUR GENEREREN, WAARDOOR VOOR ELK "
+#~ "SYSTEEM EEN TEKSTBESTAND WORDT AANGEMAAKT MET INFORMATIE, ZOALS DE "
+#~ "ONDERSTEUNDE BESTANDSEXTENSIES. DIT IS DE GECONFIGUREERDE ROM-MAP:\n"
+
+#, c-format
+#~ msgctxt "theme"
+#~ msgid "%i second ago"
+#~ msgid_plural "%i seconds ago"
+#~ msgstr[0] "%i seconde geleden"
+#~ msgstr[1] "%i seconden geleden"

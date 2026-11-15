@@ -2102,10 +2102,15 @@ void GuiMenu::openOtherOptions()
 }
 
 // The folder with the setup tools (the deck folder). They are installed into the application data directory
-// the first time they are needed, from the copy that ships with the program.
+// the first time they are needed in each run, from the copy that ships with the program (once is enough: the copy
+// can't change while Arcadia runs, and installing again cost every opening of Setup a noticeable pause).
 std::string GuiMenu::setupToolsDirectory()
 {
     const std::string installed {Utils::FileSystem::getAppDataDirectory() + "/deck"};
+    static bool installedThisRun {false};
+    if (installedThisRun && Utils::FileSystem::exists(installed + "/tools"))
+        return installed + "/tools";
+    installedThisRun = true;
 
     std::vector<std::string> sources {Utils::FileSystem::getExePath() + "/deck",
                                       Utils::FileSystem::getExePath() + "/../share/arcadia/deck"};

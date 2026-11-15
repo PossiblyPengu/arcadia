@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Arcadia Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-03-22 21:12+0100\n"
+"POT-Creation-Date: 2026-11-15 10:18-0500\n"
 "PO-Revision-Date: 2025-10-12 21:31+0300\n"
 "Last-Translator: Mihai Vasiliu <mihai.vasiliu.93@gmail.com>\n"
 "Language-Team: Română <info@es-de.org>\n"
@@ -137,6 +137,9 @@ msgstr "'%s' este filtrată, așadar pot fi mai multe jocuri disponibile"
 msgid "DELETED COLLECTION '%s'"
 msgstr "S-A ȘTERS COLECȚIA „%s”"
 
+msgid "OPEN SETUP → EMULATORS TO INSTALL IT"
+msgstr ""
+
 msgctxt "theme"
 msgid "unknown"
 msgstr "necunoscut"
@@ -206,9 +209,6 @@ msgid ""
 "ERROR: DIRECTORY DEFINED BY %s COULD NOT BE CREATED, PERMISSION PROBLEMS?"
 msgstr ""
 "EROARE: DOSARUL DEFINIT DE %s NU A PUTUT FI CREAT. PROBLEMĂ DE PERMISIUNE?"
-
-msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-msgstr "EROARE: APLICAȚIA SAU FIȘIERUL ALIAS NU EXISTĂ SAU NU SE POATE CITI"
 
 msgid "ERROR: DESKTOP FILE IS INVALID OR UNREADABLE"
 msgstr "EROARE: FIȘIER DESKTOP INVALID SAU NU SE POATE CITI"
@@ -552,6 +552,98 @@ msgstr "AFIȘEAZĂ FAVORITELE LA ÎNCEPUT PENTRU COLECȚII"
 msgid "DISPLAY STAR MARKINGS FOR CUSTOM COLLECTIONS"
 msgstr "AFIȘEAZĂ O STEA PENTRU COLECȚIILE PERSONALIZATE"
 
+msgid "Emulators"
+msgstr ""
+
+msgid "Looking at your games…"
+msgstr ""
+
+#, c-format
+msgid "%i game"
+msgid_plural "%i games"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "Windows games"
+msgstr ""
+
+msgid "Deckhand, Arcadia's sister app, plays these"
+msgstr ""
+
+msgid "Get Deckhand"
+msgstr ""
+
+#, c-format
+msgid "Arcadia uses %s, which isn't on Flathub"
+msgstr ""
+
+msgid "Installed"
+msgstr ""
+
+msgid "Add cores"
+msgstr ""
+
+msgid "Install"
+msgstr ""
+
+msgid "The emulator list couldn't be read. Try again from Setup."
+msgstr ""
+
+msgid ""
+"No games yet. Add some and Arcadia picks what they need, or install one "
+"yourself."
+msgstr ""
+
+msgid "Everything your games need is installed. Have fun."
+msgstr ""
+
+#, c-format
+msgid "Your games need %s, and it isn't ready yet. Press X to set it up."
+msgstr ""
+
+#, c-format
+msgid ""
+"Your games need %i emulators; %i isn't ready yet. Press X to set them all up."
+msgid_plural ""
+"Your games need %i emulators; %i aren't ready yet. Press X to set them all "
+"up."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, c-format
+msgid "Adding cores for %s"
+msgstr ""
+
+#, c-format
+msgid "Installing %s"
+msgstr ""
+
+msgid "UPDATE"
+msgstr "ACTUALIZEAZĂ"
+
+msgid "REMOVE"
+msgstr ""
+
+msgid "Installing what your games need"
+msgstr ""
+
+msgid "Updating emulators"
+msgstr ""
+
+msgid "choose"
+msgstr "alege"
+
+msgid "install or manage"
+msgstr ""
+
+msgid "install what's needed"
+msgstr ""
+
+msgid "update all"
+msgstr ""
+
 msgid "IMPORT TO SYSTEM"
 msgstr "IMPORTĂ ÎN SISTEMUL"
 
@@ -566,48 +658,6 @@ msgstr "TOATE DESELECTATE"
 
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "ELIMINĂ CARACTERELE SPECIALE"
-
-msgid "MEDIA TARGET TYPE"
-msgstr "TIP MEDIA"
-
-msgid "SCREENSHOTS"
-msgstr "CAPTURI DE ECRAN"
-
-msgid "TITLE SCREENS"
-msgstr "ECRANE TITLU"
-
-msgid "COVERS"
-msgstr "COPERȚI"
-
-msgid "BACK COVERS"
-msgstr "SPATE COPERȚI"
-
-msgid "MARQUEES (WHEELS)"
-msgstr "BANNERE"
-
-msgid "3D BOXES"
-msgstr "CUTII 3D"
-
-msgid "PHYSICAL MEDIA"
-msgstr "MEDIU FIZIC"
-
-msgid "FAN ART"
-msgstr "FAN ART"
-
-msgid "MIXIMAGES"
-msgstr "IMAGINI MIX"
-
-msgid "IMPORT MEDIA"
-msgstr "IMPORTĂ MEDIA"
-
-msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-msgstr "IMPORTĂ BANNERE SAU LOGOURI DACĂ EXISTĂ"
-
-msgid "OVERWRITE MEDIA FILES"
-msgstr "SUPRASCRIE FIȘIERELE MEDIA"
-
-msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-msgstr "INCLUDE DOAR APLICAȚIILE CLASIFICATE CA JOCURI"
 
 msgid "START"
 msgstr "START"
@@ -712,11 +762,8 @@ msgstr "APLICĂ"
 msgid "apply"
 msgstr "aplică"
 
-msgid "close (apply)"
-msgstr "închide (aplică)"
-
-msgid "close (cancel)"
-msgstr "închide (anulează)"
+msgid "done"
+msgstr ""
 
 msgid "LAUNCHING GAME"
 msgstr "SE LANSEAZĂ JOCUL"
@@ -751,35 +798,56 @@ msgstr "REDĂ BLUR PENTRU VIDEOCLIPURI"
 msgid "RENDER SCANLINES FOR SCREENSHOTS AND TITLES"
 msgstr "REDĂ LINII SCANARE PT. CAPTURI ECRAN ȘI TITLURI"
 
-msgid "MAIN MENU"
-msgstr "MENIU PRINCIPAL"
+msgid "SETTINGS"
+msgstr ""
 
-msgid "SCRAPER"
-msgstr "PRELUARE INFORMAȚII"
+msgid "SETUP"
+msgstr ""
 
-msgid "UI SETTINGS"
-msgstr "SETĂRI INTERFAȚĂ"
+msgid "LOOK AND FEEL"
+msgstr ""
 
-msgid "SOUND SETTINGS"
-msgstr "SETĂRI SUNET"
+msgid "SOUND"
+msgstr ""
 
-msgid "INPUT DEVICE SETTINGS"
-msgstr "SETĂRI DISPOZITIVE INTRARE"
+msgid "CONTROLLERS"
+msgstr ""
 
-msgid "GAME COLLECTION SETTINGS"
-msgstr "SETĂRI COLECȚII DE JOCURI"
+msgid "COVERS AND INFO"
+msgstr ""
 
-msgid "OTHER SETTINGS"
-msgstr "ALTE SETĂRI"
-
-msgid "UTILITIES"
-msgstr "UTILITARE"
+msgid "ADVANCED"
+msgstr ""
 
 msgid "QUIT ARCADIA"
 msgstr "IEȘI DIN ARCADIA"
 
+msgid "COLOURS"
+msgstr ""
+
 msgid "THEME"
 msgstr "TEMĂ"
+
+msgid "COLLECTIONS"
+msgstr "COLECȚII"
+
+msgid "GAMES DEFAULT SORT ORDER"
+msgstr "SORTARE JOCURI DUPĂ"
+
+msgid "SORT FAVORITE GAMES ABOVE NON-FAVORITES"
+msgstr "AFIȘEAZĂ JOCURILE FAVORITE ÎNAINTEA CELORLALTE"
+
+msgid "DISPLAY CLOCK"
+msgstr "AFIȘEAZĂ CEASUL"
+
+msgid "LAUNCH SCREEN DURATION"
+msgstr "DURATĂ ECRAN PORNIRE"
+
+msgid "SCREENSAVER SETTINGS"
+msgstr "SETĂRI ECONOMIZOR DE ECRAN"
+
+msgid "APPLICATION LANGUAGE"
+msgstr "LIMBA APLICAȚIEI"
 
 msgid "THEME DOWNLOADER"
 msgstr "DESCĂRCĂTOR TEME"
@@ -819,9 +887,6 @@ msgstr "ESTOMPEAZĂ (INCORPORAT)"
 
 msgid "THEME LANGUAGE"
 msgstr "LIMBA TEMEI"
-
-msgid "APPLICATION LANGUAGE"
-msgstr "LIMBA APLICAȚIEI"
 
 msgid "QUICK SYSTEM SELECT"
 msgstr "COMUTARE RAPIDĂ SISTEM"
@@ -875,32 +940,23 @@ msgctxt "short"
 msgid "GAMES DEFAULT SORT ORDER"
 msgstr "SORTARE JOCURI DUPĂ"
 
-msgid "GAMES DEFAULT SORT ORDER"
-msgstr "SORTARE JOCURI DUPĂ"
+msgid "CLOUD (LIGHT PASTELS)"
+msgstr ""
 
-msgid "MENU COLOR SCHEME"
-msgstr "SCHEMĂ DE CULOARE MENIU"
-
-msgid "DARK"
-msgstr "ÎNTUNECATĂ"
-
-msgid "DARK AND RED"
-msgstr "ÎNTUNECAT ȘI ROȘU"
-
-msgid "LIGHT"
-msgstr "LUMINOASĂ"
+msgid "DUSK (PASTELS IN THE DARK)"
+msgstr ""
 
 msgid "MENU OPENING ANIMATION"
 msgstr "ANIMAȚIE DESCHIDERE MENIU"
+
+msgid "SLIDE"
+msgstr ""
 
 msgid "SCALE-UP"
 msgstr "MĂRIRE"
 
 msgid "NONE"
 msgstr "NICIUNA"
-
-msgid "LAUNCH SCREEN DURATION"
-msgstr "DURATĂ ECRAN PORNIRE"
 
 msgid "NORMAL"
 msgstr "NORMALĂ"
@@ -979,23 +1035,14 @@ msgstr "SETĂRI INDICATORI SISTEM"
 msgid "MEDIA VIEWER SETTINGS"
 msgstr "SETĂRI VIZUALIZATOR MEDIA"
 
-msgid "SCREENSAVER SETTINGS"
-msgstr "SETĂRI ECONOMIZOR DE ECRAN"
-
 msgid "ENABLE THEME VARIANT TRIGGERS"
 msgstr "ACTIVEAZĂ DECLANȘATORI VARIANTE TEMĂ"
-
-msgid "DISPLAY CLOCK"
-msgstr "AFIȘEAZĂ CEASUL"
 
 msgid "BLUR BACKGROUND WHEN MENU IS OPEN"
 msgstr "BLUREAZĂ FUNDALUL CÂND MENIUL ESTE DESCHIS"
 
 msgid "SORT FOLDERS ON TOP OF GAMELISTS"
 msgstr "AFIȘEAZĂ DOSARELE LA ÎNCEPUTUL LISTEI DE JOCURI"
-
-msgid "SORT FAVORITE GAMES ABOVE NON-FAVORITES"
-msgstr "AFIȘEAZĂ JOCURILE FAVORITE ÎNAINTEA CELORLALTE"
 
 msgid "ADD STAR MARKINGS TO FAVORITE GAMES"
 msgstr "ADAUGĂ O STELUȚĂ JOCURILOR FAVORITE"
@@ -1015,14 +1062,8 @@ msgstr "ACTIVEAZĂ FILTRE LISTĂ DE JOCURI"
 msgid "DISPLAY ON-SCREEN HELP"
 msgstr "AFIȘEAZĂ AJUTOR PE ECRAN"
 
-msgid "AUDIO DRIVER"
-msgstr "DRIVER AUDIO"
-
-msgid "AUDIO DRIVER (REQUIRES RESTART)"
-msgstr "DRIVER AUDIO (NECESITĂ REPORNIRE)"
-
-msgid "SYSTEM VOLUME"
-msgstr "VOLUM SISTEM"
+msgid "ENABLE NAVIGATION SOUNDS"
+msgstr "ACTIVEAZĂ SUNETE NAVIGARE"
 
 msgid "NAVIGATION SOUNDS VOLUME"
 msgstr "VOLUM SUNETE NAVIGARE"
@@ -1033,75 +1074,32 @@ msgstr "VOLUM REDARE VIDEOCLIPURI"
 msgid "PLAY AUDIO FOR GAMELIST AND SYSTEM VIEW VIDEOS"
 msgstr "REDĂ SUNET PENTRU LISTĂ JOCURI ȘI VIDEOURI SISTEM"
 
+msgid "SYSTEM VOLUME"
+msgstr "VOLUM SISTEM"
+
 msgid "PLAY AUDIO FOR MEDIA VIEWER VIDEOS"
 msgstr "REDĂ SUNET PENTRU VIDEOURILE MEDIA"
 
 msgid "PLAY AUDIO FOR SCREENSAVER VIDEOS"
 msgstr "REDĂ SUNET PENTRU VIDEOURILE ECON. DE ECRAN"
 
-msgid "ENABLE NAVIGATION SOUNDS"
-msgstr "ACTIVEAZĂ SUNETE NAVIGARE"
-
 msgid "CONTROLLER TYPE"
 msgstr "TIP CONTROLER"
 
-msgid "TOUCH OVERLAY SIZE"
-msgstr "MĂRIME BUTOANE VIRTUALE"
+msgid "SWAP THE A/B AND X/Y BUTTONS"
+msgstr "INTERSCHIMBĂ BUTOANELE A/B ȘI X/Y"
 
-msgid "MEDIUM"
-msgstr "MEDIU"
-
-msgid "LARGE"
-msgstr "MARE"
-
-msgid "SMALL"
-msgstr "MICĂ"
-
-msgid "EXTRA SMALL"
-msgstr "FOARTE MICĂ"
-
-msgid "TOUCH OVERLAY OPACITY"
-msgstr "OPACITATE BUTOANE VIRTUALE"
-
-msgid "LOW"
-msgstr "SCĂZUTĂ"
-
-msgid "VERY LOW"
-msgstr "FOARTE SCĂZUTĂ"
-
-msgid "TOUCH OVERLAY FADE-OUT TIME"
-msgstr "TIMP DE DISPARIȚIE BUTOANE VIRTUALE"
-
-msgid "ENABLE TOUCH OVERLAY"
-msgstr "ACTIVEAZĂ BUTOANELE VIRTUALE"
-
-msgid ""
-"DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-"WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-"TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING AGAIN, "
-"OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS TO FORCE "
-"THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-msgstr ""
-"NU DEZACTIVA BUTOANELE VIRTUALE DACĂ NU UTILIZEZI UN CONTROLER SAU VEI "
-"PIERDE ACCESUL LA APLICAȚIE. DACĂ ACEST LUCRU SE ÎNTÂMPLĂ VA TREBUI SĂ "
-"CONECTEZI TEMPORAR UN CONTROLER SAU O TASTATURĂ PENTRU A ACTIVA ACEASTĂ "
-"SETARE DIN NOU SAU POȚI ȘTERGE DATELE APLICAȚIEI DIN SETĂRILE APLICAȚIEI "
-"ANDROID PENTRU A FORȚA REINIȚIALIZAREA SETĂRILOR LA URMĂTOAREA PORNIRE"
+msgid "CONFIGURE KEYBOARD AND CONTROLLERS"
+msgstr "CONFIGUREAZĂ TASTATURA ȘI CONTROLERELE"
 
 msgid "ONLY ACCEPT INPUT FROM FIRST CONTROLLER"
 msgstr "ACCEPTĂ INTRARE DOAR DE LA PRIMUL CONTROLER"
-
-msgid "SWAP THE A/B AND X/Y BUTTONS"
-msgstr "INTERSCHIMBĂ BUTOANELE A/B ȘI X/Y"
 
 msgid "IGNORE KEYBOARD INPUT"
 msgstr "IGNORĂ INTRAREA DE LA TASTATURĂ"
 
 msgid "INPUT DEVICE NOTIFICATIONS"
 msgstr "NOTIFICĂRI DISPOZITIV DE INTRARE"
-
-msgid "CONFIGURE KEYBOARD AND CONTROLLERS"
-msgstr "CONFIGUREAZĂ TASTATURA ȘI CONTROLERELE"
 
 msgid ""
 "THE KEYBOARD AND CONTROLLERS ARE AUTOMATICALLY CONFIGURED, BUT USING THIS "
@@ -1114,6 +1112,21 @@ msgstr ""
 
 msgid "PROCEED"
 msgstr "CONTINUĂ"
+
+msgid "TOOLS"
+msgstr ""
+
+msgid "ENABLE ALTERNATIVE EMULATORS PER GAME"
+msgstr "ACTIVEAZĂ EMULATOARE ALTERNATIVE PER JOC"
+
+msgid "SHOW HIDDEN GAMES"
+msgstr "AFIȘEAZĂ JOCURILE ASCUNSE"
+
+msgid "CHECK FOR APPLICATION UPDATES"
+msgstr "VERIFICĂ PENTRU ACTUALIZĂRI APLICAȚIE"
+
+msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
+msgstr "RULEAZĂ ÎN FUNDAL (CÂND UN JOC ESTE LANSAT)"
 
 msgid "GAME MEDIA DIRECTORY"
 msgstr "DOSAR FIȘIERE MEDIA JOC"
@@ -1197,17 +1210,8 @@ msgstr "SĂPTĂMÂNAL"
 msgid "MONTHLY"
 msgstr "LUNAR"
 
-msgid "CHECK FOR APPLICATION UPDATES"
-msgstr "VERIFICĂ PENTRU ACTUALIZĂRI APLICAȚIE"
-
 msgid "INCLUDE PRERELEASES IN UPDATE CHECKS"
 msgstr "INCLUDE VERSIUNILE PRERELEASE ÎN VERIFICĂRI"
-
-msgid "HIDE TASKBAR (REQUIRES RESTART)"
-msgstr "ASCUNDE BARA DE SARCINI (NECESITĂ REPORNIRE)"
-
-msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
-msgstr "RULEAZĂ ÎN FUNDAL (CÂND UN JOC ESTE LANSAT)"
 
 msgid "VIDEO HARDWARE DECODING (EXPERIMENTAL)"
 msgstr "DECODARE HARDWARE VIDEO (EXPERIMENTAL)"
@@ -1215,17 +1219,8 @@ msgstr "DECODARE HARDWARE VIDEO (EXPERIMENTAL)"
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "UPSCALE RATĂ DE CADRE LA 60 FPS"
 
-msgid "ENABLE ALTERNATIVE EMULATORS PER GAME"
-msgstr "ACTIVEAZĂ EMULATOARE ALTERNATIVE PER JOC"
-
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "AFIȘEAZĂ FIȘIERELE ȘI DOSARELE ASCUNSE"
-
-msgid "SHOW HIDDEN GAMES"
-msgstr "AFIȘEAZĂ JOCURILE ASCUNSE"
-
-msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-msgstr "LANSEAZĂ JOCURILE PE CELĂLALT ECRAN"
 
 msgid "ENABLE CUSTOM EVENT SCRIPTS"
 msgstr "ACTIVEAZĂ SCRIPT EVENIMENTE PERSONALIZATE"
@@ -1241,9 +1236,6 @@ msgstr "ELIMINĂ EXTRA INFO MAME DIN NUME (NEC. REPORNIRE)"
 
 msgid "DISABLE DESKTOP COMPOSITION (REQUIRES RESTART)"
 msgstr "DEZACTIVEAZĂ COMPOZIȚIA DESKTOP (NECESITĂ REPORNIRE)"
-
-msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-msgstr "BUTONUL/GLISAREA ÎNAPOI ÎNCHIDE APLICAȚIA"
 
 msgid "DEBUG MODE"
 msgstr "MOD DEPANARE"
@@ -1332,11 +1324,8 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "SETĂRI ECONOMIZOR ECRAN"
 
-msgid "choose"
-msgstr "alege"
-
-msgid "close menu"
-msgstr "închide meniul"
+msgid "open"
+msgstr ""
 
 msgid "EDIT METADATA"
 msgstr "EDITEAZĂ METADATELE"
@@ -1530,9 +1519,6 @@ msgstr "LISTE DE JOCURI"
 msgid "RUNNING GAMELISTS CLEANUP"
 msgstr "SE RULEAZĂ CURĂȚAREA LISTELOR DE JOCURI"
 
-msgid "COLLECTIONS"
-msgstr "COLECȚII"
-
 msgid "COLLECTIONS CLEANUP FAILED"
 msgstr "CURĂȚAREA COLECȚIILOR A EȘUAT"
 
@@ -1666,6 +1652,9 @@ msgstr "SETĂRI CONȚINUT"
 msgid "MIXIMAGE SETTINGS"
 msgstr "SETĂRI IMAGINE MIX"
 
+msgid "OTHER SETTINGS"
+msgstr "ALTE SETĂRI"
+
 msgid "start scraper"
 msgstr "începe preluarea"
 
@@ -1753,6 +1742,9 @@ msgstr "PRAG RAPORT ASPECT CAPTURĂ ECRAN"
 msgid "HIGH"
 msgstr "ÎNALT"
 
+msgid "LOW"
+msgstr "SCĂZUTĂ"
+
 msgid "SCREENSHOT ASPECT RATIO THRESHOLD"
 msgstr "PRAG RAPORT ASPECT CAPTURĂ ECRAN"
 
@@ -1780,6 +1772,15 @@ msgstr "METODĂ SCALARE CAPTURĂ ECRAN"
 
 msgid "BOX SIZE"
 msgstr "MĂRIME CUTIE"
+
+msgid "SMALL"
+msgstr "MICĂ"
+
+msgid "MEDIUM"
+msgstr "MEDIU"
+
+msgid "LARGE"
+msgstr "MARE"
 
 msgid "PHYSICAL MEDIA SIZE"
 msgstr "MĂRIME SUPORT FIZIC"
@@ -2108,14 +2109,90 @@ msgstr "SCHIMBĂ VIDEOCLIPUL DUPĂ"
 msgid "RENDER BLUR"
 msgstr "REDĂ BLUR"
 
+msgid "MORE OPTIONS"
+msgstr ""
+
+msgid "Show me"
+msgstr ""
+
+msgid "Set up"
+msgstr ""
+
+msgid "Allow"
+msgstr ""
+
+msgid "Connect"
+msgstr ""
+
+msgid "Check"
+msgstr ""
+
+msgid "Get it"
+msgstr ""
+
+msgid "Sort downloads"
+msgstr ""
+
+msgid "Sort inside folders"
+msgstr ""
+
+msgid "Undo the last sort"
+msgstr ""
+
+msgid "Sync saves now"
+msgstr ""
+
+msgid "Back up settings"
+msgstr ""
+
+msgid "Restore a backup"
+msgstr ""
+
+msgid "Update Arcadia"
+msgstr ""
+
+msgid "Setup"
+msgstr ""
+
+msgid "Checking what's ready…"
+msgstr ""
+
+msgid "Tools"
+msgstr ""
+
+msgid "The checklist couldn't be read. The tools on the right still work."
+msgstr ""
+
+msgid "All set"
+msgstr ""
+
+msgid "Everything is ready. Have fun."
+msgstr ""
+
+msgid "Let's get you set up"
+msgstr ""
+
+msgid "Almost ready"
+msgstr ""
+
+#, c-format
+msgid "One thing left to do."
+msgid_plural "%i things left to do."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "switch side"
+msgstr ""
+
+msgid "do it"
+msgstr ""
+
 msgid "DISPLAY BLUETOOTH STATUS INDICATOR"
 msgstr "AFIȘEAZĂ INDICATOR STARE BLUETOOTH"
 
 msgid "DISPLAY WI-FI STATUS INDICATOR"
 msgstr "AFIȘEAZĂ INDICATOR STARE WI-FI"
-
-msgid "DISPLAY CELLULAR STATUS INDICATOR"
-msgstr "AFIȘEAZĂ INDICATOR STARE DATE MOBILE"
 
 msgid "DISPLAY BATTERY STATUS INDICATOR"
 msgstr "AFIȘEAZĂ INDICATOR STARE BATERIE"
@@ -2157,9 +2234,9 @@ msgid ""
 "IT SEEMS AS IF YOU'RE NOT RUNNING THE LATEST ARCADIA RELEASE, PLEASE UPGRADE "
 "BEFORE PROCEEDING AS THESE THEMES MAY NOT BE COMPATIBLE WITH YOUR VERSION"
 msgstr ""
-"SE PARE CĂ NU FOLOSEȘTI CEA MAI NOUĂ VERSIUNE DE ARCADIA. TE ROG ACTUALIZEAZĂ "
-"ARCADIA ÎNAINTE SĂ MERGI MAI DEPARTE, DEOARECE ACESTE TEME POT SĂ FIE "
-"INCOMPATIBILE CU VERSIUNEA CURENTĂ"
+"SE PARE CĂ NU FOLOSEȘTI CEA MAI NOUĂ VERSIUNE DE ARCADIA. TE ROG "
+"ACTUALIZEAZĂ ARCADIA ÎNAINTE SĂ MERGI MAI DEPARTE, DEOARECE ACESTE TEME POT "
+"SĂ FIE INCOMPATIBILE CU VERSIUNEA CURENTĂ"
 
 msgid "and"
 msgstr "și"
@@ -2181,8 +2258,8 @@ msgstr "SE DESCARCĂ TEMA"
 msgid ""
 "IT SEEMS AS IF THIS THEME REPOSITORY IS CORRUPT, WHICH COULD HAVE BEEN "
 "CAUSED BY AN INTERRUPTION OF A PREVIOUS DOWNLOAD OR UPDATE, FOR EXAMPLE IF "
-"THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD THEME "
-"DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""
+"THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD "
+"THEME DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""
 msgstr ""
 "SE PARE CĂ ACEST REPOSITORY DE TEMĂ ESTE CORUPT, CA POSIBIL REZULTAT AL UNEI "
 "ÎNTRERUPERI A UNEI DESCĂRCĂRI SAU ACTUALIZĂRI PRECEDENTE, DE EXEMPLU DACĂ ES-"
@@ -2290,9 +2367,6 @@ msgstr "NU S-A PUTUT DESCĂRCA LISTA DE TEME"
 msgid "DOWNLOADING THEMES LIST"
 msgstr "SE DESCARCĂ LISTA DE TEME"
 
-msgid "THIS WILL COMPLETELY DELETE THE THEME"
-msgstr "ACEST LUCRU VA ȘTERGE COMPLET TEMA"
-
 msgid ""
 "THIS WILL COMPLETELY DELETE THE THEME INCLUDING ANY LOCAL CUSTOMIZATIONS"
 msgstr "ACEST LUCRU VA ȘTERGE COMPLET TEMA INCLUZÂND ORICE MODIFICĂRI LOCALE"
@@ -2344,6 +2418,45 @@ msgstr ""
 "TEMĂ VEI DESCĂRCA. IA AMINTE CĂ NU POȚI OPRI O DESCĂRCARE ÎN CURS DEOARECE "
 "ACEST LUCRU POATE DUCE LA CORUPERE DE DATE."
 
+msgid "WORKING…"
+msgstr ""
+
+msgid "Working on it…"
+msgstr ""
+
+msgid "The tool couldn't be started."
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
+#, c-format
+msgid "Done in %i s"
+msgstr ""
+
+#, c-format
+msgid "Done in %i min"
+msgstr ""
+
+msgid "Finished with a problem: see below"
+msgstr ""
+
+msgid "TRY AGAIN"
+msgstr ""
+
+msgid "try again"
+msgstr ""
+
+#, c-format
+msgid "Step %i of %i… this can take a few minutes"
+msgstr ""
+
+msgid "scroll"
+msgstr ""
+
+msgid "close or try again"
+msgstr ""
+
 msgid "browse"
 msgstr "răsfoiește"
 
@@ -2367,6 +2480,9 @@ msgstr "COPERTĂ SPATE CUTIE"
 
 msgid "TITLE SCREEN"
 msgstr "ECRAN TITLU"
+
+msgid "FAN ART"
+msgstr "FAN ART"
 
 msgid "MIXIMAGE"
 msgstr "IMAGINE MIX"
@@ -2656,17 +2772,11 @@ msgstr ""
 "NU SE POT ADĂUGA INTRĂRI CARE NU SUNT NUMĂRATE CA JOCURI ÎN COLECȚIILE "
 "PERSONALIZATE"
 
-msgid "system"
-msgstr "sistem"
-
-msgid "view media"
-msgstr "media"
+msgid "media"
+msgstr ""
 
 msgid "options"
 msgstr "opțiuni"
-
-msgid "random"
-msgstr "aleator"
 
 msgid "jump to game"
 msgstr "sări la joc"
@@ -2678,6 +2788,9 @@ msgstr "da"
 msgctxt "theme"
 msgid "no"
 msgstr "nu"
+
+msgid "random"
+msgstr "aleator"
 
 msgid "screensaver"
 msgstr "economizor ecran"
@@ -2722,8 +2835,8 @@ msgstr ""
 msgid ""
 "COULDN'T PARSE THE SYSTEMS CONFIGURATION FILE. IF YOU HAVE A CUSTOMIZED "
 "es_systems.xml FILE, THEN SOMETHING IS LIKELY WRONG WITH YOUR XML SYNTAX. IF "
-"YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE ARCADIA INSTALLATION IS BROKEN. "
-"SEE THE APPLICATION LOG FILE es_log.txt FOR ADDITIONAL INFO"
+"YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE ARCADIA INSTALLATION IS "
+"BROKEN. SEE THE APPLICATION LOG FILE es_log.txt FOR ADDITIONAL INFO"
 msgstr ""
 "NU S-A PUTUT PARCURGE FIȘIERUL DE CONFIGURAȚIE AL SISTEMELOR. DACĂ AI UN "
 "FIȘIER es_systems.xml PERSONALIZAT, ATUNCI CEL MAI PROBABIL AI O EROARE LA "
@@ -2731,31 +2844,14 @@ msgstr ""
 "STRICATĂ. VERIFICĂ FIȘIERUL JURNAL es_log.txt PENTRU DETALII ADIȚIONALE"
 
 msgid ""
-"NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY IN "
-"THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM DIRECTORY "
-"STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME "
-"INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED "
-"ROM DIRECTORY:\n"
+"Welcome to Arcadia. No games were found yet.\n"
+"\n"
+"Put your games in the ROM folder below, one folder per console (Create makes "
+"the folders), or choose Setup and then Sort downloads to move them there for "
+"you.\n"
+"\n"
+"The ROM folder is "
 msgstr ""
-"NU S-AU GĂSIT FIȘIERE DE JOCURI. FIE IMPORTĂ NIȘTE JOCURI, FIE PLASEAZĂ-LE "
-"MANUAL ÎN DOSARUL DE ROM-URI CONFIGURAT. OPȚIONAL POȚI ȘI GENERA STRUCTURA "
-"DE DOSARE DE ROM-URI CARE VA CREA ȘI UN FIȘIER TEXT PENTRU FIECARE SISTEM CU "
-"INFORMAȚII UTILE CUM AR FI EXTENSIILE DE FIȘIERE SUPORTATE. ACESTA ESTE "
-"DOSARUL DE ROM-URI CONFIGURAT:\n"
-
-msgid ""
-"NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY IN "
-"THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM PATH AND "
-"OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT "
-"FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE "
-"EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-msgstr ""
-"NU S-AU GĂSIT FIȘIERE DE JOCURI. FIE IMPORTĂ NIȘTE JOCURI, FIE PLASEAZĂ-LE "
-"MANUAL ÎN DOSARUL DE ROM-URI CONFIGURAT. POȚI DE ASEMENEA SĂ SCHIMBI CALEA "
-"DOSARULUI DE ROM-URI ȘI OPȚIONAL POȚI GENERA ȘI STRUCTURA DE DOSARE DE ROM-"
-"URI CARE VA CREA ȘI UN FIȘIER TEXT PENTRU FIECARE SISTEM CU INFORMAȚII UTILE "
-"CUM AR FI EXTENSIILE DE FIȘIERE SUPORTATE. ACESTA ESTE DOSARUL DE ROM-URI "
-"CONFIGURAT:\n"
 
 msgid "CHANGE"
 msgstr "SCHIMBĂ"
@@ -2779,14 +2875,14 @@ msgid "CLEAR (LEAVE BLANK TO RESET TO DEFAULT PATH)"
 msgstr "CURĂȚĂ (LASĂ LIBER PENTRU A RESETA LA CALEA IMPLICITĂ)"
 
 msgid ""
-"THIS WILL CREATE DIRECTORIES FOR ALL THE GAME SYSTEMS DEFINED IN es_systems."
-"xml\n"
+"THIS WILL CREATE DIRECTORIES FOR ALL THE GAME SYSTEMS DEFINED IN "
+"es_systems.xml\n"
 "\n"
 "THIS MAY CREATE A LOT OF FOLDERS SO IT'S ADVISED TO REMOVE THE ONES YOU "
 "DON'T NEED"
 msgstr ""
-"ACEST LUCRU VA CREA DOSARE PENTRU TOATE SISTEMELE DEFINITE ÎN es_systems."
-"xml\n"
+"ACEST LUCRU VA CREA DOSARE PENTRU TOATE SISTEMELE DEFINITE ÎN "
+"es_systems.xml\n"
 "\n"
 "CA REZULTAT, VOR FI CREATE MULTE DOSARE, DECI ESTE RECOMANDAT SĂ LE ȘTERGI "
 "PE CELE DE CARE NU AI NEVOIE"
@@ -2819,14 +2915,11 @@ msgstr ""
 "SISTEMELOR. TE ROG REVIZUIEȘTE-ȚI SETĂRILE FOLOSIND INTERFAȚA DE „EMULATOARE "
 "ALTERNATIVE” DIN MENIUL „ALTE SETĂRI”"
 
-msgid "UPDATE"
-msgstr "ACTUALIZEAZĂ"
-
 msgid ""
 "THE APPLICATION UPDATER WILL DOWNLOAD THE LATEST PORTABLE WINDOWS RELEASE "
-"FOR YOU, BUT YOU WILL NEED TO MANUALLY PERFORM THE UPGRADE. SEE THE README."
-"TXT FILE INSIDE THE DOWNLOADED ZIP FILE FOR INSTRUCTIONS ON HOW THIS IS "
-"ACCOMPLISHED. AS IS ALSO DESCRIBED IN THAT DOCUMENT, NEVER UNPACK A NEW "
+"FOR YOU, BUT YOU WILL NEED TO MANUALLY PERFORM THE UPGRADE. SEE THE "
+"README.TXT FILE INSIDE THE DOWNLOADED ZIP FILE FOR INSTRUCTIONS ON HOW THIS "
+"IS ACCOMPLISHED. AS IS ALSO DESCRIBED IN THAT DOCUMENT, NEVER UNPACK A NEW "
 "RELEASE ON TOP OF AN OLD INSTALLATION AS THAT MAY BREAK THE APPLICATION."
 msgstr ""
 "ACTUALIZATORUL APLICAȚIEI VA DESCĂRCA ULTIMA VERSIUNE PORTABILĂ PENTRU "
@@ -2859,6 +2952,13 @@ msgstr ""
 msgid "LAUNCHING GAME '%s'"
 msgstr "SE LANSEAZĂ JOCUL „%s”"
 
+#, c-format
+msgid "ARCADIA %s IS AVAILABLE"
+msgstr ""
+
+msgid "SETUP → UPDATE ARCADIA INSTALLS IT"
+msgstr ""
+
 msgid "menu"
 msgstr "meniu"
 
@@ -2890,13 +2990,9 @@ msgstr[0] "acum %i minut"
 msgstr[1] "acum %i minute"
 msgstr[2] "acum %i de minute"
 
-#, c-format
 msgctxt "theme"
-msgid "%i second ago"
-msgid_plural "%i seconds ago"
-msgstr[0] "acum %i secundă"
-msgstr[1] "acum %i secunde"
-msgstr[2] "acum %i de secunde"
+msgid "just now"
+msgstr ""
 
 msgid "edit date"
 msgstr "editează data"
@@ -3186,5 +3282,188 @@ msgstr "Se copiază resursele..."
 msgid "Creating system directories..."
 msgstr "Se creează dosarele sistemelor..."
 
+msgid "NO PICTURES OR VIDEO FOR THIS GAME YET"
+msgstr ""
+
+msgid "SETTINGS → COVERS AND INFO CAN GET THEM"
+msgstr ""
+
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "EROARE: NU SE POATE AFIȘA FIȘIERUL PDF"
+
+#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
+#~ msgstr "EROARE: APLICAȚIA SAU FIȘIERUL ALIAS NU EXISTĂ SAU NU SE POATE CITI"
+
+#~ msgid "MEDIA TARGET TYPE"
+#~ msgstr "TIP MEDIA"
+
+#~ msgid "SCREENSHOTS"
+#~ msgstr "CAPTURI DE ECRAN"
+
+#~ msgid "TITLE SCREENS"
+#~ msgstr "ECRANE TITLU"
+
+#~ msgid "COVERS"
+#~ msgstr "COPERȚI"
+
+#~ msgid "BACK COVERS"
+#~ msgstr "SPATE COPERȚI"
+
+#~ msgid "MARQUEES (WHEELS)"
+#~ msgstr "BANNERE"
+
+#~ msgid "3D BOXES"
+#~ msgstr "CUTII 3D"
+
+#~ msgid "PHYSICAL MEDIA"
+#~ msgstr "MEDIU FIZIC"
+
+#~ msgid "MIXIMAGES"
+#~ msgstr "IMAGINI MIX"
+
+#~ msgid "IMPORT MEDIA"
+#~ msgstr "IMPORTĂ MEDIA"
+
+#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+#~ msgstr "IMPORTĂ BANNERE SAU LOGOURI DACĂ EXISTĂ"
+
+#~ msgid "OVERWRITE MEDIA FILES"
+#~ msgstr "SUPRASCRIE FIȘIERELE MEDIA"
+
+#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+#~ msgstr "INCLUDE DOAR APLICAȚIILE CLASIFICATE CA JOCURI"
+
+#~ msgid "close (apply)"
+#~ msgstr "închide (aplică)"
+
+#~ msgid "close (cancel)"
+#~ msgstr "închide (anulează)"
+
+#~ msgid "MAIN MENU"
+#~ msgstr "MENIU PRINCIPAL"
+
+#~ msgid "SCRAPER"
+#~ msgstr "PRELUARE INFORMAȚII"
+
+#~ msgid "UI SETTINGS"
+#~ msgstr "SETĂRI INTERFAȚĂ"
+
+#~ msgid "SOUND SETTINGS"
+#~ msgstr "SETĂRI SUNET"
+
+#~ msgid "INPUT DEVICE SETTINGS"
+#~ msgstr "SETĂRI DISPOZITIVE INTRARE"
+
+#~ msgid "GAME COLLECTION SETTINGS"
+#~ msgstr "SETĂRI COLECȚII DE JOCURI"
+
+#~ msgid "UTILITIES"
+#~ msgstr "UTILITARE"
+
+#~ msgid "MENU COLOR SCHEME"
+#~ msgstr "SCHEMĂ DE CULOARE MENIU"
+
+#~ msgid "DARK"
+#~ msgstr "ÎNTUNECATĂ"
+
+#~ msgid "DARK AND RED"
+#~ msgstr "ÎNTUNECAT ȘI ROȘU"
+
+#~ msgid "LIGHT"
+#~ msgstr "LUMINOASĂ"
+
+#~ msgid "AUDIO DRIVER"
+#~ msgstr "DRIVER AUDIO"
+
+#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
+#~ msgstr "DRIVER AUDIO (NECESITĂ REPORNIRE)"
+
+#~ msgid "TOUCH OVERLAY SIZE"
+#~ msgstr "MĂRIME BUTOANE VIRTUALE"
+
+#~ msgid "EXTRA SMALL"
+#~ msgstr "FOARTE MICĂ"
+
+#~ msgid "TOUCH OVERLAY OPACITY"
+#~ msgstr "OPACITATE BUTOANE VIRTUALE"
+
+#~ msgid "VERY LOW"
+#~ msgstr "FOARTE SCĂZUTĂ"
+
+#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
+#~ msgstr "TIMP DE DISPARIȚIE BUTOANE VIRTUALE"
+
+#~ msgid "ENABLE TOUCH OVERLAY"
+#~ msgstr "ACTIVEAZĂ BUTOANELE VIRTUALE"
+
+#~ msgid ""
+#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
+#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
+#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
+#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
+#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
+#~ msgstr ""
+#~ "NU DEZACTIVA BUTOANELE VIRTUALE DACĂ NU UTILIZEZI UN CONTROLER SAU VEI "
+#~ "PIERDE ACCESUL LA APLICAȚIE. DACĂ ACEST LUCRU SE ÎNTÂMPLĂ VA TREBUI SĂ "
+#~ "CONECTEZI TEMPORAR UN CONTROLER SAU O TASTATURĂ PENTRU A ACTIVA ACEASTĂ "
+#~ "SETARE DIN NOU SAU POȚI ȘTERGE DATELE APLICAȚIEI DIN SETĂRILE APLICAȚIEI "
+#~ "ANDROID PENTRU A FORȚA REINIȚIALIZAREA SETĂRILOR LA URMĂTOAREA PORNIRE"
+
+#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
+#~ msgstr "ASCUNDE BARA DE SARCINI (NECESITĂ REPORNIRE)"
+
+#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
+#~ msgstr "LANSEAZĂ JOCURILE PE CELĂLALT ECRAN"
+
+#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
+#~ msgstr "BUTONUL/GLISAREA ÎNAPOI ÎNCHIDE APLICAȚIA"
+
+#~ msgid "close menu"
+#~ msgstr "închide meniul"
+
+#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
+#~ msgstr "AFIȘEAZĂ INDICATOR STARE DATE MOBILE"
+
+#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
+#~ msgstr "ACEST LUCRU VA ȘTERGE COMPLET TEMA"
+
+#~ msgid "system"
+#~ msgstr "sistem"
+
+#~ msgid "view media"
+#~ msgstr "media"
+
+#~ msgid ""
+#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
+#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
+#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
+#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
+#~ "THE CONFIGURED ROM DIRECTORY:\n"
+#~ msgstr ""
+#~ "NU S-AU GĂSIT FIȘIERE DE JOCURI. FIE IMPORTĂ NIȘTE JOCURI, FIE PLASEAZĂ-"
+#~ "LE MANUAL ÎN DOSARUL DE ROM-URI CONFIGURAT. OPȚIONAL POȚI ȘI GENERA "
+#~ "STRUCTURA DE DOSARE DE ROM-URI CARE VA CREA ȘI UN FIȘIER TEXT PENTRU "
+#~ "FIECARE SISTEM CU INFORMAȚII UTILE CUM AR FI EXTENSIILE DE FIȘIERE "
+#~ "SUPORTATE. ACESTA ESTE DOSARUL DE ROM-URI CONFIGURAT:\n"
+
+#~ msgid ""
+#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
+#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
+#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
+#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
+#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
+#~ msgstr ""
+#~ "NU S-AU GĂSIT FIȘIERE DE JOCURI. FIE IMPORTĂ NIȘTE JOCURI, FIE PLASEAZĂ-"
+#~ "LE MANUAL ÎN DOSARUL DE ROM-URI CONFIGURAT. POȚI DE ASEMENEA SĂ SCHIMBI "
+#~ "CALEA DOSARULUI DE ROM-URI ȘI OPȚIONAL POȚI GENERA ȘI STRUCTURA DE DOSARE "
+#~ "DE ROM-URI CARE VA CREA ȘI UN FIȘIER TEXT PENTRU FIECARE SISTEM CU "
+#~ "INFORMAȚII UTILE CUM AR FI EXTENSIILE DE FIȘIERE SUPORTATE. ACESTA ESTE "
+#~ "DOSARUL DE ROM-URI CONFIGURAT:\n"
+
+#, c-format
+#~ msgctxt "theme"
+#~ msgid "%i second ago"
+#~ msgid_plural "%i seconds ago"
+#~ msgstr[0] "acum %i secundă"
+#~ msgstr[1] "acum %i secunde"
+#~ msgstr[2] "acum %i de secunde"

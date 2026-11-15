@@ -23,7 +23,7 @@ if [ ! $(which xgettext 2>/dev/null) ]; then
   exit
 fi
 
-find ../es-app/src/ ../es-core/src -name '*.cpp' -o -name '*.h' | sort -f -d | xgettext -f - -o ../locale/arcadia.pot -k_ -k_n:1,2 -k_p:1c,2 -k_np:1c,2,3 \
+find ../es-app/src/ ../es-core/src -name '*.cpp' -o -name '*.h' | sort -f -d | xgettext -f - --from-code=UTF-8 -o ../locale/arcadia.pot -k_ -kN_ -k_n:1,2 -k_p:1c,2 -k_np:1c,2,3 \
 --no-location --copyright-holder="Northwestern Software AB" --package-name="Arcadia" --msgid-bugs-address "info@es-de.org"
 
 sed -i "1s/.*/# Arcadia translation strings./" ../locale/arcadia.pot

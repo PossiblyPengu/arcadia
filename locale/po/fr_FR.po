@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Arcadia Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-03-22 21:12+0100\n"
+"POT-Creation-Date: 2026-11-15 10:18-0500\n"
 "PO-Revision-Date: 2025-10-13 16:42+0200\n"
 "Last-Translator: Northwestern Software <info@es-de.org>\n"
 "Language-Team: Français <info@es-de.org>\n"
@@ -130,6 +130,9 @@ msgstr "'%s' est filtré ainsi il peut y avoir plus de jeux dispo"
 msgid "DELETED COLLECTION '%s'"
 msgstr "EFFACER COLLECTION '%s'"
 
+msgid "OPEN SETUP → EMULATORS TO INSTALL IT"
+msgstr ""
+
 msgctxt "theme"
 msgid "unknown"
 msgstr "inconnu"
@@ -211,9 +214,6 @@ msgid ""
 msgstr ""
 "ERREUR : LE DOSSIER DÉFINI PAR %s N'A PAS PU ÊTRE CRÉÉ, PROBLÈMES "
 "D'AUTORISATION?"
-
-msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-msgstr "ERREUR : L'APPLICATION OU L'ALIAS N'EXISTE PAS OU EST ILLISIBLE"
 
 msgid "ERROR: DESKTOP FILE IS INVALID OR UNREADABLE"
 msgstr "ERREUR : LE FICHIER DESKTOP EST INVALIDE OU ILLISIBLE"
@@ -556,6 +556,96 @@ msgstr "AFFICHER LES FAVORIS EN PREMIER POUR LES COLLECTIONS PERSO"
 msgid "DISPLAY STAR MARKINGS FOR CUSTOM COLLECTIONS"
 msgstr "AFFICHER UNE ÉTOILE POUR LES COLLECTIONS PERSO"
 
+msgid "Emulators"
+msgstr ""
+
+msgid "Looking at your games…"
+msgstr ""
+
+#, c-format
+msgid "%i game"
+msgid_plural "%i games"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Windows games"
+msgstr ""
+
+msgid "Deckhand, Arcadia's sister app, plays these"
+msgstr ""
+
+msgid "Get Deckhand"
+msgstr ""
+
+#, c-format
+msgid "Arcadia uses %s, which isn't on Flathub"
+msgstr ""
+
+msgid "Installed"
+msgstr ""
+
+msgid "Add cores"
+msgstr ""
+
+msgid "Install"
+msgstr ""
+
+msgid "The emulator list couldn't be read. Try again from Setup."
+msgstr ""
+
+msgid ""
+"No games yet. Add some and Arcadia picks what they need, or install one "
+"yourself."
+msgstr ""
+
+msgid "Everything your games need is installed. Have fun."
+msgstr ""
+
+#, c-format
+msgid "Your games need %s, and it isn't ready yet. Press X to set it up."
+msgstr ""
+
+#, c-format
+msgid ""
+"Your games need %i emulators; %i isn't ready yet. Press X to set them all up."
+msgid_plural ""
+"Your games need %i emulators; %i aren't ready yet. Press X to set them all "
+"up."
+msgstr[0] ""
+msgstr[1] ""
+
+#, c-format
+msgid "Adding cores for %s"
+msgstr ""
+
+#, c-format
+msgid "Installing %s"
+msgstr ""
+
+msgid "UPDATE"
+msgstr "MISE À JOUR"
+
+msgid "REMOVE"
+msgstr ""
+
+msgid "Installing what your games need"
+msgstr ""
+
+msgid "Updating emulators"
+msgstr ""
+
+msgid "choose"
+msgstr "choisir"
+
+msgid "install or manage"
+msgstr ""
+
+msgid "install what's needed"
+msgstr ""
+
+msgid "update all"
+msgstr ""
+
 msgid "IMPORT TO SYSTEM"
 msgstr "IMPORTATION DANS LE SYSTÈME"
 
@@ -570,48 +660,6 @@ msgstr "TOUT DÉSÉLECTIONNER"
 
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "SUPPRIMER LES CARACTÈRES SPÉCIAUX"
-
-msgid "MEDIA TARGET TYPE"
-msgstr "TYPE DE MÉDIA CIBLE"
-
-msgid "SCREENSHOTS"
-msgstr "CAPTURES D'ÉCRANS"
-
-msgid "TITLE SCREENS"
-msgstr "ECRAN DE TITRE"
-
-msgid "COVERS"
-msgstr "AFFICHES"
-
-msgid "BACK COVERS"
-msgstr "AFFICHES ARRIÈRE"
-
-msgid "MARQUEES (WHEELS)"
-msgstr "MARQUEES (WHEELS)"
-
-msgid "3D BOXES"
-msgstr "BOÎTES 3D"
-
-msgid "PHYSICAL MEDIA"
-msgstr "MÉDIA PHYSIQUE"
-
-msgid "FAN ART"
-msgstr "FANART"
-
-msgid "MIXIMAGES"
-msgstr "MIXIMAGES"
-
-msgid "IMPORT MEDIA"
-msgstr "IMPORTE MÉDIA"
-
-msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-msgstr "IMPORTE BANNIÈRES OU LOGO SI DISPO"
-
-msgid "OVERWRITE MEDIA FILES"
-msgstr "ECRASER LES FICHIERS MÉDIA"
-
-msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-msgstr "INCLURE UNIQUEMENT LES APPS CLASSÉES COMME JEUX"
 
 msgid "START"
 msgstr "DÉMARRER"
@@ -716,11 +764,8 @@ msgstr "APPLIQUER"
 msgid "apply"
 msgstr "appliquer"
 
-msgid "close (apply)"
-msgstr "fermer (appliquer)"
-
-msgid "close (cancel)"
-msgstr "fermer (annuler)"
+msgid "done"
+msgstr ""
 
 msgid "LAUNCHING GAME"
 msgstr "LANCEMENT DU JEU"
@@ -755,35 +800,56 @@ msgstr "RENDU FLOU POUR LES VIDÉOS"
 msgid "RENDER SCANLINES FOR SCREENSHOTS AND TITLES"
 msgstr "RENDU TV (SCANLINES) POUR LES SCREENSHOTS ET TITLES"
 
-msgid "MAIN MENU"
-msgstr "MENU PRINCIPAL"
+msgid "SETTINGS"
+msgstr ""
 
-msgid "SCRAPER"
-msgstr "SCRAPEUR"
+msgid "SETUP"
+msgstr ""
 
-msgid "UI SETTINGS"
-msgstr "PARAMÈTRES D'AFFICHAGE"
+msgid "LOOK AND FEEL"
+msgstr ""
 
-msgid "SOUND SETTINGS"
-msgstr "PARAMÈTRES AUDIO"
+msgid "SOUND"
+msgstr ""
 
-msgid "INPUT DEVICE SETTINGS"
-msgstr "PARAMÈTRES DES MANETTES"
+msgid "CONTROLLERS"
+msgstr ""
 
-msgid "GAME COLLECTION SETTINGS"
-msgstr "PARAMÈTRES DES COLLECTIONS"
+msgid "COVERS AND INFO"
+msgstr ""
 
-msgid "OTHER SETTINGS"
-msgstr "AUTRES PARAMÈTRES"
-
-msgid "UTILITIES"
-msgstr "OUTILS"
+msgid "ADVANCED"
+msgstr ""
 
 msgid "QUIT ARCADIA"
 msgstr "QUITTER ARCADIA"
 
+msgid "COLOURS"
+msgstr ""
+
 msgid "THEME"
 msgstr "THÈME"
+
+msgid "COLLECTIONS"
+msgstr "COLLECTIONS"
+
+msgid "GAMES DEFAULT SORT ORDER"
+msgstr "ORDRE DE TRI PAR DÉFAUT DES JEUX"
+
+msgid "SORT FAVORITE GAMES ABOVE NON-FAVORITES"
+msgstr "AFFICHER LES JEUX FAVORIS AU-DESSUS DES NON-FAVORIS"
+
+msgid "DISPLAY CLOCK"
+msgstr "AFFICHER L'HORLOGE"
+
+msgid "LAUNCH SCREEN DURATION"
+msgstr "DURÉE DE L'ÉCRAN DE LANCEMENT"
+
+msgid "SCREENSAVER SETTINGS"
+msgstr "PARAMÈTRES DE L'ÉCRAN DE VEILLE"
+
+msgid "APPLICATION LANGUAGE"
+msgstr "CHOIX DE LA LANGUE"
 
 msgid "THEME DOWNLOADER"
 msgstr "TÉLECHARGEUR DE THÈMES"
@@ -823,9 +889,6 @@ msgstr "FONDU (INTÉGRÉ)"
 
 msgid "THEME LANGUAGE"
 msgstr "LANGUE DU THÈME"
-
-msgid "APPLICATION LANGUAGE"
-msgstr "CHOIX DE LA LANGUE"
 
 msgid "QUICK SYSTEM SELECT"
 msgstr "SÉLECTION RAPIDE DU SYSTÈME"
@@ -879,32 +942,23 @@ msgctxt "short"
 msgid "GAMES DEFAULT SORT ORDER"
 msgstr "ORDRE DE TRI PAR DÉFAUT DES JEUX"
 
-msgid "GAMES DEFAULT SORT ORDER"
-msgstr "ORDRE DE TRI PAR DÉFAUT DES JEUX"
+msgid "CLOUD (LIGHT PASTELS)"
+msgstr ""
 
-msgid "MENU COLOR SCHEME"
-msgstr "SCHÉMA DE COULEURS DU MENU"
-
-msgid "DARK"
-msgstr "SOMBRE"
-
-msgid "DARK AND RED"
-msgstr "SOMBRE ET ROUGE"
-
-msgid "LIGHT"
-msgstr "CLAIR"
+msgid "DUSK (PASTELS IN THE DARK)"
+msgstr ""
 
 msgid "MENU OPENING ANIMATION"
 msgstr "ANIMATION DU MENU D'OUVERTURE"
+
+msgid "SLIDE"
+msgstr ""
 
 msgid "SCALE-UP"
 msgstr "METTRE À L'ÉCHELLE"
 
 msgid "NONE"
 msgstr "AUCUN"
-
-msgid "LAUNCH SCREEN DURATION"
-msgstr "DURÉE DE L'ÉCRAN DE LANCEMENT"
 
 msgid "NORMAL"
 msgstr "NORMAL"
@@ -983,23 +1037,14 @@ msgstr "PARAMÈTRES D’ÉTAT DU SYSTÈME"
 msgid "MEDIA VIEWER SETTINGS"
 msgstr "PARAMÈTRES DU VISIONNEUR DE MÉDIA"
 
-msgid "SCREENSAVER SETTINGS"
-msgstr "PARAMÈTRES DE L'ÉCRAN DE VEILLE"
-
 msgid "ENABLE THEME VARIANT TRIGGERS"
 msgstr "ACTIVER LES VARIANTE DE THÈME AVEC LES GÂCHETTES"
-
-msgid "DISPLAY CLOCK"
-msgstr "AFFICHER L'HORLOGE"
 
 msgid "BLUR BACKGROUND WHEN MENU IS OPEN"
 msgstr "ESTOMPER L'ARRIÈRE-PLAN LORSQUE LE MENU EST OUVERT"
 
 msgid "SORT FOLDERS ON TOP OF GAMELISTS"
 msgstr "AFFICHER LES DOSSIERS AU-DESSUS DE LA LISTE DES JEUX"
-
-msgid "SORT FAVORITE GAMES ABOVE NON-FAVORITES"
-msgstr "AFFICHER LES JEUX FAVORIS AU-DESSUS DES NON-FAVORIS"
 
 msgid "ADD STAR MARKINGS TO FAVORITE GAMES"
 msgstr "AJOUTER DES ÉTOILES AUX JEUX FAVORIS"
@@ -1019,14 +1064,8 @@ msgstr "ACTIVER LES FILTRES DE LA LISTE DE JEUX"
 msgid "DISPLAY ON-SCREEN HELP"
 msgstr "AFFICHER L'AIDE A L'ÉCRAN"
 
-msgid "AUDIO DRIVER"
-msgstr "PILOTE AUDIO"
-
-msgid "AUDIO DRIVER (REQUIRES RESTART)"
-msgstr "PILOTE AUDIO (REDÉMARRAGE REQUIS)"
-
-msgid "SYSTEM VOLUME"
-msgstr "VOLUME SYSTÈME"
+msgid "ENABLE NAVIGATION SOUNDS"
+msgstr "ACTIVER LES SONS DE L'INTERFACE"
 
 msgid "NAVIGATION SOUNDS VOLUME"
 msgstr "VOLUME DES SONS DE L'INTERFACE"
@@ -1037,76 +1076,32 @@ msgstr "VOLUME DU LECTEUR VIDEO"
 msgid "PLAY AUDIO FOR GAMELIST AND SYSTEM VIEW VIDEOS"
 msgstr "LECTURE AUDIO POUR LA LISTE DE JEUX ET VUE SYSTEME VIDÉOS"
 
+msgid "SYSTEM VOLUME"
+msgstr "VOLUME SYSTÈME"
+
 msgid "PLAY AUDIO FOR MEDIA VIEWER VIDEOS"
 msgstr "LECTURE AUDIO POUR LES VIDÉOS MEDIA VIEWER"
 
 msgid "PLAY AUDIO FOR SCREENSAVER VIDEOS"
 msgstr "LECTURE AUDIO POUR LES VIDÉOS D'ÉCONOMISEUR D'ÉCRAN"
 
-msgid "ENABLE NAVIGATION SOUNDS"
-msgstr "ACTIVER LES SONS DE L'INTERFACE"
-
 msgid "CONTROLLER TYPE"
 msgstr "TYPE DE MANETTE"
 
-msgid "TOUCH OVERLAY SIZE"
-msgstr "TAILLE DE LA SUPERPOSITION TACTILE"
+msgid "SWAP THE A/B AND X/Y BUTTONS"
+msgstr "INTERVERTIR LES BOUTONS A/B ET X/Y"
 
-msgid "MEDIUM"
-msgstr "MOYEN"
-
-msgid "LARGE"
-msgstr "GRAND"
-
-msgid "SMALL"
-msgstr "PETITT"
-
-msgid "EXTRA SMALL"
-msgstr "TRÈS PETIT"
-
-msgid "TOUCH OVERLAY OPACITY"
-msgstr "OPACITÉ DE LA SUPERPOSITION TACTILE"
-
-msgid "LOW"
-msgstr "BAS"
-
-msgid "VERY LOW"
-msgstr "TRÈS BAS"
-
-msgid "TOUCH OVERLAY FADE-OUT TIME"
-msgstr "TEMPS DE DISPARITION DE LA SUPERPOSITION TACTILE"
-
-msgid "ENABLE TOUCH OVERLAY"
-msgstr "ACTIVER LA SUPERPOSITION TACTILE"
-
-msgid ""
-"DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-"WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-"TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING AGAIN, "
-"OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS TO FORCE "
-"THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-msgstr ""
-"NE DÉSACTIVEZ PAS LA SUPERPOSITION TACTILE À MOINS QUE VOUS UTILISIEZ UN "
-"CONTRÔLEUR OU VOUS VOUS VERROUILLEREZ HORS DE L'APPLICATION. SI CELA SE "
-"PRODUIT, BRANCHEZ TEMPORAIREMENT UN CONTRÔLEUR OU UN CLAVIER POUR RÉACTIVER "
-"CE PARAMÈTRE, VOUS POUVEZ ÉGALEMENT EFFACER LE STOCKAGE ARCADIA DANS LES "
-"PARAMÈTRES DE L'APPLICATION ANDROID POUR FORCER LE CONFIGURATEUR À "
-"S'EXÉCUTER AU PROCHAIN DÉMARRAGE"
+msgid "CONFIGURE KEYBOARD AND CONTROLLERS"
+msgstr "CONFIGURER CLAVIER ET MANETTES"
 
 msgid "ONLY ACCEPT INPUT FROM FIRST CONTROLLER"
 msgstr "ACCEPTER UNIQUEMENT LES ENTRÉES DE LA PREMIÈRE MANETTE"
-
-msgid "SWAP THE A/B AND X/Y BUTTONS"
-msgstr "INTERVERTIR LES BOUTONS A/B ET X/Y"
 
 msgid "IGNORE KEYBOARD INPUT"
 msgstr "IGNORER LES ENTRÉES CLAVIER"
 
 msgid "INPUT DEVICE NOTIFICATIONS"
 msgstr "NOTIFICATIONS DU PÉRIPHÉRIQUE D'ENTRÉE"
-
-msgid "CONFIGURE KEYBOARD AND CONTROLLERS"
-msgstr "CONFIGURER CLAVIER ET MANETTES"
 
 msgid ""
 "THE KEYBOARD AND CONTROLLERS ARE AUTOMATICALLY CONFIGURED, BUT USING THIS "
@@ -1119,6 +1114,21 @@ msgstr ""
 
 msgid "PROCEED"
 msgstr "APPLIQUER"
+
+msgid "TOOLS"
+msgstr ""
+
+msgid "ENABLE ALTERNATIVE EMULATORS PER GAME"
+msgstr "ACTIVER LES ÉMULATEURS ALTERNATIFS PAR JEU"
+
+msgid "SHOW HIDDEN GAMES"
+msgstr "AFFICHER LES JEUX CACHÉS"
+
+msgid "CHECK FOR APPLICATION UPDATES"
+msgstr "VÉRIFIER LES MISES À JOUR"
+
+msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
+msgstr "METTRE ARCADIA EN ARRIÈRE-PLAN (AU LANCEMENT DU JEU)"
 
 msgid "GAME MEDIA DIRECTORY"
 msgstr "DOSSIER DES MÉDIAS DU JEU"
@@ -1202,17 +1212,8 @@ msgstr "HEBDOMADAIRE"
 msgid "MONTHLY"
 msgstr "MENSUEL"
 
-msgid "CHECK FOR APPLICATION UPDATES"
-msgstr "VÉRIFIER LES MISES À JOUR"
-
 msgid "INCLUDE PRERELEASES IN UPDATE CHECKS"
 msgstr "INCLURE LES VERSIONS BÉTA DANS LA VÉRIFICATION DES MISES À JOUR"
-
-msgid "HIDE TASKBAR (REQUIRES RESTART)"
-msgstr "MASQUER LA BARRE DES TÂCHES (REDÉMARRAGE REQUIS)"
-
-msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
-msgstr "METTRE ARCADIA EN ARRIÈRE-PLAN (AU LANCEMENT DU JEU)"
 
 msgid "VIDEO HARDWARE DECODING (EXPERIMENTAL)"
 msgstr "DÉCODAGE VIDÉO MATÉRIEL (EXPÉRIMENTAL)"
@@ -1220,17 +1221,8 @@ msgstr "DÉCODAGE VIDÉO MATÉRIEL (EXPÉRIMENTAL)"
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "AUGMENTER LE NOMBRE D'IMAGES PAR SECONDES à 60 IPS"
 
-msgid "ENABLE ALTERNATIVE EMULATORS PER GAME"
-msgstr "ACTIVER LES ÉMULATEURS ALTERNATIFS PAR JEU"
-
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "AFFICHER LES FICHIERS ET DOSSIERS CACHÉS"
-
-msgid "SHOW HIDDEN GAMES"
-msgstr "AFFICHER LES JEUX CACHÉS"
-
-msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-msgstr "LANCEZ LES JEUX SUR L'AUTRE ÉCRAN"
 
 msgid "ENABLE CUSTOM EVENT SCRIPTS"
 msgstr "ACTIVER LES SCRIPTS PERSO"
@@ -1248,9 +1240,6 @@ msgstr ""
 
 msgid "DISABLE DESKTOP COMPOSITION (REQUIRES RESTART)"
 msgstr "DESACTIVER LA COMPOSITION DU BUREAU (REDÉMARRAGE REQUIS)"
-
-msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-msgstr "BOUTON RETOUR/MOUVEMENT RETOUR QUITTE L'APPLICATION"
 
 msgid "DEBUG MODE"
 msgstr "MODE DEBUG"
@@ -1340,11 +1329,8 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "PARAMÈTRES ÉCRAN DE VEILLE"
 
-msgid "choose"
-msgstr "choisir"
-
-msgid "close menu"
-msgstr "fermer le menu"
+msgid "open"
+msgstr ""
 
 msgid "EDIT METADATA"
 msgstr "EDITER LES MÉTADONNÉES"
@@ -1541,9 +1527,6 @@ msgstr "LISTES DES JEUX"
 msgid "RUNNING GAMELISTS CLEANUP"
 msgstr "LANCEMENT DU NETTOYAGE DE LA LISTE DES JEUX"
 
-msgid "COLLECTIONS"
-msgstr "COLLECTIONS"
-
 msgid "COLLECTIONS CLEANUP FAILED"
 msgstr "ÉCHEC DE NETTOYAGE DES COLLECTIONS"
 
@@ -1688,6 +1671,9 @@ msgstr "PARAMÈTRES DU CONTENU"
 msgid "MIXIMAGE SETTINGS"
 msgstr "PARAMÈTRES MIX D'IMAGE"
 
+msgid "OTHER SETTINGS"
+msgstr "AUTRES PARAMÈTRES"
+
 msgid "start scraper"
 msgstr "démarrer le scraping"
 
@@ -1775,6 +1761,9 @@ msgstr "FORMAT D'AFFICHAGE DES CAPTURES D'ÉCRAN"
 msgid "HIGH"
 msgstr "HAUTE"
 
+msgid "LOW"
+msgstr "BAS"
+
 msgid "SCREENSHOT ASPECT RATIO THRESHOLD"
 msgstr "FORMAT D'AFFICHAGE DES CAPTURES D'ÉCRAN"
 
@@ -1802,6 +1791,15 @@ msgstr "MÉTHODE DE MISE À L'ÉCHELLE DES CAPTURES D'ÉCRAN"
 
 msgid "BOX SIZE"
 msgstr "TAILLE DE LA BOITE"
+
+msgid "SMALL"
+msgstr "PETITT"
+
+msgid "MEDIUM"
+msgstr "MOYEN"
+
+msgid "LARGE"
+msgstr "GRAND"
 
 msgid "PHYSICAL MEDIA SIZE"
 msgstr "TAILLE DES MÉDIAS PHYSIQUE"
@@ -2127,14 +2125,89 @@ msgstr "CHANGER DE VIDEOS APRÈS (SECONDES)"
 msgid "RENDER BLUR"
 msgstr "RENDU FLOU"
 
+msgid "MORE OPTIONS"
+msgstr ""
+
+msgid "Show me"
+msgstr ""
+
+msgid "Set up"
+msgstr ""
+
+msgid "Allow"
+msgstr ""
+
+msgid "Connect"
+msgstr ""
+
+msgid "Check"
+msgstr ""
+
+msgid "Get it"
+msgstr ""
+
+msgid "Sort downloads"
+msgstr ""
+
+msgid "Sort inside folders"
+msgstr ""
+
+msgid "Undo the last sort"
+msgstr ""
+
+msgid "Sync saves now"
+msgstr ""
+
+msgid "Back up settings"
+msgstr ""
+
+msgid "Restore a backup"
+msgstr ""
+
+msgid "Update Arcadia"
+msgstr ""
+
+msgid "Setup"
+msgstr ""
+
+msgid "Checking what's ready…"
+msgstr ""
+
+msgid "Tools"
+msgstr ""
+
+msgid "The checklist couldn't be read. The tools on the right still work."
+msgstr ""
+
+msgid "All set"
+msgstr ""
+
+msgid "Everything is ready. Have fun."
+msgstr ""
+
+msgid "Let's get you set up"
+msgstr ""
+
+msgid "Almost ready"
+msgstr ""
+
+#, c-format
+msgid "One thing left to do."
+msgid_plural "%i things left to do."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "switch side"
+msgstr ""
+
+msgid "do it"
+msgstr ""
+
 msgid "DISPLAY BLUETOOTH STATUS INDICATOR"
 msgstr "AFFICHAGE DE L’INDICATEUR D’ÉTAT BLUETOOTH"
 
 msgid "DISPLAY WI-FI STATUS INDICATOR"
 msgstr "AFFICHAGE DE L’INDICATEUR D’ÉTAT WI-FI"
-
-msgid "DISPLAY CELLULAR STATUS INDICATOR"
-msgstr "AFFICHAGE DE L’INDICATEUR D’ÉTAT CELLULAIRE"
 
 msgid "DISPLAY BATTERY STATUS INDICATOR"
 msgstr "AFFICHAGE DE L’INDICATEUR D’ÉTAT DE LA BATTERIE"
@@ -2201,8 +2274,8 @@ msgstr "TÉLÉCHARGEMENT DU THÈME"
 msgid ""
 "IT SEEMS AS IF THIS THEME REPOSITORY IS CORRUPT, WHICH COULD HAVE BEEN "
 "CAUSED BY AN INTERRUPTION OF A PREVIOUS DOWNLOAD OR UPDATE, FOR EXAMPLE IF "
-"THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD THEME "
-"DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""
+"THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD "
+"THEME DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""
 msgstr ""
 "IL SEMBLE QUE LE DÉPOT DE CE THÈME EST CORROMPU, CE QUI POURRAIT ÊTRE CAUSÉ "
 "PAR UNE INTERRUPTION D'UN TÉLÉCHARGEMENT OU D'UNE MISE À JOUR PRÉCÉDENTE, "
@@ -2311,9 +2384,6 @@ msgstr "IMPOSSIBLE DE TÉLÉCHARGER LA LISTE DES THÈMES"
 msgid "DOWNLOADING THEMES LIST"
 msgstr "TÉLÉCHARGEMENT DE LA LISTE DES THÈMES"
 
-msgid "THIS WILL COMPLETELY DELETE THE THEME"
-msgstr "CELA SUPPRIMERA COMPLÈTEMENT LE THÈME"
-
 msgid ""
 "THIS WILL COMPLETELY DELETE THE THEME INCLUDING ANY LOCAL CUSTOMIZATIONS"
 msgstr ""
@@ -2369,6 +2439,45 @@ msgstr ""
 "VOUS NE POUVEZ PAS ANNULER UN TÉLÉCHARGEMENT EN COURS CAR CELA POURRAIT "
 "ENTRAÎNER LA CORRUPTION DES DONNÉES."
 
+msgid "WORKING…"
+msgstr ""
+
+msgid "Working on it…"
+msgstr ""
+
+msgid "The tool couldn't be started."
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
+#, c-format
+msgid "Done in %i s"
+msgstr ""
+
+#, c-format
+msgid "Done in %i min"
+msgstr ""
+
+msgid "Finished with a problem: see below"
+msgstr ""
+
+msgid "TRY AGAIN"
+msgstr ""
+
+msgid "try again"
+msgstr ""
+
+#, c-format
+msgid "Step %i of %i… this can take a few minutes"
+msgstr ""
+
+msgid "scroll"
+msgstr ""
+
+msgid "close or try again"
+msgstr ""
+
 msgid "browse"
 msgstr "naviguer"
 
@@ -2392,6 +2501,9 @@ msgstr "IMAGES DE LA BOITE (DOS)"
 
 msgid "TITLE SCREEN"
 msgstr "ÉCRAN TITRE"
+
+msgid "FAN ART"
+msgstr "FANART"
 
 msgid "MIXIMAGE"
 msgstr "MIXIMAGE"
@@ -2680,17 +2792,11 @@ msgstr ""
 "IMPOSSIBLE D'AJOUTER DES ENTRÉES QUI NE SONT PAS COMPTÉES COMME DES JEUX AUX "
 "COLLECTIONS PERSO"
 
-msgid "system"
-msgstr "système"
-
-msgid "view media"
-msgstr "voir les médias"
+msgid "media"
+msgstr ""
 
 msgid "options"
 msgstr "options"
-
-msgid "random"
-msgstr "aléatoire"
 
 msgid "jump to game"
 msgstr "aller au jeu"
@@ -2702,6 +2808,9 @@ msgstr "oui"
 msgctxt "theme"
 msgid "no"
 msgstr "non"
+
+msgid "random"
+msgstr "aléatoire"
 
 msgid "screensaver"
 msgstr "écran de veille"
@@ -2743,8 +2852,8 @@ msgstr ""
 msgid ""
 "COULDN'T PARSE THE SYSTEMS CONFIGURATION FILE. IF YOU HAVE A CUSTOMIZED "
 "es_systems.xml FILE, THEN SOMETHING IS LIKELY WRONG WITH YOUR XML SYNTAX. IF "
-"YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE ARCADIA INSTALLATION IS BROKEN. "
-"SEE THE APPLICATION LOG FILE es_log.txt FOR ADDITIONAL INFO"
+"YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE ARCADIA INSTALLATION IS "
+"BROKEN. SEE THE APPLICATION LOG FILE es_log.txt FOR ADDITIONAL INFO"
 msgstr ""
 "IMPOSSIBLE D'ANALYSER LE FICHIER DE CONFIGURATION DU SYSTÈME. SI VOUS AVEZ "
 "UN FICHIER es_systems.xml PERSO, ALORS QUELQUE CHOSE EST PROBABLEMENT "
@@ -2753,31 +2862,14 @@ msgstr ""
 "D'APPLICATION es_log.txt POUR PLUS D'INFORMATIONS"
 
 msgid ""
-"NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY IN "
-"THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM DIRECTORY "
-"STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME "
-"INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED "
-"ROM DIRECTORY:\n"
+"Welcome to Arcadia. No games were found yet.\n"
+"\n"
+"Put your games in the ROM folder below, one folder per console (Create makes "
+"the folders), or choose Setup and then Sort downloads to move them there for "
+"you.\n"
+"\n"
+"The ROM folder is "
 msgstr ""
-"AUCUN FICHIER DE JEU N'A ÉTÉ TROUVÉ. IMPORTEZ DES JEUX OU PLACEZ-LES "
-"MANUELLEMENT DANS LE RÉPERTOIRE ROM CONFIGURÉ. EN OPTION, VOUS POUVEZ "
-"GÉNÉRER LA STRUCTURE DU RÉPERTOIRE ROM, CE QUI CRÉERA UN FICHIER TEXTE POUR "
-"CHAQUE SYSTÈME FOURNISSANT DES INFORMATIONS TELLES QUE LES EXTENSIONS DE "
-"FICHIERS PRISES EN CHARGE. VOICI LE RÉPERTOIRE ROM CONFIGURÉ :\n"
-
-msgid ""
-"NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY IN "
-"THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM PATH AND "
-"OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT "
-"FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE "
-"EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-msgstr ""
-"AUCUN FICHIER DE JEU N'A ÉTÉ TROUVÉ. IMPORTEZ DES JEUX OU PLACEZ-LES "
-"MANUELLEMENT DANS LE RÉPERTOIRE ROM ACTUELLEMENT CONFIGURÉ. VOUS POUVEZ "
-"ÉGALEMENT MODIFIER LE CHEMIN ROM ET ÉVENTUELLEMENT GÉNÉRER LA STRUCTURE DU "
-"RÉPERTOIRE ROM, CE QUI CRÉERA UN FICHIER TEXTE POUR CHAQUE SYSTÈME "
-"FOURNISSANT DES INFORMATIONS TELLES QUE LES EXTENSIONS DE FICHIERS PRISES EN "
-"CHARGE. IL S'AGIT DU RÉPERTOIRE ROM CONFIGURÉ :\n"
 
 msgid "CHANGE"
 msgstr "CHANGER"
@@ -2801,8 +2893,8 @@ msgid "CLEAR (LEAVE BLANK TO RESET TO DEFAULT PATH)"
 msgstr "EFFACER (LAISSER VIDE POUR RÉINITIALISER LE CHEMIN PAR DÉFAUT)"
 
 msgid ""
-"THIS WILL CREATE DIRECTORIES FOR ALL THE GAME SYSTEMS DEFINED IN es_systems."
-"xml\n"
+"THIS WILL CREATE DIRECTORIES FOR ALL THE GAME SYSTEMS DEFINED IN "
+"es_systems.xml\n"
 "\n"
 "THIS MAY CREATE A LOT OF FOLDERS SO IT'S ADVISED TO REMOVE THE ONES YOU "
 "DON'T NEED"
@@ -2838,17 +2930,14 @@ msgid ""
 msgstr ""
 "AU MOINS UN DE VOS SYSTÈMES A UN ÉMULATEUR ALTERNATIF AVEC UNE CONFIGURATION "
 "INVALIDE SANS ENTREE CORRESPONDANTE DANS LE FICHIER DE CONFIGURATION DU "
-"SYSTÈME, VEUILLEZ RÉVISER VOTRE CONFIGURATION À L'AIDE DE L'INTERFACE « "
-"ÉMULATEURS ALTERNATIFS » DANS LE MENU « AUTRES PARAMÈTRES »"
-
-msgid "UPDATE"
-msgstr "MISE À JOUR"
+"SYSTÈME, VEUILLEZ RÉVISER VOTRE CONFIGURATION À L'AIDE DE L'INTERFACE "
+"« ÉMULATEURS ALTERNATIFS » DANS LE MENU « AUTRES PARAMÈTRES »"
 
 msgid ""
 "THE APPLICATION UPDATER WILL DOWNLOAD THE LATEST PORTABLE WINDOWS RELEASE "
-"FOR YOU, BUT YOU WILL NEED TO MANUALLY PERFORM THE UPGRADE. SEE THE README."
-"TXT FILE INSIDE THE DOWNLOADED ZIP FILE FOR INSTRUCTIONS ON HOW THIS IS "
-"ACCOMPLISHED. AS IS ALSO DESCRIBED IN THAT DOCUMENT, NEVER UNPACK A NEW "
+"FOR YOU, BUT YOU WILL NEED TO MANUALLY PERFORM THE UPGRADE. SEE THE "
+"README.TXT FILE INSIDE THE DOWNLOADED ZIP FILE FOR INSTRUCTIONS ON HOW THIS "
+"IS ACCOMPLISHED. AS IS ALSO DESCRIBED IN THAT DOCUMENT, NEVER UNPACK A NEW "
 "RELEASE ON TOP OF AN OLD INSTALLATION AS THAT MAY BREAK THE APPLICATION."
 msgstr ""
 "LA MISE À JOUR DE L'APPLICATION TÉLÉCHARGERA LA DERNIÈRE VERSION PORTABLE "
@@ -2882,6 +2971,13 @@ msgstr ""
 msgid "LAUNCHING GAME '%s'"
 msgstr "LANCEMENT DU JEU '%s'"
 
+#, c-format
+msgid "ARCADIA %s IS AVAILABLE"
+msgstr ""
+
+msgid "SETUP → UPDATE ARCADIA INSTALLS IT"
+msgstr ""
+
 msgid "menu"
 msgstr "menu"
 
@@ -2910,12 +3006,9 @@ msgid_plural "%i minutes ago"
 msgstr[0] "il y a %i minute"
 msgstr[1] "il y a %i minutes"
 
-#, c-format
 msgctxt "theme"
-msgid "%i second ago"
-msgid_plural "%i seconds ago"
-msgstr[0] "il y a %i seconde"
-msgstr[1] "il y a %i secondes"
+msgid "just now"
+msgstr ""
 
 msgid "edit date"
 msgstr "éditer la date"
@@ -3200,5 +3293,189 @@ msgstr "Copie des ressources..."
 msgid "Creating system directories..."
 msgstr "Création des dossiers système..."
 
+msgid "NO PICTURES OR VIDEO FOR THIS GAME YET"
+msgstr ""
+
+msgid "SETTINGS → COVERS AND INFO CAN GET THEM"
+msgstr ""
+
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "ERREUR: IMPOSIBLE D'AFFICHER LE FICHIER PDF"
+
+#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
+#~ msgstr "ERREUR : L'APPLICATION OU L'ALIAS N'EXISTE PAS OU EST ILLISIBLE"
+
+#~ msgid "MEDIA TARGET TYPE"
+#~ msgstr "TYPE DE MÉDIA CIBLE"
+
+#~ msgid "SCREENSHOTS"
+#~ msgstr "CAPTURES D'ÉCRANS"
+
+#~ msgid "TITLE SCREENS"
+#~ msgstr "ECRAN DE TITRE"
+
+#~ msgid "COVERS"
+#~ msgstr "AFFICHES"
+
+#~ msgid "BACK COVERS"
+#~ msgstr "AFFICHES ARRIÈRE"
+
+#~ msgid "MARQUEES (WHEELS)"
+#~ msgstr "MARQUEES (WHEELS)"
+
+#~ msgid "3D BOXES"
+#~ msgstr "BOÎTES 3D"
+
+#~ msgid "PHYSICAL MEDIA"
+#~ msgstr "MÉDIA PHYSIQUE"
+
+#~ msgid "MIXIMAGES"
+#~ msgstr "MIXIMAGES"
+
+#~ msgid "IMPORT MEDIA"
+#~ msgstr "IMPORTE MÉDIA"
+
+#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+#~ msgstr "IMPORTE BANNIÈRES OU LOGO SI DISPO"
+
+#~ msgid "OVERWRITE MEDIA FILES"
+#~ msgstr "ECRASER LES FICHIERS MÉDIA"
+
+#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+#~ msgstr "INCLURE UNIQUEMENT LES APPS CLASSÉES COMME JEUX"
+
+#~ msgid "close (apply)"
+#~ msgstr "fermer (appliquer)"
+
+#~ msgid "close (cancel)"
+#~ msgstr "fermer (annuler)"
+
+#~ msgid "MAIN MENU"
+#~ msgstr "MENU PRINCIPAL"
+
+#~ msgid "SCRAPER"
+#~ msgstr "SCRAPEUR"
+
+#~ msgid "UI SETTINGS"
+#~ msgstr "PARAMÈTRES D'AFFICHAGE"
+
+#~ msgid "SOUND SETTINGS"
+#~ msgstr "PARAMÈTRES AUDIO"
+
+#~ msgid "INPUT DEVICE SETTINGS"
+#~ msgstr "PARAMÈTRES DES MANETTES"
+
+#~ msgid "GAME COLLECTION SETTINGS"
+#~ msgstr "PARAMÈTRES DES COLLECTIONS"
+
+#~ msgid "UTILITIES"
+#~ msgstr "OUTILS"
+
+#~ msgid "MENU COLOR SCHEME"
+#~ msgstr "SCHÉMA DE COULEURS DU MENU"
+
+#~ msgid "DARK"
+#~ msgstr "SOMBRE"
+
+#~ msgid "DARK AND RED"
+#~ msgstr "SOMBRE ET ROUGE"
+
+#~ msgid "LIGHT"
+#~ msgstr "CLAIR"
+
+#~ msgid "AUDIO DRIVER"
+#~ msgstr "PILOTE AUDIO"
+
+#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
+#~ msgstr "PILOTE AUDIO (REDÉMARRAGE REQUIS)"
+
+#~ msgid "TOUCH OVERLAY SIZE"
+#~ msgstr "TAILLE DE LA SUPERPOSITION TACTILE"
+
+#~ msgid "EXTRA SMALL"
+#~ msgstr "TRÈS PETIT"
+
+#~ msgid "TOUCH OVERLAY OPACITY"
+#~ msgstr "OPACITÉ DE LA SUPERPOSITION TACTILE"
+
+#~ msgid "VERY LOW"
+#~ msgstr "TRÈS BAS"
+
+#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
+#~ msgstr "TEMPS DE DISPARITION DE LA SUPERPOSITION TACTILE"
+
+#~ msgid "ENABLE TOUCH OVERLAY"
+#~ msgstr "ACTIVER LA SUPERPOSITION TACTILE"
+
+#~ msgid ""
+#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
+#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
+#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
+#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
+#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
+#~ msgstr ""
+#~ "NE DÉSACTIVEZ PAS LA SUPERPOSITION TACTILE À MOINS QUE VOUS UTILISIEZ UN "
+#~ "CONTRÔLEUR OU VOUS VOUS VERROUILLEREZ HORS DE L'APPLICATION. SI CELA SE "
+#~ "PRODUIT, BRANCHEZ TEMPORAIREMENT UN CONTRÔLEUR OU UN CLAVIER POUR "
+#~ "RÉACTIVER CE PARAMÈTRE, VOUS POUVEZ ÉGALEMENT EFFACER LE STOCKAGE ARCADIA "
+#~ "DANS LES PARAMÈTRES DE L'APPLICATION ANDROID POUR FORCER LE CONFIGURATEUR "
+#~ "À S'EXÉCUTER AU PROCHAIN DÉMARRAGE"
+
+#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
+#~ msgstr "MASQUER LA BARRE DES TÂCHES (REDÉMARRAGE REQUIS)"
+
+#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
+#~ msgstr "LANCEZ LES JEUX SUR L'AUTRE ÉCRAN"
+
+#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
+#~ msgstr "BOUTON RETOUR/MOUVEMENT RETOUR QUITTE L'APPLICATION"
+
+#~ msgid "close menu"
+#~ msgstr "fermer le menu"
+
+#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
+#~ msgstr "AFFICHAGE DE L’INDICATEUR D’ÉTAT CELLULAIRE"
+
+#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
+#~ msgstr "CELA SUPPRIMERA COMPLÈTEMENT LE THÈME"
+
+#~ msgid "system"
+#~ msgstr "système"
+
+#~ msgid "view media"
+#~ msgstr "voir les médias"
+
+#~ msgid ""
+#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
+#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
+#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
+#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
+#~ "THE CONFIGURED ROM DIRECTORY:\n"
+#~ msgstr ""
+#~ "AUCUN FICHIER DE JEU N'A ÉTÉ TROUVÉ. IMPORTEZ DES JEUX OU PLACEZ-LES "
+#~ "MANUELLEMENT DANS LE RÉPERTOIRE ROM CONFIGURÉ. EN OPTION, VOUS POUVEZ "
+#~ "GÉNÉRER LA STRUCTURE DU RÉPERTOIRE ROM, CE QUI CRÉERA UN FICHIER TEXTE "
+#~ "POUR CHAQUE SYSTÈME FOURNISSANT DES INFORMATIONS TELLES QUE LES "
+#~ "EXTENSIONS DE FICHIERS PRISES EN CHARGE. VOICI LE RÉPERTOIRE ROM "
+#~ "CONFIGURÉ :\n"
+
+#~ msgid ""
+#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
+#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
+#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
+#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
+#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
+#~ msgstr ""
+#~ "AUCUN FICHIER DE JEU N'A ÉTÉ TROUVÉ. IMPORTEZ DES JEUX OU PLACEZ-LES "
+#~ "MANUELLEMENT DANS LE RÉPERTOIRE ROM ACTUELLEMENT CONFIGURÉ. VOUS POUVEZ "
+#~ "ÉGALEMENT MODIFIER LE CHEMIN ROM ET ÉVENTUELLEMENT GÉNÉRER LA STRUCTURE "
+#~ "DU RÉPERTOIRE ROM, CE QUI CRÉERA UN FICHIER TEXTE POUR CHAQUE SYSTÈME "
+#~ "FOURNISSANT DES INFORMATIONS TELLES QUE LES EXTENSIONS DE FICHIERS PRISES "
+#~ "EN CHARGE. IL S'AGIT DU RÉPERTOIRE ROM CONFIGURÉ :\n"
+
+#, c-format
+#~ msgctxt "theme"
+#~ msgid "%i second ago"
+#~ msgid_plural "%i seconds ago"
+#~ msgstr[0] "il y a %i seconde"
+#~ msgstr[1] "il y a %i secondes"

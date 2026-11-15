@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Arcadia Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-03-22 21:12+0100\n"
+"POT-Creation-Date: 2026-11-15 10:18-0500\n"
 "PO-Revision-Date: 2025-11-19 15:51+0700\n"
 "Last-Translator: Northwestern Software <info@es-de.org>\n"
 "Language-Team: Tiếng Việt <info@es-de.org>\n"
@@ -127,6 +127,9 @@ msgstr "'%s' Đã được lọc, có thể còn nhiều trò chơi khác"
 msgid "DELETED COLLECTION '%s'"
 msgstr "ĐÃ XÓA BỘ SƯU TẬP '%s'"
 
+msgid "OPEN SETUP → EMULATORS TO INSTALL IT"
+msgstr ""
+
 msgctxt "theme"
 msgid "unknown"
 msgstr "không rõ"
@@ -196,9 +199,6 @@ msgid ""
 "ERROR: DIRECTORY DEFINED BY %s COULD NOT BE CREATED, PERMISSION PROBLEMS?"
 msgstr ""
 "LỖI: KHÔNG THỂ TẠO THƯ MỤC ĐƯỢC XÁC ĐỊNH BỞI %s, CÓ THỂ LỖI QUYỀN TRUY CẬP?"
-
-msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-msgstr "LỖI: TỆP ỨNG DỤNG HOẶC BIỆT DANH KHÔNG TỒN TẠI HOẶC KHÔNG ĐỌC ĐƯỢC"
 
 msgid "ERROR: DESKTOP FILE IS INVALID OR UNREADABLE"
 msgstr "LỖI: TỆP MÀN HÌNH NỀN KHÔNG HỢP LỆ HOẶC KHÔNG ĐỌC ĐƯỢC"
@@ -537,6 +537,94 @@ msgstr "ƯU TIÊN YÊU THÍCH TRONG BỘ SƯU TẬP"
 msgid "DISPLAY STAR MARKINGS FOR CUSTOM COLLECTIONS"
 msgstr "HIỂN THỊ DẤU SAO CHO BỘ SƯU TẬP"
 
+msgid "Emulators"
+msgstr ""
+
+msgid "Looking at your games…"
+msgstr ""
+
+#, c-format
+msgid "%i game"
+msgid_plural "%i games"
+msgstr[0] ""
+
+msgid "Windows games"
+msgstr ""
+
+msgid "Deckhand, Arcadia's sister app, plays these"
+msgstr ""
+
+msgid "Get Deckhand"
+msgstr ""
+
+#, c-format
+msgid "Arcadia uses %s, which isn't on Flathub"
+msgstr ""
+
+msgid "Installed"
+msgstr ""
+
+msgid "Add cores"
+msgstr ""
+
+msgid "Install"
+msgstr ""
+
+msgid "The emulator list couldn't be read. Try again from Setup."
+msgstr ""
+
+msgid ""
+"No games yet. Add some and Arcadia picks what they need, or install one "
+"yourself."
+msgstr ""
+
+msgid "Everything your games need is installed. Have fun."
+msgstr ""
+
+#, c-format
+msgid "Your games need %s, and it isn't ready yet. Press X to set it up."
+msgstr ""
+
+#, c-format
+msgid ""
+"Your games need %i emulators; %i isn't ready yet. Press X to set them all up."
+msgid_plural ""
+"Your games need %i emulators; %i aren't ready yet. Press X to set them all "
+"up."
+msgstr[0] ""
+
+#, c-format
+msgid "Adding cores for %s"
+msgstr ""
+
+#, c-format
+msgid "Installing %s"
+msgstr ""
+
+msgid "UPDATE"
+msgstr "CẬP NHẬT"
+
+msgid "REMOVE"
+msgstr ""
+
+msgid "Installing what your games need"
+msgstr ""
+
+msgid "Updating emulators"
+msgstr ""
+
+msgid "choose"
+msgstr "lựa chọn"
+
+msgid "install or manage"
+msgstr ""
+
+msgid "install what's needed"
+msgstr ""
+
+msgid "update all"
+msgstr ""
+
 msgid "IMPORT TO SYSTEM"
 msgstr "NHẬP VÀO HỆ THỐNG"
 
@@ -551,48 +639,6 @@ msgstr "BỎ CHỌN TẤT CẢ"
 
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "LOẠI BỎ KÝ TỰ ĐẶC BIỆT"
-
-msgid "MEDIA TARGET TYPE"
-msgstr "KIỂU PHƯƠNG TIỆN"
-
-msgid "SCREENSHOTS"
-msgstr "ẢNH CHỤP MÀN HÌNH"
-
-msgid "TITLE SCREENS"
-msgstr "MÀN HÌNH TIÊU ĐỀ"
-
-msgid "COVERS"
-msgstr "BÌA TRƯỚC"
-
-msgid "BACK COVERS"
-msgstr "BÌA SAU"
-
-msgid "MARQUEES (WHEELS)"
-msgstr "BIỂU NGỮ (XOAY VÒNG)"
-
-msgid "3D BOXES"
-msgstr "HỘP 3D"
-
-msgid "PHYSICAL MEDIA"
-msgstr "PHƯƠNG TIỆN VẬT LÝ"
-
-msgid "FAN ART"
-msgstr "HÌNH NGƯỜI HÂM MỘ"
-
-msgid "MIXIMAGES"
-msgstr "ẢNH TỔNG HỢP"
-
-msgid "IMPORT MEDIA"
-msgstr "NHẬP PHƯƠNG TIỆN"
-
-msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-msgstr "NHẬP BIỂU NGỮ HOẶC LOGO NẾU CÓ"
-
-msgid "OVERWRITE MEDIA FILES"
-msgstr "GHI ĐÈ TỆP PHƯƠNG TIỆN"
-
-msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-msgstr "CHỈ BAO GỒM ỨNG DỤNG ĐƯỢC PHÂN LOẠI LÀ TRÒ CHƠI"
 
 msgid "START"
 msgstr "BẮT ĐẦU"
@@ -695,11 +741,8 @@ msgstr "ÁP DỤNG"
 msgid "apply"
 msgstr "áp dụng"
 
-msgid "close (apply)"
-msgstr "đóng (áp dụng)"
-
-msgid "close (cancel)"
-msgstr "đóng (hủy)"
+msgid "done"
+msgstr ""
 
 msgid "LAUNCHING GAME"
 msgstr "ĐANG KHỞI CHẠY TRÒ CHƠI"
@@ -734,35 +777,56 @@ msgstr "HIỆU ỨNG MỜ CHO VIDEO"
 msgid "RENDER SCANLINES FOR SCREENSHOTS AND TITLES"
 msgstr "HIỆU ỨNG DÒNG QUÉT CHO ẢNH VÀ TIÊU ĐỀ"
 
-msgid "MAIN MENU"
-msgstr "MENU CHÍNH"
+msgid "SETTINGS"
+msgstr ""
 
-msgid "SCRAPER"
-msgstr "THU THẬP DỮ LIỆU"
+msgid "SETUP"
+msgstr ""
 
-msgid "UI SETTINGS"
-msgstr "CÀI ĐẶT GIAO DIỆN"
+msgid "LOOK AND FEEL"
+msgstr ""
 
-msgid "SOUND SETTINGS"
-msgstr "CÀI ĐẶT ÂM THANH"
+msgid "SOUND"
+msgstr ""
 
-msgid "INPUT DEVICE SETTINGS"
-msgstr "CÀI ĐẶT THIẾT BỊ NHẬP"
+msgid "CONTROLLERS"
+msgstr ""
 
-msgid "GAME COLLECTION SETTINGS"
-msgstr "CÀI ĐẶT BỘ SƯU TẬP TRÒ CHƠI"
+msgid "COVERS AND INFO"
+msgstr ""
 
-msgid "OTHER SETTINGS"
-msgstr "CÀI ĐẶT KHÁC"
-
-msgid "UTILITIES"
-msgstr "TIỆN ÍCH"
+msgid "ADVANCED"
+msgstr ""
 
 msgid "QUIT ARCADIA"
 msgstr "THOÁT"
 
+msgid "COLOURS"
+msgstr ""
+
 msgid "THEME"
 msgstr "GIAO DIỆN"
+
+msgid "COLLECTIONS"
+msgstr "BỘ SƯU TẬP"
+
+msgid "GAMES DEFAULT SORT ORDER"
+msgstr "THỨ TỰ SẮP XẾP"
+
+msgid "SORT FAVORITE GAMES ABOVE NON-FAVORITES"
+msgstr "SẮP XẾP TRÒ CHƠI YÊU THÍCH LÊN TRÊN"
+
+msgid "DISPLAY CLOCK"
+msgstr "HIỂN THỊ ĐỒNG HỒ"
+
+msgid "LAUNCH SCREEN DURATION"
+msgstr "THỜI GIAN KHỞI ĐỘNG"
+
+msgid "SCREENSAVER SETTINGS"
+msgstr "CÀI ĐẶT MÀN HÌNH CHỜ"
+
+msgid "APPLICATION LANGUAGE"
+msgstr "NGÔN NGỮ ỨNG DỤNG"
 
 msgid "THEME DOWNLOADER"
 msgstr "TRÌNH TẢI GIAO DIỆN"
@@ -802,9 +866,6 @@ msgstr "LÀM MỜ (TÍCH HỢP SẴN)"
 
 msgid "THEME LANGUAGE"
 msgstr "NGÔN NGỮ GIAO DIỆN"
-
-msgid "APPLICATION LANGUAGE"
-msgstr "NGÔN NGỮ ỨNG DỤNG"
 
 msgid "QUICK SYSTEM SELECT"
 msgstr "CHỌN HỆ THỐNG NHANH"
@@ -858,32 +919,23 @@ msgctxt "short"
 msgid "GAMES DEFAULT SORT ORDER"
 msgstr "THỨ TỰ SẮP XẾP"
 
-msgid "GAMES DEFAULT SORT ORDER"
-msgstr "THỨ TỰ SẮP XẾP"
+msgid "CLOUD (LIGHT PASTELS)"
+msgstr ""
 
-msgid "MENU COLOR SCHEME"
-msgstr "BẢNG MÀU MENU"
-
-msgid "DARK"
-msgstr "TỐI"
-
-msgid "DARK AND RED"
-msgstr "TỐI VÀ ĐỎ"
-
-msgid "LIGHT"
-msgstr "NHẸ"
+msgid "DUSK (PASTELS IN THE DARK)"
+msgstr ""
 
 msgid "MENU OPENING ANIMATION"
 msgstr "HIỆU ỨNG MỞ MENU"
+
+msgid "SLIDE"
+msgstr ""
 
 msgid "SCALE-UP"
 msgstr "PHÓNG TO"
 
 msgid "NONE"
 msgstr "KHÔNG"
-
-msgid "LAUNCH SCREEN DURATION"
-msgstr "THỜI GIAN KHỞI ĐỘNG"
 
 msgid "NORMAL"
 msgstr "BÌNH THƯỜNG"
@@ -962,23 +1014,14 @@ msgstr "CÀI ĐẶT TRẠNG THÁI HỆ THỐNG"
 msgid "MEDIA VIEWER SETTINGS"
 msgstr "CÀI ĐẶT TRÌNH XEM PHƯƠNG TIỆN"
 
-msgid "SCREENSAVER SETTINGS"
-msgstr "CÀI ĐẶT MÀN HÌNH CHỜ"
-
 msgid "ENABLE THEME VARIANT TRIGGERS"
 msgstr "BẬT BIẾN THỂ GIAO DIỆN"
-
-msgid "DISPLAY CLOCK"
-msgstr "HIỂN THỊ ĐỒNG HỒ"
 
 msgid "BLUR BACKGROUND WHEN MENU IS OPEN"
 msgstr "LÀM MỜ NỀN KHI MỞ MENU"
 
 msgid "SORT FOLDERS ON TOP OF GAMELISTS"
 msgstr "HIỆN THƯ MỤC TRÊN ĐẦU TRÒ CHƠI"
-
-msgid "SORT FAVORITE GAMES ABOVE NON-FAVORITES"
-msgstr "SẮP XẾP TRÒ CHƠI YÊU THÍCH LÊN TRÊN"
 
 msgid "ADD STAR MARKINGS TO FAVORITE GAMES"
 msgstr "THÊM DẤU SAO CHO TRÒ CHƠI YÊU THÍCH"
@@ -998,14 +1041,8 @@ msgstr "BẬT BỘ LỌC DANH SÁCH TRÒ CHƠI"
 msgid "DISPLAY ON-SCREEN HELP"
 msgstr "HIỂN THỊ TRỢ GIÚP TRÊN MÀN HÌNH"
 
-msgid "AUDIO DRIVER"
-msgstr "TRÌNH ÂM THANH"
-
-msgid "AUDIO DRIVER (REQUIRES RESTART)"
-msgstr "TRÌNH ÂM THANH"
-
-msgid "SYSTEM VOLUME"
-msgstr "ÂM LƯỢNG HỆ THỐNG"
+msgid "ENABLE NAVIGATION SOUNDS"
+msgstr "BẬT ÂM THANH ĐIỀU HƯỚNG"
 
 msgid "NAVIGATION SOUNDS VOLUME"
 msgstr "ÂM LƯỢNG ÂM THANH ĐIỀU HƯỚNG"
@@ -1016,75 +1053,32 @@ msgstr "ÂM LƯỢNG TRÌNH PHÁT VIDEO"
 msgid "PLAY AUDIO FOR GAMELIST AND SYSTEM VIEW VIDEOS"
 msgstr "PHÁT ÂM THANH VIDEO VÀ HỆ THỐNG"
 
+msgid "SYSTEM VOLUME"
+msgstr "ÂM LƯỢNG HỆ THỐNG"
+
 msgid "PLAY AUDIO FOR MEDIA VIEWER VIDEOS"
 msgstr "PHÁT ÂM THANH PHƯƠNG TIỆN VIDEO"
 
 msgid "PLAY AUDIO FOR SCREENSAVER VIDEOS"
 msgstr "PHÁT ÂM THANH VIDEO MÀN HÌNH CHỜ"
 
-msgid "ENABLE NAVIGATION SOUNDS"
-msgstr "BẬT ÂM THANH ĐIỀU HƯỚNG"
-
 msgid "CONTROLLER TYPE"
 msgstr "LOẠI TAY CẦM"
 
-msgid "TOUCH OVERLAY SIZE"
-msgstr "KÍCH THƯỚC LỚP CẢM ỨNG"
+msgid "SWAP THE A/B AND X/Y BUTTONS"
+msgstr "ĐỔI VỊ TRÍ NÚT A/B VÀ X/Y"
 
-msgid "MEDIUM"
-msgstr "TRUNG BÌNH"
-
-msgid "LARGE"
-msgstr "LỚN"
-
-msgid "SMALL"
-msgstr "NHỎ"
-
-msgid "EXTRA SMALL"
-msgstr "RẤT NHỎ"
-
-msgid "TOUCH OVERLAY OPACITY"
-msgstr "ĐỘ MỜ CỦA LỚP CẢM ỨNG"
-
-msgid "LOW"
-msgstr "THẤP"
-
-msgid "VERY LOW"
-msgstr "RẤT THẤP"
-
-msgid "TOUCH OVERLAY FADE-OUT TIME"
-msgstr "THỜI GIAN MỜ DẦN LỚP CẢM ỨNG"
-
-msgid "ENABLE TOUCH OVERLAY"
-msgstr "BẬT LỚP CẢM ỨNG"
-
-msgid ""
-"DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-"WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-"TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING AGAIN, "
-"OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS TO FORCE "
-"THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-msgstr ""
-"ĐỪNG TẮT LỚP CẢM ỨNG NẾU BẠN KHÔNG DÙNG TAY CẦM, NẾU KHÔNG BẠN SẼ KHÔNG THỂ "
-"ĐIỀU KHIỂN ỨNG DỤNG. NẾU VIỆC NÀY XẢY RA, BẠN CẦN TẠM THỜI KẾT NỐI TAY CẦM "
-"HOẶC BÀN PHÍM ĐỂ BẬT LẠI CÀI ĐẶT NÀY, HOẶC XÓA DỮ LIỆU LƯU TRỮ CỦA ARCADIA "
-"TRONG CÀI ĐẶT ỨNG DỤNG ANDROID ĐỂ BẮT BUỘC TRÌNH CẤU HÌNH KHỞI ĐỘNG LẠI LẦN "
-"SAU"
+msgid "CONFIGURE KEYBOARD AND CONTROLLERS"
+msgstr "CẤU HÌNH BÀN PHÍM VÀ TAY CẦM"
 
 msgid "ONLY ACCEPT INPUT FROM FIRST CONTROLLER"
 msgstr "CHỈ NHẬN TÍN HIỆU TỪ TAY CẦM THỨ NHẤT"
-
-msgid "SWAP THE A/B AND X/Y BUTTONS"
-msgstr "ĐỔI VỊ TRÍ NÚT A/B VÀ X/Y"
 
 msgid "IGNORE KEYBOARD INPUT"
 msgstr "BỎ QUA NHẬP TỪ BÀN PHÍM"
 
 msgid "INPUT DEVICE NOTIFICATIONS"
 msgstr "THÔNG BÁO THIẾT BỊ NHẬP"
-
-msgid "CONFIGURE KEYBOARD AND CONTROLLERS"
-msgstr "CẤU HÌNH BÀN PHÍM VÀ TAY CẦM"
 
 msgid ""
 "THE KEYBOARD AND CONTROLLERS ARE AUTOMATICALLY CONFIGURED, BUT USING THIS "
@@ -1097,6 +1091,21 @@ msgstr ""
 
 msgid "PROCEED"
 msgstr "TIẾP TỤC"
+
+msgid "TOOLS"
+msgstr ""
+
+msgid "ENABLE ALTERNATIVE EMULATORS PER GAME"
+msgstr "CHỌN GIẢ LẬP CHO TỪNG TRÒ CHƠI"
+
+msgid "SHOW HIDDEN GAMES"
+msgstr "HIỂN THỊ TRÒ CHƠI ẨN"
+
+msgid "CHECK FOR APPLICATION UPDATES"
+msgstr "KIỂM TRA CẬP NHẬT ỨNG DỤNG"
+
+msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
+msgstr "CHẠY NỀN (KHI TRÒ CHƠI ĐANG KHỞI CHẠY)"
 
 msgid "GAME MEDIA DIRECTORY"
 msgstr "THƯ MỤC PHƯƠNG TIỆN TRÒ CHƠI"
@@ -1180,17 +1189,8 @@ msgstr "HÀNG TUẦN"
 msgid "MONTHLY"
 msgstr "HÀNG THÁNG"
 
-msgid "CHECK FOR APPLICATION UPDATES"
-msgstr "KIỂM TRA CẬP NHẬT ỨNG DỤNG"
-
 msgid "INCLUDE PRERELEASES IN UPDATE CHECKS"
 msgstr "BAO GỒM CẢ CÁC BẢN PHÁT HÀNH THỬ KHI KIỂM TRA CẬP NHẬT"
-
-msgid "HIDE TASKBAR (REQUIRES RESTART)"
-msgstr "ẨN THANH TÁC VỤ (CẦN KHỞI ĐỘNG LẠI)"
-
-msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
-msgstr "CHẠY NỀN (KHI TRÒ CHƠI ĐANG KHỞI CHẠY)"
 
 msgid "VIDEO HARDWARE DECODING (EXPERIMENTAL)"
 msgstr "GIẢI MÃ VIDEO BẰNG PHẦN CỨNG (THỬ NGHIỆM)"
@@ -1198,17 +1198,8 @@ msgstr "GIẢI MÃ VIDEO BẰNG PHẦN CỨNG (THỬ NGHIỆM)"
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "NÂNG TẦN SỐ KHUNG HÌNH VIDEO LÊN 60 FPS"
 
-msgid "ENABLE ALTERNATIVE EMULATORS PER GAME"
-msgstr "CHỌN GIẢ LẬP CHO TỪNG TRÒ CHƠI"
-
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "HIỂN THỊ TỆP VÀ THƯ MỤC ẨN"
-
-msgid "SHOW HIDDEN GAMES"
-msgstr "HIỂN THỊ TRÒ CHƠI ẨN"
-
-msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-msgstr "BẮT ĐẦU TRÒ CHƠI TRÊN MÀN HÌNH KHÁC"
 
 msgid "ENABLE CUSTOM EVENT SCRIPTS"
 msgstr "BẬT TẬP LỆNH SỰ KIỆN"
@@ -1224,9 +1215,6 @@ msgstr "XÓA TÊN MAME THỪA (CẦN KHỞI ĐỘNG LẠI)"
 
 msgid "DISABLE DESKTOP COMPOSITION (REQUIRES RESTART)"
 msgstr "TẮT HIỆU ỨNG GIAO DIỆN MÀN HÌNH NỀN (CẦN KHỞI ĐỘNG LẠI)"
-
-msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-msgstr "NHẤN HOẶC VUỐT QUAY LẠI ĐỂ THOÁT"
 
 msgid "DEBUG MODE"
 msgstr "CHẾ ĐỘ GỠ LỖI"
@@ -1315,11 +1303,8 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "CÀI ĐẶT MÀN HÌNH CHỜ"
 
-msgid "choose"
-msgstr "lựa chọn"
-
-msgid "close menu"
-msgstr "đóng menu"
+msgid "open"
+msgstr ""
 
 msgid "EDIT METADATA"
 msgstr "CHỈNH SỬA DỮ LIỆU"
@@ -1510,9 +1495,6 @@ msgstr "DANH SÁCH TRÒ CHƠI"
 msgid "RUNNING GAMELISTS CLEANUP"
 msgstr "ĐANG DỌN DẸP DANH SÁCH TRÒ CHƠI"
 
-msgid "COLLECTIONS"
-msgstr "BỘ SƯU TẬP"
-
 msgid "COLLECTIONS CLEANUP FAILED"
 msgstr "DỌN DẸP BỘ SƯU TẬP THẤT BẠI"
 
@@ -1645,6 +1627,9 @@ msgstr "CÀI ĐẶT NỘI DUNG"
 msgid "MIXIMAGE SETTINGS"
 msgstr "CÀI ĐẶT TỔNG HỢP"
 
+msgid "OTHER SETTINGS"
+msgstr "CÀI ĐẶT KHÁC"
+
 msgid "start scraper"
 msgstr "bắt đầu tìm dữ liệu"
 
@@ -1732,6 +1717,9 @@ msgstr "GIỚI HẠN TỶ LỆ ẢNH CHỤP MÀN HÌNH"
 msgid "HIGH"
 msgstr "CAO"
 
+msgid "LOW"
+msgstr "THẤP"
+
 msgid "SCREENSHOT ASPECT RATIO THRESHOLD"
 msgstr "GIỚI HẠN TỶ LỆ ẢNH CHỤP MÀN HÌNH"
 
@@ -1759,6 +1747,15 @@ msgstr "THU PHÓNG ẢNH CHỤP MÀN HÌNH"
 
 msgid "BOX SIZE"
 msgstr "KÍCH THƯỚC HỘP"
+
+msgid "SMALL"
+msgstr "NHỎ"
+
+msgid "MEDIUM"
+msgstr "TRUNG BÌNH"
+
+msgid "LARGE"
+msgstr "LỚN"
 
 msgid "PHYSICAL MEDIA SIZE"
 msgstr "KÍCH THƯỚC PHƯƠNG TIỆN VẬT LÝ"
@@ -2079,14 +2076,88 @@ msgstr "ĐỔI VIDEO SAU (GIÂY)"
 msgid "RENDER BLUR"
 msgstr "HIỆU ỨNG MỜ"
 
+msgid "MORE OPTIONS"
+msgstr ""
+
+msgid "Show me"
+msgstr ""
+
+msgid "Set up"
+msgstr ""
+
+msgid "Allow"
+msgstr ""
+
+msgid "Connect"
+msgstr ""
+
+msgid "Check"
+msgstr ""
+
+msgid "Get it"
+msgstr ""
+
+msgid "Sort downloads"
+msgstr ""
+
+msgid "Sort inside folders"
+msgstr ""
+
+msgid "Undo the last sort"
+msgstr ""
+
+msgid "Sync saves now"
+msgstr ""
+
+msgid "Back up settings"
+msgstr ""
+
+msgid "Restore a backup"
+msgstr ""
+
+msgid "Update Arcadia"
+msgstr ""
+
+msgid "Setup"
+msgstr ""
+
+msgid "Checking what's ready…"
+msgstr ""
+
+msgid "Tools"
+msgstr ""
+
+msgid "The checklist couldn't be read. The tools on the right still work."
+msgstr ""
+
+msgid "All set"
+msgstr ""
+
+msgid "Everything is ready. Have fun."
+msgstr ""
+
+msgid "Let's get you set up"
+msgstr ""
+
+msgid "Almost ready"
+msgstr ""
+
+#, c-format
+msgid "One thing left to do."
+msgid_plural "%i things left to do."
+msgstr[0] ""
+
+msgid "switch side"
+msgstr ""
+
+msgid "do it"
+msgstr ""
+
 msgid "DISPLAY BLUETOOTH STATUS INDICATOR"
 msgstr "HIỂN THỊ TRẠNG THÁI BLUETOOTH"
 
 msgid "DISPLAY WI-FI STATUS INDICATOR"
 msgstr "HIỂN THỊ TRẠNG THÁI WI-FI"
-
-msgid "DISPLAY CELLULAR STATUS INDICATOR"
-msgstr "HIỂN THỊ TRẠNG THÁI DI ĐỘNG"
 
 msgid "DISPLAY BATTERY STATUS INDICATOR"
 msgstr "HIỂN THỊ TRẠNG THÁI PIN"
@@ -2152,8 +2223,8 @@ msgstr "ĐANG TẢI GIAO DIỆN"
 msgid ""
 "IT SEEMS AS IF THIS THEME REPOSITORY IS CORRUPT, WHICH COULD HAVE BEEN "
 "CAUSED BY AN INTERRUPTION OF A PREVIOUS DOWNLOAD OR UPDATE, FOR EXAMPLE IF "
-"THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD THEME "
-"DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""
+"THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD "
+"THEME DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""
 msgstr ""
 "CÓ VẺ KHO LƯU GIAO DIỆN NÀY ĐÃ BỊ HỎNG, CÓ THỂ DO GIÁN ĐOẠN TRONG LẦN TẢI "
 "HOẶC CẬP NHẬT TRƯỚC, VÍ DỤ NẾU TIẾN TRÌNH ARCADIA BỊ DỪNG. CẦN TẢI LẠI GIAO "
@@ -2258,9 +2329,6 @@ msgstr "KHÔNG TẢI ĐƯỢC DANH SÁCH GIAO DIỆN"
 msgid "DOWNLOADING THEMES LIST"
 msgstr "ĐANG TẢI DANH SÁCH GIAO DIỆN"
 
-msgid "THIS WILL COMPLETELY DELETE THE THEME"
-msgstr "ĐIỀU NÀY SẼ XÓA HOÀN TOÀN GIAO DIỆN"
-
 msgid ""
 "THIS WILL COMPLETELY DELETE THE THEME INCLUDING ANY LOCAL CUSTOMIZATIONS"
 msgstr "ĐIỀU NÀY SẼ XÓA HOÀN TOÀN GIAO DIỆN, BAO GỒM MỌI TÙY CHỈNH CỤC BỘ"
@@ -2290,8 +2358,8 @@ msgid ""
 "DIRECTORY \"themes-list\" WILL BE RENAMED TO \"themes-list_CORRUPT_DISABLED\""
 msgstr ""
 "CÓ VẺ KHO LƯU DANH SÁCH GIAO DIỆN ĐÃ BỊ HỎNG, CÓ THỂ DO BỊ GIÁN ĐOẠN KHI TẢI "
-"HOẶC CẬP NHẬT TRƯỚC ĐÓ, VÍ DỤ NẾU TIẾN TRÌNH ARCADIA BỊ DỪNG. CẦN TẢI LẠI MỚI, "
-"VÀ THƯ MỤC CŨ \"themes-list\" SẼ ĐƯỢC ĐỔI TÊN THÀNH \"themes-"
+"HOẶC CẬP NHẬT TRƯỚC ĐÓ, VÍ DỤ NẾU TIẾN TRÌNH ARCADIA BỊ DỪNG. CẦN TẢI LẠI "
+"MỚI, VÀ THƯ MỤC CŨ \"themes-list\" SẼ ĐƯỢC ĐỔI TÊN THÀNH \"themes-"
 "list_CORRUPT_DISABLED\""
 
 msgid "UPDATING THEMES LIST"
@@ -2311,6 +2379,45 @@ msgstr ""
 "MỚI HOẶC ĐÃ THAY ĐỔI. ĐIỀU NÀY CŨNG ÁP DỤNG CHO MỌI GIAO DIỆN BẠN TẢI. LƯU Ý "
 "BẠN KHÔNG THỂ DỪNG QUÁ TRÌNH TẢI ĐANG DIỄN RA VÌ ĐIỀU ĐÓ CÓ THỂ GÂY LỖI DỮ "
 "LIỆU."
+
+msgid "WORKING…"
+msgstr ""
+
+msgid "Working on it…"
+msgstr ""
+
+msgid "The tool couldn't be started."
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
+#, c-format
+msgid "Done in %i s"
+msgstr ""
+
+#, c-format
+msgid "Done in %i min"
+msgstr ""
+
+msgid "Finished with a problem: see below"
+msgstr ""
+
+msgid "TRY AGAIN"
+msgstr ""
+
+msgid "try again"
+msgstr ""
+
+#, c-format
+msgid "Step %i of %i… this can take a few minutes"
+msgstr ""
+
+msgid "scroll"
+msgstr ""
+
+msgid "close or try again"
+msgstr ""
 
 msgid "browse"
 msgstr "duyệt"
@@ -2335,6 +2442,9 @@ msgstr "BÌA SAU HỘP"
 
 msgid "TITLE SCREEN"
 msgstr "MÀN HÌNH TIÊU ĐỀ"
+
+msgid "FAN ART"
+msgstr "HÌNH NGƯỜI HÂM MỘ"
 
 msgid "MIXIMAGE"
 msgstr "HÌNH ẢNH TỔNG HỢP"
@@ -2618,17 +2728,11 @@ msgid "CAN'T ADD ENTRIES THAT ARE NOT COUNTED AS GAMES TO CUSTOM COLLECTIONS"
 msgstr ""
 "KHÔNG THỂ THÊM MỤC KHÔNG PHẢI TRÒ CHƠI VÀO BỘ SƯU TẬP TÙY CHỈNHBỘ SƯU TẬP"
 
-msgid "system"
-msgstr "hệ thống"
-
-msgid "view media"
-msgstr "xem phương tiện"
+msgid "media"
+msgstr ""
 
 msgid "options"
 msgstr "tùy chọn"
-
-msgid "random"
-msgstr "ngẫu nhiên"
 
 msgid "jump to game"
 msgstr "nhảy đến trò chơi"
@@ -2640,6 +2744,9 @@ msgstr "có"
 msgctxt "theme"
 msgid "no"
 msgstr "không"
+
+msgid "random"
+msgstr "ngẫu nhiên"
 
 msgid "screensaver"
 msgstr "màn hình chờ"
@@ -2677,8 +2784,8 @@ msgstr ""
 msgid ""
 "COULDN'T PARSE THE SYSTEMS CONFIGURATION FILE. IF YOU HAVE A CUSTOMIZED "
 "es_systems.xml FILE, THEN SOMETHING IS LIKELY WRONG WITH YOUR XML SYNTAX. IF "
-"YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE ARCADIA INSTALLATION IS BROKEN. "
-"SEE THE APPLICATION LOG FILE es_log.txt FOR ADDITIONAL INFO"
+"YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE ARCADIA INSTALLATION IS "
+"BROKEN. SEE THE APPLICATION LOG FILE es_log.txt FOR ADDITIONAL INFO"
 msgstr ""
 "KHÔNG THỂ PHÂN TÍCH TỆP CẤU HÌNH HỆ THỐNG. NẾU BẠN CÓ TỆP NGƯỜI DÙNG "
 "es_systems.xml, CÓ THỂ CÚ PHÁP XML ĐANG GẶP LỖI. NẾU BẠN KHÔNG CÓ TỆP HỆ "
@@ -2686,30 +2793,14 @@ msgstr ""
 "CỦA ỨNG DỤNG es_log.txt ĐỂ BIẾT THÊM THÔNG TIN"
 
 msgid ""
-"NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY IN "
-"THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM DIRECTORY "
-"STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME "
-"INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED "
-"ROM DIRECTORY:\n"
+"Welcome to Arcadia. No games were found yet.\n"
+"\n"
+"Put your games in the ROM folder below, one folder per console (Create makes "
+"the folders), or choose Setup and then Sort downloads to move them there for "
+"you.\n"
+"\n"
+"The ROM folder is "
 msgstr ""
-"KHÔNG TÌM THẤY TỆP TRÒ CHƠI NÀO. HÃY NHẬP VÀO MỘT SỐ TRÒ CHƠI HOẶC ĐẶT CHÚNG "
-"THỦ CÔNG VÀO THƯ MỤC ROM ĐÃ ĐƯỢC CẤU HÌNH. BẠN CŨNG CÓ THỂ TÙY CHỌN TẠO CẤU "
-"TRÚC THƯ MỤC ROM, HÀNH ĐỘNG NÀY SẼ TẠO RA MỘT TỆP VĂN BẢN CHO MỖI HỆ THỐNG "
-"CHỨA THÔNG TIN NHƯ CÁC PHẦN MỞ RỘNG TỆP ĐƯỢC HỖ TRỢ. ĐÂY LÀ THƯ MỤC ROM ĐÃ "
-"CẤU HÌNH:\n"
-
-msgid ""
-"NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY IN "
-"THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM PATH AND "
-"OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT "
-"FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE "
-"EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-msgstr ""
-"KHÔNG TÌM THẤY TỆP TRÒ CHƠI NÀO. HÃY NHẬP VÀO MỘT SỐ TRÒ CHƠI HOẶC ĐẶT CHÚNG "
-"THỦ CÔNG VÀO THƯ MỤC ROM ĐANG ĐƯỢC CẤU HÌNH. BẠN CŨNG CÓ THỂ THAY ĐỔI ĐƯỜNG "
-"DẪN ROM VÀ TÙY CHỌN TẠO CẤU TRÚC THƯ MỤC ROM, HÀNH ĐỘNG NÀY SẼ TẠO RA MỘT "
-"TỆP VĂN BẢN CHO MỖI HỆ THỐNG CHỨA THÔNG TIN NHƯ CÁC PHẦN MỞ RỘNG TỆP ĐƯỢC HỖ "
-"TRỢ. ĐÂY LÀ THƯ MỤC ROM ĐÃ CẤU HÌNH:\n"
 
 msgid "CHANGE"
 msgstr "THAY ĐỔI"
@@ -2732,8 +2823,8 @@ msgid "CLEAR (LEAVE BLANK TO RESET TO DEFAULT PATH)"
 msgstr "XÓA (ĐỂ TRỐNG ĐỂ ĐẶT LẠI ĐƯỜNG DẪN MẶC ĐỊNH)"
 
 msgid ""
-"THIS WILL CREATE DIRECTORIES FOR ALL THE GAME SYSTEMS DEFINED IN es_systems."
-"xml\n"
+"THIS WILL CREATE DIRECTORIES FOR ALL THE GAME SYSTEMS DEFINED IN "
+"es_systems.xml\n"
 "\n"
 "THIS MAY CREATE A LOT OF FOLDERS SO IT'S ADVISED TO REMOVE THE ONES YOU "
 "DON'T NEED"
@@ -2770,14 +2861,11 @@ msgstr ""
 "CÓ MỤC TƯƠNG ỨNG TRONG TỆP CẤU HÌNH HỆ THỐNG. VUI LÒNG KIỂM TRA CÀI ĐẶT TRÊN "
 "GIAO DIỆN \"TRÌNH GIẢ LẬP THAY THẾ\" TRONG MENU \"CÀI ĐẶT KHÁC\""
 
-msgid "UPDATE"
-msgstr "CẬP NHẬT"
-
 msgid ""
 "THE APPLICATION UPDATER WILL DOWNLOAD THE LATEST PORTABLE WINDOWS RELEASE "
-"FOR YOU, BUT YOU WILL NEED TO MANUALLY PERFORM THE UPGRADE. SEE THE README."
-"TXT FILE INSIDE THE DOWNLOADED ZIP FILE FOR INSTRUCTIONS ON HOW THIS IS "
-"ACCOMPLISHED. AS IS ALSO DESCRIBED IN THAT DOCUMENT, NEVER UNPACK A NEW "
+"FOR YOU, BUT YOU WILL NEED TO MANUALLY PERFORM THE UPGRADE. SEE THE "
+"README.TXT FILE INSIDE THE DOWNLOADED ZIP FILE FOR INSTRUCTIONS ON HOW THIS "
+"IS ACCOMPLISHED. AS IS ALSO DESCRIBED IN THAT DOCUMENT, NEVER UNPACK A NEW "
 "RELEASE ON TOP OF AN OLD INSTALLATION AS THAT MAY BREAK THE APPLICATION."
 msgstr ""
 "TRÌNH CẬP NHẬT ỨNG DỤNG SẼ TẢI PHIÊN BẢN DI ĐỘNG MỚI NHẤT CHO WINDOWS, NHƯNG "
@@ -2808,6 +2896,13 @@ msgstr ""
 msgid "LAUNCHING GAME '%s'"
 msgstr "ĐANG KHỞI CHẠY TRÒ CHƠI '%s'"
 
+#, c-format
+msgid "ARCADIA %s IS AVAILABLE"
+msgstr ""
+
+msgid "SETUP → UPDATE ARCADIA INSTALLS IT"
+msgstr ""
+
 msgid "menu"
 msgstr "menu"
 
@@ -2833,11 +2928,9 @@ msgid "%i minute ago"
 msgid_plural "%i minutes ago"
 msgstr[0] "cách đây %i phút"
 
-#, c-format
 msgctxt "theme"
-msgid "%i second ago"
-msgid_plural "%i seconds ago"
-msgstr[0] "cách đây %i giây"
+msgid "just now"
+msgstr ""
 
 msgid "edit date"
 msgstr "chỉnh ngày"
@@ -3119,5 +3212,185 @@ msgstr "Đang sao chép tài nguyên..."
 msgid "Creating system directories..."
 msgstr "Đang tạo thư mục hệ thống..."
 
+msgid "NO PICTURES OR VIDEO FOR THIS GAME YET"
+msgstr ""
+
+msgid "SETTINGS → COVERS AND INFO CAN GET THEM"
+msgstr ""
+
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "LỖI: KHÔNG THỂ HIỂN THỊ TỆP PDF"
+
+#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
+#~ msgstr "LỖI: TỆP ỨNG DỤNG HOẶC BIỆT DANH KHÔNG TỒN TẠI HOẶC KHÔNG ĐỌC ĐƯỢC"
+
+#~ msgid "MEDIA TARGET TYPE"
+#~ msgstr "KIỂU PHƯƠNG TIỆN"
+
+#~ msgid "SCREENSHOTS"
+#~ msgstr "ẢNH CHỤP MÀN HÌNH"
+
+#~ msgid "TITLE SCREENS"
+#~ msgstr "MÀN HÌNH TIÊU ĐỀ"
+
+#~ msgid "COVERS"
+#~ msgstr "BÌA TRƯỚC"
+
+#~ msgid "BACK COVERS"
+#~ msgstr "BÌA SAU"
+
+#~ msgid "MARQUEES (WHEELS)"
+#~ msgstr "BIỂU NGỮ (XOAY VÒNG)"
+
+#~ msgid "3D BOXES"
+#~ msgstr "HỘP 3D"
+
+#~ msgid "PHYSICAL MEDIA"
+#~ msgstr "PHƯƠNG TIỆN VẬT LÝ"
+
+#~ msgid "MIXIMAGES"
+#~ msgstr "ẢNH TỔNG HỢP"
+
+#~ msgid "IMPORT MEDIA"
+#~ msgstr "NHẬP PHƯƠNG TIỆN"
+
+#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+#~ msgstr "NHẬP BIỂU NGỮ HOẶC LOGO NẾU CÓ"
+
+#~ msgid "OVERWRITE MEDIA FILES"
+#~ msgstr "GHI ĐÈ TỆP PHƯƠNG TIỆN"
+
+#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+#~ msgstr "CHỈ BAO GỒM ỨNG DỤNG ĐƯỢC PHÂN LOẠI LÀ TRÒ CHƠI"
+
+#~ msgid "close (apply)"
+#~ msgstr "đóng (áp dụng)"
+
+#~ msgid "close (cancel)"
+#~ msgstr "đóng (hủy)"
+
+#~ msgid "MAIN MENU"
+#~ msgstr "MENU CHÍNH"
+
+#~ msgid "SCRAPER"
+#~ msgstr "THU THẬP DỮ LIỆU"
+
+#~ msgid "UI SETTINGS"
+#~ msgstr "CÀI ĐẶT GIAO DIỆN"
+
+#~ msgid "SOUND SETTINGS"
+#~ msgstr "CÀI ĐẶT ÂM THANH"
+
+#~ msgid "INPUT DEVICE SETTINGS"
+#~ msgstr "CÀI ĐẶT THIẾT BỊ NHẬP"
+
+#~ msgid "GAME COLLECTION SETTINGS"
+#~ msgstr "CÀI ĐẶT BỘ SƯU TẬP TRÒ CHƠI"
+
+#~ msgid "UTILITIES"
+#~ msgstr "TIỆN ÍCH"
+
+#~ msgid "MENU COLOR SCHEME"
+#~ msgstr "BẢNG MÀU MENU"
+
+#~ msgid "DARK"
+#~ msgstr "TỐI"
+
+#~ msgid "DARK AND RED"
+#~ msgstr "TỐI VÀ ĐỎ"
+
+#~ msgid "LIGHT"
+#~ msgstr "NHẸ"
+
+#~ msgid "AUDIO DRIVER"
+#~ msgstr "TRÌNH ÂM THANH"
+
+#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
+#~ msgstr "TRÌNH ÂM THANH"
+
+#~ msgid "TOUCH OVERLAY SIZE"
+#~ msgstr "KÍCH THƯỚC LỚP CẢM ỨNG"
+
+#~ msgid "EXTRA SMALL"
+#~ msgstr "RẤT NHỎ"
+
+#~ msgid "TOUCH OVERLAY OPACITY"
+#~ msgstr "ĐỘ MỜ CỦA LỚP CẢM ỨNG"
+
+#~ msgid "VERY LOW"
+#~ msgstr "RẤT THẤP"
+
+#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
+#~ msgstr "THỜI GIAN MỜ DẦN LỚP CẢM ỨNG"
+
+#~ msgid "ENABLE TOUCH OVERLAY"
+#~ msgstr "BẬT LỚP CẢM ỨNG"
+
+#~ msgid ""
+#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
+#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
+#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
+#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
+#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
+#~ msgstr ""
+#~ "ĐỪNG TẮT LỚP CẢM ỨNG NẾU BẠN KHÔNG DÙNG TAY CẦM, NẾU KHÔNG BẠN SẼ KHÔNG "
+#~ "THỂ ĐIỀU KHIỂN ỨNG DỤNG. NẾU VIỆC NÀY XẢY RA, BẠN CẦN TẠM THỜI KẾT NỐI "
+#~ "TAY CẦM HOẶC BÀN PHÍM ĐỂ BẬT LẠI CÀI ĐẶT NÀY, HOẶC XÓA DỮ LIỆU LƯU TRỮ "
+#~ "CỦA ARCADIA TRONG CÀI ĐẶT ỨNG DỤNG ANDROID ĐỂ BẮT BUỘC TRÌNH CẤU HÌNH "
+#~ "KHỞI ĐỘNG LẠI LẦN SAU"
+
+#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
+#~ msgstr "ẨN THANH TÁC VỤ (CẦN KHỞI ĐỘNG LẠI)"
+
+#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
+#~ msgstr "BẮT ĐẦU TRÒ CHƠI TRÊN MÀN HÌNH KHÁC"
+
+#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
+#~ msgstr "NHẤN HOẶC VUỐT QUAY LẠI ĐỂ THOÁT"
+
+#~ msgid "close menu"
+#~ msgstr "đóng menu"
+
+#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
+#~ msgstr "HIỂN THỊ TRẠNG THÁI DI ĐỘNG"
+
+#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
+#~ msgstr "ĐIỀU NÀY SẼ XÓA HOÀN TOÀN GIAO DIỆN"
+
+#~ msgid "system"
+#~ msgstr "hệ thống"
+
+#~ msgid "view media"
+#~ msgstr "xem phương tiện"
+
+#~ msgid ""
+#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
+#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
+#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
+#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
+#~ "THE CONFIGURED ROM DIRECTORY:\n"
+#~ msgstr ""
+#~ "KHÔNG TÌM THẤY TỆP TRÒ CHƠI NÀO. HÃY NHẬP VÀO MỘT SỐ TRÒ CHƠI HOẶC ĐẶT "
+#~ "CHÚNG THỦ CÔNG VÀO THƯ MỤC ROM ĐÃ ĐƯỢC CẤU HÌNH. BẠN CŨNG CÓ THỂ TÙY CHỌN "
+#~ "TẠO CẤU TRÚC THƯ MỤC ROM, HÀNH ĐỘNG NÀY SẼ TẠO RA MỘT TỆP VĂN BẢN CHO MỖI "
+#~ "HỆ THỐNG CHỨA THÔNG TIN NHƯ CÁC PHẦN MỞ RỘNG TỆP ĐƯỢC HỖ TRỢ. ĐÂY LÀ THƯ "
+#~ "MỤC ROM ĐÃ CẤU HÌNH:\n"
+
+#~ msgid ""
+#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
+#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
+#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
+#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
+#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
+#~ msgstr ""
+#~ "KHÔNG TÌM THẤY TỆP TRÒ CHƠI NÀO. HÃY NHẬP VÀO MỘT SỐ TRÒ CHƠI HOẶC ĐẶT "
+#~ "CHÚNG THỦ CÔNG VÀO THƯ MỤC ROM ĐANG ĐƯỢC CẤU HÌNH. BẠN CŨNG CÓ THỂ THAY "
+#~ "ĐỔI ĐƯỜNG DẪN ROM VÀ TÙY CHỌN TẠO CẤU TRÚC THƯ MỤC ROM, HÀNH ĐỘNG NÀY SẼ "
+#~ "TẠO RA MỘT TỆP VĂN BẢN CHO MỖI HỆ THỐNG CHỨA THÔNG TIN NHƯ CÁC PHẦN MỞ "
+#~ "RỘNG TỆP ĐƯỢC HỖ TRỢ. ĐÂY LÀ THƯ MỤC ROM ĐÃ CẤU HÌNH:\n"
+
+#, c-format
+#~ msgctxt "theme"
+#~ msgid "%i second ago"
+#~ msgid_plural "%i seconds ago"
+#~ msgstr[0] "cách đây %i giây"

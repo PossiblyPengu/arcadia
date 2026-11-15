@@ -12,6 +12,7 @@
 #include "guis/GuiMsgBox.h"
 #include "guis/GuiToolRunner.h"
 #include "utils/LocalizationUtil.h"
+#include "utils/StringUtil.h"
 
 #include <sstream>
 
@@ -19,20 +20,19 @@ GuiEmulators::GuiEmulators(const std::string& toolsDirectory, std::function<void
     : mRenderer {Renderer::getInstance()}
     , mToolsDirectory {toolsDirectory}
     , mOnClose {onClose}
-    , mReading {false}
-    , mPlanReady {false}
+    , mShared {std::make_shared<Shared>()}
 {
     mCard.setFrameColor(mMenuColorFrame);
     addChild(&mCard);
     mHeadline.setFont(Font::get(FONT_SIZE_LARGE * 0.8f, FONT_PATH_TITLE));
     mHeadline.setColor(mMenuColorTitle);
     mHeadline.setAutoCalcExtent(glm::ivec2 {0, 1});
-    mHeadline.setText("Emulators");
+    mHeadline.setText(_("Emulators"));
     addChild(&mHeadline);
     mSubline.setFont(Font::get(FONT_SIZE_SMALL, FONT_PATH_LIGHT));
     mSubline.setColor(mMenuColorSecondary);
     mSubline.setAutoCalcExtent(glm::ivec2 {0, 1});
-    mSubline.setText("Looking at your games…");
+    mSubline.setText(_("Looking at your games…"));
     addChild(&mSubline);
     mList = std::make_shared<ComponentList>();
 
@@ -47,8 +47,7 @@ GuiEmulators::GuiEmulators(const std::string& toolsDirectory, std::function<void
 
 GuiEmulators::~GuiEmulators()
 {
-    if (mThread && mThread->joinable())
-        mThread->join();
+    // (Nothing to wait for: a plan read still running has its own reference to what it shares with this screen.)
 }
 
 void GuiEmulators::layout()
@@ -67,16 +66,14 @@ void GuiEmulators::layout()
 
 void GuiEmulators::readPlan()
 {
-    if (mReading)
+    if (mShared->reading)
         return;
-    if (mThread && mThread->joinable())
-        mThread->join();
-    mReading = true;
-    mThread = std::make_unique<std::thread>([this] {
+    mShared->reading = true;
+    const std::string cmd {GuiToolRunner::toolEnvironment() + "bash \"" + mToolsDirectory +
+                           "/install-emulators.sh\" --plan"};
+    std::thread([shared = mShared, cmd] {
         std::string output;
-        GuiToolRunner::runWithoutPreload(
-            GuiToolRunner::toolEnvironment() + "bash \"" + mToolsDirectory + "/install-emulators.sh\" --plan",
-            [&output](const std::string& chunk) { output += chunk; });
+        GuiToolRunner::runWithoutPreload(cmd, [&output](const std::string& chunk) { output += chunk; });
         std::vector<Row> rows;
         std::istringstream lines {output};
         std::string line;
@@ -92,12 +89,12 @@ void GuiEmulators::readPlan()
                 rows.push_back({"none", f[3], f[1], "", true, f[2]});
         }
         {
-            std::unique_lock<std::mutex> lock {mMutex};
-            mPending = rows;
+            std::unique_lock<std::mutex> lock {shared->mutex};
+            shared->pending = rows;
         }
-        mReading = false;
-        mPlanReady = true;
-    });
+        shared->reading = false;
+        shared->ready = true;
+    }).detach();
 }
 
 int GuiEmulators::missingNeeded() const
@@ -111,8 +108,8 @@ int GuiEmulators::missingNeeded() const
 void GuiEmulators::showPlan()
 {
     {
-        std::unique_lock<std::mutex> lock {mMutex};
-        mRows = mPending;
+        std::unique_lock<std::mutex> lock {mShared->mutex};
+        mRows = mShared->pending;
     }
     const int cursor {mList->size() > 0 ? mList->getCursorId() : 0};
     mList = std::make_shared<ComponentList>();
@@ -146,22 +143,24 @@ void GuiEmulators::showPlan()
         std::string tag;
         bool loud {false};
         if (r.kind == "none") {
-            const std::string games {r.detail + (r.detail == "1" ? " game" : " games")};
+            const int count {std::atoi(r.detail.c_str())};
+            const std::string games {Utils::String::format(_n("%i game", "%i games", count), count)};
             if (r.id == "deckhand") {
-                name = "Windows games";
-                detail = games + " · Deckhand, Arcadia's sister app, plays these";
-                tag = "Get Deckhand";
+                name = _("Windows games");
+                detail = games + " · " + _("Deckhand, Arcadia's sister app, plays these");
+                tag = _("Get Deckhand");
                 loud = true;
             }
             else {
-                detail = games + " · Arcadia uses " + r.id + ", which isn't on Flathub";
+                detail = games + " · " +
+                         Utils::String::format(_("Arcadia uses %s, which isn't on Flathub"), r.id.c_str());
             }
         }
         else if (r.state == "ready") {
-            tag = "Installed";
+            tag = _("Installed");
         }
         else {
-            tag = r.state == "cores" ? "Add cores" : "Install";
+            tag = r.state == "cores" ? _("Add cores") : _("Install");
             loud = r.needed;
         }
 
@@ -191,16 +190,21 @@ void GuiEmulators::showPlan()
 
     const int left {needed - ready};
     if (mRows.empty())
-        mSubline.setText("The emulator list couldn't be read. Try again from Setup.");
+        mSubline.setText(_("The emulator list couldn't be read. Try again from Setup."));
     else if (needed == 0)
-        mSubline.setText("No games yet. Add some and Arcadia picks what they need, or install one yourself.");
+        mSubline.setText(_("No games yet. Add some and Arcadia picks what they need, or install one yourself."));
     else if (left == 0)
-        mSubline.setText("Everything your games need is installed. Have fun.");
+        mSubline.setText(_("Everything your games need is installed. Have fun."));
     else if (needed == 1)
-        mSubline.setText("Your games need " + firstNeeded + ", and it isn't ready yet. Press X to set it up.");
+        mSubline.setText(Utils::String::format(
+            _("Your games need %s, and it isn't ready yet. Press X to set it up."), firstNeeded.c_str()));
     else
-        mSubline.setText("Your games need " + std::to_string(needed) + " emulators; " + std::to_string(left) +
-                         (left == 1 ? " isn't" : " aren't") + " ready yet. Press X to set them all up.");
+        mSubline.setText(Utils::String::format(_n("Your games need %i emulators; %i isn't ready yet. Press X to set "
+                                                  "them all up.",
+                                                  "Your games need %i emulators; %i aren't ready yet. Press X to set "
+                                                  "them all up.",
+                                                  left),
+                                               needed, left));
     updateHelpPrompts();
 }
 
@@ -208,11 +212,13 @@ void GuiEmulators::choose(const Row& row)
 {
     if (row.kind == "none") {
         if (row.id == "deckhand")
-            runTool("Windows games", "get-deckhand.sh");
+            runTool(_("Windows games"), "get-deckhand.sh");
         return;
     }
     if (row.state != "ready") {
-        runTool((row.state == "cores" ? "Adding cores for " : "Installing ") + row.name,
+        runTool(Utils::String::format(row.state == "cores" ? _("Adding cores for %s").c_str() :
+                                                             _("Installing %s").c_str(),
+                                      row.name.c_str()),
                 "install-emulators.sh\" \"" + row.id);
         return;
     }
@@ -248,8 +254,8 @@ void GuiEmulators::close()
 
 void GuiEmulators::update(int deltaTime)
 {
-    if (mPlanReady) {
-        mPlanReady = false;
+    if (mShared->ready) {
+        mShared->ready = false;
         showPlan();
     }
     mList->update(deltaTime);
@@ -270,11 +276,11 @@ bool GuiEmulators::input(InputConfig* config, Input input)
         return true;
     }
     if (input.value != 0 && config->isMappedTo("x", input) && missingNeeded() > 0) {
-        runTool("Installing what your games need", "install-emulators.sh");
+        runTool(_("Installing what your games need"), "install-emulators.sh");
         return true;
     }
     if (input.value != 0 && config->isMappedTo("y", input) && !mRows.empty()) {
-        runTool("Updating emulators", "update-emulators.sh");
+        runTool(_("Updating emulators"), "update-emulators.sh");
         return true;
     }
     return mList->input(config, input);

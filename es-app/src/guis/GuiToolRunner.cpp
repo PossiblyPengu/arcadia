@@ -16,6 +16,7 @@
 #include "guis/GuiMsgBox.h"
 #include "utils/FileSystemUtil.h"
 #include "utils/LocalizationUtil.h"
+#include "utils/StringUtil.h"
 
 #include <array>
 #include <cstdio>
@@ -118,7 +119,7 @@ void GuiToolRunner::start()
     mStarted = std::chrono::steady_clock::now();
     mBadge.setColorShift(mMenuColorAccent);
     mBadge.setImage(":/graphics/busy_0.svg");
-    mStatus.setText("Working on it…");
+    mStatus.setText(_("Working on it…"));
     // While it works there is one button that does nothing; when it's done, Close (and Try again if it failed).
     mButtons.clear();
     mButtons.push_back(std::make_shared<ButtonComponent>(_("WORKING…"), "", [] {}));
@@ -205,7 +206,7 @@ void GuiToolRunner::run(std::shared_ptr<Shared> shared, std::string command)
     LOG(LogInfo) << "GuiToolRunner: finished \"" << command << "\" (" << code << ")";
     if (!started) {
         std::unique_lock<std::mutex> lock {shared->mutex};
-        shared->output = "\u2717 The tool couldn't be started.";
+        shared->output = "\u2717 " + _("The tool couldn't be started.");
     }
     shared->exitCode = started ? code : 1;
     shared->running = false;
@@ -413,10 +414,11 @@ void GuiToolRunner::finish()
     const long seconds {static_cast<long>(std::chrono::duration_cast<std::chrono::seconds>(
                                               std::chrono::steady_clock::now() - mStarted)
                                               .count())};
-    const std::string took {seconds < 2   ? "" :
-                            seconds < 60  ? " in " + std::to_string(seconds) + " s" :
-                                            " in " + std::to_string((seconds + 30) / 60) + " min"};
-    mStatus.setText(mWorked ? "Done" + took : "Finished with a problem: see below");
+    const long minutes {(seconds + 30) / 60};
+    const std::string done {seconds < 2  ? _("Done") :
+                            seconds < 60 ? Utils::String::format(_("Done in %i s"), static_cast<int>(seconds)) :
+                                           Utils::String::format(_("Done in %i min"), static_cast<int>(minutes))};
+    mStatus.setText(mWorked ? done : _("Finished with a problem: see below"));
     if (mProgressTotal > 0 && mWorked)
         mProgressDone = mProgressTotal;
 
@@ -456,8 +458,8 @@ void GuiToolRunner::update(int deltaTime)
         if (mShared->changed) {
             rebuild();
             if (mProgressTotal > 0)
-                mStatus.setText("Step " + std::to_string(std::min(mProgressDone + 1, mProgressTotal)) + " of " +
-                                std::to_string(mProgressTotal) + "… this can take a few minutes");
+                mStatus.setText(Utils::String::format(_("Step %i of %i… this can take a few minutes"),
+                                                      std::min(mProgressDone + 1, mProgressTotal), mProgressTotal));
         }
     }
     else if (mShared->finished) {

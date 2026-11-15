@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Arcadia Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-03-22 21:12+0100\n"
+"POT-Creation-Date: 2026-11-15 10:18-0500\n"
 "PO-Revision-Date: 2025-10-19 17:38+0400\n"
 "Last-Translator: Northwestern Software <info@es-de.org>\n"
 "Language-Team: Русский <info@es-de.org>\n"
@@ -134,6 +134,9 @@ msgstr "'%s' отфильтрован - без фильтра может быт�
 msgid "DELETED COLLECTION '%s'"
 msgstr "УДАЛЕНА КОЛЛЕКЦИЯ '%s'"
 
+msgid "OPEN SETUP → EMULATORS TO INSTALL IT"
+msgstr ""
+
 msgctxt "theme"
 msgid "unknown"
 msgstr "неизвестно"
@@ -204,9 +207,6 @@ msgid ""
 "ERROR: DIRECTORY DEFINED BY %s COULD NOT BE CREATED, PERMISSION PROBLEMS?"
 msgstr ""
 "ОШИБКА: КАТАЛОГ, ОПРЕДЕЛЕННЫЙ %s, НЕ МОЖЕТ БЫТЬ СОЗДАН, ПРОБЛЕМЫ С ПРАВАМИ?"
-
-msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-msgstr "ОШИБКА: ФАЙЛ ПРИЛОЖЕНИЯ ИЛИ ПСЕВДОНИМА НЕ СУЩЕСТВУЕТ ИЛИ НЕЧИТАЕМ"
 
 msgid "ERROR: DESKTOP FILE IS INVALID OR UNREADABLE"
 msgstr "ОШИБКА: ФАЙЛ РАБОЧЕГО СТОЛА НЕДЕЙСТВИТЕЛЕН ИЛИ НЕЧИТАЕМ"
@@ -547,6 +547,98 @@ msgstr "ИЗБРАННОЕ СВЕРХУ ДЛЯ ПОЛЬЗ. КОЛЛЕКЦИЙ"
 msgid "DISPLAY STAR MARKINGS FOR CUSTOM COLLECTIONS"
 msgstr "ВКЛ. ОЦЕНКУ ЗВЁЗДАМИ ДЛЯ ПОЛЬЗ. КОЛЛЕКЦИЙ"
 
+msgid "Emulators"
+msgstr ""
+
+msgid "Looking at your games…"
+msgstr ""
+
+#, c-format
+msgid "%i game"
+msgid_plural "%i games"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "Windows games"
+msgstr ""
+
+msgid "Deckhand, Arcadia's sister app, plays these"
+msgstr ""
+
+msgid "Get Deckhand"
+msgstr ""
+
+#, c-format
+msgid "Arcadia uses %s, which isn't on Flathub"
+msgstr ""
+
+msgid "Installed"
+msgstr ""
+
+msgid "Add cores"
+msgstr ""
+
+msgid "Install"
+msgstr ""
+
+msgid "The emulator list couldn't be read. Try again from Setup."
+msgstr ""
+
+msgid ""
+"No games yet. Add some and Arcadia picks what they need, or install one "
+"yourself."
+msgstr ""
+
+msgid "Everything your games need is installed. Have fun."
+msgstr ""
+
+#, c-format
+msgid "Your games need %s, and it isn't ready yet. Press X to set it up."
+msgstr ""
+
+#, c-format
+msgid ""
+"Your games need %i emulators; %i isn't ready yet. Press X to set them all up."
+msgid_plural ""
+"Your games need %i emulators; %i aren't ready yet. Press X to set them all "
+"up."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, c-format
+msgid "Adding cores for %s"
+msgstr ""
+
+#, c-format
+msgid "Installing %s"
+msgstr ""
+
+msgid "UPDATE"
+msgstr "ОБНОВИТЬ"
+
+msgid "REMOVE"
+msgstr ""
+
+msgid "Installing what your games need"
+msgstr ""
+
+msgid "Updating emulators"
+msgstr ""
+
+msgid "choose"
+msgstr "выбор"
+
+msgid "install or manage"
+msgstr ""
+
+msgid "install what's needed"
+msgstr ""
+
+msgid "update all"
+msgstr ""
+
 msgid "IMPORT TO SYSTEM"
 msgstr "ИМПОРТИРОВАТЬ В СИСТЕМУ"
 
@@ -561,48 +653,6 @@ msgstr "ВСЕ НЕВЫБРАННЫЕ"
 
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "РАЗДЕЛЯТЬ СПЕЦ. СИМВОЛЫ"
-
-msgid "MEDIA TARGET TYPE"
-msgstr "ТИП МЕДИА"
-
-msgid "SCREENSHOTS"
-msgstr "СКРИНШОТЫ"
-
-msgid "TITLE SCREENS"
-msgstr "ГЛАВНОЕ МЕНЮ"
-
-msgid "COVERS"
-msgstr "ОБЛОЖКИ"
-
-msgid "BACK COVERS"
-msgstr "ОБЛОЖКИ СЗАДИ"
-
-msgid "MARQUEES (WHEELS)"
-msgstr "ЛОГО (БАННЕРЫ)"
-
-msgid "3D BOXES"
-msgstr "3D-ОБЛОЖКИ"
-
-msgid "PHYSICAL MEDIA"
-msgstr "ФИЗИЧЕСКИЕ НОСИТЕЛИ"
-
-msgid "FAN ART"
-msgstr "ФАН-АРТ"
-
-msgid "MIXIMAGES"
-msgstr "МИКС-ИЗОБРАЖЕНИЯ"
-
-msgid "IMPORT MEDIA"
-msgstr "ИМПОРТИРОВАТЬ МЕДИА"
-
-msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-msgstr "ИМПОРТИРОВАТЬ БАННЕРЫ ИЛИ ЛОГОТИПЫ ЕСЛИ ДОСТУПНО"
-
-msgid "OVERWRITE MEDIA FILES"
-msgstr "ПЕРЕЗАПИСЫВАТЬ МЕДИАФАЙЛЫ"
-
-msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-msgstr "ВКЛЮЧАТЬ ТОЛЬКО ПРИЛОЖЕНИЯ ИЗ КАТЕГОРИИ ИГР"
 
 msgid "START"
 msgstr "СТАРТ"
@@ -707,11 +757,8 @@ msgstr "ПРИМЕНИТЬ"
 msgid "apply"
 msgstr "прим"
 
-msgid "close (apply)"
-msgstr "закр (прим.)"
-
-msgid "close (cancel)"
-msgstr "закр (отм.)"
+msgid "done"
+msgstr ""
 
 msgid "LAUNCHING GAME"
 msgstr "ЗАПУСК ИГРЫ"
@@ -746,35 +793,56 @@ msgstr "РЕНДЕРИНГ РАЗМЫТИЯ ДЛЯ ВИДЕО"
 msgid "RENDER SCANLINES FOR SCREENSHOTS AND TITLES"
 msgstr "РЕНДЕРИНГ CКАНЛАЙНОВ (СКРИНЫ ИГРЫ И ГЛ. МЕНЮ)"
 
-msgid "MAIN MENU"
-msgstr "ГЛАВНОЕ МЕНЮ"
+msgid "SETTINGS"
+msgstr ""
 
-msgid "SCRAPER"
-msgstr "СКРЕЙПЕР"
+msgid "SETUP"
+msgstr ""
 
-msgid "UI SETTINGS"
-msgstr "НАСТРОЙКИ ИНТЕРФЕЙСА"
+msgid "LOOK AND FEEL"
+msgstr ""
 
-msgid "SOUND SETTINGS"
-msgstr "НАСТРОЙКИ ЗВУКА"
+msgid "SOUND"
+msgstr ""
 
-msgid "INPUT DEVICE SETTINGS"
-msgstr "НАСТРОЙКИ ВВОДА"
+msgid "CONTROLLERS"
+msgstr ""
 
-msgid "GAME COLLECTION SETTINGS"
-msgstr "НАСТРОЙКИ КОЛЛЕКЦИЙ"
+msgid "COVERS AND INFO"
+msgstr ""
 
-msgid "OTHER SETTINGS"
-msgstr "ПРОЧИЕ НАСТРОЙКИ"
-
-msgid "UTILITIES"
-msgstr "УТИЛИТЫ"
+msgid "ADVANCED"
+msgstr ""
 
 msgid "QUIT ARCADIA"
 msgstr "ВЫХОД ИЗ Arcadia"
 
+msgid "COLOURS"
+msgstr ""
+
 msgid "THEME"
 msgstr "ТЕМА"
+
+msgid "COLLECTIONS"
+msgstr "КОЛЛЕКЦИИ"
+
+msgid "GAMES DEFAULT SORT ORDER"
+msgstr "ПОРЯДОК СОРТИРОВКИ ИГР ПО УМОЛЧАНИЮ"
+
+msgid "SORT FAVORITE GAMES ABOVE NON-FAVORITES"
+msgstr "СОРТ. ИЗБРАННЫЕ ИГРЫ НАД НЕИЗБРАННЫМИ"
+
+msgid "DISPLAY CLOCK"
+msgstr "ОТОБРАЖАТЬ ЧАСЫ"
+
+msgid "LAUNCH SCREEN DURATION"
+msgstr "ПРОДОЛЖИТЕЛЬНОСТЬ ЭКРАНА ЗАПУСКА"
+
+msgid "SCREENSAVER SETTINGS"
+msgstr "НАСТРОЙКИ ЗАСТАВКИ"
+
+msgid "APPLICATION LANGUAGE"
+msgstr "ЯЗЫК ПРИЛОЖЕНИЯ"
 
 msgid "THEME DOWNLOADER"
 msgstr "ЗАГРУЗЧИК ТЕМ"
@@ -814,9 +882,6 @@ msgstr "ЗАТУХАНИЕ (ВСТРОЕННОЕ)"
 
 msgid "THEME LANGUAGE"
 msgstr "ЯЗЫК ТЕМЫ"
-
-msgid "APPLICATION LANGUAGE"
-msgstr "ЯЗЫК ПРИЛОЖЕНИЯ"
 
 msgid "QUICK SYSTEM SELECT"
 msgstr "БЫСТРЫЙ ВЫБОР СИСТЕМЫ"
@@ -870,32 +935,23 @@ msgctxt "short"
 msgid "GAMES DEFAULT SORT ORDER"
 msgstr "ПОРЯДОК СОРТИРОВКИ ИГР ПО УМОЛЧАНИЮ"
 
-msgid "GAMES DEFAULT SORT ORDER"
-msgstr "ПОРЯДОК СОРТИРОВКИ ИГР ПО УМОЛЧАНИЮ"
+msgid "CLOUD (LIGHT PASTELS)"
+msgstr ""
 
-msgid "MENU COLOR SCHEME"
-msgstr "ЦВЕТОВАЯ СХЕМА МЕНЮ"
-
-msgid "DARK"
-msgstr "ТЁМНАЯ"
-
-msgid "DARK AND RED"
-msgstr "ТЁМНАЯ И КРАСНАЯ"
-
-msgid "LIGHT"
-msgstr "СВЕТЛАЯ"
+msgid "DUSK (PASTELS IN THE DARK)"
+msgstr ""
 
 msgid "MENU OPENING ANIMATION"
 msgstr "АНИМАЦИЯ ОТКРЫТИЯ МЕНЮ"
+
+msgid "SLIDE"
+msgstr ""
 
 msgid "SCALE-UP"
 msgstr "УВЕЛИЧЕНИЕ"
 
 msgid "NONE"
 msgstr "НЕТ"
-
-msgid "LAUNCH SCREEN DURATION"
-msgstr "ПРОДОЛЖИТЕЛЬНОСТЬ ЭКРАНА ЗАПУСКА"
 
 msgid "NORMAL"
 msgstr "НОРМАЛЬНАЯ"
@@ -974,23 +1030,14 @@ msgstr "НАСТРОЙКИ СТАТУСА СИСТЕМЫ"
 msgid "MEDIA VIEWER SETTINGS"
 msgstr "НАСТРОЙКИ ПРОСМОТРЩИКА МЕДИА"
 
-msgid "SCREENSAVER SETTINGS"
-msgstr "НАСТРОЙКИ ЗАСТАВКИ"
-
 msgid "ENABLE THEME VARIANT TRIGGERS"
 msgstr "РАЗРЕШИТЬ СМЕНУ ВАРИАНТОВ ТЕМ ТРИГГЕРАМИ"
-
-msgid "DISPLAY CLOCK"
-msgstr "ОТОБРАЖАТЬ ЧАСЫ"
 
 msgid "BLUR BACKGROUND WHEN MENU IS OPEN"
 msgstr "РАЗМЫТИЕ ФОНА ПРИ ОТКРЫТИИ МЕНЮ"
 
 msgid "SORT FOLDERS ON TOP OF GAMELISTS"
 msgstr "СОРТ. ПАПКИ ПОВЕРХ ГЕЙМЛИСТЫ"
-
-msgid "SORT FAVORITE GAMES ABOVE NON-FAVORITES"
-msgstr "СОРТ. ИЗБРАННЫЕ ИГРЫ НАД НЕИЗБРАННЫМИ"
 
 msgid "ADD STAR MARKINGS TO FAVORITE GAMES"
 msgstr "МАРКИРОВКА ЗВЁЗДАМИ ДЛЯ ИЗБРАННОГО"
@@ -1010,14 +1057,8 @@ msgstr "РАЗРЕШИТЬ ФИЛЬТРЫ ГЕЙМЛИСТА"
 msgid "DISPLAY ON-SCREEN HELP"
 msgstr "ОТОБРАЖЕНИЕ ЭКРАННОЙ СПРАВКИ"
 
-msgid "AUDIO DRIVER"
-msgstr "АУДИО ДРАЙВЕР"
-
-msgid "AUDIO DRIVER (REQUIRES RESTART)"
-msgstr "АУДИО ДРАЙВЕР (НУЖЕН ПЕРЕЗАПУСК)"
-
-msgid "SYSTEM VOLUME"
-msgstr "ГРОМКОСТЬ СИСТЕМЫ"
+msgid "ENABLE NAVIGATION SOUNDS"
+msgstr "ВКЛ. ЗВУКИ НАВИГАЦИИ"
 
 msgid "NAVIGATION SOUNDS VOLUME"
 msgstr "ГРОМКОСТЬ ЗВУКОВ НАВИГАЦИИ"
@@ -1028,76 +1069,32 @@ msgstr "ГРОМКОСТЬ ВИДЕОПЛЕЕРА"
 msgid "PLAY AUDIO FOR GAMELIST AND SYSTEM VIEW VIDEOS"
 msgstr "ВКЛ. ЗВУК ВИДЕО ГЕЙМЛИСТОВ И СИСТЕМ"
 
+msgid "SYSTEM VOLUME"
+msgstr "ГРОМКОСТЬ СИСТЕМЫ"
+
 msgid "PLAY AUDIO FOR MEDIA VIEWER VIDEOS"
 msgstr "ВКЛ. ЗВУК ПРОСМОТРЩИКА ВИДЕО"
 
 msgid "PLAY AUDIO FOR SCREENSAVER VIDEOS"
 msgstr "ВКЛ. ЗВУК ЗАСТАВОЧНЫХ ВИДЕО"
 
-msgid "ENABLE NAVIGATION SOUNDS"
-msgstr "ВКЛ. ЗВУКИ НАВИГАЦИИ"
-
 msgid "CONTROLLER TYPE"
 msgstr "ТИП КОНТРОЛЛЕРА"
 
-msgid "TOUCH OVERLAY SIZE"
-msgstr "РАЗМЕР СЕНСОРНОГО ОВЕРЛЕЯ"
+msgid "SWAP THE A/B AND X/Y BUTTONS"
+msgstr "ПОМЕНЯТЬ A/B И X/Y МЕСТАМИ"
 
-msgid "MEDIUM"
-msgstr "СРЕДНИЙ"
-
-msgid "LARGE"
-msgstr "БОЛЬШОЙ"
-
-msgid "SMALL"
-msgstr "МАЛЕНЬКИЙ"
-
-msgid "EXTRA SMALL"
-msgstr "ОЧЕНЬ МАЛЕНЬКИЙ"
-
-msgid "TOUCH OVERLAY OPACITY"
-msgstr "ПРОЗРАЧНОСТЬ СЕНСОРНОГО ОВЕРЛЕЯ"
-
-msgid "LOW"
-msgstr "НИЗКАЯ"
-
-msgid "VERY LOW"
-msgstr "ОЧЕНЬ НИЗКАЯ"
-
-msgid "TOUCH OVERLAY FADE-OUT TIME"
-msgstr "ЗАТУХАНИЕ СЕНСОРНОГО ОВЕРЛЕЯ"
-
-msgid "ENABLE TOUCH OVERLAY"
-msgstr "ВКЛЮЧИТЬ СЕНСОРНЫЙ ОВЕРЛЕЙ"
-
-msgid ""
-"DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-"WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-"TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING AGAIN, "
-"OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS TO FORCE "
-"THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-msgstr ""
-"НЕ ОТКЛЮЧАЙТЕ СЕНСОРНЫЙ ОВЕРЛЕЙ, ЕСЛИ ВЫ НЕ ИСПОЛЬЗУЕТЕ ВНЕШНИЙ КОНТРОЛЛЕР, "
-"ИНАЧЕ ВЫ ЛИШИТЕСЬ УПРАВЛЕНИЯ В ПРИЛОЖЕНИИ. ЕСЛИ ЭТО ПРОИЗОЙДЕТ, ВАМ ПРИДЕТСЯ "
-"ВРЕМЕННО ПОДКЛЮЧИТЬ КОНТРОЛЛЕР ИЛИ КЛАВИАТУРУ, ЧТОБЫ СНОВА ВКЛЮЧИТЬ ЭТУ "
-"НАСТРОЙКУ, ИЛИ ЖЕ ВЫ МОЖЕТЕ ОЧИСТИТЬ ХРАНИЛИЩЕ ДЛЯ ПРИЛОЖЕНИЯ Arcadia В "
-"НАСТРОЙКАХ ANDROID, ЧТОБЫ ЗАПУСТИТЬ ПЕРВОНАЧАЛЬНУЮ НАСТРОЙКУ ПРИ СЛЕДУЮЩЕМ "
-"ЗАПУСКЕ"
+msgid "CONFIGURE KEYBOARD AND CONTROLLERS"
+msgstr "НАСТРОЙКА КЛАВИАТУРЫ И КОНТРОЛЛЕРОВ"
 
 msgid "ONLY ACCEPT INPUT FROM FIRST CONTROLLER"
 msgstr "ПРИНИМАТЬ ВВОД ТОЛЬКО С ПЕРВОГО КОНТРОЛЛЕРА"
-
-msgid "SWAP THE A/B AND X/Y BUTTONS"
-msgstr "ПОМЕНЯТЬ A/B И X/Y МЕСТАМИ"
 
 msgid "IGNORE KEYBOARD INPUT"
 msgstr "ИГНОРИРОВАТЬ ВВОД С КЛАВИАТУРЫ"
 
 msgid "INPUT DEVICE NOTIFICATIONS"
 msgstr "УВЕДОМЛЕНИЯ УСТРОЙСТВ ВВОДА"
-
-msgid "CONFIGURE KEYBOARD AND CONTROLLERS"
-msgstr "НАСТРОЙКА КЛАВИАТУРЫ И КОНТРОЛЛЕРОВ"
 
 msgid ""
 "THE KEYBOARD AND CONTROLLERS ARE AUTOMATICALLY CONFIGURED, BUT USING THIS "
@@ -1110,6 +1107,21 @@ msgstr ""
 
 msgid "PROCEED"
 msgstr "ПРОДОЛЖИТЬ"
+
+msgid "TOOLS"
+msgstr ""
+
+msgid "ENABLE ALTERNATIVE EMULATORS PER GAME"
+msgstr "РАЗРЕШИТЬ АЛЬТ. ЭМУЛЯТОРЫ ДЛЯ КАЖДОЙ ИГРЫ"
+
+msgid "SHOW HIDDEN GAMES"
+msgstr "ПОКАЗЫВАТЬ СКРЫТЫЕ ИГРЫ"
+
+msgid "CHECK FOR APPLICATION UPDATES"
+msgstr "ПРОВЕРЯТЬ НАЛИЧИЕ ОБНОВЛЕНИЙ Arcadia"
+
+msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
+msgstr "РАБОТАТЬ В ФОНОВОМ РЕЖИМЕ (ИГРА ЗАПУЩЕНА)"
 
 msgid "GAME MEDIA DIRECTORY"
 msgstr "КАТАЛОГ ИГРОВЫХ МЕДИА"
@@ -1193,17 +1205,8 @@ msgstr "ЕЖЕНЕДЕЛЬНО"
 msgid "MONTHLY"
 msgstr "ЕЖЕМЕСЯЧНО"
 
-msgid "CHECK FOR APPLICATION UPDATES"
-msgstr "ПРОВЕРЯТЬ НАЛИЧИЕ ОБНОВЛЕНИЙ Arcadia"
-
 msgid "INCLUDE PRERELEASES IN UPDATE CHECKS"
 msgstr "ВКЛЮЧАТЬ ПРЕДРЕЛИЗНЫЕ ВЕРСИИ В ПРОВЕРКУ"
-
-msgid "HIDE TASKBAR (REQUIRES RESTART)"
-msgstr "СКРЫТЬ ПАНЕЛЬ ЗАДАЧ (НУЖЕН ПЕРЕЗАПУСК)"
-
-msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
-msgstr "РАБОТАТЬ В ФОНОВОМ РЕЖИМЕ (ИГРА ЗАПУЩЕНА)"
 
 msgid "VIDEO HARDWARE DECODING (EXPERIMENTAL)"
 msgstr "АППАРАТНОЕ ДЕКОДИРОВАНИЕ ВИДЕО (ЭКСПЕРИМЕНТАЛЬНО)"
@@ -1211,17 +1214,8 @@ msgstr "АППАРАТНОЕ ДЕКОДИРОВАНИЕ ВИДЕО (ЭКСПЕР
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "УВЕЛИЧЕНИЕ ЧАСТОТЫ КАДРОВ ВИДЕО ДО 60 FPS"
 
-msgid "ENABLE ALTERNATIVE EMULATORS PER GAME"
-msgstr "РАЗРЕШИТЬ АЛЬТ. ЭМУЛЯТОРЫ ДЛЯ КАЖДОЙ ИГРЫ"
-
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "ПОКАЗЫВАТЬ СКРЫТЫЕ ФАЙЛЫ И ПАПКИ"
-
-msgid "SHOW HIDDEN GAMES"
-msgstr "ПОКАЗЫВАТЬ СКРЫТЫЕ ИГРЫ"
-
-msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-msgstr "ЗАПУСКАТЬ ИГРЫ НА ДРУГОМ ЭКРАНЕ"
 
 msgid "ENABLE CUSTOM EVENT SCRIPTS"
 msgstr "РАЗРЕШИТЬ ПОЛЬЗ. СЦЕНАРИИ СОБЫТИЙ"
@@ -1237,9 +1231,6 @@ msgstr "УДАЛЯТЬ ЛИШНЕЕ В ИМЕНИ MAME (НУЖЕН ПЕРЕЗА�
 
 msgid "DISABLE DESKTOP COMPOSITION (REQUIRES RESTART)"
 msgstr "ОТКЛ. КОМПОЗИЦИЮ РАБ. СТОЛА (НУЖЕН ПЕРЕЗАПУСК)"
-
-msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-msgstr "КНОПКА НАЗАД/СВАЙП НАЗАД ЗАКРЫВАЮТ ПРИЛОЖЕНИЕ"
 
 msgid "DEBUG MODE"
 msgstr "РЕЖИМ ОТЛАДКИ"
@@ -1328,11 +1319,8 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "НАСТРОЙКИ ЗАСТАВКИ"
 
-msgid "choose"
-msgstr "выбор"
-
-msgid "close menu"
-msgstr "закр. меню"
+msgid "open"
+msgstr ""
 
 msgid "EDIT METADATA"
 msgstr "ИЗМЕНИТЬ МЕТАДАННЫЕ"
@@ -1526,9 +1514,6 @@ msgstr "ГЕЙМЛИСТЫ"
 msgid "RUNNING GAMELISTS CLEANUP"
 msgstr "ВЫПОЛНЯЕТСЯ ОЧИСТКА ГЕЙМЛИСТОВ"
 
-msgid "COLLECTIONS"
-msgstr "КОЛЛЕКЦИИ"
-
 msgid "COLLECTIONS CLEANUP FAILED"
 msgstr "ОЧИСТКА КОЛЛЕКЦИЙ НЕ УДАЛАСЬ"
 
@@ -1659,6 +1644,9 @@ msgstr "НАСТРОЙКИ СОДЕРЖИМОГО"
 msgid "MIXIMAGE SETTINGS"
 msgstr "НАСТРОЙКИ МИКС-ИЗОБРАЖЕНИЙ"
 
+msgid "OTHER SETTINGS"
+msgstr "ПРОЧИЕ НАСТРОЙКИ"
+
 msgid "start scraper"
 msgstr "запуск"
 
@@ -1746,6 +1734,9 @@ msgstr "ПОРОГ СООТНОШЕНИЯ СТОРОН СКРИНШОТА"
 msgid "HIGH"
 msgstr "ВЫСОКИЙ"
 
+msgid "LOW"
+msgstr "НИЗКАЯ"
+
 msgid "SCREENSHOT ASPECT RATIO THRESHOLD"
 msgstr "ПОРОГ СООТНОШЕНИЯ СТОРОН СКРИНШОТА"
 
@@ -1773,6 +1764,15 @@ msgstr "МЕТОД МАСШТАБИРОВАНИЯ СКРИНШОТОВ"
 
 msgid "BOX SIZE"
 msgstr "РАЗМЕР ОБЛОЖКИ КОРОБКИ"
+
+msgid "SMALL"
+msgstr "МАЛЕНЬКИЙ"
+
+msgid "MEDIUM"
+msgstr "СРЕДНИЙ"
+
+msgid "LARGE"
+msgstr "БОЛЬШОЙ"
 
 msgid "PHYSICAL MEDIA SIZE"
 msgstr "РАЗМЕР ФИЗИЧЕСКОГО НОСИТЕЛЯ"
@@ -2101,14 +2101,90 @@ msgstr "СМЕНА ВИДЕО ЧЕРЕЗ (В СЕКУНДАХ)"
 msgid "RENDER BLUR"
 msgstr "РЕНДЕРИНГ РАЗМЫТИЯ"
 
+msgid "MORE OPTIONS"
+msgstr ""
+
+msgid "Show me"
+msgstr ""
+
+msgid "Set up"
+msgstr ""
+
+msgid "Allow"
+msgstr ""
+
+msgid "Connect"
+msgstr ""
+
+msgid "Check"
+msgstr ""
+
+msgid "Get it"
+msgstr ""
+
+msgid "Sort downloads"
+msgstr ""
+
+msgid "Sort inside folders"
+msgstr ""
+
+msgid "Undo the last sort"
+msgstr ""
+
+msgid "Sync saves now"
+msgstr ""
+
+msgid "Back up settings"
+msgstr ""
+
+msgid "Restore a backup"
+msgstr ""
+
+msgid "Update Arcadia"
+msgstr ""
+
+msgid "Setup"
+msgstr ""
+
+msgid "Checking what's ready…"
+msgstr ""
+
+msgid "Tools"
+msgstr ""
+
+msgid "The checklist couldn't be read. The tools on the right still work."
+msgstr ""
+
+msgid "All set"
+msgstr ""
+
+msgid "Everything is ready. Have fun."
+msgstr ""
+
+msgid "Let's get you set up"
+msgstr ""
+
+msgid "Almost ready"
+msgstr ""
+
+#, c-format
+msgid "One thing left to do."
+msgid_plural "%i things left to do."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "switch side"
+msgstr ""
+
+msgid "do it"
+msgstr ""
+
 msgid "DISPLAY BLUETOOTH STATUS INDICATOR"
 msgstr "ОТОБРАЖАТЬ СТАТУС BLUETOOTH"
 
 msgid "DISPLAY WI-FI STATUS INDICATOR"
 msgstr "ОТОБРАЖАТЬ СТАТУС WI-FI"
-
-msgid "DISPLAY CELLULAR STATUS INDICATOR"
-msgstr "ОТОБРАЖАТЬ СТАТУС СЕТИ"
 
 msgid "DISPLAY BATTERY STATUS INDICATOR"
 msgstr "ОТОБРАЖАТЬ СТАТУС БАТАРЕИ"
@@ -2174,8 +2250,8 @@ msgstr "ЗАГРУЗКА ТЕМЫ"
 msgid ""
 "IT SEEMS AS IF THIS THEME REPOSITORY IS CORRUPT, WHICH COULD HAVE BEEN "
 "CAUSED BY AN INTERRUPTION OF A PREVIOUS DOWNLOAD OR UPDATE, FOR EXAMPLE IF "
-"THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD THEME "
-"DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""
+"THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD "
+"THEME DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""
 msgstr ""
 "ПОХОЖЕ, ЧТО ХРАНИЛИЩЕ ТЕМ ПОВРЕЖДЕНО, ЧТО МОГЛО БЫТЬ ВЫЗВАНО ПРЕРЫВАНИЕМ "
 "ПРЕДЫДУЩЕЙ ЗАГРУЗКИ ИЛИ ОБНОВЛЕНИЯ, НАПРИМЕР, ЕСЛИ ПРОЦЕСС Arcadia БЫЛ "
@@ -2284,9 +2360,6 @@ msgstr "НЕ УДАЛОСЬ ЗАГРУЗИТЬ СПИСОК ТЕМ"
 msgid "DOWNLOADING THEMES LIST"
 msgstr "ЗАГРУЗКА"
 
-msgid "THIS WILL COMPLETELY DELETE THE THEME"
-msgstr "ЭТО ПРИВЕДЕТ К ПОЛНОМУ УДАЛЕНИЮ ТЕМЫ"
-
 msgid ""
 "THIS WILL COMPLETELY DELETE THE THEME INCLUDING ANY LOCAL CUSTOMIZATIONS"
 msgstr "ЭТО ПРИВЕДЕТ К ПОЛНОМУ УДАЛЕНИЮ ТЕМЫ, ВКЛЮЧАЯ ВСЕ ЛОКАЛЬНЫЕ НАСТРОЙКИ"
@@ -2316,9 +2389,9 @@ msgid ""
 "DIRECTORY \"themes-list\" WILL BE RENAMED TO \"themes-list_CORRUPT_DISABLED\""
 msgstr ""
 "ПОХОЖЕ, ЧТО ХРАНИЛИЩЕ СПИСКА ТЕМ ПОВРЕЖДЕНО, ЧТО МОГЛО БЫТЬ ВЫЗВАНО "
-"ПРЕРЫВАНИЕМ ПРЕДЫДУЩЕЙ ЗАГРУЗКИ ИЛИ ОБНОВЛЕНИЯ, НАПРИМЕР, ЕСЛИ ПРОЦЕСС Arcadia "
-"БЫЛ ЗАВЕРШЕН. ТРЕБУЕТСЯ ЗАНОВО ЗАГРУЗИТЬ ФАЙЛ, А СТАРАЯ ПАПКА \"themes-"
-"list\" БУДЕТ ПЕРЕИМЕНОВАНА В \"themes-list_CORRUPT_DISABLED\"."
+"ПРЕРЫВАНИЕМ ПРЕДЫДУЩЕЙ ЗАГРУЗКИ ИЛИ ОБНОВЛЕНИЯ, НАПРИМЕР, ЕСЛИ ПРОЦЕСС "
+"Arcadia БЫЛ ЗАВЕРШЕН. ТРЕБУЕТСЯ ЗАНОВО ЗАГРУЗИТЬ ФАЙЛ, А СТАРАЯ ПАПКА "
+"\"themes-list\" БУДЕТ ПЕРЕИМЕНОВАНА В \"themes-list_CORRUPT_DISABLED\"."
 
 msgid "UPDATING THEMES LIST"
 msgstr "ОБНОВЛЕНИЕ СПИСКА ТЕМ"
@@ -2337,6 +2410,45 @@ msgstr ""
 "БУДУТ ЗАГРУЖАТЬСЯ ТОЛЬКО НОВЫЕ ИЛИ ИЗМЕНЕННЫЕ ФАЙЛЫ. ТО ЖЕ САМОЕ СПРАВЕДЛИВО "
 "ДЛЯ ВСЕХ ЗАГРУЖАЕМЫХ ТЕМ. ОБРАТИТЕ ВНИМАНИЕ, ЧТО ВЫ НЕ МОЖЕТЕ ПРЕРВАТЬ "
 "ТЕКУЩУЮ ЗАГРУЗКУ, ТАК КАК ЭТО МОЖЕТ ПРИВЕСТИ К ПОВРЕЖДЕНИЮ ДАННЫХ."
+
+msgid "WORKING…"
+msgstr ""
+
+msgid "Working on it…"
+msgstr ""
+
+msgid "The tool couldn't be started."
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
+#, c-format
+msgid "Done in %i s"
+msgstr ""
+
+#, c-format
+msgid "Done in %i min"
+msgstr ""
+
+msgid "Finished with a problem: see below"
+msgstr ""
+
+msgid "TRY AGAIN"
+msgstr ""
+
+msgid "try again"
+msgstr ""
+
+#, c-format
+msgid "Step %i of %i… this can take a few minutes"
+msgstr ""
+
+msgid "scroll"
+msgstr ""
+
+msgid "close or try again"
+msgstr ""
 
 msgid "browse"
 msgstr "просмотр"
@@ -2361,6 +2473,9 @@ msgstr "ОБЛОЖКА СЗАДИ"
 
 msgid "TITLE SCREEN"
 msgstr "ГЛАВНОЕ МЕНЮ"
+
+msgid "FAN ART"
+msgstr "ФАН-АРТ"
 
 msgid "MIXIMAGE"
 msgstr "МИКС-ИЗОБРАЖЕНИЕ"
@@ -2649,17 +2764,11 @@ msgstr ""
 "НЕЛЬЗЯ ДОБАВЛЯТЬ ЗАПИСИ, КОТОРЫЕ НЕ СЧИТАЮТСЯ ИГРАМИ, В ПОЛЬЗОВАТЕЛЬСКИЕ "
 "КОЛЛЕКЦИИ"
 
-msgid "system"
-msgstr "система"
-
-msgid "view media"
-msgstr "медиа"
+msgid "media"
+msgstr ""
 
 msgid "options"
 msgstr "опции"
-
-msgid "random"
-msgstr "случ"
 
 msgid "jump to game"
 msgstr "к игре"
@@ -2671,6 +2780,9 @@ msgstr "да"
 msgctxt "theme"
 msgid "no"
 msgstr "нет"
+
+msgid "random"
+msgstr "случ"
 
 msgid "screensaver"
 msgstr "заставка"
@@ -2715,8 +2827,8 @@ msgstr ""
 msgid ""
 "COULDN'T PARSE THE SYSTEMS CONFIGURATION FILE. IF YOU HAVE A CUSTOMIZED "
 "es_systems.xml FILE, THEN SOMETHING IS LIKELY WRONG WITH YOUR XML SYNTAX. IF "
-"YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE ARCADIA INSTALLATION IS BROKEN. "
-"SEE THE APPLICATION LOG FILE es_log.txt FOR ADDITIONAL INFO"
+"YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE ARCADIA INSTALLATION IS "
+"BROKEN. SEE THE APPLICATION LOG FILE es_log.txt FOR ADDITIONAL INFO"
 msgstr ""
 "НЕ УДАЛОСЬ РАЗОБРАТЬ ФАЙЛ КОНФИГУРАЦИИ СИСТЕМ. ЕСЛИ У ВАС ЕСТЬ "
 "ПОЛЬЗОВАТЕЛЬСКИЙ ФАЙЛ es_systems.xml, ТО, ВЕРОЯТНО, ЧТО-ТО НЕ ТАК С XML-"
@@ -2725,30 +2837,14 @@ msgstr ""
 "ДОПОЛНИТЕЛЬНОЙ ИНФОРМАЦИИ"
 
 msgid ""
-"NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY IN "
-"THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM DIRECTORY "
-"STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME "
-"INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED "
-"ROM DIRECTORY:\n"
+"Welcome to Arcadia. No games were found yet.\n"
+"\n"
+"Put your games in the ROM folder below, one folder per console (Create makes "
+"the folders), or choose Setup and then Sort downloads to move them there for "
+"you.\n"
+"\n"
+"The ROM folder is "
 msgstr ""
-"НЕ НАЙДЕНО ИГРОВЫХ ФАЙЛОВ. ИМПОРТИРУЙТЕ ИГРЫ ИЛИ ПОМЕСТИТЕ ИХ ВРУЧНУЮ В "
-"КАТАЛОГ РОМОВ. ОПЦИОНАЛЬНО ВЫ МОЖЕТЕ СГЕНЕРИРОВАТЬ СТРУКТУРУ КАТАЛОГОВ "
-"РОМОВ, ЧТО СОЗДАСТ ТЕКСТОВЫЙ ФАЙЛ ДЛЯ КАЖДОЙ СИСТЕМЫ, ДАЮЩИЙ НЕКОТОРУЮ "
-"ИНФОРМАЦИЮ, НАПРИМЕР, ПОДДЕРЖИВАЕМЫЕ РАСШИРЕНИЯ ФАЙЛОВ. ТЕКУЩИЙ КАТАЛОГ "
-"РОМОВ:\n"
-
-msgid ""
-"NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY IN "
-"THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM PATH AND "
-"OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT "
-"FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE "
-"EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-msgstr ""
-"НЕ НАЙДЕНО ИГРОВЫХ ФАЙЛОВ. ИМПОРТИРУЙТЕ ИГРЫ ИЛИ ПОМЕСТИТЕ ИХ ВРУЧНУЮ В "
-"КАТАЛОГ РОМОВ. ВЫ ТАКЖЕ МОЖЕТЕ СМЕНИТЬ ПУТЬ К РОМАМ И ОПЦИОНАЛЬНО "
-"СГЕНЕРИРОВАТЬ СТРУКТУРУ КАТАЛОГОВ РОМОВ, ЧТО СОЗДАСТ ТЕКСТОВЫЙ ФАЙЛ ДЛЯ "
-"КАЖДОЙ СИСТЕМЫ, ДАЮЩИЙ НЕКОТОРУЮ ИНФОРМАЦИЮ, НАПРИМЕР, ПОДДЕРЖИВАЕМЫЕ "
-"РАСШИРЕНИЯ ФАЙЛОВ. ТЕКУЩИЙ КАТАЛОГ РОМОВ:\n"
 
 msgid "CHANGE"
 msgstr "ИЗМЕНИТЬ"
@@ -2772,8 +2868,8 @@ msgid "CLEAR (LEAVE BLANK TO RESET TO DEFAULT PATH)"
 msgstr "ОЧИСТИТЬ (ОСТАВЬТЕ ПУСТЫМ, ЧТОБЫ СБРОСИТЬ ПУТЬ ПО УМОЛЧАНИЮ)"
 
 msgid ""
-"THIS WILL CREATE DIRECTORIES FOR ALL THE GAME SYSTEMS DEFINED IN es_systems."
-"xml\n"
+"THIS WILL CREATE DIRECTORIES FOR ALL THE GAME SYSTEMS DEFINED IN "
+"es_systems.xml\n"
 "\n"
 "THIS MAY CREATE A LOT OF FOLDERS SO IT'S ADVISED TO REMOVE THE ONES YOU "
 "DON'T NEED"
@@ -2810,14 +2906,11 @@ msgstr ""
 "СИСТЕМЫ. ПОЖАЛУЙСТА, ПРОВЕРЬТЕ НАСТРОЙКИ С ПОМОЩЬЮ ИНТЕРФЕЙСА "
 "\"АЛЬТЕРНАТИВНЫЕ ЭМУЛЯТОРЫ\" В МЕНЮ \"ДРУГИЕ НАСТРОЙКИ\""
 
-msgid "UPDATE"
-msgstr "ОБНОВИТЬ"
-
 msgid ""
 "THE APPLICATION UPDATER WILL DOWNLOAD THE LATEST PORTABLE WINDOWS RELEASE "
-"FOR YOU, BUT YOU WILL NEED TO MANUALLY PERFORM THE UPGRADE. SEE THE README."
-"TXT FILE INSIDE THE DOWNLOADED ZIP FILE FOR INSTRUCTIONS ON HOW THIS IS "
-"ACCOMPLISHED. AS IS ALSO DESCRIBED IN THAT DOCUMENT, NEVER UNPACK A NEW "
+"FOR YOU, BUT YOU WILL NEED TO MANUALLY PERFORM THE UPGRADE. SEE THE "
+"README.TXT FILE INSIDE THE DOWNLOADED ZIP FILE FOR INSTRUCTIONS ON HOW THIS "
+"IS ACCOMPLISHED. AS IS ALSO DESCRIBED IN THAT DOCUMENT, NEVER UNPACK A NEW "
 "RELEASE ON TOP OF AN OLD INSTALLATION AS THAT MAY BREAK THE APPLICATION."
 msgstr ""
 "ПРОГРАММА ОБНОВЛЕНИЯ ПРИЛОЖЕНИЯ ЗАГРУЗИТ ПОСЛЕДНЮЮ ПОРТАТИВНУЮ ВЕРСИЮ ДЛЯ "
@@ -2850,6 +2943,13 @@ msgstr ""
 msgid "LAUNCHING GAME '%s'"
 msgstr "ЗАПУСК ИГРЫ '%s'"
 
+#, c-format
+msgid "ARCADIA %s IS AVAILABLE"
+msgstr ""
+
+msgid "SETUP → UPDATE ARCADIA INSTALLS IT"
+msgstr ""
+
 msgid "menu"
 msgstr "меню"
 
@@ -2881,13 +2981,9 @@ msgstr[0] "%i минуту назад"
 msgstr[1] "%i минуты назад"
 msgstr[2] "%i минут назад"
 
-#, c-format
 msgctxt "theme"
-msgid "%i second ago"
-msgid_plural "%i seconds ago"
-msgstr[0] "%i секунд назад"
-msgstr[1] "%i секунды назад"
-msgstr[2] "%i секунд назад"
+msgid "just now"
+msgstr ""
 
 msgid "edit date"
 msgstr "изм. дату"
@@ -3176,5 +3272,188 @@ msgstr "Копирование ресурсов..."
 msgid "Creating system directories..."
 msgstr "Создание папок систем..."
 
+msgid "NO PICTURES OR VIDEO FOR THIS GAME YET"
+msgstr ""
+
+msgid "SETTINGS → COVERS AND INFO CAN GET THEM"
+msgstr ""
+
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "ОШИБКА: НЕ УДАЛОСЬ ОТОБРАЗИТЬ PDF-ФАЙЛ"
+
+#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
+#~ msgstr "ОШИБКА: ФАЙЛ ПРИЛОЖЕНИЯ ИЛИ ПСЕВДОНИМА НЕ СУЩЕСТВУЕТ ИЛИ НЕЧИТАЕМ"
+
+#~ msgid "MEDIA TARGET TYPE"
+#~ msgstr "ТИП МЕДИА"
+
+#~ msgid "SCREENSHOTS"
+#~ msgstr "СКРИНШОТЫ"
+
+#~ msgid "TITLE SCREENS"
+#~ msgstr "ГЛАВНОЕ МЕНЮ"
+
+#~ msgid "COVERS"
+#~ msgstr "ОБЛОЖКИ"
+
+#~ msgid "BACK COVERS"
+#~ msgstr "ОБЛОЖКИ СЗАДИ"
+
+#~ msgid "MARQUEES (WHEELS)"
+#~ msgstr "ЛОГО (БАННЕРЫ)"
+
+#~ msgid "3D BOXES"
+#~ msgstr "3D-ОБЛОЖКИ"
+
+#~ msgid "PHYSICAL MEDIA"
+#~ msgstr "ФИЗИЧЕСКИЕ НОСИТЕЛИ"
+
+#~ msgid "MIXIMAGES"
+#~ msgstr "МИКС-ИЗОБРАЖЕНИЯ"
+
+#~ msgid "IMPORT MEDIA"
+#~ msgstr "ИМПОРТИРОВАТЬ МЕДИА"
+
+#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+#~ msgstr "ИМПОРТИРОВАТЬ БАННЕРЫ ИЛИ ЛОГОТИПЫ ЕСЛИ ДОСТУПНО"
+
+#~ msgid "OVERWRITE MEDIA FILES"
+#~ msgstr "ПЕРЕЗАПИСЫВАТЬ МЕДИАФАЙЛЫ"
+
+#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+#~ msgstr "ВКЛЮЧАТЬ ТОЛЬКО ПРИЛОЖЕНИЯ ИЗ КАТЕГОРИИ ИГР"
+
+#~ msgid "close (apply)"
+#~ msgstr "закр (прим.)"
+
+#~ msgid "close (cancel)"
+#~ msgstr "закр (отм.)"
+
+#~ msgid "MAIN MENU"
+#~ msgstr "ГЛАВНОЕ МЕНЮ"
+
+#~ msgid "SCRAPER"
+#~ msgstr "СКРЕЙПЕР"
+
+#~ msgid "UI SETTINGS"
+#~ msgstr "НАСТРОЙКИ ИНТЕРФЕЙСА"
+
+#~ msgid "SOUND SETTINGS"
+#~ msgstr "НАСТРОЙКИ ЗВУКА"
+
+#~ msgid "INPUT DEVICE SETTINGS"
+#~ msgstr "НАСТРОЙКИ ВВОДА"
+
+#~ msgid "GAME COLLECTION SETTINGS"
+#~ msgstr "НАСТРОЙКИ КОЛЛЕКЦИЙ"
+
+#~ msgid "UTILITIES"
+#~ msgstr "УТИЛИТЫ"
+
+#~ msgid "MENU COLOR SCHEME"
+#~ msgstr "ЦВЕТОВАЯ СХЕМА МЕНЮ"
+
+#~ msgid "DARK"
+#~ msgstr "ТЁМНАЯ"
+
+#~ msgid "DARK AND RED"
+#~ msgstr "ТЁМНАЯ И КРАСНАЯ"
+
+#~ msgid "LIGHT"
+#~ msgstr "СВЕТЛАЯ"
+
+#~ msgid "AUDIO DRIVER"
+#~ msgstr "АУДИО ДРАЙВЕР"
+
+#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
+#~ msgstr "АУДИО ДРАЙВЕР (НУЖЕН ПЕРЕЗАПУСК)"
+
+#~ msgid "TOUCH OVERLAY SIZE"
+#~ msgstr "РАЗМЕР СЕНСОРНОГО ОВЕРЛЕЯ"
+
+#~ msgid "EXTRA SMALL"
+#~ msgstr "ОЧЕНЬ МАЛЕНЬКИЙ"
+
+#~ msgid "TOUCH OVERLAY OPACITY"
+#~ msgstr "ПРОЗРАЧНОСТЬ СЕНСОРНОГО ОВЕРЛЕЯ"
+
+#~ msgid "VERY LOW"
+#~ msgstr "ОЧЕНЬ НИЗКАЯ"
+
+#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
+#~ msgstr "ЗАТУХАНИЕ СЕНСОРНОГО ОВЕРЛЕЯ"
+
+#~ msgid "ENABLE TOUCH OVERLAY"
+#~ msgstr "ВКЛЮЧИТЬ СЕНСОРНЫЙ ОВЕРЛЕЙ"
+
+#~ msgid ""
+#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
+#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
+#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
+#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
+#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
+#~ msgstr ""
+#~ "НЕ ОТКЛЮЧАЙТЕ СЕНСОРНЫЙ ОВЕРЛЕЙ, ЕСЛИ ВЫ НЕ ИСПОЛЬЗУЕТЕ ВНЕШНИЙ "
+#~ "КОНТРОЛЛЕР, ИНАЧЕ ВЫ ЛИШИТЕСЬ УПРАВЛЕНИЯ В ПРИЛОЖЕНИИ. ЕСЛИ ЭТО "
+#~ "ПРОИЗОЙДЕТ, ВАМ ПРИДЕТСЯ ВРЕМЕННО ПОДКЛЮЧИТЬ КОНТРОЛЛЕР ИЛИ КЛАВИАТУРУ, "
+#~ "ЧТОБЫ СНОВА ВКЛЮЧИТЬ ЭТУ НАСТРОЙКУ, ИЛИ ЖЕ ВЫ МОЖЕТЕ ОЧИСТИТЬ ХРАНИЛИЩЕ "
+#~ "ДЛЯ ПРИЛОЖЕНИЯ Arcadia В НАСТРОЙКАХ ANDROID, ЧТОБЫ ЗАПУСТИТЬ "
+#~ "ПЕРВОНАЧАЛЬНУЮ НАСТРОЙКУ ПРИ СЛЕДУЮЩЕМ ЗАПУСКЕ"
+
+#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
+#~ msgstr "СКРЫТЬ ПАНЕЛЬ ЗАДАЧ (НУЖЕН ПЕРЕЗАПУСК)"
+
+#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
+#~ msgstr "ЗАПУСКАТЬ ИГРЫ НА ДРУГОМ ЭКРАНЕ"
+
+#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
+#~ msgstr "КНОПКА НАЗАД/СВАЙП НАЗАД ЗАКРЫВАЮТ ПРИЛОЖЕНИЕ"
+
+#~ msgid "close menu"
+#~ msgstr "закр. меню"
+
+#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
+#~ msgstr "ОТОБРАЖАТЬ СТАТУС СЕТИ"
+
+#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
+#~ msgstr "ЭТО ПРИВЕДЕТ К ПОЛНОМУ УДАЛЕНИЮ ТЕМЫ"
+
+#~ msgid "system"
+#~ msgstr "система"
+
+#~ msgid "view media"
+#~ msgstr "медиа"
+
+#~ msgid ""
+#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
+#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
+#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
+#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
+#~ "THE CONFIGURED ROM DIRECTORY:\n"
+#~ msgstr ""
+#~ "НЕ НАЙДЕНО ИГРОВЫХ ФАЙЛОВ. ИМПОРТИРУЙТЕ ИГРЫ ИЛИ ПОМЕСТИТЕ ИХ ВРУЧНУЮ В "
+#~ "КАТАЛОГ РОМОВ. ОПЦИОНАЛЬНО ВЫ МОЖЕТЕ СГЕНЕРИРОВАТЬ СТРУКТУРУ КАТАЛОГОВ "
+#~ "РОМОВ, ЧТО СОЗДАСТ ТЕКСТОВЫЙ ФАЙЛ ДЛЯ КАЖДОЙ СИСТЕМЫ, ДАЮЩИЙ НЕКОТОРУЮ "
+#~ "ИНФОРМАЦИЮ, НАПРИМЕР, ПОДДЕРЖИВАЕМЫЕ РАСШИРЕНИЯ ФАЙЛОВ. ТЕКУЩИЙ КАТАЛОГ "
+#~ "РОМОВ:\n"
+
+#~ msgid ""
+#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
+#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
+#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
+#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
+#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
+#~ msgstr ""
+#~ "НЕ НАЙДЕНО ИГРОВЫХ ФАЙЛОВ. ИМПОРТИРУЙТЕ ИГРЫ ИЛИ ПОМЕСТИТЕ ИХ ВРУЧНУЮ В "
+#~ "КАТАЛОГ РОМОВ. ВЫ ТАКЖЕ МОЖЕТЕ СМЕНИТЬ ПУТЬ К РОМАМ И ОПЦИОНАЛЬНО "
+#~ "СГЕНЕРИРОВАТЬ СТРУКТУРУ КАТАЛОГОВ РОМОВ, ЧТО СОЗДАСТ ТЕКСТОВЫЙ ФАЙЛ ДЛЯ "
+#~ "КАЖДОЙ СИСТЕМЫ, ДАЮЩИЙ НЕКОТОРУЮ ИНФОРМАЦИЮ, НАПРИМЕР, ПОДДЕРЖИВАЕМЫЕ "
+#~ "РАСШИРЕНИЯ ФАЙЛОВ. ТЕКУЩИЙ КАТАЛОГ РОМОВ:\n"
+
+#, c-format
+#~ msgctxt "theme"
+#~ msgid "%i second ago"
+#~ msgid_plural "%i seconds ago"
+#~ msgstr[0] "%i секунд назад"
+#~ msgstr[1] "%i секунды назад"
+#~ msgstr[2] "%i секунд назад"

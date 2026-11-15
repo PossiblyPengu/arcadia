@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Arcadia Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-03-22 21:12+0100\n"
+"POT-Creation-Date: 2026-11-15 10:18-0500\n"
 "PO-Revision-Date: 2025-10-20 17:04+0200\n"
 "Last-Translator: Josep M <johnnydement@duck.com>\n"
 "Language-Team: Català <info@es-de.org>\n"
@@ -130,6 +130,9 @@ msgstr "«%s» té filtres, per tant, potser hi ha més jocs disponibles"
 msgid "DELETED COLLECTION '%s'"
 msgstr "COL·LECCIÓ «%s» ESBORRADA"
 
+msgid "OPEN SETUP → EMULATORS TO INSTALL IT"
+msgstr ""
+
 msgctxt "theme"
 msgid "unknown"
 msgstr "desconegut"
@@ -198,9 +201,6 @@ msgid ""
 msgstr ""
 "ERROR: NO S'HA POGUT CREAR EL DIRECTORI DEFINIT PER %s, PROBLEMES DE "
 "PERMISOS?"
-
-msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-msgstr "ERROR: L'APP O L'ARXIU ÀLIES NO EXISTEIX O NO ES POT LLEGIR"
 
 msgid "ERROR: DESKTOP FILE IS INVALID OR UNREADABLE"
 msgstr "ERROR: L'ARXIU DESKTOP ÉS INVÀLID O NO ES POT LLEGIR"
@@ -542,6 +542,96 @@ msgstr "POSA ELS FAVORITS A L'INICI DE LES COL·LECCIONS A MIDA"
 msgid "DISPLAY STAR MARKINGS FOR CUSTOM COLLECTIONS"
 msgstr "MARCA AMB UNA ESTRELLA A LES COL·LECCIONS A MIDA"
 
+msgid "Emulators"
+msgstr ""
+
+msgid "Looking at your games…"
+msgstr ""
+
+#, c-format
+msgid "%i game"
+msgid_plural "%i games"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Windows games"
+msgstr ""
+
+msgid "Deckhand, Arcadia's sister app, plays these"
+msgstr ""
+
+msgid "Get Deckhand"
+msgstr ""
+
+#, c-format
+msgid "Arcadia uses %s, which isn't on Flathub"
+msgstr ""
+
+msgid "Installed"
+msgstr ""
+
+msgid "Add cores"
+msgstr ""
+
+msgid "Install"
+msgstr ""
+
+msgid "The emulator list couldn't be read. Try again from Setup."
+msgstr ""
+
+msgid ""
+"No games yet. Add some and Arcadia picks what they need, or install one "
+"yourself."
+msgstr ""
+
+msgid "Everything your games need is installed. Have fun."
+msgstr ""
+
+#, c-format
+msgid "Your games need %s, and it isn't ready yet. Press X to set it up."
+msgstr ""
+
+#, c-format
+msgid ""
+"Your games need %i emulators; %i isn't ready yet. Press X to set them all up."
+msgid_plural ""
+"Your games need %i emulators; %i aren't ready yet. Press X to set them all "
+"up."
+msgstr[0] ""
+msgstr[1] ""
+
+#, c-format
+msgid "Adding cores for %s"
+msgstr ""
+
+#, c-format
+msgid "Installing %s"
+msgstr ""
+
+msgid "UPDATE"
+msgstr "ACTUALITZA"
+
+msgid "REMOVE"
+msgstr ""
+
+msgid "Installing what your games need"
+msgstr ""
+
+msgid "Updating emulators"
+msgstr ""
+
+msgid "choose"
+msgstr "tancar"
+
+msgid "install or manage"
+msgstr ""
+
+msgid "install what's needed"
+msgstr ""
+
+msgid "update all"
+msgstr ""
+
 msgid "IMPORT TO SYSTEM"
 msgstr "IMPORTA AL SISTEMA"
 
@@ -556,48 +646,6 @@ msgstr "ELS NO SELECCIONATS"
 
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "ELIMINAR CARÀCTERS ESPECIALS"
-
-msgid "MEDIA TARGET TYPE"
-msgstr "TIPUS DE MITJÀ OBJECTIU"
-
-msgid "SCREENSHOTS"
-msgstr "CAPTURES DE PANTALLA"
-
-msgid "TITLE SCREENS"
-msgstr "PANTALLES DE TÍTOL"
-
-msgid "COVERS"
-msgstr "PORTADES"
-
-msgid "BACK COVERS"
-msgstr "CONTRAPORTADES"
-
-msgid "MARQUEES (WHEELS)"
-msgstr "MARQUESINES (RODES)"
-
-msgid "3D BOXES"
-msgstr "CAIXES 3D"
-
-msgid "PHYSICAL MEDIA"
-msgstr "MITJANS FÍSICS"
-
-msgid "FAN ART"
-msgstr "ART FAN"
-
-msgid "MIXIMAGES"
-msgstr "COMPOSICIÓ"
-
-msgid "IMPORT MEDIA"
-msgstr "IMPORTAR MULTIMÈDIA"
-
-msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-msgstr "IMPORTAR LES BANDEROLES O ELS LOGOS DISPONIBLES"
-
-msgid "OVERWRITE MEDIA FILES"
-msgstr "SOBREESCRIURE ELS FITXERS MULTIMÈDIA"
-
-msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-msgstr "INCLOURE NOMÉS LES APPS CATEGORITZADES COM JOCS"
 
 msgid "START"
 msgstr "INICIAR"
@@ -702,11 +750,8 @@ msgstr "APLICAR"
 msgid "apply"
 msgstr "aplicar"
 
-msgid "close (apply)"
-msgstr "tancar (aplicar)"
-
-msgid "close (cancel)"
-msgstr "tancar (cancel·lar)"
+msgid "done"
+msgstr ""
 
 msgid "LAUNCHING GAME"
 msgstr "INICIANT JOC"
@@ -741,35 +786,56 @@ msgstr "RENDERITZAR DIFUMINAT PELS VÍDEOS"
 msgid "RENDER SCANLINES FOR SCREENSHOTS AND TITLES"
 msgstr "RENDERITZAR SCANLINES PER LES CAPTURES I ELS TÍTOLS"
 
-msgid "MAIN MENU"
-msgstr "MENÚ PRINCIPAL"
+msgid "SETTINGS"
+msgstr ""
 
-msgid "SCRAPER"
-msgstr "GARBELLAT DE DADES"
+msgid "SETUP"
+msgstr ""
 
-msgid "UI SETTINGS"
-msgstr "OPCIONS D'INTERFÍCIE"
+msgid "LOOK AND FEEL"
+msgstr ""
 
-msgid "SOUND SETTINGS"
-msgstr "OPCIONS DE SÓ"
+msgid "SOUND"
+msgstr ""
 
-msgid "INPUT DEVICE SETTINGS"
-msgstr "OPCIONS DE DISPOSITIU D'ENTRADA"
+msgid "CONTROLLERS"
+msgstr ""
 
-msgid "GAME COLLECTION SETTINGS"
-msgstr "OPCIONS DE COL·LECCIÓ DE JOCS"
+msgid "COVERS AND INFO"
+msgstr ""
 
-msgid "OTHER SETTINGS"
-msgstr "ALTRES OPCIONS"
-
-msgid "UTILITIES"
-msgstr "UTILITATS"
+msgid "ADVANCED"
+msgstr ""
 
 msgid "QUIT ARCADIA"
 msgstr "TANCAR ARCADIA"
 
+msgid "COLOURS"
+msgstr ""
+
 msgid "THEME"
 msgstr "TEMA"
+
+msgid "COLLECTIONS"
+msgstr "COL·LECCIONS"
+
+msgid "GAMES DEFAULT SORT ORDER"
+msgstr "ORDRE DELS JOCS PER DEFECTE"
+
+msgid "SORT FAVORITE GAMES ABOVE NON-FAVORITES"
+msgstr "COL·LOCA ELS FAVORITS ABANS QUE LA RESTA"
+
+msgid "DISPLAY CLOCK"
+msgstr "MOSTRAR RELLOTGE"
+
+msgid "LAUNCH SCREEN DURATION"
+msgstr "DURACIÓ DE LA PANTALLA DE LLANÇAMENT"
+
+msgid "SCREENSAVER SETTINGS"
+msgstr "OPCIONS DEL SALVAPANTALLES"
+
+msgid "APPLICATION LANGUAGE"
+msgstr "IDIOMA DE L'APLICACIÓ"
 
 msgid "THEME DOWNLOADER"
 msgstr "DESCÀRREGA DE TEMES"
@@ -809,9 +875,6 @@ msgstr "ESVANIMENT (INTEGRAT)"
 
 msgid "THEME LANGUAGE"
 msgstr "IDIOMA DEL TEMA"
-
-msgid "APPLICATION LANGUAGE"
-msgstr "IDIOMA DE L'APLICACIÓ"
 
 msgid "QUICK SYSTEM SELECT"
 msgstr "SELECCIÓ RÀPIDA DE SISTEMA"
@@ -865,32 +928,23 @@ msgctxt "short"
 msgid "GAMES DEFAULT SORT ORDER"
 msgstr "ORDENACIÓ DELS JOCS PER DEFECTE"
 
-msgid "GAMES DEFAULT SORT ORDER"
-msgstr "ORDRE DELS JOCS PER DEFECTE"
+msgid "CLOUD (LIGHT PASTELS)"
+msgstr ""
 
-msgid "MENU COLOR SCHEME"
-msgstr "ESQUEMA DE COLOR DEL MENÚ"
-
-msgid "DARK"
-msgstr "FOSC"
-
-msgid "DARK AND RED"
-msgstr "FOSC I VERMELL"
-
-msgid "LIGHT"
-msgstr "CLAR"
+msgid "DUSK (PASTELS IN THE DARK)"
+msgstr ""
 
 msgid "MENU OPENING ANIMATION"
 msgstr "ANIMACIÓ D'OBERTURA DE MENÚ"
+
+msgid "SLIDE"
+msgstr ""
 
 msgid "SCALE-UP"
 msgstr "ESCALAR"
 
 msgid "NONE"
 msgstr "CAP"
-
-msgid "LAUNCH SCREEN DURATION"
-msgstr "DURACIÓ DE LA PANTALLA DE LLANÇAMENT"
 
 msgid "NORMAL"
 msgstr "NORMAL"
@@ -967,23 +1021,14 @@ msgstr "OPCIONS D'ESTAT DE SISTEMA"
 msgid "MEDIA VIEWER SETTINGS"
 msgstr "OPCIONS DEL VISUALITZADOR MULTIMÈDIA"
 
-msgid "SCREENSAVER SETTINGS"
-msgstr "OPCIONS DEL SALVAPANTALLES"
-
 msgid "ENABLE THEME VARIANT TRIGGERS"
 msgstr "HABILITAR ELS DISPARADORS DE LES VARIANTS DEL TEMA"
-
-msgid "DISPLAY CLOCK"
-msgstr "MOSTRAR RELLOTGE"
 
 msgid "BLUR BACKGROUND WHEN MENU IS OPEN"
 msgstr "DESENFOCA EL FONS QUAN S'OBRE EL MENÚ"
 
 msgid "SORT FOLDERS ON TOP OF GAMELISTS"
 msgstr "COL·LOCA LES CARPETES SOBRE LA LLISTA DE JOCS"
-
-msgid "SORT FAVORITE GAMES ABOVE NON-FAVORITES"
-msgstr "COL·LOCA ELS FAVORITS ABANS QUE LA RESTA"
 
 msgid "ADD STAR MARKINGS TO FAVORITE GAMES"
 msgstr "AFEGEIX UNA ESTRELLA ALS JOCS FAVORITS"
@@ -1003,14 +1048,8 @@ msgstr "HABILITAR ELS FILTRES DE LA LLISTA DE JOCS"
 msgid "DISPLAY ON-SCREEN HELP"
 msgstr "MOSTRA L'AJUDA EN PANTALLA"
 
-msgid "AUDIO DRIVER"
-msgstr "CONTROLADOR D'ÀUDIO"
-
-msgid "AUDIO DRIVER (REQUIRES RESTART)"
-msgstr "CONTROLADOR D'ÀUDIO (CAL REINICIAR)"
-
-msgid "SYSTEM VOLUME"
-msgstr "VOLUM DEL SISTEMA"
+msgid "ENABLE NAVIGATION SOUNDS"
+msgstr "ACTIVAR ELS SONS DE NAVEGACIÓ"
 
 msgid "NAVIGATION SOUNDS VOLUME"
 msgstr "VOLUM DELS SONS DE NAVEGACIÓ"
@@ -1021,75 +1060,32 @@ msgstr "VOLUM DEL REPRODUCTOR DE VÍDEO"
 msgid "PLAY AUDIO FOR GAMELIST AND SYSTEM VIEW VIDEOS"
 msgstr "ACTIVAR EL SO DEL VÍDEO A LA LLISTA DE JOCS I SISTEMES"
 
+msgid "SYSTEM VOLUME"
+msgstr "VOLUM DEL SISTEMA"
+
 msgid "PLAY AUDIO FOR MEDIA VIEWER VIDEOS"
 msgstr "ACTIVAR EL SO DEL VÍDEO AL REPRODUCTOR MULTIMÈDIA"
 
 msgid "PLAY AUDIO FOR SCREENSAVER VIDEOS"
 msgstr "ACTIVAR EL SO DEL VÍDEO AL SALVAPANTALLES"
 
-msgid "ENABLE NAVIGATION SOUNDS"
-msgstr "ACTIVAR ELS SONS DE NAVEGACIÓ"
-
 msgid "CONTROLLER TYPE"
 msgstr "TIPUS DE COMANDAMENT"
 
-msgid "TOUCH OVERLAY SIZE"
-msgstr "MIDA DE LA SOBREPOSICIÓ TÀCTIL"
+msgid "SWAP THE A/B AND X/Y BUTTONS"
+msgstr "INTERCANVIA EL BOTONS A/B I X/Y"
 
-msgid "MEDIUM"
-msgstr "MITJANA"
-
-msgid "LARGE"
-msgstr "GRAN"
-
-msgid "SMALL"
-msgstr "PETITA"
-
-msgid "EXTRA SMALL"
-msgstr "MOLT PETITA"
-
-msgid "TOUCH OVERLAY OPACITY"
-msgstr "OPACITAT DE LA SOBREPOSICIÓ TÀCTIL"
-
-msgid "LOW"
-msgstr "BAIXA"
-
-msgid "VERY LOW"
-msgstr "MOLT BAIXA"
-
-msgid "TOUCH OVERLAY FADE-OUT TIME"
-msgstr "TEMPS D'ESVANIMENT DE LA SOBREPOSICIÓ TÀCTIL"
-
-msgid "ENABLE TOUCH OVERLAY"
-msgstr "HABILITAR SOBREPOSICIÓ TÀCTIL"
-
-msgid ""
-"DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-"WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-"TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING AGAIN, "
-"OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS TO FORCE "
-"THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-msgstr ""
-"NO DESHABILITIS LA SOBREPOSICIÓ TÀCTIL A NO SER QUE FACIS SERVIR UN "
-"COMANDAMENT O ET DEIXARÀS SENSE ACCÈS A LA APP. SI AIXÒ PASES, HAURIES DE "
-"CONECTAR UN COMANDAMENT O UN TECLAT PER REHABILITAR AQUESTA FUNCIÓ. TAMBÉ "
-"PODRIES NETEJAR LA MEMÒRIA D'ARCADIA A LES OPCIONS DE L'APLICACIÓ ANDROID PER "
-"FORÇAR L'INICI DEL CONFIGURADOR LA PROPERA EXECUCIÓ"
+msgid "CONFIGURE KEYBOARD AND CONTROLLERS"
+msgstr "CONFIGURA EL TECLAT I ELS COMANDAMENTS"
 
 msgid "ONLY ACCEPT INPUT FROM FIRST CONTROLLER"
 msgstr "ACCEPTA ENTRADES NOMÉS DEL PRIMER COMANDAMENT"
-
-msgid "SWAP THE A/B AND X/Y BUTTONS"
-msgstr "INTERCANVIA EL BOTONS A/B I X/Y"
 
 msgid "IGNORE KEYBOARD INPUT"
 msgstr "IGNORA LES ENTRADES DEL TECLAT"
 
 msgid "INPUT DEVICE NOTIFICATIONS"
 msgstr "NOTIFICACIONS DEL DISPOSITIU D'ENTRADA"
-
-msgid "CONFIGURE KEYBOARD AND CONTROLLERS"
-msgstr "CONFIGURA EL TECLAT I ELS COMANDAMENTS"
 
 msgid ""
 "THE KEYBOARD AND CONTROLLERS ARE AUTOMATICALLY CONFIGURED, BUT USING THIS "
@@ -1102,6 +1098,21 @@ msgstr ""
 
 msgid "PROCEED"
 msgstr "PROCEDIR"
+
+msgid "TOOLS"
+msgstr ""
+
+msgid "ENABLE ALTERNATIVE EMULATORS PER GAME"
+msgstr "HABILITAR EMULADORS ALTERNATIUS PER JOC"
+
+msgid "SHOW HIDDEN GAMES"
+msgstr "MOSTRAR JOCS OCULTS"
+
+msgid "CHECK FOR APPLICATION UPDATES"
+msgstr "BUSCAR ACTUALITZACIONS DE L'APLICACIÓ"
+
+msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
+msgstr "EXECUTAR EN SEGON PLÀ (DURANT LA PARTIDA)"
 
 msgid "GAME MEDIA DIRECTORY"
 msgstr "DIRECTORI DE MITJANS DE JOC"
@@ -1185,17 +1196,8 @@ msgstr "SETMANALS"
 msgid "MONTHLY"
 msgstr "MENSUALS"
 
-msgid "CHECK FOR APPLICATION UPDATES"
-msgstr "BUSCAR ACTUALITZACIONS DE L'APLICACIÓ"
-
 msgid "INCLUDE PRERELEASES IN UPDATE CHECKS"
 msgstr "INCLOURE VERSIONS PRELIMINARS A LA CERCA"
-
-msgid "HIDE TASKBAR (REQUIRES RESTART)"
-msgstr "AMAGAR BARRA DE TASQUES (CAL REINICIAR)"
-
-msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
-msgstr "EXECUTAR EN SEGON PLÀ (DURANT LA PARTIDA)"
 
 msgid "VIDEO HARDWARE DECODING (EXPERIMENTAL)"
 msgstr "DECODIFICAT DE VÍDEO PER MAQUINARI (EXPERIMENTAL)"
@@ -1203,17 +1205,8 @@ msgstr "DECODIFICAT DE VÍDEO PER MAQUINARI (EXPERIMENTAL)"
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "SOBREESCALAR LA TAXA D'IMATGES PER SEGON A 60 FPS"
 
-msgid "ENABLE ALTERNATIVE EMULATORS PER GAME"
-msgstr "HABILITAR EMULADORS ALTERNATIUS PER JOC"
-
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "MOSTRAR ARXIUS I CARPETES OCULTES"
-
-msgid "SHOW HIDDEN GAMES"
-msgstr "MOSTRAR JOCS OCULTS"
-
-msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-msgstr "LLANÇA JOCS A L'ALTRA PANTALLA"
 
 msgid "ENABLE CUSTOM EVENT SCRIPTS"
 msgstr "HABILITAR SCRIPTS PERSONALITZATS D'ESDEVENIMENT"
@@ -1229,9 +1222,6 @@ msgstr "DESCARTAR INFO EXTRA DE NOM MAME (CAL REINICIAR)"
 
 msgid "DISABLE DESKTOP COMPOSITION (REQUIRES RESTART)"
 msgstr "DESHABILITA LA COMPOSICIÓ D'ESCRIPTORI (CAL REINICIAR)"
-
-msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-msgstr "BOTÓ ENRERA/LLISCAR ENRERA TANCA L'APP"
 
 msgid "DEBUG MODE"
 msgstr "MODE DE DEPURACIÓ"
@@ -1320,11 +1310,8 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "OPCIONS DEL SALVAPANTALLES"
 
-msgid "choose"
-msgstr "tancar"
-
-msgid "close menu"
-msgstr "tancar menú"
+msgid "open"
+msgstr ""
 
 msgid "EDIT METADATA"
 msgstr "EDITAR METADADES"
@@ -1516,9 +1503,6 @@ msgstr "LLISTAT DE JOCS"
 msgid "RUNNING GAMELISTS CLEANUP"
 msgstr "NETEJA DE LLISTAT DE JOCS EN MARXA"
 
-msgid "COLLECTIONS"
-msgstr "COL·LECCIONS"
-
 msgid "COLLECTIONS CLEANUP FAILED"
 msgstr "HA FALLAT LA NETEJA DE COL·LECCIONS"
 
@@ -1654,6 +1638,9 @@ msgstr "OPCIONS DE CONTINGUT"
 msgid "MIXIMAGE SETTINGS"
 msgstr "OPCIONS DE COMPOSICIÓ D'IMATGES"
 
+msgid "OTHER SETTINGS"
+msgstr "ALTRES OPCIONS"
+
 msgid "start scraper"
 msgstr "iniciar garbellat de dades"
 
@@ -1741,6 +1728,9 @@ msgstr "LLINDAR DE LA RELACIÓ D'ASPECTE"
 msgid "HIGH"
 msgstr "ALT"
 
+msgid "LOW"
+msgstr "BAIXA"
+
 msgid "SCREENSHOT ASPECT RATIO THRESHOLD"
 msgstr "LLINDAR DE LA RELACIÓ D'ASPECTE DE LA CAPTURA"
 
@@ -1768,6 +1758,15 @@ msgstr "MÈTODE D'ESCALAT DE CAPTURA DE PANTALLA"
 
 msgid "BOX SIZE"
 msgstr "MIDA DE LA CAIXA"
+
+msgid "SMALL"
+msgstr "PETITA"
+
+msgid "MEDIUM"
+msgstr "MITJANA"
+
+msgid "LARGE"
+msgstr "GRAN"
 
 msgid "PHYSICAL MEDIA SIZE"
 msgstr "MIDA DEL MITJÀ FÍSIC"
@@ -2094,14 +2093,89 @@ msgstr ""
 msgid "RENDER BLUR"
 msgstr "RENDERITZAR DIFUMINAT"
 
+msgid "MORE OPTIONS"
+msgstr ""
+
+msgid "Show me"
+msgstr ""
+
+msgid "Set up"
+msgstr ""
+
+msgid "Allow"
+msgstr ""
+
+msgid "Connect"
+msgstr ""
+
+msgid "Check"
+msgstr ""
+
+msgid "Get it"
+msgstr ""
+
+msgid "Sort downloads"
+msgstr ""
+
+msgid "Sort inside folders"
+msgstr ""
+
+msgid "Undo the last sort"
+msgstr ""
+
+msgid "Sync saves now"
+msgstr ""
+
+msgid "Back up settings"
+msgstr ""
+
+msgid "Restore a backup"
+msgstr ""
+
+msgid "Update Arcadia"
+msgstr ""
+
+msgid "Setup"
+msgstr ""
+
+msgid "Checking what's ready…"
+msgstr ""
+
+msgid "Tools"
+msgstr ""
+
+msgid "The checklist couldn't be read. The tools on the right still work."
+msgstr ""
+
+msgid "All set"
+msgstr ""
+
+msgid "Everything is ready. Have fun."
+msgstr ""
+
+msgid "Let's get you set up"
+msgstr ""
+
+msgid "Almost ready"
+msgstr ""
+
+#, c-format
+msgid "One thing left to do."
+msgid_plural "%i things left to do."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "switch side"
+msgstr ""
+
+msgid "do it"
+msgstr ""
+
 msgid "DISPLAY BLUETOOTH STATUS INDICATOR"
 msgstr "MOSTRA L'INDICADOR D'ESTAT BLUETOOTH"
 
 msgid "DISPLAY WI-FI STATUS INDICATOR"
 msgstr "MOSTRA L'INDICADOR D'ESTAT WI-FI"
-
-msgid "DISPLAY CELLULAR STATUS INDICATOR"
-msgstr "MOSTRA L'INDICADOR D'ESTAT DE LA XARXA MÒBIL"
 
 msgid "DISPLAY BATTERY STATUS INDICATOR"
 msgstr "MOSTRA L'INDICADOR D'ESTAT DE LA BATERIA"
@@ -2167,8 +2241,8 @@ msgstr "DESCARREGANT TEMA"
 msgid ""
 "IT SEEMS AS IF THIS THEME REPOSITORY IS CORRUPT, WHICH COULD HAVE BEEN "
 "CAUSED BY AN INTERRUPTION OF A PREVIOUS DOWNLOAD OR UPDATE, FOR EXAMPLE IF "
-"THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD THEME "
-"DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""
+"THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD "
+"THEME DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""
 msgstr ""
 "SEMBLA QUE EL REPOSITORI D'AQUEST TEMA ÉS CORRUPTE, AIXÒ HO PODRIA HAVER "
 "CAUSAT UNA INTERRUPCIÓ DE LA ÚLTIMA DESCÀRREGA O ACTUALITZACIÓ, PER EXEMPLE, "
@@ -2274,9 +2348,6 @@ msgstr "NO S'HA POGUT DESCARREGAR EL LLISTAT DE TEMES"
 msgid "DOWNLOADING THEMES LIST"
 msgstr "DESCARREGANT EL LLISTAT DE TEMES"
 
-msgid "THIS WILL COMPLETELY DELETE THE THEME"
-msgstr "AIXÒ ELIMINARÀ COMPLETAMENT EL TEMA"
-
 msgid ""
 "THIS WILL COMPLETELY DELETE THE THEME INCLUDING ANY LOCAL CUSTOMIZATIONS"
 msgstr "AIXÒ ELIMINARÀ COMPLETAMENT EL TEMA I QUALSEVOL PERSONALITZACIÓ LOCAL"
@@ -2329,6 +2400,45 @@ msgstr ""
 "QUALSEVOL TEMA QUE DESCARREGUIS. TINGUES EN COMPTE QUE NO POTS ABORTAR UNA "
 "DESCÀRREGA EN CURS JA QUE PODRIA GENERAR CORRUPCIÓ A LES DADES."
 
+msgid "WORKING…"
+msgstr ""
+
+msgid "Working on it…"
+msgstr ""
+
+msgid "The tool couldn't be started."
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
+#, c-format
+msgid "Done in %i s"
+msgstr ""
+
+#, c-format
+msgid "Done in %i min"
+msgstr ""
+
+msgid "Finished with a problem: see below"
+msgstr ""
+
+msgid "TRY AGAIN"
+msgstr ""
+
+msgid "try again"
+msgstr ""
+
+#, c-format
+msgid "Step %i of %i… this can take a few minutes"
+msgstr ""
+
+msgid "scroll"
+msgstr ""
+
+msgid "close or try again"
+msgstr ""
+
 msgid "browse"
 msgstr "navegar"
 
@@ -2352,6 +2462,9 @@ msgstr "CONTRAPORTADA"
 
 msgid "TITLE SCREEN"
 msgstr "PANTALLA DE TÍTOL"
+
+msgid "FAN ART"
+msgstr "ART FAN"
 
 msgid "MIXIMAGE"
 msgstr "COMPOSICIÓ"
@@ -2638,17 +2751,11 @@ msgid "CAN'T ADD ENTRIES THAT ARE NOT COUNTED AS GAMES TO CUSTOM COLLECTIONS"
 msgstr ""
 "A LES COL·LECCIONS PERSONALITZADES NOMES ES PODEN AFEGIR ENTRADES DE JOCS"
 
-msgid "system"
-msgstr "sistema"
-
-msgid "view media"
-msgstr "veure multimèdia"
+msgid "media"
+msgstr ""
 
 msgid "options"
 msgstr "opcions"
-
-msgid "random"
-msgstr "aleatori"
 
 msgid "jump to game"
 msgstr "saltar al joc"
@@ -2660,6 +2767,9 @@ msgstr "si"
 msgctxt "theme"
 msgid "no"
 msgstr "no"
+
+msgid "random"
+msgstr "aleatori"
 
 msgid "screensaver"
 msgstr "salvapantalles"
@@ -2701,8 +2811,8 @@ msgstr ""
 msgid ""
 "COULDN'T PARSE THE SYSTEMS CONFIGURATION FILE. IF YOU HAVE A CUSTOMIZED "
 "es_systems.xml FILE, THEN SOMETHING IS LIKELY WRONG WITH YOUR XML SYNTAX. IF "
-"YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE ARCADIA INSTALLATION IS BROKEN. "
-"SEE THE APPLICATION LOG FILE es_log.txt FOR ADDITIONAL INFO"
+"YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE ARCADIA INSTALLATION IS "
+"BROKEN. SEE THE APPLICATION LOG FILE es_log.txt FOR ADDITIONAL INFO"
 msgstr ""
 "NO S'HA POGUT PROCESSAR L'ARXIU DE CONFIGURACIÓ DE SISTEMES. SI TENS UN "
 "ARXIU es_systems.xml PERSONALITZAT, PROBABLEMENT HI HAGI ALGUN PROBLEMA AMB "
@@ -2710,30 +2820,14 @@ msgstr ""
 "CONSULTA L'ARXIU DE REGISTRE es_log.txt PER MÉS INFORMACIÓ"
 
 msgid ""
-"NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY IN "
-"THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM DIRECTORY "
-"STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME "
-"INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED "
-"ROM DIRECTORY:\n"
+"Welcome to Arcadia. No games were found yet.\n"
+"\n"
+"Put your games in the ROM folder below, one folder per console (Create makes "
+"the folders), or choose Setup and then Sort downloads to move them there for "
+"you.\n"
+"\n"
+"The ROM folder is "
 msgstr ""
-"NO S'HA TROBAT CAP FITXER DE JOC. IMPORTA ALGUNS JOCS O COL·LOCA'LS "
-"MANUALMENT AL DIRECTORI ROM CONFIGURAT. TAMBÉ TENS LA OPCIÓ DE GENERAR "
-"L'ESTRUCTURA DEL DIRECTORI ROMS. AIXÒ CREARÀ UN FITXER DE TEXT PER A CADA "
-"SISTEMA AMB INFORMACIÓ COM LES EXTENSIONS DE FITXER ADMESES. EL DIRECTORI  "
-"ROM CONFIGURAT ACTUALMENT ÉS:\n"
-
-msgid ""
-"NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY IN "
-"THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM PATH AND "
-"OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT "
-"FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE "
-"EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-msgstr ""
-"NO S'HA TROBAT CAP FITXER DE JOC. IMPORTA ALGUNS JOCS O COL·LOCA'LS "
-"MANUALMENT AL DIRECTORI ROM CONFIGURAT. TAMBÉ POTS CANVIAR LA RUTA DE LA ROM "
-"I, OPCIONALMENT, GENERAR L'ESTRUCTURA DEL DIRECTORI ROM. AIXÒ CREARÀ UN "
-"FITXER DE TEXT PER A CADA SISTEMA AMB INFORMACIÓ COM LES EXTENSIONS DE "
-"FITXER ADMESES. EL DIRECTORI ROM CONFIGURAT ACTUALMENT ÉS:\n"
 
 msgid "CHANGE"
 msgstr "CANVIAR"
@@ -2757,8 +2851,8 @@ msgid "CLEAR (LEAVE BLANK TO RESET TO DEFAULT PATH)"
 msgstr "NETEJAR (DEIXA-HO EN BLANC PER REINICIAR A LA RUTA PER DEFECTE)"
 
 msgid ""
-"THIS WILL CREATE DIRECTORIES FOR ALL THE GAME SYSTEMS DEFINED IN es_systems."
-"xml\n"
+"THIS WILL CREATE DIRECTORIES FOR ALL THE GAME SYSTEMS DEFINED IN "
+"es_systems.xml\n"
 "\n"
 "THIS MAY CREATE A LOT OF FOLDERS SO IT'S ADVISED TO REMOVE THE ONES YOU "
 "DON'T NEED"
@@ -2795,14 +2889,11 @@ msgstr ""
 "REVISA LA TEVA CONFIGURACIÓ AMB LA INTERFÍCIE «EMULADORS ALTERNATIUS» AL "
 "MENÚ «ALTRES OPCIONS»"
 
-msgid "UPDATE"
-msgstr "ACTUALITZA"
-
 msgid ""
 "THE APPLICATION UPDATER WILL DOWNLOAD THE LATEST PORTABLE WINDOWS RELEASE "
-"FOR YOU, BUT YOU WILL NEED TO MANUALLY PERFORM THE UPGRADE. SEE THE README."
-"TXT FILE INSIDE THE DOWNLOADED ZIP FILE FOR INSTRUCTIONS ON HOW THIS IS "
-"ACCOMPLISHED. AS IS ALSO DESCRIBED IN THAT DOCUMENT, NEVER UNPACK A NEW "
+"FOR YOU, BUT YOU WILL NEED TO MANUALLY PERFORM THE UPGRADE. SEE THE "
+"README.TXT FILE INSIDE THE DOWNLOADED ZIP FILE FOR INSTRUCTIONS ON HOW THIS "
+"IS ACCOMPLISHED. AS IS ALSO DESCRIBED IN THAT DOCUMENT, NEVER UNPACK A NEW "
 "RELEASE ON TOP OF AN OLD INSTALLATION AS THAT MAY BREAK THE APPLICATION."
 msgstr ""
 "L'ACTUALITZADOR DE L'APLICACIÓ DESCARREGARÀ LA VERSIÓ PORTABLE MÉS RECENT "
@@ -2833,6 +2924,13 @@ msgstr ""
 msgid "LAUNCHING GAME '%s'"
 msgstr "INICIANT JOC «%s»"
 
+#, c-format
+msgid "ARCADIA %s IS AVAILABLE"
+msgstr ""
+
+msgid "SETUP → UPDATE ARCADIA INSTALLS IT"
+msgstr ""
+
 msgid "menu"
 msgstr "menu"
 
@@ -2861,12 +2959,9 @@ msgid_plural "%i minutes ago"
 msgstr[0] "fa un minut"
 msgstr[1] "fa %i minuts"
 
-#, c-format
 msgctxt "theme"
-msgid "%i second ago"
-msgid_plural "%i seconds ago"
-msgstr[0] "fa un segon"
-msgstr[1] "fa %i segons"
+msgid "just now"
+msgstr ""
 
 msgid "edit date"
 msgstr "editar data"
@@ -3153,5 +3248,186 @@ msgstr "Copiant recursos…"
 msgid "Creating system directories..."
 msgstr "Creant carpetes de sistema…"
 
+msgid "NO PICTURES OR VIDEO FOR THIS GAME YET"
+msgstr ""
+
+msgid "SETTINGS → COVERS AND INFO CAN GET THEM"
+msgstr ""
+
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "ERROR: NO ES POT RENDERITZAR L'ARXIU PDF"
+
+#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
+#~ msgstr "ERROR: L'APP O L'ARXIU ÀLIES NO EXISTEIX O NO ES POT LLEGIR"
+
+#~ msgid "MEDIA TARGET TYPE"
+#~ msgstr "TIPUS DE MITJÀ OBJECTIU"
+
+#~ msgid "SCREENSHOTS"
+#~ msgstr "CAPTURES DE PANTALLA"
+
+#~ msgid "TITLE SCREENS"
+#~ msgstr "PANTALLES DE TÍTOL"
+
+#~ msgid "COVERS"
+#~ msgstr "PORTADES"
+
+#~ msgid "BACK COVERS"
+#~ msgstr "CONTRAPORTADES"
+
+#~ msgid "MARQUEES (WHEELS)"
+#~ msgstr "MARQUESINES (RODES)"
+
+#~ msgid "3D BOXES"
+#~ msgstr "CAIXES 3D"
+
+#~ msgid "PHYSICAL MEDIA"
+#~ msgstr "MITJANS FÍSICS"
+
+#~ msgid "MIXIMAGES"
+#~ msgstr "COMPOSICIÓ"
+
+#~ msgid "IMPORT MEDIA"
+#~ msgstr "IMPORTAR MULTIMÈDIA"
+
+#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+#~ msgstr "IMPORTAR LES BANDEROLES O ELS LOGOS DISPONIBLES"
+
+#~ msgid "OVERWRITE MEDIA FILES"
+#~ msgstr "SOBREESCRIURE ELS FITXERS MULTIMÈDIA"
+
+#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+#~ msgstr "INCLOURE NOMÉS LES APPS CATEGORITZADES COM JOCS"
+
+#~ msgid "close (apply)"
+#~ msgstr "tancar (aplicar)"
+
+#~ msgid "close (cancel)"
+#~ msgstr "tancar (cancel·lar)"
+
+#~ msgid "MAIN MENU"
+#~ msgstr "MENÚ PRINCIPAL"
+
+#~ msgid "SCRAPER"
+#~ msgstr "GARBELLAT DE DADES"
+
+#~ msgid "UI SETTINGS"
+#~ msgstr "OPCIONS D'INTERFÍCIE"
+
+#~ msgid "SOUND SETTINGS"
+#~ msgstr "OPCIONS DE SÓ"
+
+#~ msgid "INPUT DEVICE SETTINGS"
+#~ msgstr "OPCIONS DE DISPOSITIU D'ENTRADA"
+
+#~ msgid "GAME COLLECTION SETTINGS"
+#~ msgstr "OPCIONS DE COL·LECCIÓ DE JOCS"
+
+#~ msgid "UTILITIES"
+#~ msgstr "UTILITATS"
+
+#~ msgid "MENU COLOR SCHEME"
+#~ msgstr "ESQUEMA DE COLOR DEL MENÚ"
+
+#~ msgid "DARK"
+#~ msgstr "FOSC"
+
+#~ msgid "DARK AND RED"
+#~ msgstr "FOSC I VERMELL"
+
+#~ msgid "LIGHT"
+#~ msgstr "CLAR"
+
+#~ msgid "AUDIO DRIVER"
+#~ msgstr "CONTROLADOR D'ÀUDIO"
+
+#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
+#~ msgstr "CONTROLADOR D'ÀUDIO (CAL REINICIAR)"
+
+#~ msgid "TOUCH OVERLAY SIZE"
+#~ msgstr "MIDA DE LA SOBREPOSICIÓ TÀCTIL"
+
+#~ msgid "EXTRA SMALL"
+#~ msgstr "MOLT PETITA"
+
+#~ msgid "TOUCH OVERLAY OPACITY"
+#~ msgstr "OPACITAT DE LA SOBREPOSICIÓ TÀCTIL"
+
+#~ msgid "VERY LOW"
+#~ msgstr "MOLT BAIXA"
+
+#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
+#~ msgstr "TEMPS D'ESVANIMENT DE LA SOBREPOSICIÓ TÀCTIL"
+
+#~ msgid "ENABLE TOUCH OVERLAY"
+#~ msgstr "HABILITAR SOBREPOSICIÓ TÀCTIL"
+
+#~ msgid ""
+#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
+#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
+#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
+#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
+#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
+#~ msgstr ""
+#~ "NO DESHABILITIS LA SOBREPOSICIÓ TÀCTIL A NO SER QUE FACIS SERVIR UN "
+#~ "COMANDAMENT O ET DEIXARÀS SENSE ACCÈS A LA APP. SI AIXÒ PASES, HAURIES DE "
+#~ "CONECTAR UN COMANDAMENT O UN TECLAT PER REHABILITAR AQUESTA FUNCIÓ. TAMBÉ "
+#~ "PODRIES NETEJAR LA MEMÒRIA D'ARCADIA A LES OPCIONS DE L'APLICACIÓ ANDROID "
+#~ "PER FORÇAR L'INICI DEL CONFIGURADOR LA PROPERA EXECUCIÓ"
+
+#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
+#~ msgstr "AMAGAR BARRA DE TASQUES (CAL REINICIAR)"
+
+#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
+#~ msgstr "LLANÇA JOCS A L'ALTRA PANTALLA"
+
+#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
+#~ msgstr "BOTÓ ENRERA/LLISCAR ENRERA TANCA L'APP"
+
+#~ msgid "close menu"
+#~ msgstr "tancar menú"
+
+#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
+#~ msgstr "MOSTRA L'INDICADOR D'ESTAT DE LA XARXA MÒBIL"
+
+#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
+#~ msgstr "AIXÒ ELIMINARÀ COMPLETAMENT EL TEMA"
+
+#~ msgid "system"
+#~ msgstr "sistema"
+
+#~ msgid "view media"
+#~ msgstr "veure multimèdia"
+
+#~ msgid ""
+#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
+#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
+#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
+#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
+#~ "THE CONFIGURED ROM DIRECTORY:\n"
+#~ msgstr ""
+#~ "NO S'HA TROBAT CAP FITXER DE JOC. IMPORTA ALGUNS JOCS O COL·LOCA'LS "
+#~ "MANUALMENT AL DIRECTORI ROM CONFIGURAT. TAMBÉ TENS LA OPCIÓ DE GENERAR "
+#~ "L'ESTRUCTURA DEL DIRECTORI ROMS. AIXÒ CREARÀ UN FITXER DE TEXT PER A CADA "
+#~ "SISTEMA AMB INFORMACIÓ COM LES EXTENSIONS DE FITXER ADMESES. EL "
+#~ "DIRECTORI  ROM CONFIGURAT ACTUALMENT ÉS:\n"
+
+#~ msgid ""
+#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
+#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
+#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
+#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
+#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
+#~ msgstr ""
+#~ "NO S'HA TROBAT CAP FITXER DE JOC. IMPORTA ALGUNS JOCS O COL·LOCA'LS "
+#~ "MANUALMENT AL DIRECTORI ROM CONFIGURAT. TAMBÉ POTS CANVIAR LA RUTA DE LA "
+#~ "ROM I, OPCIONALMENT, GENERAR L'ESTRUCTURA DEL DIRECTORI ROM. AIXÒ CREARÀ "
+#~ "UN FITXER DE TEXT PER A CADA SISTEMA AMB INFORMACIÓ COM LES EXTENSIONS DE "
+#~ "FITXER ADMESES. EL DIRECTORI ROM CONFIGURAT ACTUALMENT ÉS:\n"
+
+#, c-format
+#~ msgctxt "theme"
+#~ msgid "%i second ago"
+#~ msgid_plural "%i seconds ago"
+#~ msgstr[0] "fa un segon"
+#~ msgstr[1] "fa %i segons"

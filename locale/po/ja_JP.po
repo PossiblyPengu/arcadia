@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Arcadia Frontend\n"
 "Report-Msgid-Bugs-To: info@es-de.org\n"
-"POT-Creation-Date: 2026-03-22 21:12+0100\n"
+"POT-Creation-Date: 2026-11-15 10:18-0500\n"
 "PO-Revision-Date: 2025-06-25 04:03+0800\n"
 "Last-Translator: ice <natsumekyousuke211314@gmail.com>\n"
 "Language-Team: 日本語 <info@es-de.org>\n"
@@ -129,6 +129,9 @@ msgstr "'%s' が絞り込まれ、可能なゲームが増えました"
 msgid "DELETED COLLECTION '%s'"
 msgstr "コレクション '%s' を削除しました"
 
+msgid "OPEN SETUP → EMULATORS TO INSTALL IT"
+msgstr ""
+
 msgctxt "theme"
 msgid "unknown"
 msgstr "未知"
@@ -202,9 +205,6 @@ msgid ""
 msgstr ""
 "エラー：%s で定義されたディレクトリを作成できませんでした。権限の問題である可"
 "能性があります。"
-
-msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
-msgstr "エラー：アプリまたは別名ファイルが存在しないか、あるいは読み込めません"
 
 msgid "ERROR: DESKTOP FILE IS INVALID OR UNREADABLE"
 msgstr "エラー：デスクトップファイルが無効化されたか、あるいは読み込めません"
@@ -550,6 +550,94 @@ msgstr "カスタムコレクションのお気に入りを上に"
 msgid "DISPLAY STAR MARKINGS FOR CUSTOM COLLECTIONS"
 msgstr "カスタムコレクションにスターマークを表示"
 
+msgid "Emulators"
+msgstr ""
+
+msgid "Looking at your games…"
+msgstr ""
+
+#, c-format
+msgid "%i game"
+msgid_plural "%i games"
+msgstr[0] ""
+
+msgid "Windows games"
+msgstr ""
+
+msgid "Deckhand, Arcadia's sister app, plays these"
+msgstr ""
+
+msgid "Get Deckhand"
+msgstr ""
+
+#, c-format
+msgid "Arcadia uses %s, which isn't on Flathub"
+msgstr ""
+
+msgid "Installed"
+msgstr ""
+
+msgid "Add cores"
+msgstr ""
+
+msgid "Install"
+msgstr ""
+
+msgid "The emulator list couldn't be read. Try again from Setup."
+msgstr ""
+
+msgid ""
+"No games yet. Add some and Arcadia picks what they need, or install one "
+"yourself."
+msgstr ""
+
+msgid "Everything your games need is installed. Have fun."
+msgstr ""
+
+#, c-format
+msgid "Your games need %s, and it isn't ready yet. Press X to set it up."
+msgstr ""
+
+#, c-format
+msgid ""
+"Your games need %i emulators; %i isn't ready yet. Press X to set them all up."
+msgid_plural ""
+"Your games need %i emulators; %i aren't ready yet. Press X to set them all "
+"up."
+msgstr[0] ""
+
+#, c-format
+msgid "Adding cores for %s"
+msgstr ""
+
+#, c-format
+msgid "Installing %s"
+msgstr ""
+
+msgid "UPDATE"
+msgstr "アップデート"
+
+msgid "REMOVE"
+msgstr ""
+
+msgid "Installing what your games need"
+msgstr ""
+
+msgid "Updating emulators"
+msgstr ""
+
+msgid "choose"
+msgstr "選ぶ"
+
+msgid "install or manage"
+msgstr ""
+
+msgid "install what's needed"
+msgstr ""
+
+msgid "update all"
+msgstr ""
+
 msgid "IMPORT TO SYSTEM"
 msgstr "システムにインポート"
 
@@ -564,48 +652,6 @@ msgstr "すべての未選択項目"
 
 msgid "STRIP SPECIAL CHARACTERS"
 msgstr "特殊文字を削除"
-
-msgid "MEDIA TARGET TYPE"
-msgstr "メディア対象の種類"
-
-msgid "SCREENSHOTS"
-msgstr "スクリーンショット"
-
-msgid "TITLE SCREENS"
-msgstr "タイトルスクリーン"
-
-msgid "COVERS"
-msgstr "カバー"
-
-msgid "BACK COVERS"
-msgstr "バックカバー"
-
-msgid "MARQUEES (WHEELS)"
-msgstr "マーキー（ホイール）"
-
-msgid "3D BOXES"
-msgstr "3Dボックス"
-
-msgid "PHYSICAL MEDIA"
-msgstr "物理メディア"
-
-msgid "FAN ART"
-msgstr "ファンアート"
-
-msgid "MIXIMAGES"
-msgstr "ミックス画像"
-
-msgid "IMPORT MEDIA"
-msgstr "メディアをインポート"
-
-msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
-msgstr "可能であればバナーかロゴをインポート"
-
-msgid "OVERWRITE MEDIA FILES"
-msgstr "メディアファイルを上書き"
-
-msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
-msgstr "ゲームに分類されたアプリだけを含め"
 
 msgid "START"
 msgstr "開始"
@@ -708,11 +754,8 @@ msgstr "同意"
 msgid "apply"
 msgstr "同意"
 
-msgid "close (apply)"
-msgstr "閉じる（同意）"
-
-msgid "close (cancel)"
-msgstr "閉じる（キャンセル）"
+msgid "done"
+msgstr ""
 
 msgid "LAUNCHING GAME"
 msgstr "ゲームを起動"
@@ -747,35 +790,56 @@ msgstr "ビデオのぼかしをレンダリング"
 msgid "RENDER SCANLINES FOR SCREENSHOTS AND TITLES"
 msgstr "スクショとタイトルのスキャンラインをレンダリング"
 
-msgid "MAIN MENU"
-msgstr "メインメニュー"
+msgid "SETTINGS"
+msgstr ""
 
-msgid "SCRAPER"
-msgstr "スクレーパー"
+msgid "SETUP"
+msgstr ""
 
-msgid "UI SETTINGS"
-msgstr "UI設定"
+msgid "LOOK AND FEEL"
+msgstr ""
 
-msgid "SOUND SETTINGS"
-msgstr "音声設定"
+msgid "SOUND"
+msgstr ""
 
-msgid "INPUT DEVICE SETTINGS"
-msgstr "入力デバイス設定"
+msgid "CONTROLLERS"
+msgstr ""
 
-msgid "GAME COLLECTION SETTINGS"
-msgstr "ゲームコレクション設定"
+msgid "COVERS AND INFO"
+msgstr ""
 
-msgid "OTHER SETTINGS"
-msgstr "他の設定"
-
-msgid "UTILITIES"
-msgstr "ユーティリティ"
+msgid "ADVANCED"
+msgstr ""
 
 msgid "QUIT ARCADIA"
 msgstr "Arcadiaを終了"
 
+msgid "COLOURS"
+msgstr ""
+
 msgid "THEME"
 msgstr "テーマ"
+
+msgid "COLLECTIONS"
+msgstr "コレクション"
+
+msgid "GAMES DEFAULT SORT ORDER"
+msgstr "ゲームデフォルト並び順"
+
+msgid "SORT FAVORITE GAMES ABOVE NON-FAVORITES"
+msgstr "お気に入りのゲームをより上に並べる"
+
+msgid "DISPLAY CLOCK"
+msgstr "時計を表示"
+
+msgid "LAUNCH SCREEN DURATION"
+msgstr "起動画面の継続時間"
+
+msgid "SCREENSAVER SETTINGS"
+msgstr "スクリーンセーバー設定"
+
+msgid "APPLICATION LANGUAGE"
+msgstr "アプリ言語"
 
 msgid "THEME DOWNLOADER"
 msgstr "テーマダウンローダー"
@@ -815,9 +879,6 @@ msgstr "フェイド（内蔵）"
 
 msgid "THEME LANGUAGE"
 msgstr "テーマ言語"
-
-msgid "APPLICATION LANGUAGE"
-msgstr "アプリ言語"
 
 msgid "QUICK SYSTEM SELECT"
 msgstr "クイックシステム選択"
@@ -871,32 +932,23 @@ msgctxt "short"
 msgid "GAMES DEFAULT SORT ORDER"
 msgstr "ゲームデフォルト並び順"
 
-msgid "GAMES DEFAULT SORT ORDER"
-msgstr "ゲームデフォルト並び順"
+msgid "CLOUD (LIGHT PASTELS)"
+msgstr ""
 
-msgid "MENU COLOR SCHEME"
-msgstr "メニューの配色"
-
-msgid "DARK"
-msgstr "DARK"
-
-msgid "DARK AND RED"
-msgstr "ダークレッド"
-
-msgid "LIGHT"
-msgstr "LIGHT"
+msgid "DUSK (PASTELS IN THE DARK)"
+msgstr ""
 
 msgid "MENU OPENING ANIMATION"
 msgstr "メニューオープニングアニメーション"
+
+msgid "SLIDE"
+msgstr ""
 
 msgid "SCALE-UP"
 msgstr "拡大"
 
 msgid "NONE"
 msgstr "無"
-
-msgid "LAUNCH SCREEN DURATION"
-msgstr "起動画面の継続時間"
 
 msgid "NORMAL"
 msgstr "普通"
@@ -975,23 +1027,14 @@ msgstr "システム状態設定"
 msgid "MEDIA VIEWER SETTINGS"
 msgstr "メディアビューアー設定"
 
-msgid "SCREENSAVER SETTINGS"
-msgstr "スクリーンセーバー設定"
-
 msgid "ENABLE THEME VARIANT TRIGGERS"
 msgstr "テーマバリエーショントリガーを有効に"
-
-msgid "DISPLAY CLOCK"
-msgstr "時計を表示"
 
 msgid "BLUR BACKGROUND WHEN MENU IS OPEN"
 msgstr "メニューが開いているときに背景をぼかす"
 
 msgid "SORT FOLDERS ON TOP OF GAMELISTS"
 msgstr "ゲームリストの上にフォルダを並べる"
-
-msgid "SORT FAVORITE GAMES ABOVE NON-FAVORITES"
-msgstr "お気に入りのゲームをより上に並べる"
 
 msgid "ADD STAR MARKINGS TO FAVORITE GAMES"
 msgstr "お気に入りのゲームに星マークを追加"
@@ -1011,14 +1054,8 @@ msgstr "ゲームリストのフィルターを有効に"
 msgid "DISPLAY ON-SCREEN HELP"
 msgstr "オンスクリーンヘルプを表示"
 
-msgid "AUDIO DRIVER"
-msgstr "オーディオドライバー"
-
-msgid "AUDIO DRIVER (REQUIRES RESTART)"
-msgstr "オーディオドライバー（再起動が必要）"
-
-msgid "SYSTEM VOLUME"
-msgstr "システム音量"
+msgid "ENABLE NAVIGATION SOUNDS"
+msgstr "ナビゲーション音声を有効に"
 
 msgid "NAVIGATION SOUNDS VOLUME"
 msgstr "ナビゲーション音量"
@@ -1029,75 +1066,32 @@ msgstr "ビデオプレーヤー音量"
 msgid "PLAY AUDIO FOR GAMELIST AND SYSTEM VIEW VIDEOS"
 msgstr "ゲームリスト/システムのビデオに音声を再生"
 
+msgid "SYSTEM VOLUME"
+msgstr "システム音量"
+
 msgid "PLAY AUDIO FOR MEDIA VIEWER VIDEOS"
 msgstr "メディア一覧のビデオに音声を再生"
 
 msgid "PLAY AUDIO FOR SCREENSAVER VIDEOS"
 msgstr "スクリーンセイバーのビデオに音声を再生"
 
-msgid "ENABLE NAVIGATION SOUNDS"
-msgstr "ナビゲーション音声を有効に"
-
 msgid "CONTROLLER TYPE"
 msgstr "コントローラータイプ"
 
-msgid "TOUCH OVERLAY SIZE"
-msgstr "タッチオーバーレイのサイズ"
+msgid "SWAP THE A/B AND X/Y BUTTONS"
+msgstr "A/B ボタンと X/Y ボタンを入れ替える"
 
-msgid "MEDIUM"
-msgstr "普通"
-
-msgid "LARGE"
-msgstr "大きい"
-
-msgid "SMALL"
-msgstr "小さい"
-
-msgid "EXTRA SMALL"
-msgstr "もっと小さい"
-
-msgid "TOUCH OVERLAY OPACITY"
-msgstr "タッチオーバーレイの不透明度"
-
-msgid "LOW"
-msgstr "低い"
-
-msgid "VERY LOW"
-msgstr "とても低い"
-
-msgid "TOUCH OVERLAY FADE-OUT TIME"
-msgstr "タッチオーバーレイのフェードアウト時間"
-
-msgid "ENABLE TOUCH OVERLAY"
-msgstr "タッチオーバーレイを有効にする"
-
-msgid ""
-"DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
-"WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
-"TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING AGAIN, "
-"OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS TO FORCE "
-"THE CONFIGURATOR TO RUN ON NEXT STARTUP"
-msgstr ""
-"コントローラーを使用していない場合は、タッチオーバーレイを無効にしないでくだ"
-"さい。そうしないと、アプリからロックアウトされる可能性があります。このような"
-"状況が発生した場合、一時的にコントローラーまたはキーボードを接続してこの設定"
-"を再度有効にする必要があります。または、Androidアプリの設定でArcadiaストレージ"
-"を消去して、次回起動時に設定を実行させることもできます"
+msgid "CONFIGURE KEYBOARD AND CONTROLLERS"
+msgstr "キーボードとコントローラーを設定"
 
 msgid "ONLY ACCEPT INPUT FROM FIRST CONTROLLER"
 msgstr "一番のコントローラーの入力だけを受入"
-
-msgid "SWAP THE A/B AND X/Y BUTTONS"
-msgstr "A/B ボタンと X/Y ボタンを入れ替える"
 
 msgid "IGNORE KEYBOARD INPUT"
 msgstr "キーボードからの入力を無視"
 
 msgid "INPUT DEVICE NOTIFICATIONS"
 msgstr "入力デバイスの通知"
-
-msgid "CONFIGURE KEYBOARD AND CONTROLLERS"
-msgstr "キーボードとコントローラーを設定"
 
 msgid ""
 "THE KEYBOARD AND CONTROLLERS ARE AUTOMATICALLY CONFIGURED, BUT USING THIS "
@@ -1110,6 +1104,21 @@ msgstr ""
 
 msgid "PROCEED"
 msgstr "進む"
+
+msgid "TOOLS"
+msgstr ""
+
+msgid "ENABLE ALTERNATIVE EMULATORS PER GAME"
+msgstr "ゲームごとに代替エミュレータを有効に"
+
+msgid "SHOW HIDDEN GAMES"
+msgstr "非表示中のゲームを表示"
+
+msgid "CHECK FOR APPLICATION UPDATES"
+msgstr "アプリ更新をチェックする"
+
+msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
+msgstr "ゲームが起動中にバックグラウンドで実行"
 
 msgid "GAME MEDIA DIRECTORY"
 msgstr "ゲームメディアディレクトリ"
@@ -1193,17 +1202,8 @@ msgstr "毎週"
 msgid "MONTHLY"
 msgstr "毎月"
 
-msgid "CHECK FOR APPLICATION UPDATES"
-msgstr "アプリ更新をチェックする"
-
 msgid "INCLUDE PRERELEASES IN UPDATE CHECKS"
 msgstr "更新チェックにプレリリースを含める"
-
-msgid "HIDE TASKBAR (REQUIRES RESTART)"
-msgstr "タスクバーを非表示にする（再起動が必要）"
-
-msgid "RUN IN BACKGROUND (WHILE GAME IS LAUNCHED)"
-msgstr "ゲームが起動中にバックグラウンドで実行"
 
 msgid "VIDEO HARDWARE DECODING (EXPERIMENTAL)"
 msgstr "ビデオハードウェアデコーディング（実験的）"
@@ -1211,17 +1211,8 @@ msgstr "ビデオハードウェアデコーディング（実験的）"
 msgid "UPSCALE VIDEO FRAME RATE TO 60 FPS"
 msgstr "ビデオのフレームレートを60 FPSに引き上げる"
 
-msgid "ENABLE ALTERNATIVE EMULATORS PER GAME"
-msgstr "ゲームごとに代替エミュレータを有効に"
-
 msgid "SHOW HIDDEN FILES AND FOLDERS"
 msgstr "隠しファイルとフォルダを表示"
-
-msgid "SHOW HIDDEN GAMES"
-msgstr "非表示中のゲームを表示"
-
-msgid "LAUNCH GAMES ON THE OTHER SCREEN"
-msgstr "別のスクリーンでゲームを起動"
 
 msgid "ENABLE CUSTOM EVENT SCRIPTS"
 msgstr "カスタムイベントスクリプトを有効に"
@@ -1237,9 +1228,6 @@ msgstr "余分なMAME名情報を削除（再起動が必要）"
 
 msgid "DISABLE DESKTOP COMPOSITION (REQUIRES RESTART)"
 msgstr "デスクトップ合成を無効に（再起動が必要）"
-
-msgid "BACK BUTTON/BACK SWIPE EXITS APP"
-msgstr "バックボタン/バックスワイプでアプリを終了"
 
 msgid "DEBUG MODE"
 msgstr "デバッグモード"
@@ -1329,11 +1317,8 @@ msgctxt "short"
 msgid "SCREENSAVER SETTINGS"
 msgstr "スクリーンセーバー設定"
 
-msgid "choose"
-msgstr "選ぶ"
-
-msgid "close menu"
-msgstr "メニューを閉じる"
+msgid "open"
+msgstr ""
 
 msgid "EDIT METADATA"
 msgstr "メタデータを編集する"
@@ -1525,9 +1510,6 @@ msgstr "ゲームリスト"
 msgid "RUNNING GAMELISTS CLEANUP"
 msgstr "ゲームリストをクリーンアップ中"
 
-msgid "COLLECTIONS"
-msgstr "コレクション"
-
 msgid "COLLECTIONS CLEANUP FAILED"
 msgstr "コレクションのクリーンアップが失敗しました"
 
@@ -1672,6 +1654,9 @@ msgstr "コンテンツ設定"
 msgid "MIXIMAGE SETTINGS"
 msgstr "複合画像の設定"
 
+msgid "OTHER SETTINGS"
+msgstr "他の設定"
+
 msgid "start scraper"
 msgstr "スクレイパーを開始"
 
@@ -1759,6 +1744,9 @@ msgstr "スクショのアスペクト比のしきい値"
 msgid "HIGH"
 msgstr "高い"
 
+msgid "LOW"
+msgstr "低い"
+
 msgid "SCREENSHOT ASPECT RATIO THRESHOLD"
 msgstr "スクショのアスペクト比のしきい値"
 
@@ -1786,6 +1774,15 @@ msgstr "スクリーンショットの拡大縮小方法"
 
 msgid "BOX SIZE"
 msgstr "ボックスサイズ"
+
+msgid "SMALL"
+msgstr "小さい"
+
+msgid "MEDIUM"
+msgstr "普通"
+
+msgid "LARGE"
+msgstr "大きい"
 
 msgid "PHYSICAL MEDIA SIZE"
 msgstr "物理メディアサイズ"
@@ -2107,14 +2104,88 @@ msgstr "（秒）経過後にビデオを交換"
 msgid "RENDER BLUR"
 msgstr "ぼかしをレンダリング"
 
+msgid "MORE OPTIONS"
+msgstr ""
+
+msgid "Show me"
+msgstr ""
+
+msgid "Set up"
+msgstr ""
+
+msgid "Allow"
+msgstr ""
+
+msgid "Connect"
+msgstr ""
+
+msgid "Check"
+msgstr ""
+
+msgid "Get it"
+msgstr ""
+
+msgid "Sort downloads"
+msgstr ""
+
+msgid "Sort inside folders"
+msgstr ""
+
+msgid "Undo the last sort"
+msgstr ""
+
+msgid "Sync saves now"
+msgstr ""
+
+msgid "Back up settings"
+msgstr ""
+
+msgid "Restore a backup"
+msgstr ""
+
+msgid "Update Arcadia"
+msgstr ""
+
+msgid "Setup"
+msgstr ""
+
+msgid "Checking what's ready…"
+msgstr ""
+
+msgid "Tools"
+msgstr ""
+
+msgid "The checklist couldn't be read. The tools on the right still work."
+msgstr ""
+
+msgid "All set"
+msgstr ""
+
+msgid "Everything is ready. Have fun."
+msgstr ""
+
+msgid "Let's get you set up"
+msgstr ""
+
+msgid "Almost ready"
+msgstr ""
+
+#, c-format
+msgid "One thing left to do."
+msgid_plural "%i things left to do."
+msgstr[0] ""
+
+msgid "switch side"
+msgstr ""
+
+msgid "do it"
+msgstr ""
+
 msgid "DISPLAY BLUETOOTH STATUS INDICATOR"
 msgstr "Bluetoothの状態インジケーターを表示"
 
 msgid "DISPLAY WI-FI STATUS INDICATOR"
 msgstr "WI-FIの状態インジケーターを表示"
-
-msgid "DISPLAY CELLULAR STATUS INDICATOR"
-msgstr "CELLULARの状態インジケーターを表示"
 
 msgid "DISPLAY BATTERY STATUS INDICATOR"
 msgstr "バッテリーの状態インジケーターを表示"
@@ -2156,8 +2227,8 @@ msgid ""
 "IT SEEMS AS IF YOU'RE NOT RUNNING THE LATEST ARCADIA RELEASE, PLEASE UPGRADE "
 "BEFORE PROCEEDING AS THESE THEMES MAY NOT BE COMPATIBLE WITH YOUR VERSION"
 msgstr ""
-"おそらく最新のArcadiaリリースを実行していないようです。まずはアップグレードして"
-"ください。そうしない場合、現バージョンとの互換性に問題を起こしかねます"
+"おそらく最新のArcadiaリリースを実行していないようです。まずはアップグレードし"
+"てください。そうしない場合、現バージョンとの互換性に問題を起こしかねます"
 
 msgid "and"
 msgstr "と"
@@ -2179,13 +2250,13 @@ msgstr "テーマをダウンローダー中"
 msgid ""
 "IT SEEMS AS IF THIS THEME REPOSITORY IS CORRUPT, WHICH COULD HAVE BEEN "
 "CAUSED BY AN INTERRUPTION OF A PREVIOUS DOWNLOAD OR UPDATE, FOR EXAMPLE IF "
-"THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD THEME "
-"DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""
+"THE ARCADIA PROCESS WAS KILLED. A FRESH DOWNLOAD IS REQUIRED AND THE OLD "
+"THEME DIRECTORY \"%s\" WILL BE RENAMED TO \"%s_CORRUPT_DISABLED\""
 msgstr ""
 "このテーマリポジトリは壊れているようです。これは以前のダウンロードやアップ"
-"デートの中断による可能性があります。例えば、Arcadiaプロセスが停止された場合など"
-"です。もう一度ダウンロードする必要があります。古いテーマディレクトリ \"%s\" "
-"の名前は \"%s_CORRUPT_DISABLED\" に変更されます"
+"デートの中断による可能性があります。例えば、Arcadiaプロセスが停止された場合な"
+"どです。もう一度ダウンロードする必要があります。古いテーマディレクトリ "
+"\"%s\" の名前は \"%s_CORRUPT_DISABLED\" に変更されます"
 
 #, c-format
 msgid ""
@@ -2286,9 +2357,6 @@ msgstr "テーマリストをダウンロードできませんでした"
 msgid "DOWNLOADING THEMES LIST"
 msgstr "テーマリストをダウンロード中"
 
-msgid "THIS WILL COMPLETELY DELETE THE THEME"
-msgstr "この操作により、テーマは完全に削除されます"
-
 msgid ""
 "THIS WILL COMPLETELY DELETE THE THEME INCLUDING ANY LOCAL CUSTOMIZATIONS"
 msgstr ""
@@ -2319,8 +2387,8 @@ msgid ""
 "DIRECTORY \"themes-list\" WILL BE RENAMED TO \"themes-list_CORRUPT_DISABLED\""
 msgstr ""
 "テーマリストリポジトリが壊れているようです。これは以前のダウンロードやアップ"
-"デートの中断による可能性があり、たとえば、Arcadiaプロセスがキルされた場合などが"
-"考えられます。もう一度ダウンロードする必要があります。古いディレクトリー"
+"デートの中断による可能性があり、たとえば、Arcadiaプロセスがキルされた場合など"
+"が考えられます。もう一度ダウンロードする必要があります。古いディレクトリー"
 "「themes-list」の名前は「themes-list_CORRUPT_DISABLED」に変更されます"
 
 msgid "UPDATING THEMES LIST"
@@ -2339,6 +2407,45 @@ msgstr ""
 "回は、新規または修正されたファイルのみを取得するため、大幅高速になります。ダ"
 "ウンロードしたテーマについても同じです。データを破損しかねない可能性があるの"
 "で、進行中のダウンロードを中止するのは不可能であることに注意してください。"
+
+msgid "WORKING…"
+msgstr ""
+
+msgid "Working on it…"
+msgstr ""
+
+msgid "The tool couldn't be started."
+msgstr ""
+
+msgid "Done"
+msgstr ""
+
+#, c-format
+msgid "Done in %i s"
+msgstr ""
+
+#, c-format
+msgid "Done in %i min"
+msgstr ""
+
+msgid "Finished with a problem: see below"
+msgstr ""
+
+msgid "TRY AGAIN"
+msgstr ""
+
+msgid "try again"
+msgstr ""
+
+#, c-format
+msgid "Step %i of %i… this can take a few minutes"
+msgstr ""
+
+msgid "scroll"
+msgstr ""
+
+msgid "close or try again"
+msgstr ""
 
 msgid "browse"
 msgstr "閲覧する"
@@ -2363,6 +2470,9 @@ msgstr "ボックスバックカバー"
 
 msgid "TITLE SCREEN"
 msgstr "タイトルスクリーン"
+
+msgid "FAN ART"
+msgstr "ファンアート"
 
 msgid "MIXIMAGE"
 msgstr "複合画像"
@@ -2651,17 +2761,11 @@ msgstr "フォルダ '%s' のお気に入りマークを削除しました"
 msgid "CAN'T ADD ENTRIES THAT ARE NOT COUNTED AS GAMES TO CUSTOM COLLECTIONS"
 msgstr "該当項目はゲームではないので、カスタムコレクションに追加できません"
 
-msgid "system"
-msgstr "システム"
-
-msgid "view media"
-msgstr "メディアを見る"
+msgid "media"
+msgstr ""
 
 msgid "options"
 msgstr "オプション"
-
-msgid "random"
-msgstr "ランダム"
 
 msgid "jump to game"
 msgstr "ゲームに移動する"
@@ -2673,6 +2777,9 @@ msgstr "はい"
 msgctxt "theme"
 msgid "no"
 msgstr "いいえ"
+
+msgid "random"
+msgstr "ランダム"
 
 msgid "screensaver"
 msgstr "スクリーンセーバー"
@@ -2704,46 +2811,30 @@ msgid ""
 msgstr ""
 "不安全なアップグレードが行われたようです。新しいリリースを古いものの上に展開"
 "したことが原因かと思われます。これはさまざまな問題を引き起こす可能性があり、"
-"一部はすぐには明らかにならないかもしれません。常に Arcadia ディレクトリにある "
-"README.TXT ファイル内のアップグレード手順に従うことを意識してください。"
+"一部はすぐには明らかにならないかもしれません。常に Arcadia ディレクトリにあ"
+"る README.TXT ファイル内のアップグレード手順に従うことを意識してください。"
 
 msgid ""
 "COULDN'T PARSE THE SYSTEMS CONFIGURATION FILE. IF YOU HAVE A CUSTOMIZED "
 "es_systems.xml FILE, THEN SOMETHING IS LIKELY WRONG WITH YOUR XML SYNTAX. IF "
-"YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE ARCADIA INSTALLATION IS BROKEN. "
-"SEE THE APPLICATION LOG FILE es_log.txt FOR ADDITIONAL INFO"
+"YOU DON'T HAVE A CUSTOM SYSTEMS FILE, THEN THE ARCADIA INSTALLATION IS "
+"BROKEN. SEE THE APPLICATION LOG FILE es_log.txt FOR ADDITIONAL INFO"
 msgstr ""
-"システムの設定ファイルを解析できませんでした。カスタマイズされたes_systems."
-"xmlファイルがすでに存在している場合、おそらくXML構文に問題がある可能性があり"
-"ます。カスタムシステムファイルが存在しない場合、Arcadiaのインストールに問題があ"
-"る可能性があります。詳細情報については、アプリのログファイルであるes_log.txt"
-"を参照してください"
+"システムの設定ファイルを解析できませんでした。カスタマイズされた"
+"es_systems.xmlファイルがすでに存在している場合、おそらくXML構文に問題がある可"
+"能性があります。カスタムシステムファイルが存在しない場合、Arcadiaのインストー"
+"ルに問題がある可能性があります。詳細情報については、アプリのログファイルであ"
+"るes_log.txtを参照してください"
 
 msgid ""
-"NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY IN "
-"THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM DIRECTORY "
-"STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME "
-"INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED "
-"ROM DIRECTORY:\n"
+"Welcome to Arcadia. No games were found yet.\n"
+"\n"
+"Put your games in the ROM folder below, one folder per console (Create makes "
+"the folders), or choose Setup and then Sort downloads to move them there for "
+"you.\n"
+"\n"
+"The ROM folder is "
 msgstr ""
-"ゲームファイルが見つかりませんでした。ゲームをインポートするか、設定済みのROM"
-"ディレクトリに手動で配置してください。あるいはROMディレクトリ構造を生成するこ"
-"とも可能です。これにより、各システムごとにテキストファイルが作成され、対応"
-"ファイル拡張子などの情報も記載されます。設定されているROMディレクトリは以下の"
-"通りです：\n"
-
-msgid ""
-"NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY IN "
-"THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM PATH AND "
-"OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT "
-"FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE "
-"EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
-msgstr ""
-"ゲームファイルが見つかりませんでした。ゲームをインポートするか、現在設定され"
-"ているROMディレクトリに手動で配置してください。ROMのパスを変更することも可能"
-"です。あるいはROMディレクトリ構造を生成することも可能です。これにより、各シス"
-"テムごとにテキストファイルが作成され、対応ファイル拡張子などの情報も記載され"
-"ます。現在設定されているROMディレクトリ：\n"
 
 msgid "CHANGE"
 msgstr "変更"
@@ -2767,8 +2858,8 @@ msgid "CLEAR (LEAVE BLANK TO RESET TO DEFAULT PATH)"
 msgstr "クリア（何も入力せずにデフォルトパスにリセット）"
 
 msgid ""
-"THIS WILL CREATE DIRECTORIES FOR ALL THE GAME SYSTEMS DEFINED IN es_systems."
-"xml\n"
+"THIS WILL CREATE DIRECTORIES FOR ALL THE GAME SYSTEMS DEFINED IN "
+"es_systems.xml\n"
 "\n"
 "THIS MAY CREATE A LOT OF FOLDERS SO IT'S ADVISED TO REMOVE THE ONES YOU "
 "DON'T NEED"
@@ -2805,14 +2896,11 @@ msgstr ""
 "ファイルに対応する項目がありません。設定を確認するには、「その他の設定」メ"
 "ニュー内の「代替エミュレータ」インターフェースを使用してください"
 
-msgid "UPDATE"
-msgstr "アップデート"
-
 msgid ""
 "THE APPLICATION UPDATER WILL DOWNLOAD THE LATEST PORTABLE WINDOWS RELEASE "
-"FOR YOU, BUT YOU WILL NEED TO MANUALLY PERFORM THE UPGRADE. SEE THE README."
-"TXT FILE INSIDE THE DOWNLOADED ZIP FILE FOR INSTRUCTIONS ON HOW THIS IS "
-"ACCOMPLISHED. AS IS ALSO DESCRIBED IN THAT DOCUMENT, NEVER UNPACK A NEW "
+"FOR YOU, BUT YOU WILL NEED TO MANUALLY PERFORM THE UPGRADE. SEE THE "
+"README.TXT FILE INSIDE THE DOWNLOADED ZIP FILE FOR INSTRUCTIONS ON HOW THIS "
+"IS ACCOMPLISHED. AS IS ALSO DESCRIBED IN THAT DOCUMENT, NEVER UNPACK A NEW "
 "RELEASE ON TOP OF AN OLD INSTALLATION AS THAT MAY BREAK THE APPLICATION."
 msgstr ""
 "アプリの更新プログラムは、最新のポータブルWindowsリリースをダウンロードします"
@@ -2844,6 +2932,13 @@ msgstr ""
 msgid "LAUNCHING GAME '%s'"
 msgstr "ゲーム '%s' を起動中"
 
+#, c-format
+msgid "ARCADIA %s IS AVAILABLE"
+msgstr ""
+
+msgid "SETUP → UPDATE ARCADIA INSTALLS IT"
+msgstr ""
+
 msgid "menu"
 msgstr "メニュー"
 
@@ -2869,11 +2964,9 @@ msgid "%i minute ago"
 msgid_plural "%i minutes ago"
 msgstr[0] "%i 分前"
 
-#, c-format
 msgctxt "theme"
-msgid "%i second ago"
-msgid_plural "%i seconds ago"
-msgstr[0] "%i 秒前"
+msgid "just now"
+msgstr ""
 
 msgid "edit date"
 msgstr "日付を編集する"
@@ -3157,5 +3250,186 @@ msgstr "リソースをコピー中..."
 msgid "Creating system directories..."
 msgstr "システムディレクトリを作成中..."
 
+msgid "NO PICTURES OR VIDEO FOR THIS GAME YET"
+msgstr ""
+
+msgid "SETTINGS → COVERS AND INFO CAN GET THEM"
+msgstr ""
+
 msgid "ERROR: COULDN'T RENDER PDF FILE"
 msgstr "エラー：PDFファイルをレンダリングできませんでした"
+
+#~ msgid "ERROR: APP OR ALIAS FILE DOESN'T EXIST OR IS UNREADABLE"
+#~ msgstr ""
+#~ "エラー：アプリまたは別名ファイルが存在しないか、あるいは読み込めません"
+
+#~ msgid "MEDIA TARGET TYPE"
+#~ msgstr "メディア対象の種類"
+
+#~ msgid "SCREENSHOTS"
+#~ msgstr "スクリーンショット"
+
+#~ msgid "TITLE SCREENS"
+#~ msgstr "タイトルスクリーン"
+
+#~ msgid "COVERS"
+#~ msgstr "カバー"
+
+#~ msgid "BACK COVERS"
+#~ msgstr "バックカバー"
+
+#~ msgid "MARQUEES (WHEELS)"
+#~ msgstr "マーキー（ホイール）"
+
+#~ msgid "3D BOXES"
+#~ msgstr "3Dボックス"
+
+#~ msgid "PHYSICAL MEDIA"
+#~ msgstr "物理メディア"
+
+#~ msgid "MIXIMAGES"
+#~ msgstr "ミックス画像"
+
+#~ msgid "IMPORT MEDIA"
+#~ msgstr "メディアをインポート"
+
+#~ msgid "IMPORT BANNERS OR LOGOS IF AVAILABLE"
+#~ msgstr "可能であればバナーかロゴをインポート"
+
+#~ msgid "OVERWRITE MEDIA FILES"
+#~ msgstr "メディアファイルを上書き"
+
+#~ msgid "ONLY INCLUDE APPS CATEGORIZED AS GAMES"
+#~ msgstr "ゲームに分類されたアプリだけを含め"
+
+#~ msgid "close (apply)"
+#~ msgstr "閉じる（同意）"
+
+#~ msgid "close (cancel)"
+#~ msgstr "閉じる（キャンセル）"
+
+#~ msgid "MAIN MENU"
+#~ msgstr "メインメニュー"
+
+#~ msgid "SCRAPER"
+#~ msgstr "スクレーパー"
+
+#~ msgid "UI SETTINGS"
+#~ msgstr "UI設定"
+
+#~ msgid "SOUND SETTINGS"
+#~ msgstr "音声設定"
+
+#~ msgid "INPUT DEVICE SETTINGS"
+#~ msgstr "入力デバイス設定"
+
+#~ msgid "GAME COLLECTION SETTINGS"
+#~ msgstr "ゲームコレクション設定"
+
+#~ msgid "UTILITIES"
+#~ msgstr "ユーティリティ"
+
+#~ msgid "MENU COLOR SCHEME"
+#~ msgstr "メニューの配色"
+
+#~ msgid "DARK"
+#~ msgstr "DARK"
+
+#~ msgid "DARK AND RED"
+#~ msgstr "ダークレッド"
+
+#~ msgid "LIGHT"
+#~ msgstr "LIGHT"
+
+#~ msgid "AUDIO DRIVER"
+#~ msgstr "オーディオドライバー"
+
+#~ msgid "AUDIO DRIVER (REQUIRES RESTART)"
+#~ msgstr "オーディオドライバー（再起動が必要）"
+
+#~ msgid "TOUCH OVERLAY SIZE"
+#~ msgstr "タッチオーバーレイのサイズ"
+
+#~ msgid "EXTRA SMALL"
+#~ msgstr "もっと小さい"
+
+#~ msgid "TOUCH OVERLAY OPACITY"
+#~ msgstr "タッチオーバーレイの不透明度"
+
+#~ msgid "VERY LOW"
+#~ msgstr "とても低い"
+
+#~ msgid "TOUCH OVERLAY FADE-OUT TIME"
+#~ msgstr "タッチオーバーレイのフェードアウト時間"
+
+#~ msgid "ENABLE TOUCH OVERLAY"
+#~ msgstr "タッチオーバーレイを有効にする"
+
+#~ msgid ""
+#~ "DON'T DISABLE THE TOUCH OVERLAY UNLESS YOU ARE USING A CONTROLLER OR YOU "
+#~ "WILL LOCK YOURSELF OUT OF THE APP. IF THIS HAPPENS YOU WILL NEED TO "
+#~ "TEMPORARILY PLUG IN A CONTROLLER OR A KEYBOARD TO ENABLE THIS SETTING "
+#~ "AGAIN, OR YOU COULD CLEAR THE ARCADIA STORAGE IN THE ANDROID APP SETTINGS "
+#~ "TO FORCE THE CONFIGURATOR TO RUN ON NEXT STARTUP"
+#~ msgstr ""
+#~ "コントローラーを使用していない場合は、タッチオーバーレイを無効にしないでく"
+#~ "ださい。そうしないと、アプリからロックアウトされる可能性があります。このよ"
+#~ "うな状況が発生した場合、一時的にコントローラーまたはキーボードを接続してこ"
+#~ "の設定を再度有効にする必要があります。または、Androidアプリの設定でArcadia"
+#~ "ストレージを消去して、次回起動時に設定を実行させることもできます"
+
+#~ msgid "HIDE TASKBAR (REQUIRES RESTART)"
+#~ msgstr "タスクバーを非表示にする（再起動が必要）"
+
+#~ msgid "LAUNCH GAMES ON THE OTHER SCREEN"
+#~ msgstr "別のスクリーンでゲームを起動"
+
+#~ msgid "BACK BUTTON/BACK SWIPE EXITS APP"
+#~ msgstr "バックボタン/バックスワイプでアプリを終了"
+
+#~ msgid "close menu"
+#~ msgstr "メニューを閉じる"
+
+#~ msgid "DISPLAY CELLULAR STATUS INDICATOR"
+#~ msgstr "CELLULARの状態インジケーターを表示"
+
+#~ msgid "THIS WILL COMPLETELY DELETE THE THEME"
+#~ msgstr "この操作により、テーマは完全に削除されます"
+
+#~ msgid "system"
+#~ msgstr "システム"
+
+#~ msgid "view media"
+#~ msgstr "メディアを見る"
+
+#~ msgid ""
+#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
+#~ "IN THE CONFIGURED ROM DIRECTORY. OPTIONALLY YOU CAN GENERATE THE ROM "
+#~ "DIRECTORY STRUCTURE WHICH WILL CREATE A TEXT FILE FOR EACH SYSTEM "
+#~ "PROVIDING SOME INFORMATION SUCH AS THE SUPPORTED FILE EXTENSIONS. THIS IS "
+#~ "THE CONFIGURED ROM DIRECTORY:\n"
+#~ msgstr ""
+#~ "ゲームファイルが見つかりませんでした。ゲームをインポートするか、設定済みの"
+#~ "ROMディレクトリに手動で配置してください。あるいはROMディレクトリ構造を生成"
+#~ "することも可能です。これにより、各システムごとにテキストファイルが作成さ"
+#~ "れ、対応ファイル拡張子などの情報も記載されます。設定されているROMディレク"
+#~ "トリは以下の通りです：\n"
+
+#~ msgid ""
+#~ "NO GAME FILES WERE FOUND. EITHER IMPORT SOME GAMES OR PLACE THEM MANUALLY "
+#~ "IN THE CURRENTLY CONFIGURED ROM DIRECTORY. YOU CAN ALSO CHANGE THE ROM "
+#~ "PATH AND OPTIONALLY GENERATE THE ROM DIRECTORY STRUCTURE WHICH WILL "
+#~ "CREATE A TEXT FILE FOR EACH SYSTEM PROVIDING SOME INFORMATION SUCH AS THE "
+#~ "SUPPORTED FILE EXTENSIONS. THIS IS THE CONFIGURED ROM DIRECTORY:\n"
+#~ msgstr ""
+#~ "ゲームファイルが見つかりませんでした。ゲームをインポートするか、現在設定さ"
+#~ "れているROMディレクトリに手動で配置してください。ROMのパスを変更することも"
+#~ "可能です。あるいはROMディレクトリ構造を生成することも可能です。これによ"
+#~ "り、各システムごとにテキストファイルが作成され、対応ファイル拡張子などの情"
+#~ "報も記載されます。現在設定されているROMディレクトリ：\n"
+
+#, c-format
+#~ msgctxt "theme"
+#~ msgid "%i second ago"
+#~ msgid_plural "%i seconds ago"
+#~ msgstr[0] "%i 秒前"

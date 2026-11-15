@@ -16,6 +16,7 @@
 #include "views/ViewController.h"
 #include "utils/FileSystemUtil.h"
 #include "utils/LocalizationUtil.h"
+#include "utils/StringUtil.h"
 
 #include <array>
 #include <cstdio>
@@ -30,34 +31,33 @@ namespace
         const char* todo;
     };
     const std::vector<StepAction> sStepActions {
-        {"games", "get-started.sh", "Show me"},
-        {"emulators", "install-emulators.sh", "Install"},
-        {"controls", "setup-controls.sh", "Set up"},
-        {"access", "grant-access.sh", "Allow"},
-        {"saves", "get-started.sh", "Connect"},
-        {"bios", "check-bios.sh", "Check"},
-        {"deckhand", "get-deckhand.sh", "Get it"}};
+        {"games", "get-started.sh", N_("Show me")},
+        {"emulators", "install-emulators.sh", N_("Install")},
+        {"controls", "setup-controls.sh", N_("Set up")},
+        {"access", "grant-access.sh", N_("Allow")},
+        {"saves", "get-started.sh", N_("Connect")},
+        {"bios", "check-bios.sh", N_("Check")},
+        {"deckhand", "get-deckhand.sh", N_("Get it")}};
 
     struct Tool {
         const char* label;
         const char* command;
     };
-    const std::vector<Tool> sTools {{"Sort downloads", "sort-roms.sh"},
-                                    {"Sort inside folders", "sort-roms.sh\" --deep \""},
-                                    {"Undo the last sort", "sort-roms.sh\" --undo \""},
-                                    {"Emulators", ""},
-                                    {"Sync saves now", "save-sync-now.sh"},
-                                    {"Back up settings", "backup.sh"},
-                                    {"Restore a backup", "backup.sh\" --restore \""},
-                                    {"Update Arcadia", "update-arcadia.sh"}};
+    const std::vector<Tool> sTools {{N_("Sort downloads"), "sort-roms.sh"},
+                                    {N_("Sort inside folders"), "sort-roms.sh\" --deep \""},
+                                    {N_("Undo the last sort"), "sort-roms.sh\" --undo \""},
+                                    {N_("Emulators"), ""},
+                                    {N_("Sync saves now"), "save-sync-now.sh"},
+                                    {N_("Back up settings"), "backup.sh"},
+                                    {N_("Restore a backup"), "backup.sh\" --restore \""},
+                                    {N_("Update Arcadia"), "update-arcadia.sh"}};
 } // namespace
 
 GuiSetup::GuiSetup(const std::string& toolsDirectory)
     : mRenderer {Renderer::getInstance()}
     , mToolsDirectory {toolsDirectory}
     , mColumn {0}
-    , mReading {false}
-    , mStatusReady {false}
+    , mShared {std::make_shared<Shared>()}
 {
 
     mStepsCard.setFrameColor(mMenuColorFrame);
@@ -75,27 +75,27 @@ GuiSetup::GuiSetup(const std::string& toolsDirectory)
     addChild(&mCount);
     mHeadline.setFont(Font::get(FONT_SIZE_LARGE * 0.8f, FONT_PATH_TITLE));
     mHeadline.setColor(mMenuColorTitle);
-    mHeadline.setText("Setup");
+    mHeadline.setText(_("Setup"));
     addChild(&mHeadline);
     mSubline.setFont(Font::get(FONT_SIZE_SMALL, FONT_PATH_LIGHT));
     mSubline.setAutoCalcExtent(glm::ivec2 {0, 1});
     mHeadline.setAutoCalcExtent(glm::ivec2 {0, 1});
     mSubline.setColor(mMenuColorSecondary);
-    mSubline.setText("Checking what's ready…");
+    mSubline.setText(_("Checking what's ready…"));
     addChild(&mSubline);
     mToolsTitle.setFont(Font::get(FONT_SIZE_LARGE * 0.74f, FONT_PATH_TITLE));
     mToolsTitle.setColor(mMenuColorTitle);
-    mToolsTitle.setText("Tools");
+    mToolsTitle.setText(_("Tools"));
     addChild(&mToolsTitle);
 
     mSteps = std::make_shared<ComponentList>();
     mTools = std::make_shared<ComponentList>();
     for (const Tool& tool : sTools) {
         ComponentListRow row;
-        row.addElement(std::make_shared<TextComponent>(tool.label, Font::get(FONT_SIZE_MEDIUM),
+        row.addElement(std::make_shared<TextComponent>(_(tool.label), Font::get(FONT_SIZE_MEDIUM),
                                                        mMenuColorPrimary),
                        true);
-        const std::string title {tool.label};
+        const std::string title {_(tool.label)};
         const std::string command {"\"" + mToolsDirectory + "/" + tool.command + "\""};
         if (std::string {tool.command}.empty())
             row.makeAcceptInputHandler([this] { openEmulators(); });
@@ -117,8 +117,7 @@ GuiSetup::GuiSetup(const std::string& toolsDirectory)
 
 GuiSetup::~GuiSetup()
 {
-    if (mThread && mThread->joinable())
-        mThread->join();
+    // (Nothing to wait for: a status read still running has its own reference to what it shares with this screen.)
 }
 
 void GuiSetup::layout()
@@ -157,16 +156,14 @@ void GuiSetup::layout()
 
 void GuiSetup::readStatus()
 {
-    if (mReading)
+    if (mShared->reading)
         return;
-    if (mThread && mThread->joinable())
-        mThread->join();
-    mReading = true;
-    mThread = std::make_unique<std::thread>([this] {
-        const std::string cmd {"ARCADIA_OUTPUT=stdout ARCADIA_HOME=\"" +
-                               Utils::FileSystem::getAppDataDirectory() + "\" ARCADIA_ROMS=\"" +
-                               FileData::getROMDirectory() + "\" bash \"" + mToolsDirectory +
-                               "/get-started.sh\" --status 2>/dev/null"};
+    mShared->reading = true;
+    // Everything the thread needs is worked out here: it touches nothing of this screen, which may be gone by then.
+    const std::string cmd {"ARCADIA_OUTPUT=stdout ARCADIA_HOME=\"" + Utils::FileSystem::getAppDataDirectory() +
+                           "\" ARCADIA_ROMS=\"" + FileData::getROMDirectory() + "\" bash \"" + mToolsDirectory +
+                           "/get-started.sh\" --status 2>/dev/null"};
+    std::thread([shared = mShared, cmd] {
         std::string output;
         if (FILE* pipe = popen(cmd.c_str(), "r")) {
             std::array<char, 512> buffer {};
@@ -187,20 +184,20 @@ void GuiSetup::readStatus()
                 steps.push_back({fields[0], fields[1] != "0", fields[2], fields[3]});
         }
         {
-            std::unique_lock<std::mutex> lock {mMutex};
-            mStatus = steps;
+            std::unique_lock<std::mutex> lock {shared->mutex};
+            shared->status = steps;
         }
-        mReading = false;
-        mStatusReady = true;
-    });
+        shared->reading = false;
+        shared->ready = true;
+    }).detach();
 }
 
 void GuiSetup::showStatus()
 {
     std::vector<Step> steps;
     {
-        std::unique_lock<std::mutex> lock {mMutex};
-        steps = mStatus;
+        std::unique_lock<std::mutex> lock {mShared->mutex};
+        steps = mShared->status;
     }
 
     const int cursor {mSteps->getCursorId()};
@@ -244,7 +241,7 @@ void GuiSetup::showStatus()
         auto label = std::make_shared<TextComponent>(step.label, font, mMenuColorPrimary);
         std::shared_ptr<TextComponent> todo;
         if (!step.done)
-            todo = std::make_shared<TextComponent>("  " + std::string {action->todo},
+            todo = std::make_shared<TextComponent>("  " + _(action->todo),
                                                    Font::get(FONT_SIZE_SMALL), mMenuColorAccentInk,
                                                    ALIGN_RIGHT);
         // The detail gets whatever room the row has left, and is shortened with an ellipsis to fit.
@@ -277,20 +274,16 @@ void GuiSetup::showStatus()
                    ".svg");
     mCount.setText(std::to_string(done) + "/" + std::to_string(total));
     if (total == 0) {
-        mHeadline.setText("Setup");
-        mSubline.setText("The checklist couldn't be read. The tools on the right still work.");
+        mHeadline.setText(_("Setup"));
+        mSubline.setText(_("The checklist couldn't be read. The tools on the right still work."));
     }
     else if (left == 0) {
-        mHeadline.setText("All set");
-        mSubline.setText("Everything is ready. Have fun.");
+        mHeadline.setText(_("All set"));
+        mSubline.setText(_("Everything is ready. Have fun."));
     }
     else {
-        mHeadline.setText(done == 0 ? "Let's get you set up" : "Almost ready");
-        const std::vector<std::string> counts {"One thing", "Two things", "Three things",
-                                               "Four things", "Five things", "Six things",
-                                               "Seven things"};
-        mSubline.setText((left <= 7 ? counts.at(left - 1) : std::to_string(left) + " things") +
-                         " left to do.");
+        mHeadline.setText(done == 0 ? _("Let's get you set up") : _("Almost ready"));
+        mSubline.setText(Utils::String::format(_n("One thing left to do.", "%i things left to do.", left), left));
     }
     setFocusColumn(mColumn);
     updateHelpPrompts();
@@ -321,8 +314,8 @@ void GuiSetup::setFocusColumn(int column)
 
 void GuiSetup::update(int deltaTime)
 {
-    if (mStatusReady) {
-        mStatusReady = false;
+    if (mShared->ready) {
+        mShared->ready = false;
         showStatus();
     }
     mSteps->update(deltaTime);
