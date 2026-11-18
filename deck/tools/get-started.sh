@@ -12,7 +12,9 @@ if [ -d "$roms" ]; then
     [ "$n" -gt 0 ] && { systems=$((systems + 1)); games=$((games + n)); }
   done < <(find "$roms" -mindepth 1 -maxdepth 1 -type d 2>/dev/null)
 fi
-emus=0; if command -v flatpak >/dev/null 2>&1; then for row in "${DECK_EMULATORS[@]}"; do IFS='|' read -r _n id _s <<<"$row"; deck_flatpak_installed "$id" && emus=$((emus + 1)); done; fi
+flatpak_apps="$(deck_flatpak_apps)"
+flatpak_has() { [[ $'\n'"$flatpak_apps"$'\n' == *$'\n'"$1"$'\n'* ]]; }
+emus=0; for row in "${DECK_EMULATORS[@]}"; do IFS='|' read -r _n id _s <<<"$row"; flatpak_has "$id" && emus=$((emus + 1)); done
 bios_missing="$(deck_bios_report | awk -F'\t' '$1=="missing"{n++} END{print n+0}')"
 remote_ok=0
 if command -v rclone >/dev/null 2>&1 && [ -n "$SYNC_REMOTE" ] && rclone listremotes 2>/dev/null | grep -qx "${SYNC_REMOTE%%:*}:"; then remote_ok=1; fi
@@ -30,7 +32,7 @@ if [ "${1:-}" = "--status" ]; then
   printf 'emulators|%s|Emulators|%s\n' "${st%%|*}" "${st#*|}"
   if deck_is_done controls; then
     set_up=(); for e in org.duckstation.DuckStation:DuckStation net.pcsx2.PCSX2:PCSX2 org.libretro.RetroArch:RetroArch; do
-      deck_flatpak_installed "${e%%:*}" && set_up+=("${e#*:}"); done
+      flatpak_has "${e%%:*}" && set_up+=("${e#*:}"); done
     if [ "${#set_up[@]}" -eq 0 ]; then d="set up"; c="set"; elif [ "${#set_up[@]}" -eq 1 ]; then d="set up for ${set_up[0]}"; c="set;${set_up[0]}"
     else names="$(IFS=,; echo "${set_up[*]:0:${#set_up[@]}-1}" | sed 's/,/, /g') and ${set_up[-1]}"; d="set up for $names"; c="setmany;$(IFS=,; echo "${set_up[*]:0:${#set_up[@]}-1}" | sed 's/,/, /g');${set_up[-1]}"; fi
   else d="not set up yet"; c="todo"; fi

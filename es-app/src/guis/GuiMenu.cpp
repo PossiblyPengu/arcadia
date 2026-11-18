@@ -109,6 +109,11 @@ GuiMenu::GuiMenu()
         sRail = this;
     }
 
+    // Setup's tools install and its checklist read get a head start here: by the time SETUP is picked, both
+    // are usually done and the screen just opens (see openSetup and GuiSetup::prewarm).
+    if (isFullUI)
+        GuiSetup::prewarm(setupToolsDirectory());
+
     if (isFullUI)
         addEntry(_("SETUP"), mMenuColorPrimary, true, [this] { openSetup(); }, "setup");
 
@@ -2194,14 +2199,14 @@ void GuiMenu::openOtherOptions()
 
 // The folder with the setup tools (the deck folder). They are installed into the application data directory
 // the first time they are needed in each run, from the copy that ships with the program (once is enough: the copy
-// can't change while Arcadia runs, and installing again cost every opening of Setup a noticeable pause).
+// can't change while Arcadia runs).
 std::string GuiMenu::setupToolsDirectory()
 {
     const std::string installed {Utils::FileSystem::getAppDataDirectory() + "/deck"};
-    static bool installedThisRun {false};
-    if (installedThisRun && Utils::FileSystem::exists(installed + "/tools"))
+    static bool installStarted {false};  // one try per run: it isn't waited for (see below)
+    if (installStarted)
         return installed + "/tools";
-    installedThisRun = true;
+    installStarted = true;
 
     std::vector<std::string> sources {Utils::FileSystem::getExePath() + "/deck",
                                       Utils::FileSystem::getExePath() + "/../share/arcadia/deck"};
@@ -2209,11 +2214,13 @@ std::string GuiMenu::setupToolsDirectory()
         sources.push_back(std::string {appDir} + "/usr/share/arcadia/deck");
     for (const std::string& source : sources) {
         if (Utils::FileSystem::exists(source + "/install.sh")) {
-            // Installing is quick and safe to repeat, and keeps the tools in step with this version.
+            // Installing is quick and safe to repeat, and keeps the tools in step with this version. It's not
+            // waited for: waiting cost every first opening of Setup a noticeable pause, and the tools already
+            // installed serve while this lands (the very first install is done as the menu opens, ahead of Setup).
             Utils::Platform::runSystemCommand("ARCADIA_HOME=\"" +
                                               Utils::FileSystem::getAppDataDirectory() +
                                               "\" bash \"" + source + "/install.sh\" > /dev/null 2>&1",
-                                              true);
+                                              false);
             break;
         }
     }

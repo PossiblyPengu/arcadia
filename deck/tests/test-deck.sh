@@ -10,7 +10,9 @@ check() { set +o pipefail; if eval "$2"; then ok "$1"; else bad "$1"; fi; set -o
 
 TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
 export HOME="$TMP/home"; mkdir -p "$HOME" "$TMP/bin"
-export ARCADIA_HOME="$HOME/Arcadia" DECK_QUIET=1 PATH="$TMP/bin:$PATH"
+# (The real ~/.local/bin isn't on the PATH either: a Deckhand installed for real there would answer for the fake.)
+export ARCADIA_HOME="$HOME/Arcadia" DECK_QUIET=1
+export PATH="$TMP/bin:$(printf '%s' "$PATH" | tr ':' '\n' | grep -v '/\.local/bin$' | paste -sd: -)"
 cat > "$TMP/bin/rclone" <<'R'
 #!/usr/bin/env bash
 echo "$*" >> "$HOME/rclone.calls"
@@ -23,6 +25,7 @@ case "$1" in
         # (FAKE_SCOPE: the one installation the apps are in; any, when unset)
         [ -n "${FAKE_SCOPE:-}" ] && [ -n "$scope" ] && [ "$scope" != "--$FAKE_SCOPE" ] && exit 1
         grep -qw -- "$1" <<<"${FAKE_INSTALLED:-org.libretro.RetroArch}" && exit 0 || exit 1;;
+  list) for id in ${FAKE_INSTALLED:-org.libretro.RetroArch}; do [ "$id" = none ] || echo "$id"; done; exit 0;;
   remotes) [ -n "${FAKE_SYSTEM_FLATHUB:-}" ] && [[ "$*" == *--system* ]] && echo flathub; exit 0;;
 esac
 exit 0

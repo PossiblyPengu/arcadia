@@ -19,6 +19,7 @@
 #include "utils/StringUtil.h"
 
 #include <array>
+#include <chrono>
 #include <cstdio>
 #include <sstream>
 
@@ -118,11 +119,21 @@ namespace
     }
 } // namespace
 
+std::shared_ptr<GuiSetup::Shared> GuiSetup::sStatus;
+
+void GuiSetup::prewarm(const std::string& toolsDirectory)
+{
+    if (!sStatus)
+        sStatus = std::make_shared<Shared>();
+    if (!sStatus->reading && !sStatus->fresh())
+        startRead(sStatus, toolsDirectory);
+}
+
 GuiSetup::GuiSetup(const std::string& toolsDirectory)
     : mRenderer {Renderer::getInstance()}
     , mToolsDirectory {toolsDirectory}
     , mColumn {0}
-    , mShared {std::make_shared<Shared>()}
+    , mShared {sStatus ? sStatus : std::make_shared<Shared>()}
 {
 
     mStepsCard.setFrameColor(mMenuColorFrame);
@@ -177,7 +188,10 @@ GuiSetup::GuiSetup(const std::string& toolsDirectory)
             mRenderer->getScreenHeight() * 0.9f - pos.y);
     layout();
     setFocusColumn(0);
-    readStatus();
+    // A read may be running or just done already (started when the menu opened): then this attaches to it or
+    // shows it straight away. Otherwise, or once what it read has gone stale, a new read is started.
+    if (!mShared->fresh())
+        readStatus();
 }
 
 GuiSetup::~GuiSetup()
@@ -221,14 +235,20 @@ void GuiSetup::layout()
 
 void GuiSetup::readStatus()
 {
-    if (mShared->reading)
-        return;
-    mShared->reading = true;
+    // Done on top of a read still running (a late result lands all the same), never a second one on top of it.
+    if (!mShared->reading)
+        startRead(mShared, mToolsDirectory);
+}
+
+void GuiSetup::startRead(const std::shared_ptr<Shared>& shared, const std::string& toolsDirectory)
+{
+    shared->reading = true;
+    sStatus = shared;  // (the latest read: a Setup screen opened next opens on top of it)
     // Everything the thread needs is worked out here: it touches nothing of this screen, which may be gone by then.
     const std::string cmd {"ARCADIA_OUTPUT=stdout ARCADIA_HOME=\"" + Utils::FileSystem::getAppDataDirectory() +
-                           "\" ARCADIA_ROMS=\"" + FileData::getROMDirectory() + "\" bash \"" + mToolsDirectory +
+                           "\" ARCADIA_ROMS=\"" + FileData::getROMDirectory() + "\" bash \"" + toolsDirectory +
                            "/get-started.sh\" --status 2>/dev/null"};
-    std::thread([shared = mShared, cmd] {
+    std::thread([shared, cmd] {
         std::string output;
         if (FILE* pipe = popen(cmd.c_str(), "r")) {
             std::array<char, 512> buffer {};
@@ -260,6 +280,8 @@ void GuiSetup::readStatus()
             std::unique_lock<std::mutex> lock {shared->mutex};
             shared->status = steps;
         }
+        shared->finished = std::chrono::steady_clock::now().time_since_epoch().count();
+        shared->hasData = true;
         shared->reading = false;
         shared->ready = true;
     }).detach();
@@ -387,8 +409,9 @@ void GuiSetup::setFocusColumn(int column)
 
 void GuiSetup::update(int deltaTime)
 {
-    if (mShared->ready) {
+    if (mShared->ready || (mShared->hasData && !mShown)) {
         mShared->ready = false;
+        mShown = true;
         showStatus();
     }
     mSteps->update(deltaTime);

@@ -129,6 +129,10 @@ deck_deckhand_ok() { [ -n "$(deck_deckhand_bin)" ] && [ ! -e "$DECKHAND_BROKEN" 
 
 deck_flatpak_installed() { flatpak info "$1" >/dev/null 2>&1; }
 
+# deck_flatpak_apps: the app ids Flatpak has installed, one per line — asked in one call (an `info` per app
+# takes about a second altogether).
+deck_flatpak_apps() { command -v flatpak >/dev/null 2>&1 && flatpak list --app --columns=application 2>/dev/null; }
+
 # ---- BIOS -------------------------------------------------------------------------------------------------------------
 # system|label|required(1/0)|file names or patterns, separated by "/" (any one satisfies it)
 DECK_BIOS=(

@@ -18,6 +18,7 @@
 #include "components/TextComponent.h"
 
 #include <atomic>
+#include <chrono>
 #include <mutex>
 #include <thread>
 
@@ -26,6 +27,10 @@ class GuiSetup : public GuiComponent
 public:
     explicit GuiSetup(const std::string& toolsDirectory);
     ~GuiSetup();
+
+    // Starts the checklist read ahead of Setup being picked (called when the menu opens), so the screen
+    // opens with it already done or nearly.
+    static void prewarm(const std::string& toolsDirectory);
 
     void update(int deltaTime) override;
     void render(const glm::mat4& parentTrans) override;
@@ -68,10 +73,23 @@ private:
     struct Shared {
         std::mutex mutex;
         std::vector<Step> status;
-        std::atomic<bool> reading {false};
-        std::atomic<bool> ready {false};
+        std::atomic<bool> reading {false};  // a read is running (another isn't started on top of it)
+        std::atomic<bool> ready {false};    // a read landed that this screen hasn't shown yet
+        std::atomic<bool> hasData {false};  // a read has landed at least once: there is something to show
+        std::atomic<long long> finished {0};  // steady clock, ns, of the last landed read (0: none yet)
+
+        // Read just now (started ahead of the screen opening, or moments ago): shown as is, not read again.
+        bool fresh() const
+        {
+            return hasData && std::chrono::steady_clock::now().time_since_epoch().count() - finished <
+                              std::chrono::seconds(20).count();
+        }
     };
+    static void startRead(const std::shared_ptr<Shared>& shared, const std::string& toolsDirectory);
+
     std::shared_ptr<Shared> mShared;
+    static std::shared_ptr<Shared> sStatus;  // the latest read, for the next screen to open on top of
+    bool mShown {false};                     // what hasData says was shown on this screen already
 };
 
 #endif // ES_APP_GUIS_GUI_SETUP_H

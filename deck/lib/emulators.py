@@ -188,6 +188,16 @@ def installed(app_id: str) -> bool:
                                         stderr=subprocess.DEVNULL).returncode == 0
 
 
+def installed_apps() -> set[str]:
+    """Every app id Flatpak has installed, from one `flatpak list` (an `info` per app costs about a second)."""
+    exe = flatpak()
+    if not exe:
+        return set()
+    p = subprocess.run([exe, "list", "--app", "--columns=application"], stdout=subprocess.PIPE,
+                       stderr=subprocess.DEVNULL, text=True)
+    return set(p.stdout.split())
+
+
 def core_installed(core: str) -> bool:
     return (CORES_DIR / f"{core}_libretro.so").is_file()
 
@@ -255,7 +265,9 @@ def make_plan(roms: Path, systems: dict[str, System], rules: dict[str, list[str]
 
 
 def plan_from_disk(roms: Path) -> Plan:
-    return make_plan(roms, load_systems(systems_files()), load_find_rules(find_rules_files()))
+    apps = installed_apps()
+    return make_plan(roms, load_systems(systems_files()), load_find_rules(find_rules_files()),
+                     is_installed=apps.__contains__)
 
 
 def _games(n: int) -> str:
